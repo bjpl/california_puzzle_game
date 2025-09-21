@@ -3,7 +3,7 @@ import { useGame } from '../context/GameContext';
 import { soundManager, SoundType } from '../utils/soundManager';
 
 export default function GameHeader() {
-  const { score, mistakes, placedCounties, counties, resetGame, timerState, pauseGame, resumeGame, isGameStarted, isPaused, hints, useHint } = useGame();
+  const { score, mistakes, placedCounties, counties, resetGame, timerState, pauseGame, resumeGame, isGameStarted, isPaused, hints, useHint, showRegions, toggleShowRegions } = useGame();
   const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
   const progress = Math.round((placedCounties.size / counties.length) * 100);
 
@@ -100,6 +100,18 @@ export default function GameHeader() {
             disabled={hints === 0}
           >
             💡 Hint
+          </button>
+
+          <button
+            onClick={toggleShowRegions}
+            className={`px-2 py-1 rounded text-sm transition-all ${
+              showRegions
+                ? 'bg-purple-500 text-white hover:bg-purple-600'
+                : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
+            }`}
+            title={showRegions ? 'Hide Regions' : 'Show Regions'}
+          >
+            🗺️ Regions
           </button>
 
           <button

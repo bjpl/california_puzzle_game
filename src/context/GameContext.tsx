@@ -48,6 +48,7 @@ interface GameContextType {
   isPaused: boolean;
   hints: number;
   hintedCounty: string | null;
+  showRegions: boolean;
 
   // Timer state
   timerState: TimerState;
@@ -74,6 +75,7 @@ interface GameContextType {
   updateSettings: (settings: Partial<GameSettings>) => void;
   recordSplitTime: (name: string) => void;
   useHint: () => boolean;
+  toggleShowRegions: () => void;
 
   // Leaderboard
   saveToLeaderboard: () => LeaderboardEntry | null;
@@ -106,6 +108,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const [isPaused, setIsPaused] = useState(false);
   const [hints, setHints] = useState(3);
   const [hintedCounty, setHintedCounty] = useState<string | null>(null);
+  const [showRegions, setShowRegions] = useState(false);
 
   // Advanced scoring state
   const [currentStreak, setCurrentStreak] = useState(0);
@@ -388,6 +391,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     return true;
   }, [hints, currentCounty]);
 
+  const toggleShowRegions = useCallback(() => {
+    setShowRegions(prev => !prev);
+  }, []);
+
   return (
     <GameContext.Provider
       value={{
@@ -402,6 +409,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         isPaused,
         hints,
         hintedCounty,
+        showRegions,
 
         // Timer state
         timerState,
@@ -428,6 +436,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         updateSettings,
         recordSplitTime,
         useHint,
+        toggleShowRegions,
 
         // Leaderboard
         saveToLeaderboard,

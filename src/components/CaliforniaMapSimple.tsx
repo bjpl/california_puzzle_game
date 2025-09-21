@@ -15,24 +15,42 @@ interface CountyFeature {
 }
 
 function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature; bounds: any; isDragging: boolean }) {
-  const { placedCounties, currentCounty, hintedCounty } = useGame();
+  const { placedCounties, currentCounty, hintedCounty, showRegions, counties } = useGame();
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
   const isPlaced = placedCounties.has(countyId);
   const isHinted = hintedCounty === countyId;
 
+  // Find the region for this county
+  const countyData = counties.find(c => c.id === countyId);
+  const region = countyData?.region || '';
+
   const { isOver, setNodeRef } = useDroppable({
     id: countyId,
   });
 
-  // Four states: placed (green), hinted (pulsing blue), target/hover (yellow), available (gray)
+  // Region colors mapping
+  const regionColors: { [key: string]: string } = {
+    'Southern California': '#fca5a5', // Light red
+    'Bay Area': '#93c5fd', // Light blue
+    'Central Valley': '#86efac', // Light green
+    'Central Coast': '#c4b5fd', // Light purple
+    'Northern California': '#fdba74', // Light orange
+    'Sierra Nevada': '#fde047', // Light yellow
+    'North Coast': '#5eead4', // Light teal
+  };
+
+  // Determine fill color based on state and regions
   let fillColor = '#e5e7eb'; // Default gray (available)
+
   if (isPlaced) {
     fillColor = '#10b981'; // Green when placed
   } else if (isHinted) {
     fillColor = '#3b82f6'; // Blue when hinted
   } else if (isDragging && isOver) {
     fillColor = '#fbbf24'; // Yellow/amber when hovering over during drag (target state)
+  } else if (showRegions && region) {
+    fillColor = regionColors[region] || '#e5e7eb'; // Show region color if enabled
   }
 
   // Simple projection that works
@@ -103,6 +121,7 @@ function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature;
 }
 
 export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolean }) {
+  const { showRegions } = useGame();
   const [geoData, setGeoData] = useState<any>(null);
   const [bounds, setBounds] = useState<any>(null);
   const [zoom, setZoom] = useState(1);
@@ -268,17 +287,42 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
 
         {/* Legend (outside of zoom/pan) */}
         <g transform="translate(20, 550)">
-          <rect x="0" y="0" width="10" height="10" fill="#e5e7eb" stroke="#374151" strokeWidth="0.5" />
-          <text x="15" y="9" fontSize="10" fill="#6b7280">Available</text>
+          {!showRegions ? (
+            <>
+              <rect x="0" y="0" width="10" height="10" fill="#e5e7eb" stroke="#374151" strokeWidth="0.5" />
+              <text x="15" y="9" fontSize="10" fill="#6b7280">Available</text>
 
-          <rect x="80" y="0" width="10" height="10" fill="#fbbf24" stroke="#374151" strokeWidth="0.5" />
-          <text x="95" y="9" fontSize="10" fill="#6b7280">Target</text>
+              <rect x="80" y="0" width="10" height="10" fill="#fbbf24" stroke="#374151" strokeWidth="0.5" />
+              <text x="95" y="9" fontSize="10" fill="#6b7280">Target</text>
 
-          <rect x="140" y="0" width="10" height="10" fill="#10b981" stroke="#374151" strokeWidth="0.5" />
-          <text x="155" y="9" fontSize="10" fill="#6b7280">Placed</text>
+              <rect x="140" y="0" width="10" height="10" fill="#10b981" stroke="#374151" strokeWidth="0.5" />
+              <text x="155" y="9" fontSize="10" fill="#6b7280">Placed</text>
 
-          <rect x="210" y="0" width="10" height="10" fill="#3b82f6" stroke="#374151" strokeWidth="0.5" />
-          <text x="225" y="9" fontSize="10" fill="#6b7280">Hint</text>
+              <rect x="210" y="0" width="10" height="10" fill="#3b82f6" stroke="#374151" strokeWidth="0.5" />
+              <text x="225" y="9" fontSize="10" fill="#6b7280">Hint</text>
+            </>
+          ) : (
+            <>
+              <text x="0" y="9" fontSize="10" fill="#6b7280" fontWeight="bold">Regions:</text>
+              <rect x="60" y="0" width="10" height="10" fill="#fca5a5" stroke="#374151" strokeWidth="0.5" />
+              <text x="75" y="9" fontSize="9" fill="#6b7280">Southern</text>
+
+              <rect x="120" y="0" width="10" height="10" fill="#93c5fd" stroke="#374151" strokeWidth="0.5" />
+              <text x="135" y="9" fontSize="9" fill="#6b7280">Bay</text>
+
+              <rect x="160" y="0" width="10" height="10" fill="#86efac" stroke="#374151" strokeWidth="0.5" />
+              <text x="175" y="9" fontSize="9" fill="#6b7280">Valley</text>
+
+              <rect x="210" y="0" width="10" height="10" fill="#c4b5fd" stroke="#374151" strokeWidth="0.5" />
+              <text x="225" y="9" fontSize="9" fill="#6b7280">Coast</text>
+
+              <rect x="260" y="0" width="10" height="10" fill="#fdba74" stroke="#374151" strokeWidth="0.5" />
+              <text x="275" y="9" fontSize="9" fill="#6b7280">North</text>
+
+              <rect x="310" y="0" width="10" height="10" fill="#fde047" stroke="#374151" strokeWidth="0.5" />
+              <text x="325" y="9" fontSize="9" fill="#6b7280">Sierra</text>
+            </>
+          )}
         </g>
       </svg>
     </div>
