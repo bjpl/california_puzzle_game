@@ -7,6 +7,7 @@ import CaliforniaMapFixed from './CaliforniaMapFixed';
 import CaliforniaMapSimple from './CaliforniaMapSimple';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
+import StudyMode from './StudyMode';
 import SimpleMapTest from './SimpleMapTest';
 
 export default function GameContainer() {
@@ -25,6 +26,7 @@ export default function GameContainer() {
 
   const [isDragging, setIsDragging] = useState(false);
   const [activeCounty, setActiveCounty] = useState<any>(null);
+  const [showStudyMode, setShowStudyMode] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -73,7 +75,9 @@ export default function GameContainer() {
 
   if (!isGameStarted) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <>
+        {showStudyMode && <StudyMode onClose={() => setShowStudyMode(false)} />}
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full text-center">
           <h1 className="text-4xl font-bold text-blue-900 mb-4">
             🗺️ California Counties Puzzle
@@ -104,14 +108,23 @@ export default function GameContainer() {
               </div>
             </div>
           </div>
-          <button
-            onClick={startGame}
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
-          >
-            Start Game
-          </button>
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={startGame}
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
+            >
+              Start Game
+            </button>
+            <button
+              onClick={() => setShowStudyMode(true)}
+              className="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-purple-700 transition-colors"
+            >
+              📚 Study Mode
+            </button>
+          </div>
         </div>
       </div>
+      </>
     );
   }
 

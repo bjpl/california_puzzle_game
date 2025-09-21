@@ -1,401 +1,208 @@
-import React, { useState, useEffect } from 'react';
-import { County, CaliforniaRegion } from '@/types';
-import { CaliforniaButton } from './CaliforniaButton';
-import { getCountiesByRegion, getCountyById } from '@/utils/californiaData';
+import { useState } from 'react';
+import { useGame } from '../context/GameContext';
 
-interface StudyModeProps {
-  counties: string[]; // County IDs to study
-  onStudyComplete: () => void;
-  onCountySelect?: (county: County) => void;
-  className?: string;
-}
+export default function StudyMode({ onClose }: { onClose: () => void }) {
+  const { counties } = useGame();
+  const [selectedRegion, setSelectedRegion] = useState<string>('all');
+  const [selectedCounty, setSelectedCounty] = useState<any>(null);
 
-interface CountyStudyInfo {
-  county: County;
-  isStudied: boolean;
-  studyTime: number; // milliseconds spent studying
-  interactionCount: number;
-}
+  // Get unique regions
+  const regions = Array.from(new Set(counties.map(c => c.region))).sort();
 
-export const StudyMode: React.FC<StudyModeProps> = ({
-  counties,
-  onStudyComplete,
-  onCountySelect,
-  className = ''
-}) => {
-  const [studyProgress, setStudyProgress] = useState<CountyStudyInfo[]>([]);
-  const [currentCountyIndex, setCurrentCountyIndex] = useState(0);
-  const [studyStartTime, setStudyStartTime] = useState<number>(Date.now());
-  const [showQuiz, setShowQuiz] = useState(false);
-  const [quizScore, setQuizScore] = useState({ correct: 0, total: 0 });
+  // Filter counties by region
+  const filteredCounties = selectedRegion === 'all'
+    ? counties
+    : counties.filter(c => c.region === selectedRegion);
 
-  // Initialize study progress
-  useEffect(() => {
-    const initialProgress = counties
-      .map(id => getCountyById(id))
-      .filter((county): county is County => county !== undefined)
-      .map(county => ({
-        county,
-        isStudied: false,
-        studyTime: 0,
-        interactionCount: 0
-      }));
+  // Sort counties alphabetically
+  const sortedCounties = [...filteredCounties].sort((a, b) => a.name.localeCompare(b.name));
 
-    setStudyProgress(initialProgress);
-    setStudyStartTime(Date.now());
-  }, [counties]);
-
-  const currentCounty = studyProgress[currentCountyIndex]?.county;
-  const totalStudyTime = studyProgress.reduce((sum, info) => sum + info.studyTime, 0);
-  const studiedCount = studyProgress.filter(info => info.isStudied).length;
-  const allStudied = studiedCount === studyProgress.length;
-
-  // Mark current county as studied after minimum time
-  useEffect(() => {
-    if (!currentCounty) return;
-
-    const minStudyTime = 3000; // 3 seconds minimum
-    const timer = setTimeout(() => {
-      setStudyProgress(prev => prev.map((info, index) =>
-        index === currentCountyIndex
-          ? {
-              ...info,
-              isStudied: true,
-              studyTime: Date.now() - studyStartTime,
-              interactionCount: info.interactionCount + 1
-            }
-          : info
-      ));
-    }, minStudyTime);
-
-    return () => clearTimeout(timer);
-  }, [currentCountyIndex, currentCounty, studyStartTime]);
-
-  const handleNextCounty = () => {
-    if (currentCountyIndex < studyProgress.length - 1) {
-      setCurrentCountyIndex(prev => prev + 1);
-      setStudyStartTime(Date.now());
-    } else if (allStudied) {
-      setShowQuiz(true);
-    }
+  const regionColors: { [key: string]: string } = {
+    'Southern California': 'bg-red-50 border-red-400 text-red-900',
+    'Bay Area': 'bg-blue-50 border-blue-400 text-blue-900',
+    'Central Valley': 'bg-green-50 border-green-400 text-green-900',
+    'Central Coast': 'bg-purple-50 border-purple-400 text-purple-900',
+    'Northern California': 'bg-orange-50 border-orange-400 text-orange-900',
+    'Sierra Nevada': 'bg-yellow-50 border-yellow-400 text-yellow-900',
+    'North Coast': 'bg-teal-50 border-teal-400 text-teal-900',
   };
-
-  const handlePrevCounty = () => {
-    if (currentCountyIndex > 0) {
-      setCurrentCountyIndex(prev => prev - 1);
-      setStudyStartTime(Date.now());
-    }
-  };
-
-  const handleCountyInteraction = () => {
-    setStudyProgress(prev => prev.map((info, index) =>
-      index === currentCountyIndex
-        ? { ...info, interactionCount: info.interactionCount + 1 }
-        : info
-    ));
-
-    if (onCountySelect && currentCounty) {
-      onCountySelect(currentCounty);
-    }
-  };
-
-  const generateCountyFacts = (county: County): string[] => {
-    const facts = [];
-
-    if (county.population) {
-      facts.push(`Population: ${county.population.toLocaleString()} people`);
-    }
-
-    if (county.area) {
-      facts.push(`Area: ${county.area.toLocaleString()} square miles`);
-    }
-
-    // Add region-specific facts
-    switch (county.region) {
-      case CaliforniaRegion.BAY_AREA:
-        facts.push('Part of the San Francisco Bay Area');
-        break;
-      case CaliforniaRegion.SOUTHERN:
-        facts.push('Located in Southern California');
-        break;
-      case CaliforniaRegion.CENTRAL_VALLEY:
-        facts.push('Part of California\'s agricultural Central Valley');
-        break;
-      case CaliforniaRegion.COASTAL:
-        facts.push('Located along the Pacific Coast');
-        break;
-      case CaliforniaRegion.NORTHERN:
-        facts.push('Part of Northern California');
-        break;
-    }
-
-    // Add difficulty-based tips
-    switch (county.difficulty) {
-      case 'easy':
-        facts.push('💡 Large and recognizable shape - good for beginners!');
-        break;
-      case 'medium':
-        facts.push('💡 Medium difficulty - pay attention to the shape');
-        break;
-      case 'hard':
-        facts.push('💡 Challenging shape - look for distinctive features');
-        break;
-      case 'expert':
-        facts.push('💡 Expert level - study the borders carefully');
-        break;
-    }
-
-    return facts;
-  };
-
-  const renderStudyCard = () => {
-    if (!currentCounty) return null;
-
-    const facts = generateCountyFacts(currentCounty);
-    const progress = studyProgress[currentCountyIndex];
-
-    return (
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">{currentCounty.name} County</h2>
-            <p className="text-gray-600">FIPS Code: {currentCounty.fips}</p>
-          </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-500">
-              {currentCountyIndex + 1} of {studyProgress.length}
-            </div>
-            <div className={`text-xs px-2 py-1 rounded ${
-              progress?.isStudied ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-            }`}>
-              {progress?.isStudied ? 'Studied' : 'Studying...'}
-            </div>
-          </div>
-        </div>
-
-        {/* County Shape Visualization */}
-        <div
-          className="bg-blue-50 border-2 border-blue-200 rounded-lg p-8 mb-4 cursor-pointer hover:bg-blue-100 transition-colors"
-          onClick={handleCountyInteraction}
-        >
-          <div className="text-center">
-            <div className="text-6xl mb-2">📍</div>
-            <div className="text-sm text-blue-700">
-              Click to see {currentCounty.name} County on the map
-            </div>
-            <div className="text-xs text-blue-600 mt-1">
-              Interactions: {progress?.interactionCount || 0}
-            </div>
-          </div>
-        </div>
-
-        {/* County Facts */}
-        <div className="space-y-3 mb-6">
-          <h3 className="font-semibold text-gray-900">Key Information</h3>
-          {facts.map((fact, index) => (
-            <div key={index} className="flex items-start gap-2">
-              <span className="text-blue-500 mt-1">•</span>
-              <span className="text-gray-700">{fact}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Study Tips */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-          <h4 className="font-medium text-yellow-800 mb-2">Study Tips</h4>
-          <ul className="text-sm text-yellow-700 space-y-1">
-            <li>• Look for distinctive geographic features</li>
-            <li>• Notice how it connects to neighboring counties</li>
-            <li>• Remember its location relative to major cities</li>
-            <li>• Pay attention to its overall shape and size</li>
-          </ul>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex justify-between items-center">
-          <CaliforniaButton
-            variant="secondary"
-            onClick={handlePrevCounty}
-            disabled={currentCountyIndex === 0}
-          >
-            ← Previous
-          </CaliforniaButton>
-
-          <div className="text-center">
-            <div className="text-sm text-gray-600">
-              Study time: {Math.floor((Date.now() - studyStartTime) / 1000)}s
-            </div>
-          </div>
-
-          <CaliforniaButton
-            variant="primary"
-            onClick={handleNextCounty}
-          >
-            {currentCountyIndex === studyProgress.length - 1
-              ? (allStudied ? 'Take Quiz' : 'Finish Study')
-              : 'Next →'
-            }
-          </CaliforniaButton>
-        </div>
-      </div>
-    );
-  };
-
-  const renderQuiz = () => {
-    const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
-    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-    const [showQuizResult, setShowQuizResult] = useState(false);
-
-    const quizQuestions = studyProgress.map(info => {
-      const correctAnswer = info.county.name;
-      const wrongAnswers = studyProgress
-        .filter(other => other.county.id !== info.county.id)
-        .slice(0, 3)
-        .map(other => other.county.name);
-
-      return {
-        county: info.county,
-        question: `Which county is this?`,
-        options: [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5),
-        correctAnswer
-      };
-    });
-
-    const currentQuestion = quizQuestions[currentQuizIndex];
-
-    const handleQuizAnswer = (answer: string) => {
-      setSelectedAnswer(answer);
-      setShowQuizResult(true);
-
-      const isCorrect = answer === currentQuestion.correctAnswer;
-      setQuizScore(prev => ({
-        correct: prev.correct + (isCorrect ? 1 : 0),
-        total: prev.total + 1
-      }));
-
-      setTimeout(() => {
-        if (currentQuizIndex < quizQuestions.length - 1) {
-          setCurrentQuizIndex(prev => prev + 1);
-          setSelectedAnswer(null);
-          setShowQuizResult(false);
-        } else {
-          // Quiz complete
-          onStudyComplete();
-        }
-      }, 2000);
-    };
-
-    return (
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Knowledge Check</h2>
-          <p className="text-gray-600">Question {currentQuizIndex + 1} of {quizQuestions.length}</p>
-          <div className="text-sm text-gray-500">
-            Score: {quizScore.correct}/{quizScore.total}
-          </div>
-        </div>
-
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-8 mb-6">
-          <div className="text-center">
-            <div className="text-6xl mb-4">📍</div>
-            <p className="text-lg font-medium text-gray-900">{currentQuestion.question}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-3">
-          {currentQuestion.options.map((option, index) => (
-            <CaliforniaButton
-              key={index}
-              variant={
-                showQuizResult
-                  ? option === currentQuestion.correctAnswer
-                    ? 'primary'
-                    : option === selectedAnswer
-                    ? 'danger'
-                    : 'secondary'
-                  : 'secondary'
-              }
-              onClick={() => !showQuizResult && handleQuizAnswer(option)}
-              disabled={showQuizResult}
-              className="w-full p-4 text-left"
-            >
-              {option}
-              {showQuizResult && option === currentQuestion.correctAnswer && ' ✓'}
-              {showQuizResult && option === selectedAnswer && option !== currentQuestion.correctAnswer && ' ✗'}
-            </CaliforniaButton>
-          ))}
-        </div>
-
-        {showQuizResult && (
-          <div className={`mt-4 p-4 rounded-lg ${
-            selectedAnswer === currentQuestion.correctAnswer
-              ? 'bg-green-100 text-green-800'
-              : 'bg-red-100 text-red-800'
-          }`}>
-            {selectedAnswer === currentQuestion.correctAnswer
-              ? '🎉 Correct!'
-              : `❌ Incorrect. The answer is ${currentQuestion.correctAnswer}.`
-            }
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  const renderProgress = () => (
-    <div className="bg-white rounded-lg shadow p-4 mb-6">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold text-gray-900">Study Progress</h3>
-        <span className="text-sm text-gray-600">
-          {studiedCount}/{studyProgress.length} counties studied
-        </span>
-      </div>
-
-      <div className="flex gap-2 mb-3">
-        {studyProgress.map((info, index) => (
-          <div
-            key={info.county.id}
-            className={`flex-1 h-2 rounded ${
-              info.isStudied
-                ? 'bg-green-500'
-                : index === currentCountyIndex
-                ? 'bg-blue-500'
-                : 'bg-gray-200'
-            }`}
-          />
-        ))}
-      </div>
-
-      <div className="text-xs text-gray-500">
-        Total study time: {Math.floor(totalStudyTime / 1000)}s
-      </div>
-    </div>
-  );
-
-  if (showQuiz) {
-    return (
-      <div className={className}>
-        {renderQuiz()}
-      </div>
-    );
-  }
 
   return (
-    <div className={className}>
-      {renderProgress()}
-      {renderStudyCard()}
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              📚 Study Mode - California Counties
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-white hover:bg-white hover:bg-opacity-20 rounded-lg px-3 py-1 transition-colors"
+            >
+              ✕ Close
+            </button>
+          </div>
+          <p className="mt-2 text-blue-100">
+            Learn about California's {counties.length} counties. Click on any county to see details!
+          </p>
+        </div>
 
-      {/* Skip Study Option */}
-      <div className="text-center mt-6">
-        <CaliforniaButton
-          variant="outline"
-          onClick={onStudyComplete}
-          className="text-sm"
-        >
-          Skip Study Mode
-        </CaliforniaButton>
+        {/* Region Filter */}
+        <div className="bg-gray-100 p-4 border-b">
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setSelectedRegion('all')}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                selectedRegion === 'all'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              All Regions ({counties.length})
+            </button>
+            {regions.map(region => {
+              const count = counties.filter(c => c.region === region).length;
+              return (
+                <button
+                  key={region}
+                  onClick={() => setSelectedRegion(region)}
+                  className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                    selectedRegion === region
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {region} ({count})
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex h-[60vh]">
+          {/* County List */}
+          <div className="w-1/2 overflow-y-auto border-r">
+            <div className="p-4">
+              <h3 className="font-semibold text-gray-700 mb-3">
+                {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {sortedCounties.map(county => {
+                  const colorClass = regionColors[county.region] || 'bg-gray-50 border-gray-400 text-gray-900';
+                  return (
+                    <button
+                      key={county.id}
+                      onClick={() => setSelectedCounty(county)}
+                      className={`p-2 border rounded-lg text-left hover:shadow-md transition-all ${
+                        selectedCounty?.id === county.id
+                          ? 'ring-2 ring-blue-500 shadow-md'
+                          : ''
+                      } ${colorClass}`}
+                    >
+                      <div className="font-medium text-sm">{county.name}</div>
+                      <div className="text-xs opacity-75">{county.region}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* County Details */}
+          <div className="w-1/2 p-6 bg-gray-50">
+            {selectedCounty ? (
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                  {selectedCounty.name} County
+                </h3>
+                <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 ${
+                  regionColors[selectedCounty.region] || 'bg-gray-100 text-gray-700'
+                }`}>
+                  {selectedCounty.region}
+                </div>
+
+                <div className="space-y-4">
+                  {selectedCounty.capital && (
+                    <div>
+                      <h4 className="font-semibold text-gray-700">County Seat</h4>
+                      <p className="text-gray-600">{selectedCounty.capital}</p>
+                    </div>
+                  )}
+
+                  {selectedCounty.population && (
+                    <div>
+                      <h4 className="font-semibold text-gray-700">Population</h4>
+                      <p className="text-gray-600">
+                        {selectedCounty.population.toLocaleString()}
+                      </p>
+                    </div>
+                  )}
+
+                  {selectedCounty.area && (
+                    <div>
+                      <h4 className="font-semibold text-gray-700">Area</h4>
+                      <p className="text-gray-600">
+                        {selectedCounty.area.toLocaleString()} square miles
+                      </p>
+                    </div>
+                  )}
+
+                  {selectedCounty.founded && (
+                    <div>
+                      <h4 className="font-semibold text-gray-700">Founded</h4>
+                      <p className="text-gray-600">{selectedCounty.founded}</p>
+                    </div>
+                  )}
+
+                  {selectedCounty.funFact && (
+                    <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <h4 className="font-semibold text-blue-900 mb-2">
+                        💡 Fun Fact
+                      </h4>
+                      <p className="text-blue-800">{selectedCounty.funFact}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Study Tips */}
+                <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <h4 className="font-semibold text-yellow-900 mb-2">
+                    📍 Location Tip
+                  </h4>
+                  <p className="text-yellow-800 text-sm">
+                    {selectedCounty.name} is located in {selectedCounty.region}.
+                    Try to remember its position relative to other counties in the region!
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                <span className="text-6xl mb-4">📖</span>
+                <p className="text-lg font-medium">Select a county to study</p>
+                <p className="text-sm mt-2">Click on any county card to see details</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="bg-gray-100 p-4 border-t">
+          <div className="flex justify-between items-center">
+            <p className="text-sm text-gray-600">
+              Studying {filteredCounties.length} counties
+              {selectedRegion !== 'all' && ` in ${selectedRegion}`}
+            </p>
+            <button
+              onClick={onClose}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Return to Game
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
-};
+}

@@ -1,8 +1,43 @@
+import { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
+import { soundManager, SoundType } from '../utils/soundManager';
 
 export default function GameHeader() {
-  const { score, mistakes, placedCounties, counties, resetGame } = useGame();
-  const progress = (placedCounties.size / counties.length) * 100;
+  const { score, mistakes, placedCounties, counties, resetGame, timerState, pauseGame, resumeGame, isGameStarted, isPaused } = useGame();
+  const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
+  const [hints, setHints] = useState(3);
+  const progress = Math.round((placedCounties.size / counties.length) * 100);
+
+  const formatTime = (ms: number) => {
+    const seconds = Math.floor(ms / 1000);
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const toggleSound = () => {
+    const newState = !soundEnabled;
+    setSoundEnabled(newState);
+    soundManager.setMuted(!newState);
+    if (newState) {
+      soundManager.playSound(SoundType.PICKUP);
+    }
+  };
+
+  const handlePausePlay = () => {
+    if (isPaused) {
+      resumeGame();
+    } else {
+      pauseGame();
+    }
+  };
+
+  const useHint = () => {
+    if (hints > 0) {
+      setHints(hints - 1);
+      // TODO: Implement hint logic
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-2">
@@ -12,10 +47,36 @@ export default function GameHeader() {
           <h1 className="text-lg font-bold text-blue-900">California Counties Puzzle</h1>
         </div>
 
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-3 items-center">
           <div className="text-center">
             <p className="text-xs text-gray-600">Score</p>
             <p className="text-sm font-bold text-green-600">{score}</p>
+          </div>
+
+          <div className="text-center">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={handlePausePlay}
+                className={`p-0.5 rounded text-xs ${isPaused ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}
+                title={isPaused ? 'Resume' : 'Pause'}
+              >
+                {isPaused ? '▶️' : '⏸️'}
+              </button>
+              <div>
+                <p className="text-sm font-bold text-purple-600">{formatTime(timerState.elapsed)}</p>
+                <p className="text-xs text-gray-600">{isPaused ? 'Paused' : 'Time'}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <p className="text-xs text-gray-600">Progress</p>
+            <p className="text-sm font-bold text-blue-600">{progress}%</p>
+          </div>
+
+          <div className="text-center">
+            <p className="text-xs text-gray-600">Hints</p>
+            <p className="text-sm font-bold text-yellow-600">{hints}</p>
           </div>
 
           <div className="text-center">
@@ -23,16 +84,29 @@ export default function GameHeader() {
             <p className="text-sm font-bold text-red-600">{mistakes}</p>
           </div>
 
-          <div className="text-center">
-            <p className="text-xs text-gray-600">Progress</p>
-            <p className="text-sm font-bold text-blue-600">
-              {placedCounties.size}/{counties.length}
-            </p>
-          </div>
+          <button
+            onClick={toggleSound}
+            className={`px-2 py-1 rounded text-sm transition-all ${
+              soundEnabled
+                ? 'bg-green-500 text-white hover:bg-green-600'
+                : 'bg-gray-400 text-gray-700 hover:bg-gray-500'
+            }`}
+            title={soundEnabled ? 'Mute' : 'Unmute'}
+          >
+            {soundEnabled ? '🔊' : '🔇'}
+          </button>
+
+          <button
+            onClick={useHint}
+            className="bg-yellow-500 text-white px-2 py-1 rounded text-sm hover:bg-yellow-600 transition-colors disabled:bg-gray-300"
+            disabled={hints === 0}
+          >
+            💡 Hint
+          </button>
 
           <button
             onClick={resetGame}
-            className="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600 transition-colors"
+            className="bg-gray-500 text-white px-2 py-1 rounded text-sm hover:bg-gray-600 transition-colors"
           >
             Reset
           </button>
