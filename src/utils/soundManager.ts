@@ -192,6 +192,12 @@ class SoundManager {
    */
   private async loadSound(soundType: SoundType): Promise<HTMLAudioElement | null> {
     const config = this.soundConfigs[soundType];
+
+    // Skip file loading to prevent 404 errors
+    // Using generated tones for all sounds (like Colombia puzzle)
+    // Uncomment the block below when actual MP3 files are added
+
+    /*
     const soundPath = this.soundPaths[soundType];
 
     try {
@@ -220,9 +226,12 @@ class SoundManager {
 
     } catch (error) {
       // Fallback to generated tones if sound files don't exist
-      // Silent fallback - no need to log every time
       return this.createPlaceholderAudio(config);
     }
+    */
+
+    // Use generated tones (same approach as Colombia puzzle)
+    return this.createPlaceholderAudio(config);
   }
 
   /**

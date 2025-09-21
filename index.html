@@ -24,11 +24,11 @@
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#3b82f6" />
-    <link rel="apple-touch-icon" href="/california-icon-192.png" />
+    <link rel="apple-touch-icon" href="/california-icon.svg" />
     <link rel="manifest" href="/manifest.json" />
 
     <!-- Preload critical resources -->
-    <link rel="preload" href="/data/california-counties.topojson" as="fetch" crossorigin="anonymous" />
+    <!-- GeoJSON files are loaded dynamically, no preload needed -->
 
     <title>California Counties Puzzle Game</title>
 
@@ -179,17 +179,18 @@
 
     <!-- Service Worker Registration -->
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-              console.log('SW registered: ', registration);
-            })
-            .catch((registrationError) => {
-              console.log('SW registration failed: ', registrationError);
-            });
-        });
-      }
+      // Service worker disabled for now - can be enabled when sw.js is created
+      // if ('serviceWorker' in navigator) {
+      //   window.addEventListener('load', () => {
+      //     navigator.serviceWorker.register('/sw.js')
+      //       .then((registration) => {
+      //         console.log('SW registered: ', registration);
+      //       })
+      //       .catch((registrationError) => {
+      //         console.log('SW registration failed: ', registrationError);
+      //       });
+      //   });
+      // }
     </script>
 
     <!-- Analytics placeholder -->
