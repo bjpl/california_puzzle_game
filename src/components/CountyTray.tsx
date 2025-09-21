@@ -10,10 +10,11 @@ function DraggableCounty({ county }: { county: any }) {
     disabled: isPlaced,
   });
 
-  const style = transform
+  // When dragging, hide the original element to prevent scrolling issues
+  const style = isDragging
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        zIndex: isDragging ? 1000 : 1,
+        opacity: 0,
+        pointerEvents: 'none' as const,
       }
     : undefined;
 
@@ -64,9 +65,9 @@ export default function CountyTray() {
   }, {} as Record<string, typeof counties>);
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-2 h-full">
+    <div className="bg-white rounded-lg shadow-lg p-2 h-full overflow-hidden">
       <h2 className="text-xs font-bold text-gray-800 mb-1">Counties ({counties.length})</h2>
-      <div className="space-y-0.5 max-h-[570px] overflow-y-auto pr-1">
+      <div className="space-y-0.5 max-h-[570px] overflow-y-auto overflow-x-hidden pr-1">
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
           <div key={region}>
             <p className="text-xs font-semibold text-gray-600 mt-1 mb-0.5">{region}</p>

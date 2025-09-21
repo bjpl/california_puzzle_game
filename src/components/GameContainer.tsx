@@ -143,9 +143,9 @@ export default function GameContainer() {
         </div>
 
         {/* Drag Overlay - This renders the dragged item outside of its container */}
-        <DragOverlay>
+        <DragOverlay dropAnimation={null}>
           {activeCounty ? (
-            <div className="px-1 py-0 bg-yellow-100 border border-yellow-400 rounded shadow-md cursor-grabbing" style={{ fontSize: '11px' }}>
+            <div className="px-1 py-0 bg-yellow-100 border border-yellow-400 rounded shadow-md cursor-grabbing pointer-events-none" style={{ fontSize: '11px' }}>
               <span className="font-semibold text-gray-700">{activeCounty.name}</span>
             </div>
           ) : null}
