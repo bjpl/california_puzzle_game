@@ -14,7 +14,7 @@ interface CountyFeature {
   };
 }
 
-function CountyDropZone({ county, bounds }: { county: CountyFeature; bounds: any }) {
+function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature; bounds: any; isDragging: boolean }) {
   const { placedCounties, currentCounty } = useGame();
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
@@ -24,10 +24,13 @@ function CountyDropZone({ county, bounds }: { county: CountyFeature; bounds: any
     id: countyId,
   });
 
-  // Don't give visual hints about which county is correct!
-  // Only show green when placed, gray otherwise
-  let fillColor = '#e5e7eb'; // Default gray
-  if (isPlaced) fillColor = '#10b981'; // Green when placed
+  // Three states: placed (green), target/hover (yellow), available (gray)
+  let fillColor = '#e5e7eb'; // Default gray (available)
+  if (isPlaced) {
+    fillColor = '#10b981'; // Green when placed
+  } else if (isDragging && isOver) {
+    fillColor = '#fbbf24'; // Yellow/amber when hovering over during drag (target state)
+  }
 
   // Simple projection that works
   const project = ([lon, lat]: [number, number]): [number, number] => {
@@ -71,9 +74,12 @@ function CountyDropZone({ county, bounds }: { county: CountyFeature; bounds: any
         d={path}
         fill={fillColor}
         stroke="#374151"
-        strokeWidth="0.5"
-        className="transition-colors duration-200"
-        style={{ cursor: isPlaced ? 'default' : 'pointer' }}
+        strokeWidth={isDragging && isOver ? "1" : "0.5"}
+        className="transition-all duration-200"
+        style={{
+          cursor: isPlaced ? 'default' : 'pointer',
+          filter: isDragging && isOver ? 'brightness(1.1)' : 'none'
+        }}
       />
       {isPlaced && (
         <text
@@ -171,6 +177,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
               key={feature.properties.NAME || `county-${idx}`}
               county={feature}
               bounds={bounds}
+              isDragging={isDragging}
             />
           ))}
         </g>
@@ -180,8 +187,11 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
           <rect x="0" y="0" width="10" height="10" fill="#e5e7eb" stroke="#374151" strokeWidth="0.5" />
           <text x="15" y="9" fontSize="10" fill="#6b7280">Available</text>
 
-          <rect x="80" y="0" width="10" height="10" fill="#10b981" stroke="#374151" strokeWidth="0.5" />
-          <text x="95" y="9" fontSize="10" fill="#6b7280">Placed</text>
+          <rect x="80" y="0" width="10" height="10" fill="#fbbf24" stroke="#374151" strokeWidth="0.5" />
+          <text x="95" y="9" fontSize="10" fill="#6b7280">Target</text>
+
+          <rect x="140" y="0" width="10" height="10" fill="#10b981" stroke="#374151" strokeWidth="0.5" />
+          <text x="155" y="9" fontSize="10" fill="#6b7280">Placed</text>
         </g>
       </svg>
     </div>
