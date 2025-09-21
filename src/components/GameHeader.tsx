@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useGame } from '../context/GameContext';
 import { soundManager, SoundType } from '../utils/soundManager';
 import HintModal from './HintModal';
@@ -193,13 +194,16 @@ export default function GameHeader() {
         </div>
       </div>
 
-      {/* Hint Modal */}
-      <HintModal
-        isOpen={showHintModal}
-        onClose={() => setShowHintModal(false)}
-        county={currentCounty}
-        hintLevel={hintLevel}
-      />
+      {/* Render HintModal via Portal to ensure it's on top */}
+      {typeof document !== 'undefined' && createPortal(
+        <HintModal
+          isOpen={showHintModal}
+          onClose={() => setShowHintModal(false)}
+          county={currentCounty}
+          hintLevel={hintLevel}
+        />,
+        document.body
+      )}
     </div>
   );
 }

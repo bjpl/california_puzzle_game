@@ -137,18 +137,32 @@ class SoundManager {
   };
 
   // File paths for actual sound files (when available)
-  private readonly soundPaths: Record<SoundType, string> = {
-    [SoundType.PICKUP]: '/sounds/pickup.mp3',
-    [SoundType.CORRECT]: '/sounds/correct.mp3',
-    [SoundType.INCORRECT]: '/sounds/incorrect.mp3',
-    [SoundType.WIN]: '/sounds/win.mp3',
-    [SoundType.CLICK]: '/sounds/click.mp3',
-    [SoundType.HOVER]: '/sounds/hover.mp3',
-    [SoundType.ACHIEVEMENT]: '/sounds/achievement.mp3',
-    [SoundType.BACKGROUND_MUSIC]: '/sounds/background.mp3'
-  };
+  // Use proper base path for GitHub Pages deployment
+  private getBasePath(): string {
+    if (typeof window !== 'undefined') {
+      return window.location.hostname === 'localhost'
+        ? ''
+        : '/california_puzzle_game';
+    }
+    return '';
+  }
+
+  private soundPaths: Record<SoundType, string> = {} as Record<SoundType, string>;
 
   private constructor() {
+    // Initialize sound paths with proper base path
+    const basePath = this.getBasePath();
+    this.soundPaths = {
+      [SoundType.PICKUP]: `${basePath}/sounds/pickup.mp3`,
+      [SoundType.CORRECT]: `${basePath}/sounds/correct.mp3`,
+      [SoundType.INCORRECT]: `${basePath}/sounds/incorrect.mp3`,
+      [SoundType.WIN]: `${basePath}/sounds/win.mp3`,
+      [SoundType.CLICK]: `${basePath}/sounds/click.mp3`,
+      [SoundType.HOVER]: `${basePath}/sounds/hover.mp3`,
+      [SoundType.ACHIEVEMENT]: `${basePath}/sounds/achievement.mp3`,
+      [SoundType.BACKGROUND_MUSIC]: `${basePath}/sounds/background.mp3`
+    };
+
     this.initializeAudioContext();
   }
 
