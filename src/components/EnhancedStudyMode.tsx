@@ -83,7 +83,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
       ...prev,
       studiedCounties: new Set([...prev.studiedCounties, county.id])
     }));
-    sound.playSound('correct');
+    // Removed sound effect for better study experience
   };
 
   // Generate quiz question
@@ -289,7 +289,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
               {/* County Details */}
               <div className="flex-1 p-6 overflow-y-auto h-full">
-                {selectedCounty && educationContent ? (
+                {selectedCounty ? (
                   <div>
                     {/* County Header */}
                     <div className="mb-6">
@@ -339,11 +339,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                               <p className="text-sm text-green-800">{selectedCounty.funFact}</p>
                             </div>
                           </div>
-                          {educationContent.specificData.majorAttractions && (
+                          {educationContent?.specificData?.majorAttractions && (
                             <div>
                               <h4 className="font-semibold text-gray-700 mb-2">Major Attractions</h4>
                               <div className="flex flex-wrap gap-2">
-                                {educationContent.specificData.majorAttractions.map((attraction, idx) => (
+                                {educationContent.specificData.majorAttractions.map((attraction: string, idx: number) => (
                                   <span key={idx} className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
                                     {attraction}
                                   </span>
@@ -357,12 +357,12 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       {contentTab === 'history' && (
                         <div>
                           <h4 className="font-semibold text-gray-700 mb-3">Historical Context</h4>
-                          <p className="text-gray-600 leading-relaxed mb-4">{educationContent.historicalContext}</p>
-                          {educationContent.specificData.historicalEvents && (
+                          <p className="text-gray-600 leading-relaxed mb-4">{educationContent?.historicalContext || 'No historical context available.'}</p>
+                          {educationContent?.specificData?.historicalEvents && (
                             <div>
                               <h5 className="font-medium text-gray-700 mb-2">Key Historical Events</h5>
                               <ul className="list-disc list-inside space-y-1">
-                                {educationContent.specificData.historicalEvents.map((event, idx) => (
+                                {educationContent.specificData.historicalEvents.map((event: string, idx: number) => (
                                   <li key={idx} className="text-gray-600">{event}</li>
                                 ))}
                               </ul>
@@ -374,12 +374,12 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       {contentTab === 'economy' && (
                         <div>
                           <h4 className="font-semibold text-gray-700 mb-3">Economic Importance</h4>
-                          <p className="text-gray-600 leading-relaxed mb-4">{educationContent.economicImportance}</p>
-                          {educationContent.specificData.industries && (
+                          <p className="text-gray-600 leading-relaxed mb-4">{educationContent?.economicImportance || 'No economic data available.'}</p>
+                          {educationContent?.specificData?.industries && (
                             <div>
                               <h5 className="font-medium text-gray-700 mb-2">Major Industries</h5>
                               <div className="flex flex-wrap gap-2">
-                                {educationContent.specificData.industries.map((industry, idx) => (
+                                {educationContent.specificData.industries.map((industry: string, idx: number) => (
                                   <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                                     {industry}
                                   </span>
@@ -393,24 +393,24 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       {contentTab === 'culture' && (
                         <div>
                           <h4 className="font-semibold text-gray-700 mb-3">Cultural Heritage</h4>
-                          <p className="text-gray-600 leading-relaxed mb-4">{educationContent.culturalHeritage}</p>
+                          <p className="text-gray-600 leading-relaxed mb-4">{educationContent?.culturalHeritage || 'No cultural heritage data available.'}</p>
                           <h4 className="font-semibold text-gray-700 mb-3 mt-6">Unique Features</h4>
-                          <p className="text-gray-600 leading-relaxed">{educationContent.uniqueFeatures}</p>
+                          <p className="text-gray-600 leading-relaxed">{educationContent?.uniqueFeatures || 'No unique features data available.'}</p>
                         </div>
                       )}
 
                       {contentTab === 'geography' && (
                         <div>
                           <h4 className="font-semibold text-gray-700 mb-3">Geographical Significance</h4>
-                          <p className="text-gray-600 leading-relaxed mb-4">{educationContent.geographicalSignificance}</p>
+                          <p className="text-gray-600 leading-relaxed mb-4">{educationContent?.geographicalSignificance || 'No geographical data available.'}</p>
                           <div className="grid grid-cols-2 gap-4 mt-4">
                             <div className="p-3 bg-gray-100 rounded-lg">
                               <h5 className="font-medium text-gray-700 mb-1">Climate</h5>
-                              <p className="text-sm text-gray-600">{educationContent.specificData.climate}</p>
+                              <p className="text-sm text-gray-600">{educationContent?.specificData?.climate || 'N/A'}</p>
                             </div>
                             <div className="p-3 bg-gray-100 rounded-lg">
                               <h5 className="font-medium text-gray-700 mb-1">Elevation</h5>
-                              <p className="text-sm text-gray-600">{educationContent.specificData.elevation}</p>
+                              <p className="text-sm text-gray-600">{educationContent?.specificData?.elevation || 'N/A'}</p>
                             </div>
                           </div>
                         </div>
