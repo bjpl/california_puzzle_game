@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useGame } from '../context/GameContext';
-import { soundManager, SoundType } from '../utils/soundManager';
+import { soundManager } from '../utils/simpleSoundManager';
 import HintModal from './HintModal';
 
 export default function GameHeader() {
@@ -24,7 +24,7 @@ export default function GameHeader() {
     setSoundEnabled(newState);
     soundManager.setMuted(!newState);
     if (newState) {
-      soundManager.playSound(SoundType.PICKUP);
+      soundManager.play('pickup', 0.3);
     }
   };
 

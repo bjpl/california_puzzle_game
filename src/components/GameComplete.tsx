@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { useGame } from '../context/GameContext';
-import { playSound, SoundType } from '../utils/soundManager';
+import { useSoundEffect } from '../utils/simpleSoundManager';
 
 export default function GameComplete() {
   const { score, mistakes, resetGame } = useGame();
+  const sound = useSoundEffect();
 
   // Play win sound when component mounts
   useEffect(() => {
-    playSound(SoundType.WIN);
+    sound.playSound('win');
   }, []);
 
   const getGrade = () => {

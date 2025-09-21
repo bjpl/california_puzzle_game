@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DndContext, DragEndEvent, DragStartEvent, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
-import { playSound, SoundType, soundManager } from '../utils/soundManager';
+import { useSoundEffect, SoundType } from '../utils/simpleSoundManager';
 import CountyTray from './CountyTray';
 import CaliforniaMapFixed from './CaliforniaMapFixed';
 import CaliforniaMapSimple from './CaliforniaMapSimple';
@@ -28,32 +28,23 @@ export default function GameContainer() {
   const [isDragging, setIsDragging] = useState(false);
   const [activeCounty, setActiveCounty] = useState<any>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
+  const sound = useSoundEffect();
 
   // Initialize sound system on first user interaction
   useEffect(() => {
-    const initSound = async () => {
-      try {
-        // This will ensure AudioContext is created
-        await soundManager.preloadSounds();
-      } catch (error) {
-        console.log('Sound initialization will happen on first interaction');
-      }
-    };
-
-    // Add event listener for first user interaction
-    const handleFirstInteraction = () => {
-      initSound();
+    const initSoundOnInteraction = () => {
+      sound.initSound();
       // Remove listeners after first interaction
-      document.removeEventListener('click', handleFirstInteraction);
-      document.removeEventListener('touchstart', handleFirstInteraction);
+      document.removeEventListener('click', initSoundOnInteraction);
+      document.removeEventListener('touchstart', initSoundOnInteraction);
     };
 
-    document.addEventListener('click', handleFirstInteraction);
-    document.addEventListener('touchstart', handleFirstInteraction);
+    document.addEventListener('click', initSoundOnInteraction);
+    document.addEventListener('touchstart', initSoundOnInteraction);
 
     return () => {
-      document.removeEventListener('click', handleFirstInteraction);
-      document.removeEventListener('touchstart', handleFirstInteraction);
+      document.removeEventListener('click', initSoundOnInteraction);
+      document.removeEventListener('touchstart', initSoundOnInteraction);
     };
   }, []);
 
@@ -73,7 +64,7 @@ export default function GameContainer() {
       setActiveCounty(county);
       setIsDragging(true);
       // Play pickup sound when dragging starts
-      playSound(SoundType.PICKUP);
+      sound.playSound('pickup', 0.5);
     }
   };
 
@@ -91,9 +82,9 @@ export default function GameContainer() {
 
       // Play appropriate sound based on placement result
       if (isCorrect) {
-        playSound(SoundType.CORRECT);
+        sound.playSound('correct');
       } else {
-        playSound(SoundType.INCORRECT);
+        sound.playSound('incorrect');
       }
 
       placeCounty(draggedId, isCorrect);
