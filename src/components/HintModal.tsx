@@ -264,14 +264,14 @@ export default function HintModal({ isOpen, onClose, county, hintLevel }: HintMo
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black transition-opacity z-40 ${
+        className={`fixed inset-0 bg-black transition-opacity z-[9998] ${
           showContent ? 'bg-opacity-50' : 'bg-opacity-0'
         }`}
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+      <div className="fixed inset-0 flex items-center justify-center z-[9999] pointer-events-none">
         <div
           className={`bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6 transform transition-all pointer-events-auto ${
             showContent ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
