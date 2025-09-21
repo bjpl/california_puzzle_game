@@ -6,6 +6,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
+/* Import animation styles */
+@import './animations.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,9 +28,6 @@
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
 }
-
-/* Import animation styles */
-@import './animations.css';
 
 /* California Design System CSS Variables */
 :root {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useGame } from '../context/GameContext';
-import { soundManager, SoundType } from '../utils/simpleSoundManager';
+import { soundManager } from '../utils/simpleSoundManager';
 import HintModal from './HintModal';
 import EnhancedStudyMode from './EnhancedStudyMode';
 
@@ -58,7 +58,7 @@ export default function GameHeader() {
       setHintLevel(level);
 
       if (useHint()) {
-        soundManager.playSound(SoundType.HOVER);
+        soundManager.playSound('hover');
         setShowHintModal(true);
       }
     }
