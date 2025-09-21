@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DndContext, DragEndEvent, DragStartEvent, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 import CountyTray from './CountyTray';
-import CaliforniaMapReal from './CaliforniaMapReal';
+import CaliforniaMapFixed from './CaliforniaMapFixed';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
 
@@ -121,7 +121,7 @@ export default function GameContainer() {
           {/* Map */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-lg shadow-lg p-4 h-[600px]">
-              <CaliforniaMapReal isDragging={isDragging} />
+              <CaliforniaMapFixed isDragging={isDragging} />
             </div>
           </div>
         </div>
