@@ -377,16 +377,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     // Deduct a hint
     setHints(prev => prev - 1);
 
-    // Highlight the correct county for the current selection
-    setHintedCounty(currentCounty.id);
-
-    // Clear the hint after 3 seconds
-    setTimeout(() => {
-      setHintedCounty(null);
-    }, 3000);
-
-    // Deduct points for using a hint
-    setScore(prev => Math.max(0, prev - 25));
+    // Deduct points for using a hint (50 points like Colombia app)
+    setScore(prev => Math.max(0, prev - 50));
 
     return true;
   }, [hints, currentCounty]);

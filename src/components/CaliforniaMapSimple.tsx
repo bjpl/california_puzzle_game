@@ -15,11 +15,10 @@ interface CountyFeature {
 }
 
 function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature; bounds: any; isDragging: boolean }) {
-  const { placedCounties, currentCounty, hintedCounty, showRegions, counties } = useGame();
+  const { placedCounties, currentCounty, showRegions, counties } = useGame();
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
   const isPlaced = placedCounties.has(countyId);
-  const isHinted = hintedCounty === countyId;
 
   // Find the region for this county
   const countyData = counties.find(c => c.id === countyId);
@@ -42,11 +41,11 @@ function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature;
 
   // Determine fill color based on state and regions
   let fillColor = '#e5e7eb'; // Default gray (available)
+  let strokeColor = '#374151'; // Default stroke
+  let strokeWidth = "0.5";
 
   if (isPlaced) {
     fillColor = '#10b981'; // Green when placed
-  } else if (isHinted) {
-    fillColor = '#3b82f6'; // Blue when hinted
   } else if (isDragging && isOver) {
     fillColor = '#fbbf24'; // Yellow/amber when hovering over during drag (target state)
   } else if (showRegions && region) {
@@ -94,13 +93,13 @@ function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature;
       <path
         d={path}
         fill={fillColor}
-        stroke="#374151"
-        strokeWidth={isDragging && isOver ? "1" : "0.5"}
-        className={`transition-all duration-200 ${isHinted ? 'animate-pulse' : ''}`}
+        stroke={strokeColor}
+        strokeWidth={isDragging && isOver ? "1" : strokeWidth}
+        className="transition-all duration-200"
         style={{
           cursor: isPlaced ? 'default' : 'pointer',
           filter: isDragging && isOver ? 'brightness(1.1)' : 'none',
-          opacity: isHinted ? 0.8 : 1
+          opacity: 1
         }}
       />
       {isPlaced && (
@@ -129,6 +128,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   const svgRef = useRef<SVGSVGElement>(null);
   const isPanning = useRef(false);
   const startPan = useRef({ x: 0, y: 0 });
+  const startMouse = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const basePath = window.location.hostname === 'localhost'
@@ -188,24 +188,45 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   };
 
   // Handle mouse events for panning
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.button === 0 && e.ctrlKey) { // Left click + Ctrl for pan
+  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (e.button === 0 && !isDragging) { // Left click when not dragging counties
+      const svg = svgRef.current;
+      if (!svg) return;
+
+      e.preventDefault();
       isPanning.current = true;
-      startPan.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
+      startMouse.current = { x: e.clientX, y: e.clientY };
+      startPan.current = { x: pan.x, y: pan.y };
+
+      // Change cursor to grabbing
+      svg.style.cursor = 'grabbing';
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (isPanning.current) {
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (isPanning.current && !isDragging) {
+      e.preventDefault();
+
+      // Calculate the difference from the starting mouse position
+      const dx = (e.clientX - startMouse.current.x) / zoom;
+      const dy = (e.clientY - startMouse.current.y) / zoom;
+
+      // Apply the pan offset
       setPan({
-        x: e.clientX - startPan.current.x,
-        y: e.clientY - startPan.current.y
+        x: startPan.current.x + dx,
+        y: startPan.current.y + dy
       });
     }
   };
 
   const handleMouseUp = () => {
-    isPanning.current = false;
+    if (isPanning.current) {
+      isPanning.current = false;
+      const svg = svgRef.current;
+      if (svg) {
+        svg.style.cursor = isDragging ? 'default' : 'grab';
+      }
+    }
   };
 
   const resetView = () => {
@@ -256,7 +277,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         style={{
           maxHeight: '100%',
           maxWidth: '100%',
-          cursor: isPanning.current ? 'grabbing' : 'grab'
+          cursor: isDragging ? 'default' : (isPanning.current ? 'grabbing' : 'grab')
         }}
         preserveAspectRatio="xMidYMid meet"
         onWheel={handleWheel}
@@ -267,8 +288,8 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       >
         <rect width="800" height="600" fill="#dbeafe" />
 
-        {/* Apply zoom and pan transformation */}
-        <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+        {/* Apply zoom and pan transformation - zoom from center */}
+        <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${300 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
 
         {/* Render all counties */}
         <g>

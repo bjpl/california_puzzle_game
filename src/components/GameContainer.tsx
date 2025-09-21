@@ -8,6 +8,7 @@ import CaliforniaMapSimple from './CaliforniaMapSimple';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
 import StudyMode from './StudyMode';
+import RegionsPanel from './RegionsPanel';
 import SimpleMapTest from './SimpleMapTest';
 
 export default function GameContainer() {
@@ -135,6 +136,9 @@ export default function GameContainer() {
   return (
     <div className="container mx-auto p-2 max-w-7xl">
       <GameHeader />
+
+      {/* Regions Panel */}
+      <RegionsPanel />
 
       <DndContext
         sensors={sensors}

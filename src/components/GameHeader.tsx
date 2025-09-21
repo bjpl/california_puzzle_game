@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { soundManager, SoundType } from '../utils/soundManager';
+import HintModal from './HintModal';
 
 export default function GameHeader() {
-  const { score, mistakes, placedCounties, counties, resetGame, timerState, pauseGame, resumeGame, isGameStarted, isPaused, hints, useHint, showRegions, toggleShowRegions } = useGame();
+  const { score, mistakes, placedCounties, counties, resetGame, timerState, pauseGame, resumeGame, isGameStarted, isPaused, hints, useHint, currentCounty } = useGame();
   const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
+  const [showHintModal, setShowHintModal] = useState(false);
+  const [hintLevel, setHintLevel] = useState(1);
+  const [countyHintAttempts, setCountyHintAttempts] = useState<Record<string, number>>({});
   const progress = Math.round((placedCounties.size / counties.length) * 100);
 
   const formatTime = (ms: number) => {
@@ -32,8 +36,28 @@ export default function GameHeader() {
   };
 
   const handleUseHint = () => {
-    if (useHint()) {
-      soundManager.playSound(SoundType.HOVER);
+    if (hints > 0 && currentCounty) {
+      // Track attempts per county for progressive hints
+      const countyName = currentCounty.name;
+      const currentAttempts = countyHintAttempts[countyName] || 0;
+      const newAttempts = currentAttempts + 1;
+
+      setCountyHintAttempts(prev => ({
+        ...prev,
+        [countyName]: newAttempts
+      }));
+
+      // Determine hint level based on attempts
+      let level = 1;
+      if (newAttempts >= 2) level = 2;
+      if (newAttempts >= 3) level = 3;
+
+      setHintLevel(level);
+
+      if (useHint()) {
+        soundManager.playSound(SoundType.HOVER);
+        setShowHintModal(true);
+      }
     }
   };
 
@@ -96,23 +120,20 @@ export default function GameHeader() {
 
           <button
             onClick={handleUseHint}
-            className="bg-yellow-500 text-white px-2 py-1 rounded text-sm hover:bg-yellow-600 transition-colors disabled:bg-gray-300"
+            className={`px-3 py-1 rounded-full text-sm font-medium transition-all transform hover:scale-105 ${
+              hints === 0
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-gradient-to-r from-yellow-400 to-amber-500 text-white shadow-md hover:shadow-lg'
+            }`}
             disabled={hints === 0}
+            title={hints === 0 ? 'No hints remaining' : `Use hint (${hints} remaining)`}
           >
-            💡 Hint
+            <span className="flex items-center gap-1">
+              <span>💡</span>
+              <span>Hint ({hints})</span>
+            </span>
           </button>
 
-          <button
-            onClick={toggleShowRegions}
-            className={`px-2 py-1 rounded text-sm transition-all ${
-              showRegions
-                ? 'bg-purple-500 text-white hover:bg-purple-600'
-                : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
-            }`}
-            title={showRegions ? 'Hide Regions' : 'Show Regions'}
-          >
-            🗺️ Regions
-          </button>
 
           <button
             onClick={resetGame}
@@ -132,6 +153,14 @@ export default function GameHeader() {
           />
         </div>
       </div>
+
+      {/* Hint Modal */}
+      <HintModal
+        isOpen={showHintModal}
+        onClose={() => setShowHintModal(false)}
+        county={currentCounty}
+        hintLevel={hintLevel}
+      />
     </div>
   );
 }
