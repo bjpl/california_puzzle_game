@@ -63,8 +63,7 @@ export default function GameContainer() {
       selectCounty(county);
       setActiveCounty(county);
       setIsDragging(true);
-      // Play pickup sound when dragging starts
-      sound.playSound('pickup', 0.5);
+      // Sound now plays on click in CountyPill component
     }
   };
 

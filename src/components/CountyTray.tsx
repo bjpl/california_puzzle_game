@@ -1,8 +1,10 @@
 import { useDraggable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
+import { useSoundEffect } from '../utils/simpleSoundManager';
 
 function DraggableCounty({ county }: { county: any }) {
   const { placedCounties, selectCounty, currentCounty } = useGame();
+  const sound = useSoundEffect();
   const isPlaced = placedCounties.has(county.id);
   const isSelected = currentCounty?.id === county.id;
 
@@ -47,7 +49,8 @@ function DraggableCounty({ county }: { county: any }) {
       {...attributes}
       onClick={(e) => {
         e.stopPropagation();
-        if (!isPlaced) {
+        if (!isPlaced && !isSelected) {
+          sound.playSound('pickup', 0.5);
           selectCounty(county);
         }
       }}
