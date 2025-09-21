@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2025-09-21T02:25:53.169Z",
+  "files": {
+    "raw": "ca-counties-raw.geojson",
+    "optimized": {
+      "high": "ca-counties-high.geojson",
+      "medium": "ca-counties-medium.geojson",
+      "low": "ca-counties-low.geojson",
+      "ultraLow": "ca-counties-ultra-low.geojson"
+    },
+    "lookup": "county-lookup.json",
+    "projections": "projection-configs.json"
+  },
+  "usage": {
+    "zoom": {
+      "0-5": "ultra-low",
+      "6-7": "low",
+      "8-9": "medium",
+      "10+": "high"
+    },
+    "scenarios": {
+      "overview": "low",
+      "selection": "medium",
+      "dragging": "high",
+      "collision": "high"
+    }
+  },
+  "metadata": {
+    "projection": "EPSG:4326 (WGS84)",
+    "units": "decimal degrees",
+    "counties": 58,
+    "source": "CA_Counties.shp"
+  }
+}

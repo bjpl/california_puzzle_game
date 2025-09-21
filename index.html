@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/california-icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Interactive California Counties Puzzle Game - Learn California geography through an engaging drag-and-drop puzzle game with D3.js visualizations." />
+    <meta name="keywords" content="California, counties, puzzle, geography, education, game, D3.js, interactive, learning" />
+    <meta name="author" content="California Puzzle Game" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://california-puzzle.vercel.app/" />
+    <meta property="og:title" content="California Counties Puzzle Game" />
+    <meta property="og:description" content="Learn California geography through an interactive puzzle game. Drag and drop counties to their correct locations!" />
+    <meta property="og:image" content="/california-puzzle-preview.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://california-puzzle.vercel.app/" />
+    <meta property="twitter:title" content="California Counties Puzzle Game" />
+    <meta property="twitter:description" content="Learn California geography through an interactive puzzle game. Drag and drop counties to their correct locations!" />
+    <meta property="twitter:image" content="/california-puzzle-preview.png" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#3b82f6" />
+    <link rel="apple-touch-icon" href="/california-icon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/data/california-counties.topojson" as="fetch" crossorigin="anonymous" />
+
+    <title>California Counties Puzzle Game</title>
+
+    <!-- Critical CSS for loading state -->
+    <style>
+      /* Loading screen styles */
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        z-index: 10000;
+        transition: opacity 0.5s ease;
+      }
+
+      #loading-screen.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .loading-logo {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        animation: bounce 2s infinite;
+      }
+
+      .loading-text {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .loading-progress {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-20px);
+        }
+        60% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      /* Prevent FOUC */
+      #root {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      #root.loaded {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loading-logo">🗺️</div>
+      <div class="loading-text">California Counties Puzzle</div>
+      <div class="loading-spinner"></div>
+      <div class="loading-progress">Loading geography data...</div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="root"></div>
+
+    <!-- Loading Script -->
+    <script>
+      // Show loading screen immediately
+      const loadingScreen = document.getElementById('loading-screen');
+      const root = document.getElementById('root');
+
+      // Update loading progress
+      let loadingSteps = [
+        'Loading application...',
+        'Preparing map data...',
+        'Initializing game engine...',
+        'Ready to play!'
+      ];
+
+      let currentStep = 0;
+      const progressElement = document.querySelector('.loading-progress');
+
+      const updateProgress = () => {
+        if (currentStep < loadingSteps.length) {
+          progressElement.textContent = loadingSteps[currentStep];
+          currentStep++;
+          setTimeout(updateProgress, 500);
+        }
+      };
+
+      // Start progress updates
+      setTimeout(updateProgress, 500);
+
+      // Hide loading screen when app is ready
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          loadingScreen.classList.add('hidden');
+          root.classList.add('loaded');
+
+          // Remove loading screen after transition
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 500);
+        }, 2000); // Minimum loading time for UX
+      });
+
+      // Handle app initialization errors
+      window.addEventListener('error', (error) => {
+        console.error('App initialization error:', error);
+        progressElement.textContent = 'Error loading game. Please refresh the page.';
+        progressElement.style.color = '#fbbf24';
+      });
+    </script>
+
+    <!-- Main App Script -->
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+
+    <!-- Analytics placeholder -->
+    <!-- Add your analytics code here -->
+  </body>
+</html>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- California State Outline (simplified) -->
+  <path d="M 20,20 L 25,10 L 35,8 L 45,12 L 50,8 L 60,10 L 70,15 L 75,25 L 72,35 L 70,45 L 65,55 L 60,65 L 55,70 L 50,75 L 45,80 L 40,85 L 35,88 L 30,90 L 25,85 L 20,75 L 15,65 L 12,55 L 10,45 L 8,35 L 10,25 L 15,20 Z"
+        fill="#3b82f6"
+        stroke="#1e40af"
+        stroke-width="2"/>
+
+  <!-- Golden Bear Symbol -->
+  <circle cx="40" cy="45" r="15" fill="#fbbf24" opacity="0.8"/>
+  <text x="40" y="52" font-family="Arial, sans-serif" font-size="20" fill="#1e40af" text-anchor="middle">CA</text>
+
+  <!-- Star (representing Sacramento capital) -->
+  <path d="M 55,30 L 57,35 L 62,35 L 58,38 L 60,43 L 55,40 L 50,43 L 52,38 L 48,35 L 53,35 Z"
+        fill="#ef4444"/>
+</svg>

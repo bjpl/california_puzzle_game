@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>California Counties Puzzle Game</title>
+    <script>
+      // GitHub Pages SPA redirect script
+      // This script handles client-side routing for SPAs on GitHub Pages
+      const pathSegmentsToKeep = 1; // for /california_puzzle_game/
+
+      const location = window.location;
+      const pathname = location.pathname;
+      const pathSegments = pathname.split('/').filter(Boolean);
+
+      if (pathSegments.length >= pathSegmentsToKeep) {
+        const newPath = '/' + pathSegments.slice(0, pathSegmentsToKeep).join('/') + '/';
+        const search = location.search;
+        const hash = location.hash;
+
+        // Redirect to the base path with the original path as a query parameter
+        window.location.replace(
+          location.protocol + '//' +
+          location.hostname +
+          (location.port ? ':' + location.port : '') +
+          newPath +
+          '?redirect=' + encodeURIComponent(pathname.slice(newPath.length) + search + hash)
+        );
+      }
+    </script>
+  </head>
+  <body>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+      <h1>🗺️ California Counties Puzzle Game</h1>
+      <p>Redirecting...</p>
+    </div>
+  </body>
+</html>

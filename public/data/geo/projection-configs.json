@@ -1,0 +1,92 @@
+{
+  "projections": {
+    "albers": {
+      "type": "conicEqualArea",
+      "parallels": [
+        34,
+        40.5
+      ],
+      "rotate": [
+        120,
+        0
+      ],
+      "center": [
+        -2,
+        36.5
+      ],
+      "scale": 7000,
+      "translate": [
+        512,
+        384
+      ]
+    },
+    "mercator": {
+      "type": "mercator",
+      "center": [
+        -119.4179,
+        36.7783
+      ],
+      "scale": 3500,
+      "translate": [
+        512,
+        384
+      ]
+    },
+    "lambert": {
+      "type": "conicConformal",
+      "parallels": [
+        33,
+        45
+      ],
+      "rotate": [
+        120,
+        0
+      ],
+      "center": [
+        -2,
+        36.5
+      ],
+      "scale": 6000,
+      "translate": [
+        512,
+        384
+      ]
+    }
+  },
+  "recommended": {
+    "overview": "albers",
+    "detailed": "lambert",
+    "web": "mercator"
+  },
+  "california": {
+    "bounds": {
+      "southwest": [
+        -124.848974,
+        32.528832
+      ],
+      "northeast": [
+        -114.131211,
+        42.009518
+      ]
+    },
+    "center": [
+      -119.449444,
+      37.166111
+    ],
+    "defaultZoom": {
+      "overview": 6,
+      "county": 8,
+      "detailed": 10
+    }
+  },
+  "d3GeoSettings": {
+    "width": 1024,
+    "height": 768,
+    "margin": {
+      "top": 20,
+      "right": 20,
+      "bottom": 20,
+      "left": 20
+    }
+  }
+}
