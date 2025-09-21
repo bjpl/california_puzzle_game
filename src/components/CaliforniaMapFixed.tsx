@@ -21,7 +21,9 @@ interface CountyDropZoneProps {
 
 function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   const { placedCounties, currentCounty } = useGame();
-  const countyId = county.properties.NAME.toLowerCase().replace(/\s+/g, '-');
+  // Ensure consistent ID formatting between drag source and drop target
+  const countyName = county.properties.NAME;
+  const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
   const isPlaced = placedCounties.has(countyId);
 
   const { isOver, setNodeRef } = useDroppable({
@@ -148,9 +150,12 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
       ? '/data/geo/ca-counties-ultra-low.geojson'
       : '/california_puzzle_game/data/geo/ca-counties-ultra-low.geojson';
 
+    console.log('Loading GeoJSON from:', basePath);
+
     fetch(basePath)
       .then(response => response.json())
       .then(data => {
+        console.log('GeoJSON loaded, features count:', data?.features?.length);
         setGeoData(data);
 
         // Create California-optimized projection
@@ -178,17 +183,12 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
       });
   }, []);
 
-  // Filter to only show counties we have in our game
-  const gameCountyNames = counties.map(c => c.name.toUpperCase());
+  // Show ALL counties from the GeoJSON (we have all 58 counties now)
+  // No filtering needed since our game includes all California counties
+  const filteredFeatures = geoData?.features || [];
 
-  const filteredFeatures = geoData?.features.filter((feature: CountyFeature) => {
-    const countyName = feature.properties.NAME.toUpperCase();
-    return gameCountyNames.some(gameName =>
-      countyName === gameName ||
-      countyName.includes(gameName) ||
-      gameName.includes(countyName)
-    );
-  }) || [];
+  console.log('Map render - counties in game:', counties.length);
+  console.log('Map render - features to display:', filteredFeatures.length);
 
   if (!geoData || !projection) {
     return (
@@ -242,22 +242,11 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
           </text>
         )}
 
-        {/* All California counties outline (faint background) */}
-        <g opacity="0.15">
-          {geoData.features.map((feature: CountyFeature) => (
-            <CountyDropZone
-              key={`bg-${feature.properties.NAME}`}
-              county={feature}
-              projection={projection}
-            />
-          ))}
-        </g>
-
-        {/* Game counties (interactive) - rendered on top */}
+        {/* All California counties - show them all since we have all 58 counties */}
         <g>
-          {filteredFeatures.map((feature: CountyFeature) => (
+          {geoData.features.map((feature: CountyFeature, idx: number) => (
             <CountyDropZone
-              key={feature.properties.NAME}
+              key={feature.properties.NAME || `county-${idx}`}
               county={feature}
               projection={projection}
             />
