@@ -40,16 +40,20 @@ function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature;
   };
 
   // Determine fill color based on state and regions
-  let fillColor = '#e5e7eb'; // Default gray (available)
-  let strokeColor = '#374151'; // Default stroke
-  let strokeWidth = "0.5";
+  let fillColor = '#ffffff'; // Clean white for available counties
+  let strokeColor = '#6b7280'; // Medium gray stroke
+  let strokeWidth = "0.75";
 
   if (isPlaced) {
     fillColor = '#10b981'; // Green when placed
+    strokeColor = '#047857'; // Darker green stroke
+    strokeWidth = "1";
   } else if (isDragging && isOver) {
-    fillColor = '#fbbf24'; // Yellow/amber when hovering over during drag (target state)
+    fillColor = '#fde68a'; // Softer yellow when hovering over during drag
+    strokeColor = '#f59e0b'; // Amber stroke
+    strokeWidth = "1.5";
   } else if (showRegions && region) {
-    fillColor = regionColors[region] || '#e5e7eb'; // Show region color if enabled
+    fillColor = regionColors[region] || '#ffffff'; // Show region color if enabled
   }
 
   // Simple projection that works
@@ -94,11 +98,11 @@ function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature;
         d={path}
         fill={fillColor}
         stroke={strokeColor}
-        strokeWidth={isDragging && isOver ? "1" : strokeWidth}
-        className="transition-all duration-200"
+        strokeWidth={isDragging && isOver ? "1.5" : strokeWidth}
+        className="transition-all duration-200 hover:opacity-90"
         style={{
           cursor: isPlaced ? 'default' : 'pointer',
-          filter: isDragging && isOver ? 'brightness(1.1)' : 'none',
+          filter: isDragging && isOver ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' : isPlaced ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
           opacity: 1
         }}
       />
@@ -235,38 +239,46 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   };
 
   return (
-    <div className="w-full h-full bg-gradient-to-br from-sky-50 via-blue-50 to-blue-100 relative flex items-center justify-center">
+    <div className="w-full h-full bg-gradient-to-br from-slate-50 to-gray-100 relative flex items-center justify-center">
       {/* Zoom Controls */}
-      <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
         <button
           onClick={() => setZoom(Math.min(zoom + 0.25, 3))}
-          className="bg-white hover:bg-gray-100 text-gray-700 p-1 rounded shadow-md text-xs"
+          className="bg-white/90 backdrop-blur hover:bg-white text-gray-700 w-8 h-8 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
           title="Zoom In"
         >
-          ➕
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m6-6H6" />
+          </svg>
         </button>
         <button
           onClick={() => setZoom(Math.max(zoom - 0.25, 0.5))}
-          className="bg-white hover:bg-gray-100 text-gray-700 p-1 rounded shadow-md text-xs"
+          className="bg-white/90 backdrop-blur hover:bg-white text-gray-700 w-8 h-8 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
           title="Zoom Out"
         >
-          ➖
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
+          </svg>
         </button>
         <button
           onClick={resetView}
-          className="bg-white hover:bg-gray-100 text-gray-700 p-1 rounded shadow-md text-xs"
+          className="bg-white/90 backdrop-blur hover:bg-white text-gray-700 w-8 h-8 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
           title="Reset View"
         >
-          🔄
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
         </button>
       </div>
 
       {/* Only show drag instruction when dragging */}
       {isDragging && (
-        <div className="absolute top-2 left-0 right-0 z-10 text-center">
-          <p className="text-xs text-gray-600 animate-pulse">
-            Drop the county on its correct location
-          </p>
+        <div className="absolute top-4 left-0 right-0 z-10 text-center pointer-events-none">
+          <div className="inline-block bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow-lg">
+            <p className="text-sm text-gray-700 font-medium">
+              Drop on the correct location
+            </p>
+          </div>
         </div>
       )}
 
@@ -288,10 +300,13 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       >
         <defs>
           <linearGradient id="mapBg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#f0f9ff" />
-            <stop offset="50%" stopColor="#e0f2fe" />
-            <stop offset="100%" stopColor="#bae6fd" />
+            <stop offset="0%" stopColor="#f8fafc" />
+            <stop offset="50%" stopColor="#f1f5f9" />
+            <stop offset="100%" stopColor="#e2e8f0" />
           </linearGradient>
+          <filter id="mapShadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.1"/>
+          </filter>
         </defs>
         <rect width="800" height="600" fill="url(#mapBg)" />
 
@@ -314,20 +329,17 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         {/* End of zoom/pan group */}
 
         {/* Legend (outside of zoom/pan) */}
-        <g transform="translate(20, 550)">
+        <g transform="translate(20, 560)">
           {!showRegions ? (
             <>
-              <rect x="0" y="0" width="10" height="10" fill="#e5e7eb" stroke="#374151" strokeWidth="0.5" />
-              <text x="15" y="9" fontSize="10" fill="#6b7280">Available</text>
+              <rect x="0" y="0" width="12" height="12" rx="2" fill="#ffffff" stroke="#9ca3af" strokeWidth="1" />
+              <text x="18" y="10" fontSize="11" fill="#4b5563" fontFamily="system-ui">Available</text>
 
-              <rect x="80" y="0" width="10" height="10" fill="#fbbf24" stroke="#374151" strokeWidth="0.5" />
-              <text x="95" y="9" fontSize="10" fill="#6b7280">Target</text>
+              <rect x="85" y="0" width="12" height="12" rx="2" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1" />
+              <text x="102" y="10" fontSize="11" fill="#4b5563" fontFamily="system-ui">Target</text>
 
-              <rect x="140" y="0" width="10" height="10" fill="#10b981" stroke="#374151" strokeWidth="0.5" />
-              <text x="155" y="9" fontSize="10" fill="#6b7280">Placed</text>
-
-              <rect x="210" y="0" width="10" height="10" fill="#3b82f6" stroke="#374151" strokeWidth="0.5" />
-              <text x="225" y="9" fontSize="10" fill="#6b7280">Hint</text>
+              <rect x="155" y="0" width="12" height="12" rx="2" fill="#10b981" stroke="#059669" strokeWidth="1" />
+              <text x="172" y="10" fontSize="11" fill="#4b5563" fontFamily="system-ui">Placed</text>
             </>
           ) : (
             <>
