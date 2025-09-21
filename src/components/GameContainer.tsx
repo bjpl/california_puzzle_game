@@ -8,6 +8,7 @@ import CaliforniaMapSimple from './CaliforniaMapSimple';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
 import StudyMode from './StudyMode';
+import EnhancedStudyMode from './EnhancedStudyMode';
 import RegionsPanel from './RegionsPanel';
 import SimpleMapTest from './SimpleMapTest';
 
@@ -95,7 +96,7 @@ export default function GameContainer() {
   if (!isGameStarted) {
     return (
       <>
-        {showStudyMode && <StudyMode onClose={() => setShowStudyMode(false)} />}
+        {showStudyMode && <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />}
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full text-center">
           <h1 className="text-4xl font-bold text-blue-900 mb-4">
