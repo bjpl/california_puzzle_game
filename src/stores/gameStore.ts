@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import { playSound, SoundType, setVolume, soundManager } from '../utils/soundManager';
 import {
   GameState,
   GameSettings,
+  SoundSettings,
   CountyPiece,
   County,
   PlacementResult,
@@ -12,20 +14,33 @@ import {
   CaliforniaRegion,
   Position,
   ScoreMultiplier,
-  AchievementCategory
+  AchievementCategory,
+  GameModeConfiguration,
+  HintSystemState,
+  HintConfiguration,
+  HintType,
+  StruggleData
 } from '@/types';
+import { GAME_MODES, getModeById, getDifficultySettings } from '@/config/gameModes';
 
 interface GameStore extends GameState {
   // Settings
   settings: GameSettings;
   stats: GameStats;
+  availableModes: GameModeConfiguration[];
 
   // Actions
   startGame: (region?: CaliforniaRegion, difficulty?: DifficultyLevel) => void;
+  startGameWithMode: (mode: GameModeConfiguration) => void;
   pauseGame: () => void;
   resumeGame: () => void;
   endGame: () => void;
   resetGame: () => void;
+
+  // Mode Management
+  setCurrentMode: (mode: GameModeConfiguration) => void;
+  updateModeProgress: (modeId: string, stars: number, score: number, completionTime?: number) => void;
+  unlockMode: (modeId: string) => void;
 
   // County placement
   placeCounty: (county: CountyPiece, position: Position) => PlacementResult;
@@ -49,12 +64,32 @@ interface GameStore extends GameState {
 
   // Hints
   getHint: () => County | null;
-  useHint: () => void;
+  useHint: (type: HintType, countyId: string, isAutoSuggested?: boolean) => void;
+  updateHintSystem: (updates: Partial<HintSystemState>) => void;
+  analyzePlayerStruggle: (countyId: string, position: Position, isCorrect: boolean) => void;
+  resetHintSystem: () => void;
 
   // Statistics
   updateStats: (placement: PlacementResult) => void;
   getPersonalBest: (region: CaliforniaRegion, difficulty: DifficultyLevel) => number;
+
+  // Sound management
+  updateSoundSettings: (newSettings: Partial<SoundSettings>) => void;
+  toggleMute: () => void;
+  startBackgroundMusic: () => void;
+  stopBackgroundMusic: () => void;
 }
+
+const defaultSoundSettings: SoundSettings = {
+  masterVolume: 0.7,
+  effectsVolume: 0.8,
+  musicVolume: 0.5,
+  muted: false,
+  enableBackgroundMusic: true,
+  enableClickSounds: true,
+  enableGameSounds: true,
+  enableAchievementSounds: true
+};
 
 const defaultSettings: GameSettings = {
   difficulty: DifficultyLevel.EASY,
@@ -63,7 +98,17 @@ const defaultSettings: GameSettings = {
   enableTimer: true,
   soundEnabled: true,
   animationsEnabled: true,
-  autoAdvance: false
+  autoAdvance: false,
+  soundSettings: defaultSoundSettings,
+  hintSettings: {
+    maxHintsPerLevel: 3,
+    hintCooldownMs: 30000,
+    scorePenaltyPerHint: 50,
+    freeHintsAllowed: 1,
+    autoSuggestThreshold: 3,
+    enableVisualIndicators: true,
+    enableEducationalHints: true
+  }
 };
 
 const defaultStats: GameStats = {
@@ -192,13 +237,26 @@ export const useGameStore = create<GameStore>()(
         isPaused: false,
         difficulty: DifficultyLevel.EASY,
         selectedRegion: CaliforniaRegion.BAY_AREA,
+        currentMode: GAME_MODES[0], // Default to first mode
         placedCounties: [],
         remainingCounties: [],
         currentHint: undefined,
         streak: 0,
+        mistakes: 0,
         achievements: achievements,
         settings: defaultSettings,
         stats: defaultStats,
+        availableModes: GAME_MODES,
+        hintSystem: {
+          availableHints: 3,
+          usedHints: 0,
+          currentHintType: undefined,
+          hintProgress: 0,
+          cooldownTimeRemaining: 0,
+          lastHintUsedAt: undefined,
+          strugglingCounties: [],
+          autoSuggestEnabled: true
+        },
 
         // Game control actions
         startGame: (region = CaliforniaRegion.BAY_AREA, difficulty = DifficultyLevel.EASY) => {
@@ -210,8 +268,45 @@ export const useGameStore = create<GameStore>()(
             score: 0,
             timeElapsed: 0,
             streak: 0,
+            mistakes: 0,
             placedCounties: [],
             currentHint: undefined,
+            stats: {
+              ...state.stats,
+              totalGamesPlayed: state.stats.totalGamesPlayed + 1
+            }
+          }));
+
+          // Reset hint system for new game
+          get().resetHintSystem();
+        },
+
+        startGameWithMode: (mode: GameModeConfiguration) => {
+          const difficultySettings = getDifficultySettings(mode.difficulty);
+
+          set((state) => ({
+            isGameActive: true,
+            isPaused: false,
+            currentMode: mode,
+            selectedRegion: CaliforniaRegion.ALL, // Modes define their own counties
+            difficulty: mode.difficulty,
+            score: 0,
+            timeElapsed: 0,
+            streak: 0,
+            mistakes: 0,
+            placedCounties: [],
+            remainingCounties: [], // Will be populated by county loading logic
+            currentHint: undefined,
+            settings: {
+              ...state.settings,
+              showHints: mode.showHints && difficultySettings.enableHints,
+              difficulty: mode.difficulty
+            },
+            hintSystem: {
+              ...state.hintSystem,
+              availableHints: difficultySettings.enableHints ? state.settings.hintSettings.maxHintsPerLevel : 0,
+              usedHints: 0
+            },
             stats: {
               ...state.stats,
               totalGamesPlayed: state.stats.totalGamesPlayed + 1
@@ -252,14 +347,51 @@ export const useGameStore = create<GameStore>()(
             placedCounties: [],
             remainingCounties: [],
             currentHint: undefined,
-            streak: 0
+            streak: 0,
+            mistakes: 0
           });
+        },
+
+        // Mode Management
+        setCurrentMode: (mode: GameModeConfiguration) => {
+          set({ currentMode: mode });
+        },
+
+        updateModeProgress: (modeId: string, stars: number, score: number, completionTime?: number) => {
+          set((state) => ({
+            availableModes: state.availableModes.map(mode =>
+              mode.id === modeId
+                ? {
+                    ...mode,
+                    stars: Math.max(mode.stars, stars),
+                    bestScore: Math.max(mode.bestScore || 0, score),
+                    completionTime: completionTime && (!mode.completionTime || completionTime < mode.completionTime)
+                      ? completionTime
+                      : mode.completionTime,
+                    isCompleted: true
+                  }
+                : mode
+            )
+          }));
+        },
+
+        unlockMode: (modeId: string) => {
+          set((state) => ({
+            availableModes: state.availableModes.map(mode =>
+              mode.id === modeId
+                ? { ...mode, isLocked: false }
+                : mode
+            )
+          }));
         },
 
         // County placement actions
         placeCounty: (county: CountyPiece, position: Position): PlacementResult => {
           const state = get();
-          const accuracy = calculatePlacementAccuracy(county.targetPosition, position);
+          const difficultySettings = getDifficultySettings(state.difficulty);
+          const tolerance = state.currentMode.dropZoneTolerance || difficultySettings.dropZoneTolerance;
+
+          const accuracy = calculatePlacementAccuracy(county.targetPosition, position, tolerance);
           const isCorrect = accuracy > 0.8; // 80% accuracy threshold
           const timeToPlace = state.timeElapsed; // This would need proper timing logic
 
@@ -270,7 +402,8 @@ export const useGameStore = create<GameStore>()(
             state.streak
           );
 
-          const scoreAwarded = Math.round(multipliers.total);
+          const modeMultiplier = state.currentMode.scoreMultiplier || 1.0;
+          const scoreAwarded = Math.round(multipliers.total * modeMultiplier);
 
           const result: PlacementResult = {
             county: county,
@@ -299,6 +432,9 @@ export const useGameStore = create<GameStore>()(
           // Update stats and check achievements
           get().updateStats(result);
           get().checkAchievements(result);
+
+          // Analyze player struggle for hint system
+          get().analyzePlayerStruggle(county.id, position, isCorrect);
 
           return result;
         },
@@ -403,6 +539,8 @@ export const useGameStore = create<GameStore>()(
 
             if (shouldUnlock && !achievement.isUnlocked) {
               newlyUnlocked.push(updated);
+              // Play achievement sound when unlocking
+              playSound(SoundType.ACHIEVEMENT);
             }
 
             return updated;
@@ -420,6 +558,8 @@ export const useGameStore = create<GameStore>()(
                 : achievement
             )
           }));
+          // Play achievement sound when manually unlocking
+          playSound(SoundType.ACHIEVEMENT);
         },
 
         // Settings management
@@ -445,11 +585,114 @@ export const useGameStore = create<GameStore>()(
           return state.remainingCounties[0];
         },
 
-        useHint: () => {
-          const hint = get().getHint();
-          if (hint) {
-            set({ currentHint: hint });
+        useHint: (type: HintType, countyId: string, isAutoSuggested = false) => {
+          const state = get();
+
+          // Check if hint can be used
+          if (state.hintSystem.cooldownTimeRemaining > 0 ||
+              state.hintSystem.availableHints <= 0) {
+            return;
           }
+
+          const cost = isAutoSuggested ? 0 :
+                      (type === HintType.EDUCATIONAL ? 0 : state.settings.hintSettings.scorePenaltyPerHint);
+
+          const freeHint = state.hintSystem.usedHints < state.settings.hintSettings.freeHintsAllowed;
+          const actualCost = freeHint ? 0 : cost;
+
+          set((prevState) => ({
+            score: Math.max(0, prevState.score - actualCost),
+            currentHint: prevState.remainingCounties.find(c => c.id === countyId),
+            hintSystem: {
+              ...prevState.hintSystem,
+              availableHints: prevState.hintSystem.availableHints - 1,
+              usedHints: prevState.hintSystem.usedHints + 1,
+              currentHintType: type,
+              hintProgress: 0.3,
+              cooldownTimeRemaining: prevState.settings.hintSettings.hintCooldownMs,
+              lastHintUsedAt: Date.now(),
+              strugglingCounties: prevState.hintSystem.strugglingCounties.map(struggle =>
+                struggle.countyId === countyId
+                  ? { ...struggle, suggestedHints: [...struggle.suggestedHints, type] }
+                  : struggle
+              )
+            }
+          }));
+        },
+
+        updateHintSystem: (updates: Partial<HintSystemState>) => {
+          set((state) => ({
+            hintSystem: { ...state.hintSystem, ...updates }
+          }));
+        },
+
+        analyzePlayerStruggle: (countyId: string, position: Position, isCorrect: boolean) => {
+          set((state) => {
+            const existingStruggle = state.hintSystem.strugglingCounties.find(
+              s => s.countyId === countyId
+            );
+
+            const now = Date.now();
+            const timeSpent = existingStruggle
+              ? now - existingStruggle.lastAttemptAt
+              : 1000; // Default time for first attempt
+
+            if (isCorrect) {
+              // Remove from struggling counties if correct
+              return {
+                hintSystem: {
+                  ...state.hintSystem,
+                  strugglingCounties: state.hintSystem.strugglingCounties.filter(
+                    s => s.countyId !== countyId
+                  )
+                }
+              };
+            }
+
+            const updatedStruggle: StruggleData = existingStruggle
+              ? {
+                  ...existingStruggle,
+                  attempts: existingStruggle.attempts + 1,
+                  lastAttemptAt: now,
+                  totalTimeSpent: existingStruggle.totalTimeSpent + timeSpent,
+                  wrongPlacements: [...existingStruggle.wrongPlacements, position]
+                }
+              : {
+                  countyId,
+                  attempts: 1,
+                  lastAttemptAt: now,
+                  totalTimeSpent: timeSpent,
+                  wrongPlacements: [position],
+                  suggestedHints: []
+                };
+
+            return {
+              hintSystem: {
+                ...state.hintSystem,
+                strugglingCounties: existingStruggle
+                  ? state.hintSystem.strugglingCounties.map(s =>
+                      s.countyId === countyId ? updatedStruggle : s
+                    )
+                  : [...state.hintSystem.strugglingCounties, updatedStruggle]
+              }
+            };
+          });
+        },
+
+        resetHintSystem: () => {
+          set((state) => ({
+            hintSystem: {
+              availableHints: state.settings.hintSettings.maxHintsPerLevel,
+              usedHints: 0,
+              currentHintType: undefined,
+              hintProgress: 0,
+              cooldownTimeRemaining: 0,
+              lastHintUsedAt: undefined,
+              strugglingCounties: [],
+              autoSuggestEnabled: true
+            },
+            currentHint: undefined
+          }));
         },
 
         // Statistics
@@ -482,6 +725,53 @@ export const useGameStore = create<GameStore>()(
           // This would typically be stored in more detailed stats
           // For now, return the overall best score
           return get().stats.bestScore;
+        },
+
+        // Sound management
+        updateSoundSettings: (newSettings: Partial<SoundSettings>) => {
+          set((state) => {
+            const updatedSoundSettings = { ...state.settings.soundSettings, ...newSettings };
+
+            // Update the sound manager with new settings
+            setVolume({
+              master: updatedSoundSettings.masterVolume,
+              effects: updatedSoundSettings.effectsVolume,
+              music: updatedSoundSettings.musicVolume,
+              muted: updatedSoundSettings.muted
+            });
+
+            return {
+              settings: {
+                ...state.settings,
+                soundSettings: updatedSoundSettings,
+                soundEnabled: !updatedSoundSettings.muted
+              }
+            };
+          });
+        },
+
+        toggleMute: () => {
+          const state = get();
+          const newMuted = !state.settings.soundSettings.muted;
+
+          get().updateSoundSettings({ muted: newMuted });
+
+          if (newMuted) {
+            soundManager.stopBackgroundMusic();
+          } else if (state.settings.soundSettings.enableBackgroundMusic) {
+            soundManager.startBackgroundMusic();
+          }
+        },
+
+        startBackgroundMusic: () => {
+          const state = get();
+          if (state.settings.soundSettings.enableBackgroundMusic && !state.settings.soundSettings.muted) {
+            soundManager.startBackgroundMusic();
+          }
+        },
+
+        stopBackgroundMusic: () => {
+          soundManager.stopBackgroundMusic();
         }
       }),
       {

@@ -1,7 +1,14 @@
+import { useEffect } from 'react';
 import { useGame } from '../context/GameContext';
+import { playSound, SoundType } from '../utils/soundManager';
 
 export default function GameComplete() {
   const { score, mistakes, resetGame } = useGame();
+
+  // Play win sound when component mounts
+  useEffect(() => {
+    playSound(SoundType.WIN);
+  }, []);
 
   const getGrade = () => {
     if (mistakes === 0) return { grade: 'Perfect!', emoji: '🏆', color: 'text-yellow-500' };

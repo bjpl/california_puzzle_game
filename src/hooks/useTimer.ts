@@ -1,18 +1,40 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
+export interface SplitTime {
+  name: string;
+  timestamp: number;
+  elapsed: number;
+}
+
+export interface TimerStats {
+  bestTime: number | null;
+  averageTime: number;
+  totalSessions: number;
+  completedSessions: number;
+}
+
 interface UseTimerOptions {
   autoStart?: boolean;
   interval?: number; // Update interval in milliseconds
-  onTick?: (elapsed: number) => void;
+  onTick?: (elapsed: number, remaining?: number) => void;
   onComplete?: (elapsed: number) => void;
+  onSplitTime?: (splitTime: SplitTime) => void;
   maxDuration?: number; // Maximum duration in milliseconds
+  isCountdown?: boolean; // Whether to count down instead of up
+  precision?: number; // Precision in milliseconds (default: 10)
 }
 
 interface TimerState {
   elapsed: number;
+  remaining: number;
   isRunning: boolean;
   isPaused: boolean;
   isCompleted: boolean;
+  splitTimes: SplitTime[];
+  stats: TimerStats;
+  formattedTime: string;
+  formattedRemaining: string;
+  progressPercentage: number;
 }
 
 interface TimerControls {
@@ -22,33 +44,73 @@ interface TimerControls {
   resume: () => void;
   reset: () => void;
   addTime: (milliseconds: number) => void;
+  recordSplit: (name: string) => void;
+  updateBestTime: (time: number) => void;
+  formatTime: (milliseconds: number) => string;
 }
 
 export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerControls] => {
   const {
     autoStart = false,
-    interval = 100,
+    interval = 10,
     onTick,
     onComplete,
-    maxDuration
+    onSplitTime,
+    maxDuration,
+    isCountdown = false,
+    precision = 10
   } = options;
 
   const [elapsed, setElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(autoStart);
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [splitTimes, setSplitTimes] = useState<SplitTime[]>([]);
+  const [stats, setStats] = useState<TimerStats>({
+    bestTime: null,
+    averageTime: 0,
+    totalSessions: 0,
+    completedSessions: 0
+  });
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(0);
   const pausedTimeRef = useRef<number>(0);
+  const sessionStartRef = useRef<number>(0);
+
+  // Calculate derived values
+  const remaining = maxDuration ? Math.max(0, maxDuration - elapsed) : 0;
+  const progressPercentage = maxDuration ? (elapsed / maxDuration) * 100 : 0;
+
+  // Format time helper
+  const formatTime = useCallback((milliseconds: number): string => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const ms = Math.floor((milliseconds % 1000) / 10); // Two decimal places
+
+    if (minutes > 0) {
+      return `${minutes}:${seconds.toString().padStart(2, '0')}.${ms.toString().padStart(2, '0')}`;
+    }
+    return `${seconds}.${ms.toString().padStart(2, '0')}`;
+  }, []);
+
+  const formattedTime = formatTime(elapsed);
+  const formattedRemaining = formatTime(remaining);
 
   // Start timer
   const start = useCallback(() => {
     if (isCompleted) return;
 
     startTimeRef.current = Date.now() - elapsed;
+    sessionStartRef.current = Date.now();
     setIsRunning(true);
     setIsPaused(false);
+
+    setStats(prev => ({
+      ...prev,
+      totalSessions: prev.totalSessions + 1
+    }));
   }, [elapsed, isCompleted]);
 
   // Stop timer
@@ -99,8 +161,10 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
     setIsRunning(false);
     setIsPaused(false);
     setIsCompleted(false);
+    setSplitTimes([]);
     startTimeRef.current = 0;
     pausedTimeRef.current = 0;
+    sessionStartRef.current = 0;
   }, []);
 
   // Add time to timer
@@ -112,12 +176,38 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
     });
   }, []);
 
+  // Record split time
+  const recordSplit = useCallback((name: string) => {
+    const splitTime: SplitTime = {
+      name,
+      timestamp: Date.now(),
+      elapsed
+    };
+
+    setSplitTimes(prev => [...prev, splitTime]);
+
+    if (onSplitTime) {
+      onSplitTime(splitTime);
+    }
+  }, [elapsed, onSplitTime]);
+
+  // Update best time
+  const updateBestTime = useCallback((time: number) => {
+    setStats(prev => ({
+      ...prev,
+      bestTime: prev.bestTime === null ? time : Math.min(prev.bestTime, time),
+      completedSessions: prev.completedSessions + 1,
+      averageTime: ((prev.averageTime * prev.completedSessions) + time) / (prev.completedSessions + 1)
+    }));
+  }, []);
+
   // Timer effect
   useEffect(() => {
     if (isRunning && !isPaused && !isCompleted) {
       intervalRef.current = setInterval(() => {
         const now = Date.now();
         const newElapsed = now - startTimeRef.current;
+        const newRemaining = maxDuration ? Math.max(0, maxDuration - newElapsed) : 0;
 
         setElapsed(newElapsed);
 
@@ -131,15 +221,18 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
             intervalRef.current = null;
           }
 
+          // Update stats for completed session
+          updateBestTime(newElapsed);
+
           if (onComplete) {
             onComplete(newElapsed);
           }
           return;
         }
 
-        // Call onTick callback
+        // Call onTick callback with elapsed and remaining time
         if (onTick) {
-          onTick(newElapsed);
+          onTick(newElapsed, newRemaining);
         }
       }, interval);
     } else if (intervalRef.current) {
@@ -165,9 +258,15 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
 
   const timerState: TimerState = {
     elapsed,
+    remaining,
     isRunning,
     isPaused,
-    isCompleted
+    isCompleted,
+    splitTimes,
+    stats,
+    formattedTime,
+    formattedRemaining,
+    progressPercentage
   };
 
   const timerControls: TimerControls = {
@@ -176,7 +275,10 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
     pause,
     resume,
     reset,
-    addTime
+    addTime,
+    recordSplit,
+    updateBestTime,
+    formatTime
   };
 
   return [timerState, timerControls];

@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import { clsx } from 'clsx';
 import { LucideIcon } from 'lucide-react';
+import { playSound, SoundType } from '../utils/soundManager';
 
 interface CaliforniaButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
@@ -8,6 +9,7 @@ interface CaliforniaButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEle
   icon?: LucideIcon;
   iconPosition?: 'left' | 'right';
   isLoading?: boolean;
+  enableSounds?: boolean;
   children: React.ReactNode;
 }
 
@@ -19,8 +21,11 @@ export const CaliforniaButton = forwardRef<HTMLButtonElement, CaliforniaButtonPr
     icon: Icon,
     iconPosition = 'left',
     isLoading = false,
+    enableSounds = true,
     disabled,
     children,
+    onClick,
+    onMouseEnter,
     ...props
   }, ref) => {
     const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
@@ -46,6 +51,20 @@ export const CaliforniaButton = forwardRef<HTMLButtonElement, CaliforniaButtonPr
       xl: 'w-7 h-7'
     };
 
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (enableSounds && !disabled && !isLoading) {
+        playSound(SoundType.CLICK);
+      }
+      onClick?.(event);
+    };
+
+    const handleMouseEnter = (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (enableSounds && !disabled && !isLoading) {
+        playSound(SoundType.HOVER);
+      }
+      onMouseEnter?.(event);
+    };
+
     return (
       <button
         className={clsx(
@@ -56,6 +75,8 @@ export const CaliforniaButton = forwardRef<HTMLButtonElement, CaliforniaButtonPr
         )}
         ref={ref}
         disabled={disabled || isLoading}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
         {...props}
       >
         {isLoading ? (

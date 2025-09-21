@@ -10,6 +10,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import animation styles */
+@import './animations.css';
+
 /* California Design System CSS Variables */
 :root {
   /* California Color Palette */

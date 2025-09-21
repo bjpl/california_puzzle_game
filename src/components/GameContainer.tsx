@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DndContext, DragEndEvent, DragStartEvent, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
+import { playSound, SoundType } from '../utils/soundManager';
 import CountyTray from './CountyTray';
 import CaliforniaMapFixed from './CaliforniaMapFixed';
 import GameHeader from './GameHeader';
@@ -36,6 +37,8 @@ export default function GameContainer() {
     if (county && !placedCounties.has(countyId)) {
       selectCounty(county);
       setIsDragging(true);
+      // Play pickup sound when dragging starts
+      playSound(SoundType.PICKUP);
     }
   };
 
@@ -49,6 +52,14 @@ export default function GameContainer() {
 
       // Check if the county was dropped on its correct position
       const isCorrect = draggedId === targetId;
+
+      // Play appropriate sound based on placement result
+      if (isCorrect) {
+        playSound(SoundType.CORRECT);
+      } else {
+        playSound(SoundType.INCORRECT);
+      }
+
       placeCounty(draggedId, isCorrect);
     } else {
       clearCurrentCounty();
