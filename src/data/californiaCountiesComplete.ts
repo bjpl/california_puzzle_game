@@ -23,7 +23,7 @@ export const californiaRegions = {
   ],
   'Central Valley': [
     'Fresno', 'Kern', 'Kings', 'Madera', 'Merced', 'Sacramento',
-    'San Joaquin', 'Stanislaus', 'Tulare', 'Yolo'
+    'San Joaquin', 'Stanislaus', 'Sutter', 'Tulare', 'Yolo', 'Yuba'
   ],
   'Central Coast': [
     'Monterey', 'San Benito', 'San Luis Obispo', 'Santa Barbara', 'Santa Cruz'
@@ -62,7 +62,7 @@ export const allCaliforniaCounties: County[] = [
   { id: 'san-diego', name: 'San Diego', region: 'Southern California', capital: 'San Diego', population: 3338000, area: 4204, founded: 1850, difficulty: 'easy', funFact: 'Birthplace of California' },
   { id: 'ventura', name: 'Ventura', region: 'Southern California', capital: 'Ventura', population: 846000, area: 1845, founded: 1872, difficulty: 'medium', funFact: 'Channel Islands National Park headquarters' },
 
-  // Central Valley (10 counties) - Medium
+  // Central Valley (12 counties) - Medium
   { id: 'fresno', name: 'Fresno', region: 'Central Valley', capital: 'Fresno', population: 999000, area: 5963, founded: 1856, difficulty: 'medium', funFact: 'Agricultural capital of the world' },
   { id: 'kern', name: 'Kern', region: 'Central Valley', capital: 'Bakersfield', population: 900000, area: 8141, founded: 1866, difficulty: 'medium', funFact: 'Produces most of US oil outside Alaska and Texas' },
   { id: 'kings', name: 'Kings', region: 'Central Valley', capital: 'Hanford', population: 152000, area: 1390, founded: 1893, difficulty: 'hard', funFact: 'Home to Naval Air Station Lemoore' },
@@ -73,6 +73,8 @@ export const allCaliforniaCounties: County[] = [
   { id: 'stanislaus', name: 'Stanislaus', region: 'Central Valley', capital: 'Modesto', population: 550000, area: 1495, founded: 1854, difficulty: 'medium', funFact: 'George Lucas hometown' },
   { id: 'tulare', name: 'Tulare', region: 'Central Valley', capital: 'Visalia', population: 466000, area: 4824, founded: 1852, difficulty: 'hard', funFact: 'Dairy capital of California' },
   { id: 'yolo', name: 'Yolo', region: 'Central Valley', capital: 'Woodland', population: 220000, area: 1012, founded: 1850, difficulty: 'hard', funFact: 'Name comes from Native American word for "rushes"' },
+  { id: 'sutter', name: 'Sutter', region: 'Central Valley', capital: 'Yuba City', population: 96000, area: 603, founded: 1850, difficulty: 'hard', funFact: 'Named after John Sutter of Sutter\'s Fort' },
+  { id: 'yuba', name: 'Yuba', region: 'Central Valley', capital: 'Marysville', population: 78000, area: 630, founded: 1850, difficulty: 'hard', funFact: 'Named after the Yuba River' },
 
   // Central Coast (5 counties) - Medium
   { id: 'monterey', name: 'Monterey', region: 'Central Coast', capital: 'Salinas', population: 434000, area: 3322, founded: 1850, difficulty: 'medium', funFact: 'Steinbeck country and Pebble Beach' },
