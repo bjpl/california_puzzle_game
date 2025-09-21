@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { getCountyEducation, getMemoryAid, getRelatedCounties, historicalConnections, interCountyConnections } from '../data/countyEducation';
+import { getCountyEducationComplete } from '../data/countyEducationComplete';
 import { getMemoryAid as getMemoryAidData, memoryPatterns, spatialRelationships, learningStrategies } from '../data/memoryAids';
 import { useSoundEffect } from '../utils/simpleSoundManager';
 
@@ -162,7 +163,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   };
 
   // Get education content for selected county
-  const educationContent = selectedCounty ? getCountyEducation(selectedCounty.id) : null;
+  // Try to get complete data first, fall back to basic data if not available
+  const educationContent = selectedCounty ?
+    (getCountyEducationComplete(selectedCounty.id) || getCountyEducation(selectedCounty.id)) :
+    null;
   const memoryAid = selectedCounty ? getMemoryAidData(selectedCounty.id) : null;
 
   return (
@@ -245,11 +249,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex overflow-hidden min-h-0">
+        <div className="flex-1 flex min-h-0">
           {viewMode === 'explore' && (
             <>
               {/* County List */}
-              <div className="w-1/3 border-r bg-gray-50 p-4 overflow-y-auto max-h-full">
+              <div className="w-1/3 border-r bg-gray-50 p-4 overflow-y-auto">
                 <h3 className="font-semibold text-gray-700 mb-3">
                   {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
                 </h3>
@@ -284,7 +288,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
               </div>
 
               {/* County Details */}
-              <div className="flex-1 p-6 overflow-y-auto max-h-full">
+              <div className="flex-1 p-6 overflow-y-auto">
                 {selectedCounty && educationContent ? (
                   <div>
                     {/* County Header */}
