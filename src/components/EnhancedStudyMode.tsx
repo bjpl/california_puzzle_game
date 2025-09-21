@@ -170,8 +170,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const memoryAid = selectedCounty ? getMemoryAidData(selectedCounty.id) : null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl max-h-[90vh] flex flex-col my-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl h-[90vh] flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
           <div className="flex justify-between items-center">
@@ -249,11 +249,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex min-h-0">
+        <div className="flex-1 flex overflow-hidden">
           {viewMode === 'explore' && (
             <>
               {/* County List */}
-              <div className="w-1/3 border-r bg-gray-50 p-4 overflow-y-auto">
+              <div className="w-1/3 border-r bg-gray-50 p-4 overflow-y-auto h-full">
                 <h3 className="font-semibold text-gray-700 mb-3">
                   {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
                 </h3>
@@ -288,7 +288,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
               </div>
 
               {/* County Details */}
-              <div className="flex-1 p-6 overflow-y-auto">
+              <div className="flex-1 p-6 overflow-y-auto h-full">
                 {selectedCounty && educationContent ? (
                   <div>
                     {/* County Header */}
