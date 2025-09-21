@@ -143,8 +143,12 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
   const { counties } = useGame();
 
   useEffect(() => {
-    // Load the GeoJSON data
-    fetch('/california_puzzle_game/data/geo/ca-counties-ultra-low.geojson')
+    // Load the GeoJSON data (use different path for dev vs production)
+    const basePath = window.location.hostname === 'localhost'
+      ? '/data/geo/ca-counties-ultra-low.geojson'
+      : '/california_puzzle_game/data/geo/ca-counties-ultra-low.geojson';
+
+    fetch(basePath)
       .then(response => response.json())
       .then(data => {
         setGeoData(data);
