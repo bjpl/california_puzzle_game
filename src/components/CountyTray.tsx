@@ -2,8 +2,9 @@ import { useDraggable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 
 function DraggableCounty({ county }: { county: any }) {
-  const { placedCounties } = useGame();
+  const { placedCounties, selectCounty, currentCounty } = useGame();
   const isPlaced = placedCounties.has(county.id);
+  const isSelected = currentCounty?.id === county.id;
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: county.id,
@@ -44,12 +45,23 @@ function DraggableCounty({ county }: { county: any }) {
       style={{ ...style, fontSize: '10px' }}
       {...listeners}
       {...attributes}
-      className={`px-1 py-0 border rounded cursor-move hover:shadow-sm transition-shadow ${colorClass} ${
+      onClick={(e) => {
+        e.stopPropagation();
+        if (!isPlaced) {
+          selectCounty(county);
+        }
+      }}
+      className={`px-1 py-0 border rounded cursor-move hover:shadow-sm transition-all ${colorClass} ${
         isDragging ? 'opacity-50 cursor-grabbing' : ''
+      } ${
+        isSelected ? 'ring-2 ring-blue-500 shadow-md transform scale-105' : ''
       }`}
-      title={`${county.name} - ${county.region}`}
+      title={`${county.name} - ${county.region}${isSelected ? ' (Selected - Use hint or drag to map)' : ' (Click to select)'}`}
     >
-      <span className="text-gray-700">{county.name}</span>
+      <span className="text-gray-700 font-medium">
+        {isSelected && '▶ '}
+        {county.name}
+      </span>
     </div>
   );
 }

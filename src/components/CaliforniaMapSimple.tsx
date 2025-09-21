@@ -235,7 +235,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   };
 
   return (
-    <div className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 relative flex items-center justify-center">
+    <div className="w-full h-full bg-gradient-to-br from-sky-50 via-blue-50 to-blue-100 relative flex items-center justify-center">
       {/* Zoom Controls */}
       <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
         <button
@@ -286,7 +286,14 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
-        <rect width="800" height="600" fill="#dbeafe" />
+        <defs>
+          <linearGradient id="mapBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f0f9ff" />
+            <stop offset="50%" stopColor="#e0f2fe" />
+            <stop offset="100%" stopColor="#bae6fd" />
+          </linearGradient>
+        </defs>
+        <rect width="800" height="600" fill="url(#mapBg)" />
 
         {/* Apply zoom and pan transformation - zoom from center */}
         <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${300 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>

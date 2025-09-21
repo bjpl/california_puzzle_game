@@ -67,6 +67,11 @@ export default function GameHeader() {
         <div className="flex items-center gap-2">
           <span className="text-lg">🗺️</span>
           <h1 className="text-lg font-bold text-blue-900">California Counties Puzzle</h1>
+          {currentCounty && (
+            <span className="text-sm bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+              Selected: {currentCounty.name}
+            </span>
+          )}
         </div>
 
         <div className="flex gap-3 items-center">
@@ -121,12 +126,18 @@ export default function GameHeader() {
           <button
             onClick={handleUseHint}
             className={`px-3 py-1 rounded-full text-sm font-medium transition-all transform hover:scale-105 ${
-              hints === 0
+              hints === 0 || !currentCounty
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-gradient-to-r from-yellow-400 to-amber-500 text-white shadow-md hover:shadow-lg'
             }`}
-            disabled={hints === 0}
-            title={hints === 0 ? 'No hints remaining' : `Use hint (${hints} remaining)`}
+            disabled={hints === 0 || !currentCounty}
+            title={
+              hints === 0
+                ? 'No hints remaining'
+                : !currentCounty
+                  ? 'Select a county first to use hint'
+                  : `Use hint (${hints} remaining)`
+            }
           >
             <span className="flex items-center gap-1">
               <span>💡</span>
