@@ -120,7 +120,7 @@ export default function GameContainer() {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-7xl">
+    <div className="container mx-auto p-2 max-w-7xl">
       <GameHeader />
 
       <DndContext
@@ -128,7 +128,7 @@ export default function GameContainer() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 mt-2">
           {/* County Tray */}
           <div className="lg:col-span-1">
             <CountyTray />
