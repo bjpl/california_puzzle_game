@@ -31,9 +31,8 @@ function DraggableCounty({ county }: { county: any }) {
 
   if (isPlaced) {
     return (
-      <div className="p-1 bg-gray-100 border border-gray-300 rounded opacity-50 cursor-not-allowed">
-        <p className="text-xs font-medium text-gray-500 line-through">{county.name}</p>
-        <p className="text-xs text-gray-400">✓</p>
+      <div className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs opacity-50 cursor-not-allowed">
+        <span className="text-gray-500 line-through">{county.name}</span>
       </div>
     );
   }
@@ -44,12 +43,12 @@ function DraggableCounty({ county }: { county: any }) {
       style={style}
       {...listeners}
       {...attributes}
-      className={`p-1 border rounded cursor-grab hover:shadow-md transition-shadow ${colorClass} ${
+      className={`px-2 py-0.5 border rounded text-xs cursor-move hover:shadow-md transition-shadow ${colorClass} ${
         isDragging ? 'opacity-50 cursor-grabbing shadow-lg' : ''
       }`}
+      title={`${county.name} - ${county.region}`}
     >
-      <p className="text-xs font-medium text-gray-700">{county.name}</p>
-      <p className="text-xs text-gray-500">{county.region.split(' ')[0]}</p>
+      <span className="font-medium text-gray-700">{county.name}</span>
     </div>
   );
 }
@@ -66,12 +65,12 @@ export default function CountyTray() {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-2 h-full">
-      <h2 className="text-sm font-bold text-gray-800 mb-2">Counties ({counties.length})</h2>
-      <div className="space-y-1 max-h-[550px] overflow-y-auto pr-1">
+      <h2 className="text-xs font-bold text-gray-800 mb-1">Counties ({counties.length})</h2>
+      <div className="space-y-0.5 max-h-[570px] overflow-y-auto pr-1">
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
           <div key={region}>
-            <p className="text-xs font-semibold text-gray-600 mt-2 mb-1">{region}</p>
-            <div className="grid grid-cols-2 gap-1">
+            <p className="text-xs font-semibold text-gray-600 mt-1 mb-0.5">{region}</p>
+            <div className="grid grid-cols-2 gap-0.5">
               {regionCounties.map(county => (
                 <DraggableCounty key={county.id} county={county} />
               ))}

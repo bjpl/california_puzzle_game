@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DndContext, DragEndEvent, DragStartEvent, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragStartEvent, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 import { playSound, SoundType } from '../utils/soundManager';
 import CountyTray from './CountyTray';
@@ -24,6 +24,7 @@ export default function GameContainer() {
   } = useGame();
 
   const [isDragging, setIsDragging] = useState(false);
+  const [activeCounty, setActiveCounty] = useState<any>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -38,6 +39,7 @@ export default function GameContainer() {
     const county = counties.find(c => c.id === countyId);
     if (county && !placedCounties.has(countyId)) {
       selectCounty(county);
+      setActiveCounty(county);
       setIsDragging(true);
       // Play pickup sound when dragging starts
       playSound(SoundType.PICKUP);
@@ -47,6 +49,7 @@ export default function GameContainer() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setIsDragging(false);
+    setActiveCounty(null);
 
     if (over) {
       const draggedId = active.id as string;
@@ -138,6 +141,15 @@ export default function GameContainer() {
             </div>
           </div>
         </div>
+
+        {/* Drag Overlay - This renders the dragged item outside of its container */}
+        <DragOverlay>
+          {activeCounty ? (
+            <div className="px-3 py-1 bg-yellow-100 border-2 border-yellow-400 rounded shadow-lg cursor-grabbing">
+              <span className="text-sm font-bold text-gray-700">{activeCounty.name}</span>
+            </div>
+          ) : null}
+        </DragOverlay>
       </DndContext>
     </div>
   );
