@@ -31,7 +31,7 @@ function DraggableCounty({ county }: { county: any }) {
 
   if (isPlaced) {
     return (
-      <div className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs opacity-50 cursor-not-allowed">
+      <div className="px-1 py-0 bg-gray-100 border border-gray-300 rounded opacity-50 cursor-not-allowed" style={{ fontSize: '10px' }}>
         <span className="text-gray-500 line-through">{county.name}</span>
       </div>
     );
@@ -40,15 +40,15 @@ function DraggableCounty({ county }: { county: any }) {
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={{ ...style, fontSize: '10px' }}
       {...listeners}
       {...attributes}
-      className={`px-2 py-0.5 border rounded text-xs cursor-move hover:shadow-md transition-shadow ${colorClass} ${
-        isDragging ? 'opacity-50 cursor-grabbing shadow-lg' : ''
+      className={`px-1 py-0 border rounded cursor-move hover:shadow-sm transition-shadow ${colorClass} ${
+        isDragging ? 'opacity-50 cursor-grabbing' : ''
       }`}
       title={`${county.name} - ${county.region}`}
     >
-      <span className="font-medium text-gray-700">{county.name}</span>
+      <span className="text-gray-700">{county.name}</span>
     </div>
   );
 }

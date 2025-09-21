@@ -24,15 +24,10 @@ function CountyDropZone({ county, bounds }: { county: CountyFeature; bounds: any
     id: countyId,
   });
 
-  const isActive = currentCounty?.id === countyId;
-  const isCorrectHover = isOver && currentCounty?.id === countyId;
-  const isWrongHover = isOver && currentCounty?.id !== countyId;
-
+  // Don't give visual hints about which county is correct!
+  // Only show green when placed, gray otherwise
   let fillColor = '#e5e7eb'; // Default gray
   if (isPlaced) fillColor = '#10b981'; // Green when placed
-  else if (isCorrectHover) fillColor = '#86efac'; // Light green on correct hover
-  else if (isWrongHover) fillColor = '#fca5a5'; // Light red on wrong hover
-  else if (isActive) fillColor = '#fef3c7'; // Yellow when active
 
   // Simple projection that works
   const project = ([lon, lat]: [number, number]): [number, number] => {
