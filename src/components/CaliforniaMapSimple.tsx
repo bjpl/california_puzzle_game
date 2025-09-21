@@ -14,7 +14,7 @@ interface CountyFeature {
   };
 }
 
-function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature; bounds: any; isDragging: boolean }) {
+function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragging: boolean }) {
   const { placedCounties, currentCounty, showRegions, counties } = useGame();
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
@@ -56,11 +56,31 @@ function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature;
     fillColor = regionColors[region] || '#ffffff'; // Show region color if enabled
   }
 
-  // Simple projection that works
-  const project = ([lon, lat]: [number, number]): [number, number] => {
-    const x = ((lon - bounds.minLon) / (bounds.maxLon - bounds.minLon)) * 800;
-    const y = ((bounds.maxLat - lat) / (bounds.maxLat - bounds.minLat)) * 600;
-    return [x, y];
+  // Convert Web Mercator (EPSG:3857) to lat/lon (EPSG:4326)
+  const webMercatorToLatLon = (x: number, y: number): [number, number] => {
+    const lon = (x / 20037508.34) * 180;
+    const lat = (Math.atan(Math.exp((y / 20037508.34) * Math.PI)) * 360 / Math.PI) - 90;
+    return [lon, lat];
+  };
+
+  // Project coordinates to SVG space
+  const project = ([x, y]: [number, number]): [number, number] => {
+    // Check if coordinates are in Web Mercator (large values)
+    if (Math.abs(x) > 180) {
+      // Convert from Web Mercator to lat/lon
+      [x, y] = webMercatorToLatLon(x, y);
+    }
+
+    // California's approximate bounds in lat/lon
+    const caMinLon = -124.5;
+    const caMaxLon = -114.0;
+    const caMinLat = 32.5;
+    const caMaxLat = 42.0;
+
+    // Project to SVG coordinates
+    const svgX = ((x - caMinLon) / (caMaxLon - caMinLon)) * 800;
+    const svgY = ((caMaxLat - y) / (caMaxLat - caMinLat)) * 600;
+    return [svgX, svgY];
   };
 
   // Generate SVG path
@@ -143,32 +163,9 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       .then(response => response.json())
       .then(data => {
         setGeoData(data);
-
-        // Calculate bounds
-        let minLon = Infinity, maxLon = -Infinity;
-        let minLat = Infinity, maxLat = -Infinity;
-
-        const processCoords = (coords: any) => {
-          if (Array.isArray(coords[0]) && !Array.isArray(coords[0][0])) {
-            // Array of coordinates
-            coords.forEach((coord: number[]) => {
-              minLon = Math.min(minLon, coord[0]);
-              maxLon = Math.max(maxLon, coord[0]);
-              minLat = Math.min(minLat, coord[1]);
-              maxLat = Math.max(maxLat, coord[1]);
-            });
-          } else {
-            // Nested arrays
-            coords.forEach((subCoords: any) => processCoords(subCoords));
-          }
-        };
-
-        data.features.forEach((feature: any) => {
-          processCoords(feature.geometry.coordinates);
-        });
-
-        setBounds({ minLon, maxLon, minLat, maxLat });
-        console.log('Bounds:', { minLon, maxLon, minLat, maxLat });
+        // We use fixed California bounds in the projection function,
+        // so we don't need to calculate them from the data
+        setBounds({ loaded: true });
       })
       .catch(error => {
         console.error('Error loading GeoJSON:', error);
@@ -313,7 +310,6 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
             <CountyDropZone
               key={feature.properties.NAME || `county-${idx}`}
               county={feature}
-              bounds={bounds}
               isDragging={isDragging}
             />
           ))}
