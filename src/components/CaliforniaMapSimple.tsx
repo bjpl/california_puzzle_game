@@ -146,25 +146,23 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   }
 
   return (
-    <div className="w-full h-full flex flex-col bg-gradient-to-br from-blue-50 to-blue-100">
-      {/* Title moved outside SVG as a separate HTML element */}
-      <div className="text-center py-2">
-        <h3 className="text-lg font-bold text-blue-900">California Counties Puzzle</h3>
-        {isDragging && (
-          <p className="text-xs text-gray-600 animate-pulse mt-1">
+    <div className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 relative flex items-center justify-center">
+      {/* Only show drag instruction when dragging */}
+      {isDragging && (
+        <div className="absolute top-2 left-0 right-0 z-10 text-center">
+          <p className="text-xs text-gray-600 animate-pulse">
             Drop the county on its correct location
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
-      <div className="flex-1 flex items-center justify-center">
-        <svg
-          viewBox="0 0 800 600"
-          className="w-full h-full"
-          style={{ maxHeight: '100%', maxWidth: '100%' }}
-          preserveAspectRatio="xMidYMid meet"
-        >
-          <rect width="800" height="600" fill="#dbeafe" />
+      <svg
+        viewBox="0 0 800 600"
+        className="w-full h-full"
+        style={{ maxHeight: '100%', maxWidth: '100%' }}
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <rect width="800" height="600" fill="#dbeafe" />
 
         {/* Render all counties */}
         <g>
@@ -186,7 +184,6 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
           <text x="95" y="9" fontSize="10" fill="#6b7280">Placed</text>
         </g>
       </svg>
-      </div>
     </div>
   );
 }
