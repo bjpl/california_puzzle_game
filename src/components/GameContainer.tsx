@@ -1,0 +1,131 @@
+import { useState } from 'react';
+import { DndContext, DragEndEvent, DragStartEvent, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
+import { useGame } from '../context/GameContext';
+import CountyTray from './CountyTray';
+import CaliforniaMap from './CaliforniaMap';
+import GameHeader from './GameHeader';
+import GameComplete from './GameComplete';
+
+export default function GameContainer() {
+  const {
+    isGameStarted,
+    isGameComplete,
+    startGame,
+    resetGame,
+    selectCounty,
+    placeCounty,
+    clearCurrentCounty,
+    currentCounty,
+    counties,
+    placedCounties
+  } = useGame();
+
+  const [isDragging, setIsDragging] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const countyId = event.active.id as string;
+    const county = counties.find(c => c.id === countyId);
+    if (county && !placedCounties.has(countyId)) {
+      selectCounty(county);
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setIsDragging(false);
+
+    if (over) {
+      const draggedId = active.id as string;
+      const targetId = over.id as string;
+
+      // Check if the county was dropped on its correct position
+      const isCorrect = draggedId === targetId;
+      placeCounty(draggedId, isCorrect);
+    } else {
+      clearCurrentCounty();
+    }
+  };
+
+  if (!isGameStarted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <div className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full text-center">
+          <h1 className="text-4xl font-bold text-blue-900 mb-4">
+            🗺️ California Counties Puzzle
+          </h1>
+          <p className="text-lg text-gray-700 mb-8">
+            Learn California geography by placing counties in their correct locations!
+          </p>
+          <div className="space-y-4 text-left mb-8">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🎯</span>
+              <div>
+                <h3 className="font-semibold">How to Play</h3>
+                <p className="text-gray-600">Drag counties from the tray and drop them on the correct location on the map</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⭐</span>
+              <div>
+                <h3 className="font-semibold">Score Points</h3>
+                <p className="text-gray-600">Earn 100 points for each correct placement, lose 10 for mistakes</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🏆</span>
+              <div>
+                <h3 className="font-semibold">Complete the Map</h3>
+                <p className="text-gray-600">Place all 20 major California counties to win!</p>
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={startGame}
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
+          >
+            Start Game
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (isGameComplete) {
+    return <GameComplete />;
+  }
+
+  return (
+    <div className="container mx-auto p-4 max-w-7xl">
+      <GameHeader />
+
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-4">
+          {/* County Tray */}
+          <div className="lg:col-span-1">
+            <CountyTray />
+          </div>
+
+          {/* Map */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-lg shadow-lg p-4 h-[600px]">
+              <CaliforniaMap isDragging={isDragging} />
+            </div>
+          </div>
+        </div>
+      </DndContext>
+    </div>
+  );
+}
