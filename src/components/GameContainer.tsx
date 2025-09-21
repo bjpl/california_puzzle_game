@@ -4,6 +4,7 @@ import { useGame } from '../context/GameContext';
 import { playSound, SoundType } from '../utils/soundManager';
 import CountyTray from './CountyTray';
 import CaliforniaMapFixed from './CaliforniaMapFixed';
+import CaliforniaMapSimple from './CaliforniaMapSimple';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
 import SimpleMapTest from './SimpleMapTest';
@@ -119,9 +120,6 @@ export default function GameContainer() {
     <div className="container mx-auto p-4 max-w-7xl">
       <GameHeader />
 
-      {/* Temporary test component */}
-      <SimpleMapTest />
-
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
@@ -133,10 +131,10 @@ export default function GameContainer() {
             <CountyTray />
           </div>
 
-          {/* Map */}
+          {/* Map - Using simplified version for better rendering */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-lg shadow-lg p-4 h-[600px]">
-              <CaliforniaMapFixed isDragging={isDragging} />
+              <CaliforniaMapSimple isDragging={isDragging} />
             </div>
           </div>
         </div>

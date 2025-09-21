@@ -42,13 +42,19 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
 
   // Convert coordinates to path
   const coordinatesToPath = (coords: any[], isHole = false): string => {
+    if (!coords || coords.length === 0) return '';
+
     const points = coords.map(coord => projection(coord));
-    if (!points || points.length === 0) return '';
+    const validPoints = points.filter(p => p && !isNaN(p[0]) && !isNaN(p[1]));
+
+    if (validPoints.length === 0) return '';
 
     let path = isHole ? ' M' : 'M';
-    points.forEach((point, i) => {
-      if (point) {
-        path += `${i === 0 ? '' : 'L'}${point[0]},${point[1]}`;
+    validPoints.forEach((point, i) => {
+      if (i === 0) {
+        path += `${point[0].toFixed(2)},${point[1].toFixed(2)}`;
+      } else {
+        path += `L${point[0].toFixed(2)},${point[1].toFixed(2)}`;
       }
     });
     path += 'Z';
@@ -78,6 +84,11 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   };
 
   const path = generatePath();
+
+  // Debug: Log if path is empty for troubleshooting
+  if (!path && county.properties.NAME) {
+    console.warn(`Empty path for county: ${county.properties.NAME}`);
+  }
 
   // Calculate centroid for label
   const calculateCentroid = () => {
