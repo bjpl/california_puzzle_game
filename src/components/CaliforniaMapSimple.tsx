@@ -156,9 +156,9 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
 
         <text
           x="400"
-          y="30"
+          y="25"
           textAnchor="middle"
-          fontSize="24"
+          fontSize="18"
           fill="#1e40af"
           fontWeight="bold"
         >
@@ -168,9 +168,9 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         {isDragging && (
           <text
             x="400"
-            y="55"
+            y="45"
             textAnchor="middle"
-            fontSize="14"
+            fontSize="12"
             fill="#6b7280"
             className="animate-pulse"
           >
@@ -190,15 +190,12 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         </g>
 
         {/* Legend */}
-        <g transform="translate(20, 520)">
-          <rect x="0" y="0" width="15" height="15" fill="#e5e7eb" stroke="#374151" strokeWidth="0.5" />
-          <text x="20" y="12" fontSize="12" fill="#6b7280">Available</text>
+        <g transform="translate(20, 550)">
+          <rect x="0" y="0" width="10" height="10" fill="#e5e7eb" stroke="#374151" strokeWidth="0.5" />
+          <text x="15" y="9" fontSize="10" fill="#6b7280">Available</text>
 
-          <rect x="0" y="20" width="15" height="15" fill="#10b981" stroke="#374151" strokeWidth="0.5" />
-          <text x="20" y="32" fontSize="12" fill="#6b7280">Placed</text>
-
-          <rect x="0" y="40" width="15" height="15" fill="#fef3c7" stroke="#374151" strokeWidth="0.5" />
-          <text x="20" y="52" fontSize="12" fill="#6b7280">Selected</text>
+          <rect x="80" y="0" width="10" height="10" fill="#10b981" stroke="#374151" strokeWidth="0.5" />
+          <text x="95" y="9" fontSize="10" fill="#6b7280">Placed</text>
         </g>
       </svg>
     </div>

@@ -128,7 +128,7 @@ export default function GameContainer() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 mt-2">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           {/* County Tray */}
           <div className="lg:col-span-1">
             <CountyTray />
@@ -136,7 +136,7 @@ export default function GameContainer() {
 
           {/* Map - Using simplified version for better rendering */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-lg p-4 h-[600px]">
+            <div className="bg-white rounded-lg shadow-lg p-4 h-[550px]">
               <CaliforniaMapSimple isDragging={isDragging} />
             </div>
           </div>

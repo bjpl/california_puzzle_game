@@ -67,7 +67,7 @@ export default function CountyTray() {
   return (
     <div className="bg-white rounded-lg shadow-lg p-2 h-full overflow-hidden">
       <h2 className="text-xs font-bold text-gray-800 mb-1">Counties ({counties.length})</h2>
-      <div className="space-y-0.5 max-h-[570px] overflow-y-auto overflow-x-hidden pr-1">
+      <div className="space-y-0.5 max-h-[520px] overflow-y-auto overflow-x-hidden pr-1">
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
           <div key={region}>
             <p className="text-xs font-semibold text-gray-600 mt-1 mb-0.5">{region}</p>
