@@ -20,7 +20,7 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
   const isPlaced = placedCounties.has(countyId);
 
-  // Find the region for this county
+  // Find the region and centroid for this county
   const countyData = counties.find(c => c.id === countyId);
   const region = countyData?.region || '';
 
@@ -112,6 +112,40 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
 
   const path = generatePath();
 
+  // Calculate the label position for the county
+  const getLabelPosition = (): [number, number] => {
+    // If we have predefined centroid data, use it
+    if (countyData?.centroid) {
+      return project([countyData.centroid[0], countyData.centroid[1]]);
+    }
+
+    // Otherwise, calculate approximate centroid from geometry
+    const geom = county.geometry;
+    let sumX = 0, sumY = 0, count = 0;
+
+    const processRing = (ring: number[][]) => {
+      ring.forEach(coord => {
+        const [x, y] = project([coord[0], coord[1]]);
+        sumX += x;
+        sumY += y;
+        count++;
+      });
+    };
+
+    if (geom.type === 'Polygon') {
+      processRing(geom.coordinates[0]);
+    } else if (geom.type === 'MultiPolygon') {
+      geom.coordinates.forEach((polygon: number[][][]) => {
+        processRing(polygon[0]);
+      });
+    }
+
+    // Return average position (approximate centroid)
+    return count > 0 ? [sumX / count, sumY / count] : [400, 300];
+  };
+
+  const [labelX, labelY] = isPlaced ? getLabelPosition() : [0, 0];
+
   return (
     <g ref={setNodeRef}>
       <path
@@ -128,13 +162,16 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
       />
       {isPlaced && (
         <text
-          x={400}
-          y={300}
+          x={labelX}
+          y={labelY}
           textAnchor="middle"
           fontSize="8"
           fill="white"
           fontWeight="bold"
           pointerEvents="none"
+          style={{
+            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
+          }}
         >
           {countyName}
         </text>

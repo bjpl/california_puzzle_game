@@ -218,7 +218,8 @@ class SoundManager {
       return audio;
 
     } catch (error) {
-      console.warn(`Failed to load sound file ${soundPath}, using placeholder tone:`, error);
+      // Fallback to generated tones if sound files don't exist
+      console.log(`Using generated tone for ${config.type}`);
       return this.createPlaceholderAudio(config);
     }
   }
@@ -283,7 +284,7 @@ class SoundManager {
       audio.volume = this.calculateVolume(config.volume, 'effects');
       audio.loop = config.loop;
 
-      console.log(`Created placeholder tone for ${config.type}: ${frequency}Hz ${waveType} wave`);
+      // Placeholder tone created successfully
       return audio;
 
     } catch (error) {
