@@ -321,43 +321,6 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
 
         </g>
         {/* End of zoom/pan group */}
-
-        {/* Legend (outside of zoom/pan) */}
-        <g transform="translate(20, 560)">
-          {!showRegions ? (
-            <>
-              <rect x="0" y="0" width="12" height="12" rx="2" fill="#ffffff" stroke="#9ca3af" strokeWidth="1" />
-              <text x="18" y="10" fontSize="11" fill="#4b5563" fontFamily="system-ui">Available</text>
-
-              <rect x="85" y="0" width="12" height="12" rx="2" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1" />
-              <text x="102" y="10" fontSize="11" fill="#4b5563" fontFamily="system-ui">Target</text>
-
-              <rect x="155" y="0" width="12" height="12" rx="2" fill="#10b981" stroke="#059669" strokeWidth="1" />
-              <text x="172" y="10" fontSize="11" fill="#4b5563" fontFamily="system-ui">Placed</text>
-            </>
-          ) : (
-            <>
-              <text x="0" y="9" fontSize="10" fill="#6b7280" fontWeight="bold">Regions:</text>
-              <rect x="60" y="0" width="10" height="10" fill="#fca5a5" stroke="#374151" strokeWidth="0.5" />
-              <text x="75" y="9" fontSize="9" fill="#6b7280">Southern</text>
-
-              <rect x="120" y="0" width="10" height="10" fill="#93c5fd" stroke="#374151" strokeWidth="0.5" />
-              <text x="135" y="9" fontSize="9" fill="#6b7280">Bay</text>
-
-              <rect x="160" y="0" width="10" height="10" fill="#86efac" stroke="#374151" strokeWidth="0.5" />
-              <text x="175" y="9" fontSize="9" fill="#6b7280">Valley</text>
-
-              <rect x="210" y="0" width="10" height="10" fill="#c4b5fd" stroke="#374151" strokeWidth="0.5" />
-              <text x="225" y="9" fontSize="9" fill="#6b7280">Coast</text>
-
-              <rect x="260" y="0" width="10" height="10" fill="#fdba74" stroke="#374151" strokeWidth="0.5" />
-              <text x="275" y="9" fontSize="9" fill="#6b7280">North</text>
-
-              <rect x="310" y="0" width="10" height="10" fill="#fde047" stroke="#374151" strokeWidth="0.5" />
-              <text x="325" y="9" fontSize="9" fill="#6b7280">Sierra</text>
-            </>
-          )}
-        </g>
       </svg>
     </div>
   );
