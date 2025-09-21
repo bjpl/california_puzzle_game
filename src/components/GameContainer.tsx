@@ -6,6 +6,7 @@ import CountyTray from './CountyTray';
 import CaliforniaMapFixed from './CaliforniaMapFixed';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
+import SimpleMapTest from './SimpleMapTest';
 
 export default function GameContainer() {
   const {
@@ -117,6 +118,9 @@ export default function GameContainer() {
   return (
     <div className="container mx-auto p-4 max-w-7xl">
       <GameHeader />
+
+      {/* Temporary test component */}
+      <SimpleMapTest />
 
       <DndContext
         sensors={sensors}
