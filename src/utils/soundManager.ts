@@ -180,6 +180,7 @@ class SoundManager {
     try {
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       this.isInitialized = true;
+      console.log('🔊 Audio context initialized successfully');
     } catch (error) {
       console.warn('Audio context initialization failed:', error);
       this.isInitialized = false;
@@ -219,7 +220,7 @@ class SoundManager {
 
     } catch (error) {
       // Fallback to generated tones if sound files don't exist
-      console.log(`Using generated tone for ${config.type}`);
+      // Silent fallback - no need to log every time
       return this.createPlaceholderAudio(config);
     }
   }
@@ -310,7 +311,12 @@ class SoundManager {
    * Play a sound effect
    */
   public async playSound(soundType: SoundType): Promise<void> {
-    if (!this.isInitialized || this.volumeSettings.muted) {
+    // Always try to initialize if not already done
+    if (!this.isInitialized) {
+      await this.initializeAudioContext();
+    }
+
+    if (this.volumeSettings.muted) {
       return;
     }
 

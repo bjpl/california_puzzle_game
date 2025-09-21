@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DndContext, DragEndEvent, DragStartEvent, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
-import { playSound, SoundType } from '../utils/soundManager';
+import { playSound, SoundType, soundManager } from '../utils/soundManager';
 import CountyTray from './CountyTray';
 import CaliforniaMapFixed from './CaliforniaMapFixed';
 import CaliforniaMapSimple from './CaliforniaMapSimple';
@@ -28,6 +28,34 @@ export default function GameContainer() {
   const [isDragging, setIsDragging] = useState(false);
   const [activeCounty, setActiveCounty] = useState<any>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
+
+  // Initialize sound system on first user interaction
+  useEffect(() => {
+    const initSound = async () => {
+      try {
+        // This will ensure AudioContext is created
+        await soundManager.preloadSounds();
+      } catch (error) {
+        console.log('Sound initialization will happen on first interaction');
+      }
+    };
+
+    // Add event listener for first user interaction
+    const handleFirstInteraction = () => {
+      initSound();
+      // Remove listeners after first interaction
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
