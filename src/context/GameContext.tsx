@@ -46,6 +46,8 @@ interface GameContextType {
   isGameComplete: boolean;
   isGameStarted: boolean;
   isPaused: boolean;
+  hints: number;
+  hintedCounty: string | null;
 
   // Timer state
   timerState: TimerState;
@@ -71,6 +73,7 @@ interface GameContextType {
   resumeGame: () => void;
   updateSettings: (settings: Partial<GameSettings>) => void;
   recordSplitTime: (name: string) => void;
+  useHint: () => boolean;
 
   // Leaderboard
   saveToLeaderboard: () => LeaderboardEntry | null;
@@ -101,6 +104,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const [isGameComplete, setIsGameComplete] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [hints, setHints] = useState(3);
+  const [hintedCounty, setHintedCounty] = useState<string | null>(null);
 
   // Advanced scoring state
   const [currentStreak, setCurrentStreak] = useState(0);
@@ -310,6 +315,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     setIsGameComplete(false);
     setIsGameStarted(true);
     setIsPaused(false);
+    setHints(3);
+    setHintedCounty(null);
 
     // Reset timer
     timerControls.reset();
@@ -361,6 +368,26 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, [isGameComplete, gameSettings.enableScoring, gameSettings.playerName,
       score, gameMetrics, gameSettings.difficulty]);
 
+  const useHint = useCallback(() => {
+    if (hints <= 0 || !currentCounty) return false;
+
+    // Deduct a hint
+    setHints(prev => prev - 1);
+
+    // Highlight the correct county for the current selection
+    setHintedCounty(currentCounty.id);
+
+    // Clear the hint after 3 seconds
+    setTimeout(() => {
+      setHintedCounty(null);
+    }, 3000);
+
+    // Deduct points for using a hint
+    setScore(prev => Math.max(0, prev - 25));
+
+    return true;
+  }, [hints, currentCounty]);
+
   return (
     <GameContext.Provider
       value={{
@@ -373,6 +400,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         isGameComplete,
         isGameStarted,
         isPaused,
+        hints,
+        hintedCounty,
 
         // Timer state
         timerState,
@@ -398,6 +427,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         resumeGame,
         updateSettings,
         recordSplitTime,
+        useHint,
 
         // Leaderboard
         saveToLeaderboard,

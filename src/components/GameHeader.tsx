@@ -3,9 +3,8 @@ import { useGame } from '../context/GameContext';
 import { soundManager, SoundType } from '../utils/soundManager';
 
 export default function GameHeader() {
-  const { score, mistakes, placedCounties, counties, resetGame, timerState, pauseGame, resumeGame, isGameStarted, isPaused } = useGame();
+  const { score, mistakes, placedCounties, counties, resetGame, timerState, pauseGame, resumeGame, isGameStarted, isPaused, hints, useHint } = useGame();
   const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
-  const [hints, setHints] = useState(3);
   const progress = Math.round((placedCounties.size / counties.length) * 100);
 
   const formatTime = (ms: number) => {
@@ -32,10 +31,9 @@ export default function GameHeader() {
     }
   };
 
-  const useHint = () => {
-    if (hints > 0) {
-      setHints(hints - 1);
-      // TODO: Implement hint logic
+  const handleUseHint = () => {
+    if (useHint()) {
+      soundManager.playSound(SoundType.HOVER);
     }
   };
 
@@ -97,7 +95,7 @@ export default function GameHeader() {
           </button>
 
           <button
-            onClick={useHint}
+            onClick={handleUseHint}
             className="bg-yellow-500 text-white px-2 py-1 rounded text-sm hover:bg-yellow-600 transition-colors disabled:bg-gray-300"
             disabled={hints === 0}
           >

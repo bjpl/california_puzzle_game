@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 
@@ -15,19 +15,22 @@ interface CountyFeature {
 }
 
 function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature; bounds: any; isDragging: boolean }) {
-  const { placedCounties, currentCounty } = useGame();
+  const { placedCounties, currentCounty, hintedCounty } = useGame();
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
   const isPlaced = placedCounties.has(countyId);
+  const isHinted = hintedCounty === countyId;
 
   const { isOver, setNodeRef } = useDroppable({
     id: countyId,
   });
 
-  // Three states: placed (green), target/hover (yellow), available (gray)
+  // Four states: placed (green), hinted (pulsing blue), target/hover (yellow), available (gray)
   let fillColor = '#e5e7eb'; // Default gray (available)
   if (isPlaced) {
     fillColor = '#10b981'; // Green when placed
+  } else if (isHinted) {
+    fillColor = '#3b82f6'; // Blue when hinted
   } else if (isDragging && isOver) {
     fillColor = '#fbbf24'; // Yellow/amber when hovering over during drag (target state)
   }
@@ -75,10 +78,11 @@ function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature;
         fill={fillColor}
         stroke="#374151"
         strokeWidth={isDragging && isOver ? "1" : "0.5"}
-        className="transition-all duration-200"
+        className={`transition-all duration-200 ${isHinted ? 'animate-pulse' : ''}`}
         style={{
           cursor: isPlaced ? 'default' : 'pointer',
-          filter: isDragging && isOver ? 'brightness(1.1)' : 'none'
+          filter: isDragging && isOver ? 'brightness(1.1)' : 'none',
+          opacity: isHinted ? 0.8 : 1
         }}
       />
       {isPlaced && (
@@ -101,6 +105,11 @@ function CountyDropZone({ county, bounds, isDragging }: { county: CountyFeature;
 export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolean }) {
   const [geoData, setGeoData] = useState<any>(null);
   const [bounds, setBounds] = useState<any>(null);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const svgRef = useRef<SVGSVGElement>(null);
+  const isPanning = useRef(false);
+  const startPan = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const basePath = window.location.hostname === 'localhost'
@@ -151,8 +160,67 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
     );
   }
 
+  // Handle mouse wheel for zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY * -0.001;
+    const newZoom = Math.min(Math.max(0.5, zoom + delta), 3);
+    setZoom(newZoom);
+  };
+
+  // Handle mouse events for panning
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button === 0 && e.ctrlKey) { // Left click + Ctrl for pan
+      isPanning.current = true;
+      startPan.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isPanning.current) {
+      setPan({
+        x: e.clientX - startPan.current.x,
+        y: e.clientY - startPan.current.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    isPanning.current = false;
+  };
+
+  const resetView = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  };
+
   return (
     <div className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 relative flex items-center justify-center">
+      {/* Zoom Controls */}
+      <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+        <button
+          onClick={() => setZoom(Math.min(zoom + 0.25, 3))}
+          className="bg-white hover:bg-gray-100 text-gray-700 p-1 rounded shadow-md text-xs"
+          title="Zoom In"
+        >
+          ➕
+        </button>
+        <button
+          onClick={() => setZoom(Math.max(zoom - 0.25, 0.5))}
+          className="bg-white hover:bg-gray-100 text-gray-700 p-1 rounded shadow-md text-xs"
+          title="Zoom Out"
+        >
+          ➖
+        </button>
+        <button
+          onClick={resetView}
+          className="bg-white hover:bg-gray-100 text-gray-700 p-1 rounded shadow-md text-xs"
+          title="Reset View"
+        >
+          🔄
+        </button>
+      </div>
+
       {/* Only show drag instruction when dragging */}
       {isDragging && (
         <div className="absolute top-2 left-0 right-0 z-10 text-center">
@@ -163,12 +231,25 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       )}
 
       <svg
+        ref={svgRef}
         viewBox="0 0 800 600"
         className="w-full h-full"
-        style={{ maxHeight: '100%', maxWidth: '100%' }}
+        style={{
+          maxHeight: '100%',
+          maxWidth: '100%',
+          cursor: isPanning.current ? 'grabbing' : 'grab'
+        }}
         preserveAspectRatio="xMidYMid meet"
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
         <rect width="800" height="600" fill="#dbeafe" />
+
+        {/* Apply zoom and pan transformation */}
+        <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
 
         {/* Render all counties */}
         <g>
@@ -182,7 +263,10 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
           ))}
         </g>
 
-        {/* Legend */}
+        </g>
+        {/* End of zoom/pan group */}
+
+        {/* Legend (outside of zoom/pan) */}
         <g transform="translate(20, 550)">
           <rect x="0" y="0" width="10" height="10" fill="#e5e7eb" stroke="#374151" strokeWidth="0.5" />
           <text x="15" y="9" fontSize="10" fill="#6b7280">Available</text>
@@ -192,6 +276,9 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
 
           <rect x="140" y="0" width="10" height="10" fill="#10b981" stroke="#374151" strokeWidth="0.5" />
           <text x="155" y="9" fontSize="10" fill="#6b7280">Placed</text>
+
+          <rect x="210" y="0" width="10" height="10" fill="#3b82f6" stroke="#374151" strokeWidth="0.5" />
+          <text x="225" y="9" fontSize="10" fill="#6b7280">Hint</text>
         </g>
       </svg>
     </div>
