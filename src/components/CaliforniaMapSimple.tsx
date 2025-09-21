@@ -151,14 +151,16 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         viewBox="0 0 800 600"
         className="w-full h-full"
         style={{ maxHeight: '100%', maxWidth: '100%' }}
+        preserveAspectRatio="xMidYMid meet"
       >
         <rect width="800" height="600" fill="#dbeafe" />
 
+        {/* Title - properly positioned */}
         <text
           x="400"
-          y="25"
+          y="20"
           textAnchor="middle"
-          fontSize="18"
+          fontSize="16"
           fill="#1e40af"
           fontWeight="bold"
         >

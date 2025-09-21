@@ -136,7 +136,7 @@ export default function GameContainer() {
 
           {/* Map - Using simplified version for better rendering */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-lg p-4 h-[550px]">
+            <div className="bg-white rounded-lg shadow-lg p-4 h-[520px]">
               <CaliforniaMapSimple isDragging={isDragging} />
             </div>
           </div>
