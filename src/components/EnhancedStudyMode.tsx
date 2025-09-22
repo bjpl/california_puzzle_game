@@ -19,7 +19,7 @@ interface StudyProgress {
   totalPoints: number;
 }
 
-type ViewMode = 'explore' | 'flashcards' | 'quiz' | 'map' | 'timeline' | 'connections';
+type ViewMode = 'explore' | 'quiz' | 'map' | 'timeline';
 type ContentTab = 'overview' | 'history' | 'economy' | 'culture' | 'geography' | 'memory';
 
 export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModeProps) {
@@ -148,26 +148,57 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     }));
   };
 
-  // Generate quiz question
+  // Generate quiz question with diverse types
   const generateQuizQuestion = () => {
     const randomCounty = sortedCounties[Math.floor(Math.random() * sortedCounties.length)];
+    const mergedCounty = getMergedCountyData(randomCounty);
     const education = getCountyEducation(randomCounty.id);
 
     const questionTypes = [
+      // County seat questions
       {
-        question: `Which county is known as the "${randomCounty.funFact?.split(' ')[0]} Capital"?`,
-        answer: randomCounty.name,
-        options: generateOptions(randomCounty.name, counties.map(c => c.name))
+        question: `What is the county seat of ${mergedCounty.name} County?`,
+        answer: mergedCounty.capital || mergedCounty.countySeat || 'Unknown',
+        options: generateOptions(mergedCounty.capital || mergedCounty.countySeat, counties.map(c => c.capital).filter(Boolean))
       },
+      // Region questions
       {
-        question: `What region is ${randomCounty.name} County located in?`,
-        answer: randomCounty.region,
-        options: generateOptions(randomCounty.region, regions)
+        question: `Which region is ${mergedCounty.name} County located in?`,
+        answer: mergedCounty.region,
+        options: generateOptions(mergedCounty.region, regions)
       },
+      // Population questions
       {
-        question: `What is the county seat of ${randomCounty.name} County?`,
-        answer: randomCounty.capital,
-        options: generateOptions(randomCounty.capital, counties.map(c => c.capital).filter(Boolean))
+        question: `Which county has a population of approximately ${mergedCounty.population?.toLocaleString()}?`,
+        answer: mergedCounty.name,
+        options: generateOptions(mergedCounty.name, counties.map(c => c.name))
+      },
+      // Founding date questions
+      {
+        question: `When was ${mergedCounty.name} County established?`,
+        answer: String(mergedCounty.founded || mergedCounty.established || 'Unknown'),
+        options: generateOptions(
+          String(mergedCounty.founded || mergedCounty.established),
+          counties.map(c => String(c.founded || c.established)).filter(Boolean)
+        )
+      },
+      // Fun fact questions
+      ...(mergedCounty.funFact ? [{
+        question: `Which county ${mergedCounty.funFact.toLowerCase().includes('home to') ? 'is' : 'has'} ${mergedCounty.funFact.toLowerCase()}?`,
+        answer: mergedCounty.name,
+        options: generateOptions(mergedCounty.name, counties.map(c => c.name))
+      }] : []),
+      // Area questions
+      {
+        question: `Which county has an area of approximately ${mergedCounty.area?.toLocaleString()} square miles?`,
+        answer: mergedCounty.name,
+        options: generateOptions(mergedCounty.name, counties.map(c => c.name))
+      },
+      // Neighboring counties (if we have Related Counties data)
+      {
+        question: `Which county is in the same region as ${counties.find(c => c.region === mergedCounty.region && c.id !== mergedCounty.id)?.name}?`,
+        answer: mergedCounty.name,
+        options: generateOptions(mergedCounty.name, counties.filter(c => c.id !== mergedCounty.id).map(c => c.name))
       }
     ];
 
@@ -263,7 +294,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* View Mode Tabs */}
           <div className="flex gap-2 mt-4">
-            {(['explore', 'flashcards', 'quiz', 'map', 'timeline', 'connections'] as ViewMode[]).map(mode => (
+            {(['explore', 'quiz', 'map', 'timeline'] as ViewMode[]).map(mode => (
               <button
                 key={mode}
                 onClick={() => setViewMode(mode)}
@@ -273,7 +304,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     : 'bg-white bg-opacity-20 hover:bg-opacity-30'
                 }`}
               >
-                {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                {mode === 'explore' ? '📚 Explore' :
+                 mode === 'quiz' ? '🎯 Quiz' :
+                 mode === 'map' ? '🗺️ Map' :
+                 mode === 'timeline' ? '📅 Timeline' :
+                 mode.charAt(0).toUpperCase() + mode.slice(1)}
               </button>
             ))}
           </div>
@@ -647,28 +682,58 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           )}
 
           {viewMode === 'quiz' && (
-            <div className="flex-1 flex items-center justify-center p-8">
-              <div className="max-w-2xl w-full">
+            <div className="flex-1 p-8 overflow-y-auto">
+              <div className="max-w-4xl mx-auto">
                 {!quizQuestion ? (
-                  <button
-                    onClick={generateQuizQuestion}
-                    className="w-full py-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl text-xl font-bold hover:from-blue-600 hover:to-purple-600 transition-colors"
-                  >
-                    Start Quiz
-                  </button>
+                  <div className="text-center">
+                    <h2 className="text-3xl font-bold text-gray-800 mb-6">🎯 County Knowledge Quiz</h2>
+                    <p className="text-gray-600 mb-8">Test your knowledge of California counties!</p>
+
+                    {/* Quiz Statistics */}
+                    <div className="grid grid-cols-3 gap-4 mb-8">
+                      <div className="bg-green-50 p-4 rounded-lg">
+                        <div className="text-2xl font-bold text-green-600">{progress.currentStreak}</div>
+                        <div className="text-sm text-gray-600">Current Streak</div>
+                      </div>
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-600">{progress.totalPoints}</div>
+                        <div className="text-sm text-gray-600">Total Points</div>
+                      </div>
+                      <div className="bg-purple-50 p-4 rounded-lg">
+                        <div className="text-2xl font-bold text-purple-600">{progress.completedQuizzes.size}</div>
+                        <div className="text-sm text-gray-600">Quizzes Completed</div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={generateQuizQuestion}
+                      className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl text-xl font-bold hover:from-blue-600 hover:to-purple-600 transition-all transform hover:scale-105"
+                    >
+                      Start New Quiz
+                    </button>
+                  </div>
                 ) : (
                   <div className="bg-white rounded-xl shadow-lg p-8">
+                    <div className="mb-4 text-sm text-gray-500">Question {progress.completedQuizzes.size + 1}</div>
                     <h3 className="text-2xl font-bold text-gray-800 mb-6">{quizQuestion.question}</h3>
                     <div className="grid grid-cols-2 gap-4">
                       {quizQuestion.options.map((option: string, idx: number) => (
                         <button
                           key={idx}
                           onClick={() => handleQuizAnswer(option)}
-                          className="p-4 bg-gray-100 rounded-lg hover:bg-blue-100 transition-colors text-lg font-medium"
+                          className="p-4 bg-gray-100 rounded-lg hover:bg-blue-100 transition-colors text-lg font-medium text-gray-700"
                         >
                           {option}
                         </button>
                       ))}
+                    </div>
+                    <div className="mt-6 pt-6 border-t">
+                      <button
+                        onClick={() => setQuizQuestion(null)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        Skip Question →
+                      </button>
                     </div>
                   </div>
                 )}
@@ -676,7 +741,150 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
             </div>
           )}
 
-          {/* Add more view modes (flashcards, map, timeline, connections) as needed */}
+          {/* Map Mode - Interactive Visual Learning */}
+          {viewMode === 'map' && (
+            <div className="flex-1 p-8 overflow-y-auto">
+              <div className="max-w-6xl mx-auto">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">🗺️ Interactive County Map</h2>
+                <p className="text-gray-600 mb-6">Click on counties to learn about them!</p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Map Display Area */}
+                  <div className="lg:col-span-2 bg-gray-100 rounded-lg p-8 min-h-[500px] flex items-center justify-center">
+                    <div className="text-center text-gray-500">
+                      <div className="text-6xl mb-4">🗺️</div>
+                      <p className="text-lg">Interactive map coming soon!</p>
+                      <p className="text-sm mt-2">This will display California with clickable counties</p>
+                    </div>
+                  </div>
+
+                  {/* County Info Panel */}
+                  <div className="bg-white rounded-lg shadow-lg p-6">
+                    <h3 className="font-bold text-lg mb-4">County Information</h3>
+                    {selectedCounty ? (
+                      <div className="space-y-3">
+                        <h4 className="text-xl font-semibold text-blue-600">{selectedCounty.name}</h4>
+                        <div className="text-sm space-y-2 text-gray-600">
+                          <div><strong>Region:</strong> {selectedCounty.region}</div>
+                          <div><strong>County Seat:</strong> {selectedCounty.capital || 'N/A'}</div>
+                          <div><strong>Population:</strong> {selectedCounty.population?.toLocaleString() || 'N/A'}</div>
+                          <div><strong>Area:</strong> {selectedCounty.area ? `${selectedCounty.area} sq mi` : 'N/A'}</div>
+                          <div><strong>Founded:</strong> {selectedCounty.founded || 'N/A'}</div>
+                        </div>
+                        <div className="pt-4 border-t">
+                          <p className="text-sm text-gray-600">{selectedCounty.funFact}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-gray-500">Select a county on the map to view details</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Region Legend */}
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                  <h4 className="font-semibold mb-3">Regions:</h4>
+                  <div className="flex flex-wrap gap-3">
+                    {regions.map(region => (
+                      <div key={region} className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded ${
+                          region === 'Bay Area' ? 'bg-blue-500' :
+                          region === 'Southern California' ? 'bg-red-500' :
+                          region === 'Central Valley' ? 'bg-green-500' :
+                          region === 'Central Coast' ? 'bg-purple-500' :
+                          'bg-gray-500'
+                        }`} />
+                        <span className="text-sm text-gray-700">{region}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Timeline Mode - Historical Perspective */}
+          {viewMode === 'timeline' && (
+            <div className="flex-1 p-8 overflow-y-auto">
+              <div className="max-w-6xl mx-auto">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">📅 California Counties Timeline</h2>
+                <p className="text-gray-600 mb-6">Explore when counties were established</p>
+
+                {/* Timeline visualization */}
+                <div className="space-y-6">
+                  {/* Group counties by decade */}
+                  {(() => {
+                    const countiesByDecade = counties.reduce((acc: any, county) => {
+                      const year = county.founded || county.established;
+                      if (year) {
+                        const decade = Math.floor(year / 10) * 10;
+                        if (!acc[decade]) acc[decade] = [];
+                        acc[decade].push(county);
+                      }
+                      return acc;
+                    }, {});
+
+                    const sortedDecades = Object.keys(countiesByDecade).sort((a, b) => Number(a) - Number(b));
+
+                    return sortedDecades.map(decade => (
+                      <div key={decade} className="relative">
+                        {/* Decade Header */}
+                        <div className="flex items-center mb-4">
+                          <div className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">
+                            {decade}s
+                          </div>
+                          <div className="flex-1 h-0.5 bg-gray-300 ml-4"></div>
+                        </div>
+
+                        {/* Counties in this decade */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 ml-8">
+                          {countiesByDecade[decade]
+                            .sort((a: any, b: any) => (a.founded || a.established) - (b.founded || b.established))
+                            .map((county: any) => (
+                            <button
+                              key={county.id}
+                              onClick={() => handleCountySelect(county)}
+                              className={`p-3 rounded-lg border transition-all ${
+                                selectedCounty?.id === county.id
+                                  ? 'bg-blue-100 border-blue-400'
+                                  : 'bg-white border-gray-200 hover:border-blue-300'
+                              }`}
+                            >
+                              <div className="text-sm font-medium text-gray-800">{county.name}</div>
+                              <div className="text-xs text-gray-500">{county.founded || county.established}</div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ));
+                  })()}
+                </div>
+
+                {/* Historical Context Panel */}
+                {selectedCounty && (
+                  <div className="mt-8 p-6 bg-white rounded-lg shadow-lg">
+                    <h3 className="text-xl font-bold mb-4">{selectedCounty.name} County</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="font-semibold text-gray-700 mb-2">📅 Established</h4>
+                        <p className="text-2xl font-bold text-blue-600">{selectedCounty.founded || selectedCounty.established || 'Unknown'}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-700 mb-2">🏛️ County Seat</h4>
+                        <p className="text-lg">{selectedCounty.capital || selectedCounty.countySeat || 'N/A'}</p>
+                      </div>
+                    </div>
+                    {educationContent && (
+                      <div className="mt-4 pt-4 border-t">
+                        <h4 className="font-semibold text-gray-700 mb-2">Historical Context</h4>
+                        <p className="text-sm text-gray-600">{educationContent.historicalContext}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
