@@ -39,6 +39,8 @@ export default function GameHeader() {
   };
 
   const handleUseHint = () => {
+    console.log('Hint button clicked. Hints:', hints, 'Current County:', currentCounty);
+
     if (hints > 0 && currentCounty) {
       // Track attempts per county for progressive hints
       const countyName = currentCounty.name;
@@ -58,7 +60,12 @@ export default function GameHeader() {
       setHintLevel(level);
 
       if (useHint()) {
-        soundManager.playSound('hover');
+        try {
+          soundManager.play('hover', 0.3);
+        } catch (error) {
+          console.warn('Sound play failed:', error);
+        }
+        console.log('Setting showHintModal to true');
         setShowHintModal(true);
       }
     }

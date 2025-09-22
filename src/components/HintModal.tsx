@@ -12,6 +12,8 @@ interface HintModalProps {
 export default function HintModal({ isOpen, onClose, county, hintLevel }: HintModalProps) {
   const [showContent, setShowContent] = useState(false);
 
+  console.log('HintModal render - isOpen:', isOpen, 'county:', county, 'hintLevel:', hintLevel);
+
   useEffect(() => {
     if (isOpen) {
       // Delay content to create smooth animation
@@ -21,18 +23,13 @@ export default function HintModal({ isOpen, onClose, county, hintLevel }: HintMo
     }
   }, [isOpen]);
 
-  if (!isOpen || !county) return null;
-
-  // Debug: Log county info to see what we're working with
-  console.log('HintModal - County:', county);
-  console.log('HintModal - County name:', county.name);
-  console.log('HintModal - Hint level:', hintLevel);
+  if (!isOpen || !county) {
+    console.log('HintModal returning null - isOpen:', isOpen, 'county:', county);
+    return null;
+  }
 
   const hints = geographicHints[county.name];
   const characteristics = getCountyCharacteristics(county.name);
-
-  console.log('HintModal - Found hints:', hints);
-  console.log('HintModal - Characteristics:', characteristics);
 
   const getHintContent = () => {
     // If no hints found for this county, show a generic message
