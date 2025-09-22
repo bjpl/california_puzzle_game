@@ -15,7 +15,11 @@ const specialLabelHandling: Record<string, { abbreviation?: string; offset?: [nu
   'contra-costa': { abbreviation: 'Contra C.' },
   'santa-barbara': { abbreviation: 'Santa B.' },
   'santa-clara': { abbreviation: 'Santa Clara', offset: [0, -3] },
-  'nevada': { abbreviation: 'Nevada', offset: [0, -3] }
+  'nevada': { abbreviation: 'Nevada', offset: [0, -3] },
+  'san-joaquin': { abbreviation: 'San Joaquin', offset: [5, -3] },
+  'sacramento': { abbreviation: 'Sacramento', offset: [0, -2] },
+  'los-angeles': { abbreviation: 'LA', offset: [0, 0] },
+  'san-diego': { abbreviation: 'San Diego', offset: [0, -5] }
 };
 
 export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyModeMapProps) {
@@ -55,6 +59,19 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
   };
 
   return (
+    <>
+      <style jsx global>{`
+        @keyframes pulse {
+          0%, 100% {
+            stroke-opacity: 1;
+            stroke-width: 3.5;
+          }
+          50% {
+            stroke-opacity: 0.7;
+            stroke-width: 4.5;
+          }
+        }
+      `}</style>
     <div className="relative w-full h-full">
       {/* SVG Map with Real Geographic Boundaries */}
       <svg
@@ -84,15 +101,18 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
               <path
                 d={county.path}
                 fill={fillColor}
-                fillOpacity={isSelected ? 0.95 : isHovered ? 0.85 : 0.7}
-                stroke="#ffffff"
-                strokeWidth={isSelected ? 2.5 : isHovered ? 2 : 1}
+                fillOpacity={isSelected ? 0.98 : isHovered ? 0.90 : 0.7}
+                stroke={isSelected ? '#FFD700' : isHovered ? '#FFFFFF' : '#ffffff'}
+                strokeWidth={isSelected ? 3.5 : isHovered ? 2.5 : 1}
                 strokeLinejoin="round"
                 strokeLinecap="round"
                 className="cursor-pointer transition-all duration-200 hover:filter hover:brightness-110"
                 style={{
-                  filter: isSelected ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2))' :
-                         isHovered ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))' : 'none'
+                  filter: isSelected ? 'drop-shadow(0 6px 12px rgba(255, 215, 0, 0.4))' :
+                         isHovered ? 'drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5))' : 'none',
+                  transition: 'all 0.3s ease',
+                  strokeDasharray: isSelected ? '5, 2' : 'none',
+                  animation: isSelected ? 'pulse 2s infinite' : 'none'
                 }}
                 onMouseEnter={(e) => {
                   setHoveredCounty(county.id);
@@ -231,5 +251,6 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
         </div>
       )}
     </div>
+    </>
   );
 }
