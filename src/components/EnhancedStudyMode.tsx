@@ -908,7 +908,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 <div className="space-y-5">
                   {/* Group counties by decade */}
                   {(() => {
-                    const countiesByDecade = counties.reduce((acc: any, county) => {
+                    const countiesByDecade = sortedCounties.reduce((acc: any, county) => {
                       const year = county.founded || county.established;
                       if (year) {
                         const decade = Math.floor(year / 10) * 10;
@@ -919,6 +919,22 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     }, {});
 
                     const sortedDecades = Object.keys(countiesByDecade).sort((a, b) => Number(a) - Number(b));
+
+                    if (sortedDecades.length === 0) {
+                      return (
+                        <div className="text-center py-12">
+                          <div className="text-5xl mb-4">🔍</div>
+                          <h3 className="text-xl font-semibold text-gray-700 mb-2">No Counties Found</h3>
+                          <p className="text-gray-500">No counties match the selected region filter.</p>
+                          <button
+                            onClick={() => setSelectedRegion('all')}
+                            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                          >
+                            Show All Counties
+                          </button>
+                        </div>
+                      );
+                    }
 
                     return sortedDecades.map(decade => (
                       <div key={decade} className="relative">
