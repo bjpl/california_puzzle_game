@@ -27,9 +27,6 @@ type ContentTab = 'overview' | 'history' | 'economy' | 'culture' | 'geography' |
 type QuizState = 'idle' | 'active' | 'summary';
 
 interface QuizSettings {
-  difficulty: 'all' | 'easy' | 'medium' | 'hard';
-  questionType: 'all' | QuizQuestion['type'];
-  region: string;
   questionsPerSession: number;
 }
 
@@ -56,13 +53,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [showQuizSettings, setShowQuizSettings] = useState(false);
   const [showRegionChangeModal, setShowRegionChangeModal] = useState(false);
   const [pendingRegion, setPendingRegion] = useState<string>('');
   const [quizSettings, setQuizSettings] = useState<QuizSettings>({
-    difficulty: 'all',
-    questionType: 'all',
-    region: 'all',
     questionsPerSession: 10
   });
   const [progress, setProgress] = useState<StudyProgress>({
@@ -185,19 +178,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   // Generate quiz question using the comprehensive database
   const generateQuizQuestion = () => {
-    // Apply quiz settings filters - use selectedRegion as the source of truth
+    // Apply region filter and ensure randomization
     const filters: any = {
       region: selectedRegion !== 'all' ? selectedRegion : undefined,
       excludeIds: Array.from(usedQuestionIds)
     };
-
-    if (quizSettings.difficulty !== 'all') {
-      filters.difficulty = quizSettings.difficulty;
-    }
-
-    if (quizSettings.questionType !== 'all') {
-      filters.type = quizSettings.questionType;
-    }
 
     // Get filtered questions
     const questions = getRandomQuestions(1, filters);
@@ -230,15 +215,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     setShowAnswer(false);
   };
 
-  // Start a new quiz session
-  const startQuiz = () => {
-    // Sync quiz settings with current region
-    setQuizSettings(prev => ({ ...prev, region: selectedRegion }));
+  // Start a new quiz session with specific question count
+  const startQuiz = (questionCount: number) => {
+    setQuizSettings({ questionsPerSession: questionCount });
     setQuizState('active');
     setQuestionHistory([]);
     setCurrentQuestionIndex(0);
     setUsedQuestionIds(new Set());
-    setShowQuizSettings(false);
     generateQuizQuestion();
   };
 
@@ -345,7 +328,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   // Confirm region change and start new quiz
   const confirmRegionChange = () => {
     setSelectedRegion(pendingRegion);
-    setQuizSettings(prev => ({ ...prev, region: pendingRegion }));
     setShowRegionChangeModal(false);
     resetQuiz();
   };
@@ -835,97 +817,19 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     {/* Action Buttons */}
                     <div className="flex gap-4 justify-center">
                       <button
-                        onClick={startQuiz}
+                        onClick={() => startQuiz(5)}
                         className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl text-xl font-bold hover:from-blue-600 hover:to-purple-600 transition-all transform hover:scale-105"
                       >
-                        Start New Quiz
+                        🎯 Quick Quiz (5)
                       </button>
                       <button
-                        onClick={() => setShowQuizSettings(!showQuizSettings)}
-                        className="px-6 py-4 bg-gray-200 text-gray-700 rounded-xl text-lg font-semibold hover:bg-gray-300 transition-all"
+                        onClick={() => startQuiz(15)}
+                        className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl text-xl font-bold hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105"
                       >
-                        ⚙️ Settings
+                        🏆 Full Quiz (15)
                       </button>
                     </div>
 
-                    {/* Quiz Settings Panel */}
-                    {showQuizSettings && (
-                      <div className="mt-8 p-6 bg-gray-50 rounded-xl text-left max-w-2xl mx-auto">
-                        <h3 className="text-xl font-bold text-gray-800 mb-4">Quiz Settings</h3>
-                        <div className="space-y-4">
-                          {/* Difficulty */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
-                            <select
-                              value={quizSettings.difficulty}
-                              onChange={(e) => setQuizSettings(prev => ({ ...prev, difficulty: e.target.value as any }))}
-                              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                            >
-                              <option value="all">All Levels</option>
-                              <option value="easy">Easy</option>
-                              <option value="medium">Medium</option>
-                              <option value="hard">Hard</option>
-                            </select>
-                          </div>
-
-                          {/* Question Type */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Question Type</label>
-                            <select
-                              value={quizSettings.questionType}
-                              onChange={(e) => setQuizSettings(prev => ({ ...prev, questionType: e.target.value as any }))}
-                              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                            >
-                              <option value="all">All Types</option>
-                              <option value="capital">Capitals</option>
-                              <option value="landmark">Landmarks</option>
-                              <option value="geography">Geography</option>
-                              <option value="history">History</option>
-                              <option value="economy">Economy</option>
-                              <option value="demographics">Demographics</option>
-                              <option value="nature">Nature</option>
-                              <option value="culture">Culture</option>
-                            </select>
-                          </div>
-
-                          {/* Region Filter */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Region</label>
-                            <select
-                              value={quizSettings.region}
-                              onChange={(e) => handleRegionChange(e.target.value)}
-                              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                            >
-                              <option value="all">All Regions</option>
-                              <option value="Bay Area">Bay Area</option>
-                              <option value="Southern California">Southern California</option>
-                              <option value="Central Valley">Central Valley</option>
-                              <option value="Central Coast">Central Coast</option>
-                              <option value="Northern California">Northern California</option>
-                              <option value="North Coast">North Coast</option>
-                              <option value="Sierra Nevada">Sierra Nevada</option>
-                            </select>
-                          </div>
-
-                          {/* Questions per session */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Questions per Session: {quizSettings.questionsPerSession}
-                            </label>
-                            <input
-                              type="range"
-                              min="5"
-                              max="30"
-                              step="5"
-                              value={quizSettings.questionsPerSession}
-                              onChange={(e) => setQuizSettings(prev => ({ ...prev, questionsPerSession: parseInt(e.target.value) }))}
-                              className="w-full"
-                            />
-                          </div>
-
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
 
