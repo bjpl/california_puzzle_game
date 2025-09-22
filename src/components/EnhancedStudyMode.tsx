@@ -5,7 +5,7 @@ import { getCountyEducationComplete } from '../data/countyEducationComplete';
 import { getMemoryAid as getMemoryAidData, memoryPatterns, spatialRelationships, learningStrategies } from '../data/memoryAids';
 import { useSoundEffect } from '../utils/simpleSoundManager';
 import { californiaCounties, CaliforniaCounty } from '../data/californiaCounties';
-import { getQuestionsByRegion, QuizQuestion } from '../data/californiaQuizQuestions';
+import { getQuestionsByRegion, QuizQuestion, getRandomQuestions } from '../data/californiaQuizQuestions';
 import StudyModeMap from './StudyModeMap';
 import CountyShapeDisplay from './CountyShapeDisplay';
 import EducationalContentModal from './EducationalContentModal';
@@ -26,6 +26,24 @@ interface StudyProgress {
 
 type ViewMode = 'explore' | 'quiz' | 'map' | 'timeline';
 type ContentTab = 'overview' | 'history' | 'economy' | 'culture' | 'geography' | 'memory';
+type QuizState = 'idle' | 'active' | 'paused' | 'review' | 'summary';
+
+interface QuizSettings {
+  difficulty: 'all' | 'easy' | 'medium' | 'hard';
+  questionType: 'all' | QuizQuestion['type'];
+  region: string;
+  timerEnabled: boolean;
+  hintsEnabled: boolean;
+  questionsPerSession: number;
+}
+
+interface QuestionResult {
+  question: QuizQuestion;
+  userAnswer: string;
+  isCorrect: boolean;
+  timeSpent?: number;
+  hintsUsed?: number;
+}
 
 export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModeProps) {
   const { counties } = useGame();
@@ -39,6 +57,22 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const [showCountyDetailsModal, setShowCountyDetailsModal] = useState(false);
   const [quizQuestion, setQuizQuestion] = useState<QuizQuestion | null>(null);
   const [usedQuestionIds, setUsedQuestionIds] = useState<Set<string>>(new Set());
+  const [quizState, setQuizState] = useState<QuizState>('idle');
+  const [questionHistory, setQuestionHistory] = useState<QuestionResult[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [showQuizSettings, setShowQuizSettings] = useState(false);
+  const [quizSettings, setQuizSettings] = useState<QuizSettings>({
+    difficulty: 'all',
+    questionType: 'all',
+    region: 'all',
+    timerEnabled: false,
+    hintsEnabled: true,
+    questionsPerSession: 10
+  });
+  const [questionStartTime, setQuestionStartTime] = useState<number>(0);
+  const [hintsUsedForQuestion, setHintsUsedForQuestion] = useState(0);
   const [progress, setProgress] = useState<StudyProgress>({
     studiedCounties: new Set(),
     completedQuizzes: new Set(),
@@ -161,46 +195,132 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   // Generate quiz question using the comprehensive database
   const generateQuizQuestion = () => {
-    // Get questions filtered by region
-    const regionQuestions = getQuestionsByRegion(selectedRegion);
+    // Apply quiz settings filters
+    const filters: any = {
+      region: quizSettings.region !== 'all' ? quizSettings.region : selectedRegion,
+      excludeIds: Array.from(usedQuestionIds)
+    };
 
-    // Filter out already used questions
-    const availableQuestions = regionQuestions.filter(q => !usedQuestionIds.has(q.id));
+    if (quizSettings.difficulty !== 'all') {
+      filters.difficulty = quizSettings.difficulty;
+    }
 
-    // If we've used all questions, reset the used questions
-    if (availableQuestions.length === 0) {
+    if (quizSettings.questionType !== 'all') {
+      filters.type = quizSettings.questionType;
+    }
+
+    // Get filtered questions
+    const questions = getRandomQuestions(1, filters);
+
+    if (questions.length === 0) {
+      // Reset if we've used all questions
       setUsedQuestionIds(new Set());
-      const allQuestions = regionQuestions;
-      if (allQuestions.length === 0) {
-        // No questions available for this region
-        console.warn(`No questions available for region: ${selectedRegion}`);
+      // Try again with fresh pool
+      const freshQuestions = getRandomQuestions(1, {
+        ...filters,
+        excludeIds: []
+      });
+
+      if (freshQuestions.length === 0) {
+        console.warn('No questions available with current filters');
         return;
       }
-      const randomIndex = Math.floor(Math.random() * allQuestions.length);
-      const question = allQuestions[randomIndex];
+
+      const question = freshQuestions[0];
       setQuizQuestion(question);
       setUsedQuestionIds(new Set([question.id]));
     } else {
-      // Select a random question from available ones
-      const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-      const question = availableQuestions[randomIndex];
+      const question = questions[0];
       setQuizQuestion(question);
       setUsedQuestionIds(prev => new Set([...prev, question.id]));
+    }
+
+    // Reset question state
+    setSelectedAnswer(null);
+    setShowAnswer(false);
+    setHintsUsedForQuestion(0);
+    setQuestionStartTime(Date.now());
+  };
+
+  // Start a new quiz session
+  const startQuiz = () => {
+    setQuizState('active');
+    setQuestionHistory([]);
+    setCurrentQuestionIndex(0);
+    setUsedQuestionIds(new Set());
+    setShowQuizSettings(false);
+    generateQuizQuestion();
+  };
+
+  // End the current quiz
+  const endQuiz = () => {
+    setQuizState('summary');
+  };
+
+  // Navigate to previous question
+  const goToPreviousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      const newIndex = currentQuestionIndex - 1;
+      setCurrentQuestionIndex(newIndex);
+      const prevResult = questionHistory[newIndex];
+      setQuizQuestion(prevResult.question);
+      setSelectedAnswer(prevResult.userAnswer);
+      setShowAnswer(true);
+    }
+  };
+
+  // Navigate to next question
+  const goToNextQuestion = () => {
+    if (currentQuestionIndex < questionHistory.length - 1) {
+      // Navigate to existing answered question
+      const newIndex = currentQuestionIndex + 1;
+      setCurrentQuestionIndex(newIndex);
+      const nextResult = questionHistory[newIndex];
+      setQuizQuestion(nextResult.question);
+      setSelectedAnswer(nextResult.userAnswer);
+      setShowAnswer(true);
+    } else if (currentQuestionIndex === questionHistory.length - 1) {
+      // Generate new question if we're at the last answered question
+      if (questionHistory.length >= quizSettings.questionsPerSession) {
+        // End quiz if we've reached the question limit
+        endQuiz();
+      } else {
+        setCurrentQuestionIndex(questionHistory.length);
+        generateQuizQuestion();
+      }
+    } else {
+      // Generate new question
+      generateQuizQuestion();
     }
   };
 
 
   // Handle quiz answer
   const handleQuizAnswer = (answer: string) => {
-    if (!quizQuestion) return;
+    if (!quizQuestion || showAnswer) return;
+
+    setSelectedAnswer(answer);
     const isCorrect = answer === quizQuestion.correctAnswer;
+    const timeSpent = Date.now() - questionStartTime;
+
+    // Add to history only if this is a new question (not reviewing)
+    if (currentQuestionIndex === questionHistory.length) {
+      const result: QuestionResult = {
+        question: quizQuestion,
+        userAnswer: answer,
+        isCorrect,
+        timeSpent: Math.floor(timeSpent / 1000),
+        hintsUsed: hintsUsedForQuestion
+      };
+      setQuestionHistory(prev => [...prev, result]);
+    }
 
     if (isCorrect) {
       sound.playSound('correct');
       setProgress(prev => ({
         ...prev,
         currentStreak: prev.currentStreak + 1,
-        totalPoints: prev.totalPoints + 10,
+        totalPoints: prev.totalPoints + Math.max(10 - hintsUsedForQuestion * 2, 2),
         completedQuizzes: new Set([...prev.completedQuizzes, quizQuestion.question])
       }));
     } else {
@@ -211,9 +331,71 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
       }));
     }
 
-    // Generate new question after a delay
-    setTimeout(() => generateQuizQuestion(), 1500);
+    // Show answer
+    setShowAnswer(true);
   };
+
+  // Use hint for current question
+  const useQuizHint = () => {
+    if (!quizQuestion || !quizSettings.hintsEnabled || showAnswer) return;
+
+    setHintsUsedForQuestion(prev => prev + 1);
+    // You can implement specific hint logic here
+    // For now, just deduct points when hint is used
+  };
+
+  // Reset quiz to initial state
+  const resetQuiz = () => {
+    setQuizState('idle');
+    setQuizQuestion(null);
+    setQuestionHistory([]);
+    setCurrentQuestionIndex(0);
+    setUsedQuestionIds(new Set());
+    setShowAnswer(false);
+    setSelectedAnswer(null);
+  };
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (viewMode !== 'quiz' || !quizQuestion) return;
+
+      // Number keys 1-4 for answers (only in active state, not showing answer)
+      if (quizState === 'active' && !showAnswer && e.key >= '1' && e.key <= '4') {
+        const index = parseInt(e.key) - 1;
+        if (index < quizQuestion.options.length) {
+          handleQuizAnswer(quizQuestion.options[index]);
+        }
+      }
+      // Space or Enter for next question
+      else if ((e.key === ' ' || e.key === 'Enter') && showAnswer) {
+        e.preventDefault();
+        goToNextQuestion();
+      }
+      // Arrow keys for navigation
+      else if (e.key === 'ArrowLeft' && currentQuestionIndex > 0) {
+        goToPreviousQuestion();
+      }
+      else if (e.key === 'ArrowRight' && (showAnswer || currentQuestionIndex < questionHistory.length - 1)) {
+        goToNextQuestion();
+      }
+      // Escape to pause/unpause
+      else if (e.key === 'Escape') {
+        if (quizState === 'active') {
+          setQuizState('paused');
+        } else if (quizState === 'paused') {
+          setQuizState('active');
+        }
+      }
+      // H for hint
+      else if (e.key.toLowerCase() === 'h' && !showAnswer) {
+        useQuizHint();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [viewMode, quizState, quizQuestion, showAnswer, currentQuestionIndex, questionHistory]);
 
   // Region colors for visual distinction
   const regionColors: { [key: string]: string } = {
@@ -654,8 +836,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {viewMode === 'quiz' && (
             <div className="flex-1 p-8 overflow-y-auto">
-              <div className="max-w-4xl mx-auto">
-                {!quizQuestion ? (
+              <div className="max-w-5xl mx-auto">
+                {/* Quiz States */}
+                {quizState === 'idle' && (
                   <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-800 mb-6">🎯 County Knowledge Quiz</h2>
                     <p className="text-gray-600 mb-8">Test your knowledge of California counties!</p>
@@ -664,7 +847,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     <div className="grid grid-cols-3 gap-4 mb-8">
                       <div className="bg-green-50 p-4 rounded-lg">
                         <div className="text-2xl font-bold text-green-600">{progress.currentStreak}</div>
-                        <div className="text-sm text-gray-600">Current Streak</div>
+                        <div className="text-sm text-gray-600">Best Streak</div>
                       </div>
                       <div className="bg-blue-50 p-4 rounded-lg">
                         <div className="text-2xl font-bold text-blue-600">{progress.totalPoints}</div>
@@ -672,38 +855,359 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       </div>
                       <div className="bg-purple-50 p-4 rounded-lg">
                         <div className="text-2xl font-bold text-purple-600">{progress.completedQuizzes.size}</div>
-                        <div className="text-sm text-gray-600">Quizzes Completed</div>
+                        <div className="text-sm text-gray-600">Questions Answered</div>
                       </div>
                     </div>
 
-                    <button
-                      onClick={generateQuizQuestion}
-                      className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl text-xl font-bold hover:from-blue-600 hover:to-purple-600 transition-all transform hover:scale-105"
-                    >
-                      Start New Quiz
-                    </button>
-                  </div>
-                ) : (
-                  <div className="bg-white rounded-xl shadow-lg p-8">
-                    <div className="mb-4 text-sm text-gray-500">Question {progress.completedQuizzes.size + 1}</div>
-                    <h3 className="text-2xl font-bold text-gray-800 mb-6">{quizQuestion.question}</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      {quizQuestion.options.map((option: string, idx: number) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleQuizAnswer(option)}
-                          className="p-4 bg-gray-100 rounded-lg hover:bg-blue-100 transition-colors text-lg font-medium text-gray-700"
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="mt-6 pt-6 border-t">
+                    {/* Action Buttons */}
+                    <div className="flex gap-4 justify-center">
                       <button
-                        onClick={() => setQuizQuestion(null)}
-                        className="text-gray-500 hover:text-gray-700"
+                        onClick={startQuiz}
+                        className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl text-xl font-bold hover:from-blue-600 hover:to-purple-600 transition-all transform hover:scale-105"
                       >
-                        Skip Question →
+                        Start New Quiz
+                      </button>
+                      <button
+                        onClick={() => setShowQuizSettings(!showQuizSettings)}
+                        className="px-6 py-4 bg-gray-200 text-gray-700 rounded-xl text-lg font-semibold hover:bg-gray-300 transition-all"
+                      >
+                        ⚙️ Settings
+                      </button>
+                    </div>
+
+                    {/* Quiz Settings Panel */}
+                    {showQuizSettings && (
+                      <div className="mt-8 p-6 bg-gray-50 rounded-xl text-left max-w-2xl mx-auto">
+                        <h3 className="text-xl font-bold text-gray-800 mb-4">Quiz Settings</h3>
+                        <div className="space-y-4">
+                          {/* Difficulty */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                            <select
+                              value={quizSettings.difficulty}
+                              onChange={(e) => setQuizSettings(prev => ({ ...prev, difficulty: e.target.value as any }))}
+                              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                            >
+                              <option value="all">All Levels</option>
+                              <option value="easy">Easy</option>
+                              <option value="medium">Medium</option>
+                              <option value="hard">Hard</option>
+                            </select>
+                          </div>
+
+                          {/* Question Type */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Question Type</label>
+                            <select
+                              value={quizSettings.questionType}
+                              onChange={(e) => setQuizSettings(prev => ({ ...prev, questionType: e.target.value as any }))}
+                              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                            >
+                              <option value="all">All Types</option>
+                              <option value="capital">Capitals</option>
+                              <option value="landmark">Landmarks</option>
+                              <option value="geography">Geography</option>
+                              <option value="history">History</option>
+                              <option value="economy">Economy</option>
+                              <option value="demographics">Demographics</option>
+                              <option value="nature">Nature</option>
+                              <option value="culture">Culture</option>
+                            </select>
+                          </div>
+
+                          {/* Region Filter */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Region</label>
+                            <select
+                              value={quizSettings.region}
+                              onChange={(e) => setQuizSettings(prev => ({ ...prev, region: e.target.value }))}
+                              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                            >
+                              <option value="all">All Regions</option>
+                              <option value="Bay Area">Bay Area</option>
+                              <option value="Southern California">Southern California</option>
+                              <option value="Central Valley">Central Valley</option>
+                              <option value="Central Coast">Central Coast</option>
+                              <option value="Northern California">Northern California</option>
+                              <option value="North Coast">North Coast</option>
+                              <option value="Sierra Nevada">Sierra Nevada</option>
+                            </select>
+                          </div>
+
+                          {/* Questions per session */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Questions per Session: {quizSettings.questionsPerSession}
+                            </label>
+                            <input
+                              type="range"
+                              min="5"
+                              max="30"
+                              step="5"
+                              value={quizSettings.questionsPerSession}
+                              onChange={(e) => setQuizSettings(prev => ({ ...prev, questionsPerSession: parseInt(e.target.value) }))}
+                              className="w-full"
+                            />
+                          </div>
+
+                          {/* Toggle Options */}
+                          <div className="flex gap-6">
+                            <label className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={quizSettings.hintsEnabled}
+                                onChange={(e) => setQuizSettings(prev => ({ ...prev, hintsEnabled: e.target.checked }))}
+                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                              />
+                              <span className="text-sm">Enable Hints</span>
+                            </label>
+                            <label className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={quizSettings.timerEnabled}
+                                onChange={(e) => setQuizSettings(prev => ({ ...prev, timerEnabled: e.target.checked }))}
+                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                              />
+                              <span className="text-sm">Enable Timer</span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Active Quiz */}
+                {(quizState === 'active' || quizState === 'paused') && quizQuestion && (
+                  <div>
+                    {/* Progress Bar */}
+                    <div className="mb-6">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-600">
+                          Question {currentQuestionIndex + 1} of {quizSettings.questionsPerSession}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          {Math.min(questionHistory.length, quizSettings.questionsPerSession)} answered
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${((currentQuestionIndex + 1) / quizSettings.questionsPerSession) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Paused Overlay */}
+                    {quizState === 'paused' && (
+                      <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center rounded-xl">
+                        <div className="bg-white p-8 rounded-xl text-center">
+                          <h3 className="text-2xl font-bold mb-4">Quiz Paused</h3>
+                          <p className="text-gray-600 mb-6">Press ESC or click Resume to continue</p>
+                          <button
+                            onClick={() => setQuizState('active')}
+                            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                          >
+                            Resume Quiz
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Question Card */}
+                    <div className="bg-white rounded-xl shadow-lg p-8 relative">
+                      {/* Question Header */}
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="flex-1">
+                          <div className="flex gap-2 mb-2">
+                            <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">
+                              {quizQuestion.type}
+                            </span>
+                            <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+                              {quizQuestion.difficulty}
+                            </span>
+                            <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+                              {quizQuestion.region}
+                            </span>
+                          </div>
+                          <h3 className="text-2xl font-bold text-gray-800">{quizQuestion.question}</h3>
+                        </div>
+                        {quizSettings.hintsEnabled && !showAnswer && (
+                          <button
+                            onClick={useQuizHint}
+                            className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors text-sm font-medium"
+                          >
+                            💡 Hint ({3 - hintsUsedForQuestion} left)
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Answer Options */}
+                      <div className="grid grid-cols-2 gap-4 mb-6">
+                        {quizQuestion.options.map((option: string, idx: number) => {
+                          const isSelected = selectedAnswer === option;
+                          const isCorrect = option === quizQuestion.correctAnswer;
+                          const showResult = showAnswer;
+
+                          return (
+                            <button
+                              key={idx}
+                              onClick={() => !showAnswer && handleQuizAnswer(option)}
+                              disabled={showAnswer}
+                              className={`p-4 rounded-lg transition-all text-lg font-medium relative ${
+                                showResult
+                                  ? isCorrect
+                                    ? 'bg-green-100 border-2 border-green-500 text-green-800'
+                                    : isSelected
+                                    ? 'bg-red-100 border-2 border-red-500 text-red-800'
+                                    : 'bg-gray-100 text-gray-500'
+                                  : isSelected
+                                  ? 'bg-blue-100 border-2 border-blue-500 text-blue-800'
+                                  : 'bg-gray-100 hover:bg-blue-50 text-gray-700'
+                              }`}
+                            >
+                              <span className="absolute top-2 left-2 text-xs font-bold text-gray-400">
+                                {idx + 1}
+                              </span>
+                              {option}
+                              {showResult && isCorrect && (
+                                <span className="ml-2">✓</span>
+                              )}
+                              {showResult && isSelected && !isCorrect && (
+                                <span className="ml-2">✗</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Explanation (shown after answering) */}
+                      {showAnswer && quizQuestion.explanation && (
+                        <div className="p-4 bg-blue-50 rounded-lg mb-6">
+                          <p className="text-sm text-blue-800">
+                            <strong>Explanation:</strong> {quizQuestion.explanation}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Navigation Controls */}
+                      <div className="flex justify-between items-center pt-6 border-t">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={goToPreviousQuestion}
+                            disabled={currentQuestionIndex === 0}
+                            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                              currentQuestionIndex === 0
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                          >
+                            ← Previous
+                          </button>
+                          <button
+                            onClick={goToNextQuestion}
+                            className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                              showAnswer
+                                ? 'bg-blue-500 text-white hover:bg-blue-600'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                          >
+                            {currentQuestionIndex >= questionHistory.length - 1 && questionHistory.length >= quizSettings.questionsPerSession
+                              ? 'Finish Quiz →'
+                              : 'Next →'}
+                          </button>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setQuizState('paused')}
+                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                          >
+                            ⏸ Pause
+                          </button>
+                          <button
+                            onClick={endQuiz}
+                            className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                          >
+                            End Quiz
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Keyboard shortcuts hint */}
+                      <div className="mt-4 text-xs text-gray-500 text-center">
+                        Press 1-4 to select answer • Space/Enter for next • ← → to navigate • ESC to pause
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Quiz Summary */}
+                {quizState === 'summary' && (
+                  <div className="text-center">
+                    <h2 className="text-3xl font-bold text-gray-800 mb-6">📊 Quiz Complete!</h2>
+
+                    {/* Score Summary */}
+                    <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+                      <div className="grid grid-cols-3 gap-6 mb-6">
+                        <div>
+                          <div className="text-3xl font-bold text-green-600">
+                            {questionHistory.filter(q => q.isCorrect).length}
+                          </div>
+                          <div className="text-sm text-gray-600">Correct</div>
+                        </div>
+                        <div>
+                          <div className="text-3xl font-bold text-blue-600">
+                            {Math.round((questionHistory.filter(q => q.isCorrect).length / questionHistory.length) * 100)}%
+                          </div>
+                          <div className="text-sm text-gray-600">Accuracy</div>
+                        </div>
+                        <div>
+                          <div className="text-3xl font-bold text-purple-600">
+                            {progress.currentStreak}
+                          </div>
+                          <div className="text-sm text-gray-600">Best Streak</div>
+                        </div>
+                      </div>
+
+                      {/* Question Review */}
+                      <div className="border-t pt-6">
+                        <h3 className="font-semibold text-gray-700 mb-4">Question Review</h3>
+                        <div className="space-y-2 max-h-60 overflow-y-auto">
+                          {questionHistory.map((result, idx) => (
+                            <div
+                              key={idx}
+                              className={`flex items-center justify-between p-3 rounded-lg ${
+                                result.isCorrect ? 'bg-green-50' : 'bg-red-50'
+                              }`}
+                            >
+                              <span className="text-sm">
+                                Q{idx + 1}: {result.question.countyName} - {result.question.type}
+                              </span>
+                              <span className={`text-sm font-medium ${
+                                result.isCorrect ? 'text-green-600' : 'text-red-600'
+                              }`}>
+                                {result.isCorrect ? '✓' : '✗'}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-4 justify-center">
+                      <button
+                        onClick={startQuiz}
+                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600"
+                      >
+                        New Quiz
+                      </button>
+                      <button
+                        onClick={resetQuiz}
+                        className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300"
+                      >
+                        Back to Menu
                       </button>
                     </div>
                   </div>
