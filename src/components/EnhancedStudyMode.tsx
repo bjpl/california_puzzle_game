@@ -44,29 +44,33 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     totalPoints: 0
   });
 
-  // Load progress from localStorage
+  // Load progress from localStorage (client-side only)
   useEffect(() => {
-    const savedProgress = localStorage.getItem('californiaStudyProgress');
-    if (savedProgress) {
-      const parsed = JSON.parse(savedProgress);
-      setProgress({
-        ...parsed,
-        studiedCounties: new Set(parsed.studiedCounties),
-        completedQuizzes: new Set(parsed.completedQuizzes),
-        masteredCounties: new Set(parsed.masteredCounties)
-      });
+    if (typeof window !== 'undefined') {
+      const savedProgress = localStorage.getItem('californiaStudyProgress');
+      if (savedProgress) {
+        const parsed = JSON.parse(savedProgress);
+        setProgress({
+          ...parsed,
+          studiedCounties: new Set(parsed.studiedCounties || []),
+          completedQuizzes: new Set(parsed.completedQuizzes || []),
+          masteredCounties: new Set(parsed.masteredCounties || [])
+        });
+      }
     }
   }, []);
 
-  // Save progress to localStorage
+  // Save progress to localStorage (client-side only)
   useEffect(() => {
-    const toSave = {
-      ...progress,
-      studiedCounties: Array.from(progress.studiedCounties),
-      completedQuizzes: Array.from(progress.completedQuizzes),
-      masteredCounties: Array.from(progress.masteredCounties)
-    };
-    localStorage.setItem('californiaStudyProgress', JSON.stringify(toSave));
+    if (typeof window !== 'undefined') {
+      const toSave = {
+        ...progress,
+        studiedCounties: Array.from(progress.studiedCounties),
+        completedQuizzes: Array.from(progress.completedQuizzes),
+        masteredCounties: Array.from(progress.masteredCounties)
+      };
+      localStorage.setItem('californiaStudyProgress', JSON.stringify(toSave));
+    }
   }, [progress]);
 
   // Auto-select first county on load with merged data
@@ -924,14 +928,14 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         </div>
 
                         {/* Counties in this decade */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 ml-6">
+                        <div className="flex flex-wrap gap-3 ml-6">
                           {countiesByDecade[decade]
                             .sort((a: any, b: any) => (a.founded || a.established) - (b.founded || b.established))
                             .map((county: any) => (
                             <button
                               key={county.id}
                               onClick={() => handleCountySelect(county)}
-                              className={`p-2.5 rounded-xl border-2 transition-all transform hover:scale-105 ${
+                              className={`min-w-[140px] max-w-[180px] p-3 rounded-xl border-2 transition-all transform hover:scale-105 ${
                                 selectedCounty?.id === county.id
                                   ? 'bg-gradient-to-br from-blue-100 to-purple-100 border-blue-500 shadow-lg scale-105'
                                   : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow-md hover:bg-blue-50'
