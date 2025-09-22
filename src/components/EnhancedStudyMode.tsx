@@ -65,6 +65,16 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     localStorage.setItem('californiaStudyProgress', JSON.stringify(toSave));
   }, [progress]);
 
+  // Auto-select first county on load with merged data
+  useEffect(() => {
+    if (counties.length > 0 && !selectedCounty) {
+      const firstCounty = counties[0];
+      const mergedCounty = getMergedCountyData(firstCounty);
+      setSelectedCounty(mergedCounty);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [counties]);
+
   // Get unique regions
   const regions = Array.from(new Set(counties.map(c => c.region))).sort();
 
@@ -78,27 +88,41 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   // Helper function to merge county data from multiple sources
   const getMergedCountyData = (county: any) => {
-    // Find the comprehensive county data
-    const comprehensiveData = californiaCounties.find(
-      c => c.id.toLowerCase() === county.id.toLowerCase().replace(/-/g, '_')
-    );
+    // Try to find matching data from californiaCounties.ts by name matching
+    const normalizedId = county.id.toLowerCase().replace(/-/g, '_');
+    const comprehensiveData = californiaCounties.find(c => {
+      const cId = c.id.toLowerCase();
+      const countyId = county.id.toLowerCase();
+      const countyName = county.name.toLowerCase().replace(' county', '').replace(/\s+/g, '_');
+
+      return cId === normalizedId ||
+             cId === countyId ||
+             cId === countyName ||
+             c.name.toLowerCase() === county.name.toLowerCase() ||
+             c.name.toLowerCase().replace(' county', '') === county.name.toLowerCase();
+    });
 
     if (comprehensiveData) {
-      // Merge the data
+      // Merge the comprehensive data with the county
       return {
         ...county,
+        // Keep original fields but add comprehensive data
         countySeat: comprehensiveData.countySeat,
         established: comprehensiveData.established,
-        population: comprehensiveData.population || county.population,
-        area: comprehensiveData.area || county.area,
         economicFocus: comprehensiveData.economicFocus,
         naturalFeatures: comprehensiveData.naturalFeatures,
         culturalLandmarks: comprehensiveData.culturalLandmarks,
         funFacts: comprehensiveData.funFacts,
-        trivia: comprehensiveData.trivia
+        trivia: comprehensiveData.trivia,
+        // Preserve original fields if they exist
+        capital: county.capital || comprehensiveData.countySeat,
+        founded: county.founded || comprehensiveData.established,
+        population: county.population || comprehensiveData.population,
+        area: county.area || comprehensiveData.area
       };
     }
 
+    // Return original county data if no match found
     return county;
   };
 
@@ -111,7 +135,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
       ...prev,
       studiedCounties: new Set([...prev.studiedCounties, county.id])
     }));
-    // Removed sound effect for better study experience
   };
 
   // Generate quiz question
@@ -356,11 +379,12 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                             <div className="p-4 bg-blue-50 rounded-lg">
                               <h4 className="font-semibold text-blue-900 mb-2">📊 Quick Facts</h4>
                               <div className="space-y-1 text-sm">
-                                <div><strong>County Seat:</strong> {selectedCounty.countySeat || selectedCounty.capital || 'N/A'}</div>
+                                <div><strong>County Seat:</strong> {selectedCounty.capital || selectedCounty.countySeat || 'N/A'}</div>
                                 <div><strong>Population:</strong> {selectedCounty.population ? selectedCounty.population.toLocaleString() : 'N/A'}</div>
                                 <div><strong>Area:</strong> {selectedCounty.area ? `${selectedCounty.area.toLocaleString()} sq mi` : 'N/A'}</div>
-                                <div><strong>Established:</strong> {selectedCounty.established || selectedCounty.founded || 'N/A'}</div>
-                                <div><strong>Region:</strong> {selectedCounty.region}</div>
+                                <div><strong>Established:</strong> {selectedCounty.founded || selectedCounty.established || 'N/A'}</div>
+                                <div><strong>Region:</strong> {selectedCounty.region || 'N/A'}</div>
+                                <div><strong>Difficulty:</strong> {selectedCounty.difficulty ? selectedCounty.difficulty.charAt(0).toUpperCase() + selectedCounty.difficulty.slice(1) : 'N/A'}</div>
                               </div>
                             </div>
                             <div className="p-4 bg-green-50 rounded-lg">
