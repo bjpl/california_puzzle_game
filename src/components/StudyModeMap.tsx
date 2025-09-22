@@ -20,6 +20,7 @@ const specialLabelHandling: Record<string, { abbreviation?: string; offset?: [nu
 
 export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyModeMapProps) {
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   // Region color mapping
   const getRegionColor = (region: string) => {
@@ -93,8 +94,15 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
                   filter: isSelected ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2))' :
                          isHovered ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))' : 'none'
                 }}
-                onMouseEnter={() => setHoveredCounty(county.id)}
+                onMouseEnter={(e) => {
+                  setHoveredCounty(county.id);
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  setMousePosition({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+                }}
                 onMouseLeave={() => setHoveredCounty(null)}
+                onMouseMove={(e) => {
+                  setMousePosition({ x: e.clientX, y: e.clientY });
+                }}
                 onClick={() => handleCountyClick(county.id)}
               />
 
@@ -188,16 +196,29 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
         </g>
       </svg>
 
-      {/* Enhanced Hover Tooltip - Positioned at bottom right to avoid covering map */}
+      {/* Enhanced Hover Tooltip - Smart positioning that follows cursor */}
       {hoveredCounty && (
-        <div className="absolute bottom-4 right-4 bg-white rounded-xl shadow-2xl p-4 pointer-events-none border border-gray-200 z-50">
+        <div
+          className="fixed bg-white rounded-xl shadow-2xl p-3 pointer-events-none border border-gray-200 z-50 transition-all duration-150"
+          style={{
+            // Position tooltip intelligently based on cursor position
+            left: mousePosition.x > window.innerWidth - 250
+              ? mousePosition.x - 220 + 'px'
+              : mousePosition.x + 20 + 'px',
+            top: mousePosition.y > window.innerHeight - 100
+              ? mousePosition.y - 80 + 'px'
+              : mousePosition.y + 10 + 'px',
+            // Ensure tooltip stays within viewport
+            maxWidth: '200px'
+          }}
+        >
           <div className="flex items-center gap-3">
             <div>
               <div className="text-sm font-bold text-gray-900">{getCountyInfo(hoveredCounty)?.name}</div>
-              <div className="text-xs text-gray-600 mt-1">{getCountyInfo(hoveredCounty)?.region}</div>
+              <div className="text-xs text-gray-600 mt-0.5">{getCountyInfo(hoveredCounty)?.region}</div>
             </div>
             {/* Mini county shape preview */}
-            <svg width="30" height="30" viewBox="0 0 450 1100" className="border border-gray-200 rounded bg-gray-50">
+            <svg width="28" height="28" viewBox="0 0 450 1100" className="border border-gray-200 rounded bg-gray-50 flex-shrink-0">
               <path
                 d={getCountyInfo(hoveredCounty)?.path}
                 fill={getRegionColor(getCountyInfo(hoveredCounty)?.region || '')}
