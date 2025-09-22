@@ -20,20 +20,16 @@ interface StudyProgress {
   studiedCounties: Set<string>;
   completedQuizzes: Set<string>;
   masteredCounties: Set<string>;
-  currentStreak: number;
-  totalPoints: number;
 }
 
 type ViewMode = 'explore' | 'quiz' | 'map' | 'timeline';
 type ContentTab = 'overview' | 'history' | 'economy' | 'culture' | 'geography' | 'memory';
-type QuizState = 'idle' | 'active' | 'paused' | 'review' | 'summary';
+type QuizState = 'idle' | 'active' | 'summary';
 
 interface QuizSettings {
   difficulty: 'all' | 'easy' | 'medium' | 'hard';
   questionType: 'all' | QuizQuestion['type'];
   region: string;
-  timerEnabled: boolean;
-  hintsEnabled: boolean;
   questionsPerSession: number;
 }
 
@@ -41,8 +37,6 @@ interface QuestionResult {
   question: QuizQuestion;
   userAnswer: string;
   isCorrect: boolean;
-  timeSpent?: number;
-  hintsUsed?: number;
 }
 
 export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModeProps) {
@@ -63,22 +57,18 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showQuizSettings, setShowQuizSettings] = useState(false);
+  const [showRegionChangeModal, setShowRegionChangeModal] = useState(false);
+  const [pendingRegion, setPendingRegion] = useState<string>('');
   const [quizSettings, setQuizSettings] = useState<QuizSettings>({
     difficulty: 'all',
     questionType: 'all',
     region: 'all',
-    timerEnabled: false,
-    hintsEnabled: true,
     questionsPerSession: 10
   });
-  const [questionStartTime, setQuestionStartTime] = useState<number>(0);
-  const [hintsUsedForQuestion, setHintsUsedForQuestion] = useState(0);
   const [progress, setProgress] = useState<StudyProgress>({
     studiedCounties: new Set(),
     completedQuizzes: new Set(),
-    masteredCounties: new Set(),
-    currentStreak: 0,
-    totalPoints: 0
+    masteredCounties: new Set()
   });
 
   // Load progress from localStorage (client-side only)
@@ -238,8 +228,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     // Reset question state
     setSelectedAnswer(null);
     setShowAnswer(false);
-    setHintsUsedForQuestion(0);
-    setQuestionStartTime(Date.now());
   };
 
   // Start a new quiz session
@@ -279,18 +267,16 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
       setQuizQuestion(nextResult.question);
       setSelectedAnswer(nextResult.userAnswer);
       setShowAnswer(true);
-    } else if (currentQuestionIndex === questionHistory.length - 1) {
-      // Generate new question if we're at the last answered question
+    } else {
+      // Generate new question if we're at the last position
       if (questionHistory.length >= quizSettings.questionsPerSession) {
         // End quiz if we've reached the question limit
         endQuiz();
       } else {
+        // Generate a new question
         setCurrentQuestionIndex(questionHistory.length);
         generateQuizQuestion();
       }
-    } else {
-      // Generate new question
-      generateQuizQuestion();
     }
   };
 
@@ -301,16 +287,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
     setSelectedAnswer(answer);
     const isCorrect = answer === quizQuestion.correctAnswer;
-    const timeSpent = Date.now() - questionStartTime;
 
     // Add to history only if this is a new question (not reviewing)
     if (currentQuestionIndex === questionHistory.length) {
       const result: QuestionResult = {
         question: quizQuestion,
         userAnswer: answer,
-        isCorrect,
-        timeSpent: Math.floor(timeSpent / 1000),
-        hintsUsed: hintsUsedForQuestion
+        isCorrect
       };
       setQuestionHistory(prev => [...prev, result]);
     }
@@ -319,29 +302,14 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
       sound.playSound('correct');
       setProgress(prev => ({
         ...prev,
-        currentStreak: prev.currentStreak + 1,
-        totalPoints: prev.totalPoints + Math.max(10 - hintsUsedForQuestion * 2, 2),
         completedQuizzes: new Set([...prev.completedQuizzes, quizQuestion.question])
       }));
     } else {
       sound.playSound('incorrect');
-      setProgress(prev => ({
-        ...prev,
-        currentStreak: 0
-      }));
     }
 
     // Show answer
     setShowAnswer(true);
-  };
-
-  // Use hint for current question
-  const useQuizHint = () => {
-    if (!quizQuestion || !quizSettings.hintsEnabled || showAnswer) return;
-
-    setHintsUsedForQuestion(prev => prev + 1);
-    // You can implement specific hint logic here
-    // For now, just deduct points when hint is used
   };
 
   // Reset quiz to initial state
@@ -353,6 +321,26 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     setUsedQuestionIds(new Set());
     setShowAnswer(false);
     setSelectedAnswer(null);
+  };
+
+  // Handle region change during active quiz
+  const handleRegionChange = (newRegion: string) => {
+    if (quizState === 'active' && newRegion !== quizSettings.region) {
+      // Store the pending region and show modal
+      setPendingRegion(newRegion);
+      setShowRegionChangeModal(true);
+    } else {
+      // Not in active quiz, change directly
+      setQuizSettings(prev => ({ ...prev, region: newRegion }));
+    }
+  };
+
+  // Confirm region change and start new quiz
+  const confirmRegionChange = () => {
+    setQuizSettings(prev => ({ ...prev, region: pendingRegion }));
+    setShowRegionChangeModal(false);
+    resetQuiz();
+    startQuiz();
   };
 
   // Handle keyboard shortcuts
@@ -368,28 +356,16 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
         }
       }
       // Space or Enter for next question
-      else if ((e.key === ' ' || e.key === 'Enter') && showAnswer) {
+      else if ((e.key === ' ' || e.key === 'Enter')) {
         e.preventDefault();
         goToNextQuestion();
       }
       // Arrow keys for navigation
-      else if (e.key === 'ArrowLeft' && currentQuestionIndex > 0) {
+      else if (e.key === 'ArrowLeft') {
         goToPreviousQuestion();
       }
-      else if (e.key === 'ArrowRight' && (showAnswer || currentQuestionIndex < questionHistory.length - 1)) {
+      else if (e.key === 'ArrowRight') {
         goToNextQuestion();
-      }
-      // Escape to pause/unpause
-      else if (e.key === 'Escape') {
-        if (quizState === 'active') {
-          setQuizState('paused');
-        } else if (quizState === 'paused') {
-          setQuizState('active');
-        }
-      }
-      // H for hint
-      else if (e.key.toLowerCase() === 'h' && !showAnswer) {
-        useQuizHint();
       }
     };
 
@@ -844,18 +820,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     <p className="text-gray-600 mb-8">Test your knowledge of California counties!</p>
 
                     {/* Quiz Statistics */}
-                    <div className="grid grid-cols-3 gap-4 mb-8">
-                      <div className="bg-green-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-green-600">{progress.currentStreak}</div>
-                        <div className="text-sm text-gray-600">Best Streak</div>
-                      </div>
-                      <div className="bg-blue-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-blue-600">{progress.totalPoints}</div>
-                        <div className="text-sm text-gray-600">Total Points</div>
-                      </div>
-                      <div className="bg-purple-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-purple-600">{progress.completedQuizzes.size}</div>
-                        <div className="text-sm text-gray-600">Questions Answered</div>
+                    <div className="flex justify-center mb-8">
+                      <div className="bg-purple-50 p-6 rounded-lg">
+                        <div className="text-3xl font-bold text-purple-600">{progress.completedQuizzes.size}</div>
+                        <div className="text-sm text-gray-600">Questions Studied</div>
                       </div>
                     </div>
 
@@ -920,7 +888,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                             <label className="block text-sm font-medium text-gray-700 mb-2">Region</label>
                             <select
                               value={quizSettings.region}
-                              onChange={(e) => setQuizSettings(prev => ({ ...prev, region: e.target.value }))}
+                              onChange={(e) => handleRegionChange(e.target.value)}
                               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                             >
                               <option value="all">All Regions</option>
@@ -950,27 +918,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                             />
                           </div>
 
-                          {/* Toggle Options */}
-                          <div className="flex gap-6">
-                            <label className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                checked={quizSettings.hintsEnabled}
-                                onChange={(e) => setQuizSettings(prev => ({ ...prev, hintsEnabled: e.target.checked }))}
-                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                              />
-                              <span className="text-sm">Enable Hints</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                checked={quizSettings.timerEnabled}
-                                onChange={(e) => setQuizSettings(prev => ({ ...prev, timerEnabled: e.target.checked }))}
-                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                              />
-                              <span className="text-sm">Enable Timer</span>
-                            </label>
-                          </div>
                         </div>
                       </div>
                     )}
@@ -978,7 +925,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 )}
 
                 {/* Active Quiz */}
-                {(quizState === 'active' || quizState === 'paused') && quizQuestion && (
+                {quizState === 'active' && quizQuestion && (
                   <div>
                     {/* Progress Bar */}
                     <div className="mb-6">
@@ -998,22 +945,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       </div>
                     </div>
 
-                    {/* Paused Overlay */}
-                    {quizState === 'paused' && (
-                      <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center rounded-xl">
-                        <div className="bg-white p-8 rounded-xl text-center">
-                          <h3 className="text-2xl font-bold mb-4">Quiz Paused</h3>
-                          <p className="text-gray-600 mb-6">Press ESC or click Resume to continue</p>
-                          <button
-                            onClick={() => setQuizState('active')}
-                            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                          >
-                            Resume Quiz
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
                     {/* Question Card */}
                     <div className="bg-white rounded-xl shadow-lg p-8 relative">
                       {/* Question Header */}
@@ -1032,14 +963,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                           </div>
                           <h3 className="text-2xl font-bold text-gray-800">{quizQuestion.question}</h3>
                         </div>
-                        {quizSettings.hintsEnabled && !showAnswer && (
-                          <button
-                            onClick={useQuizHint}
-                            className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors text-sm font-medium"
-                          >
-                            💡 Hint ({3 - hintsUsedForQuestion} left)
-                          </button>
-                        )}
                       </div>
 
                       {/* Answer Options */}
@@ -1118,25 +1041,17 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                           </button>
                         </div>
 
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => setQuizState('paused')}
-                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-                          >
-                            ⏸ Pause
-                          </button>
-                          <button
-                            onClick={endQuiz}
-                            className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
-                          >
-                            End Quiz
-                          </button>
-                        </div>
+                        <button
+                          onClick={endQuiz}
+                          className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                        >
+                          End Quiz
+                        </button>
                       </div>
 
                       {/* Keyboard shortcuts hint */}
                       <div className="mt-4 text-xs text-gray-500 text-center">
-                        Press 1-4 to select answer • Space/Enter for next • ← → to navigate • ESC to pause
+                        Press 1-4 to select answer • Space/Enter for next • ← → to navigate
                       </div>
                     </div>
                   </div>
@@ -1149,7 +1064,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
                     {/* Score Summary */}
                     <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-                      <div className="grid grid-cols-3 gap-6 mb-6">
+                      <div className="grid grid-cols-2 gap-6 mb-6">
                         <div>
                           <div className="text-3xl font-bold text-green-600">
                             {questionHistory.filter(q => q.isCorrect).length}
@@ -1161,12 +1076,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                             {Math.round((questionHistory.filter(q => q.isCorrect).length / questionHistory.length) * 100)}%
                           </div>
                           <div className="text-sm text-gray-600">Accuracy</div>
-                        </div>
-                        <div>
-                          <div className="text-3xl font-bold text-purple-600">
-                            {progress.currentStreak}
-                          </div>
-                          <div className="text-sm text-gray-600">Best Streak</div>
                         </div>
                       </div>
 
@@ -1573,6 +1482,36 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           setShowEducationalModal(true);
         }}
       />
+
+      {/* Region Change Modal */}
+      {showRegionChangeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md mx-4 p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Change Region?</h3>
+            <p className="text-gray-600 mb-6">
+              You have an active quiz in progress. Changing the region will end your current quiz and start a new one.
+              Do you want to continue?
+            </p>
+            <div className="flex gap-4 justify-end">
+              <button
+                onClick={() => {
+                  setShowRegionChangeModal(false);
+                  setPendingRegion('');
+                }}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRegionChange}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Start New Quiz
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
