@@ -380,6 +380,14 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     // Deduct points for using a hint (50 points like Colombia app)
     setScore(prev => Math.max(0, prev - 50));
 
+    // Set the hinted county so the map can show visual indicators
+    setHintedCounty(currentCounty.id);
+
+    // Clear the hint after 10 seconds
+    setTimeout(() => {
+      setHintedCounty(null);
+    }, 10000);
+
     return true;
   }, [hints, currentCounty]);
 
