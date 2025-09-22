@@ -5,6 +5,7 @@ import { getCountyEducationComplete } from '../data/countyEducationComplete';
 import { getMemoryAid as getMemoryAidData, memoryPatterns, spatialRelationships, learningStrategies } from '../data/memoryAids';
 import { useSoundEffect } from '../utils/simpleSoundManager';
 import { californiaCounties, CaliforniaCounty } from '../data/californiaCounties';
+import { getQuestionsByRegion, QuizQuestion } from '../data/californiaQuizQuestions';
 import StudyModeMap from './StudyModeMap';
 import CountyShapeDisplay from './CountyShapeDisplay';
 import EducationalContentModal from './EducationalContentModal';
@@ -36,7 +37,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const [contentTab, setContentTab] = useState<ContentTab>('overview');
   const [showEducationalModal, setShowEducationalModal] = useState(false);
   const [showCountyDetailsModal, setShowCountyDetailsModal] = useState(false);
-  const [quizQuestion, setQuizQuestion] = useState<any>(null);
+  const [quizQuestion, setQuizQuestion] = useState<QuizQuestion | null>(null);
+  const [usedQuestionIds, setUsedQuestionIds] = useState<Set<string>>(new Set());
   const [progress, setProgress] = useState<StudyProgress>({
     studiedCounties: new Set(),
     completedQuizzes: new Set(),
@@ -157,81 +159,41 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     }));
   };
 
-  // Generate quiz question with diverse types
+  // Generate quiz question using the comprehensive database
   const generateQuizQuestion = () => {
-    const randomCounty = sortedCounties[Math.floor(Math.random() * sortedCounties.length)];
-    const mergedCounty = getMergedCountyData(randomCounty);
-    const education = getCountyEducation(randomCounty.id);
+    // Get questions filtered by region
+    const regionQuestions = getQuestionsByRegion(selectedRegion);
 
-    const questionTypes = [
-      // County seat questions
-      {
-        question: `What is the county seat of ${mergedCounty.name} County?`,
-        answer: mergedCounty.capital || mergedCounty.countySeat || 'Unknown',
-        options: generateOptions(mergedCounty.capital || mergedCounty.countySeat, counties.map(c => c.capital).filter(Boolean))
-      },
-      // Region questions
-      {
-        question: `Which region is ${mergedCounty.name} County located in?`,
-        answer: mergedCounty.region,
-        options: generateOptions(mergedCounty.region, regions)
-      },
-      // Population questions
-      {
-        question: `Which county has a population of approximately ${mergedCounty.population?.toLocaleString()}?`,
-        answer: mergedCounty.name,
-        options: generateOptions(mergedCounty.name, counties.map(c => c.name))
-      },
-      // Founding date questions
-      {
-        question: `When was ${mergedCounty.name} County established?`,
-        answer: String(mergedCounty.founded || mergedCounty.established || 'Unknown'),
-        options: generateOptions(
-          String(mergedCounty.founded || mergedCounty.established),
-          counties.map(c => String(c.founded || c.established)).filter(Boolean)
-        )
-      },
-      // Fun fact questions
-      ...(mergedCounty.funFact ? [{
-        question: `Which county ${mergedCounty.funFact.toLowerCase().includes('home to') ? 'is' : 'has'} ${mergedCounty.funFact.toLowerCase()}?`,
-        answer: mergedCounty.name,
-        options: generateOptions(mergedCounty.name, counties.map(c => c.name))
-      }] : []),
-      // Area questions
-      {
-        question: `Which county has an area of approximately ${mergedCounty.area?.toLocaleString()} square miles?`,
-        answer: mergedCounty.name,
-        options: generateOptions(mergedCounty.name, counties.map(c => c.name))
-      },
-      // Neighboring counties (if we have Related Counties data)
-      {
-        question: `Which county is in the same region as ${counties.find(c => c.region === mergedCounty.region && c.id !== mergedCounty.id)?.name}?`,
-        answer: mergedCounty.name,
-        options: generateOptions(mergedCounty.name, counties.filter(c => c.id !== mergedCounty.id).map(c => c.name))
+    // Filter out already used questions
+    const availableQuestions = regionQuestions.filter(q => !usedQuestionIds.has(q.id));
+
+    // If we've used all questions, reset the used questions
+    if (availableQuestions.length === 0) {
+      setUsedQuestionIds(new Set());
+      const allQuestions = regionQuestions;
+      if (allQuestions.length === 0) {
+        // No questions available for this region
+        console.warn(`No questions available for region: ${selectedRegion}`);
+        return;
       }
-    ];
-
-    const selected = questionTypes[Math.floor(Math.random() * questionTypes.length)];
-    setQuizQuestion(selected);
-  };
-
-  // Generate quiz options
-  const generateOptions = (correct: string, pool: string[]): string[] => {
-    const filtered = pool.filter(item => item && item !== correct);
-    const options = [correct];
-
-    while (options.length < 4 && filtered.length > 0) {
-      const randomIndex = Math.floor(Math.random() * filtered.length);
-      options.push(filtered[randomIndex]);
-      filtered.splice(randomIndex, 1);
+      const randomIndex = Math.floor(Math.random() * allQuestions.length);
+      const question = allQuestions[randomIndex];
+      setQuizQuestion(question);
+      setUsedQuestionIds(new Set([question.id]));
+    } else {
+      // Select a random question from available ones
+      const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+      const question = availableQuestions[randomIndex];
+      setQuizQuestion(question);
+      setUsedQuestionIds(prev => new Set([...prev, question.id]));
     }
-
-    return options.sort(() => Math.random() - 0.5);
   };
+
 
   // Handle quiz answer
   const handleQuizAnswer = (answer: string) => {
-    const isCorrect = answer === quizQuestion.answer;
+    if (!quizQuestion) return;
+    const isCorrect = answer === quizQuestion.correctAnswer;
 
     if (isCorrect) {
       sound.playSound('correct');
