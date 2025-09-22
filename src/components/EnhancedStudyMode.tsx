@@ -7,6 +7,7 @@ import { useSoundEffect } from '../utils/simpleSoundManager';
 import { californiaCounties, CaliforniaCounty } from '../data/californiaCounties';
 import StudyModeMap from './StudyModeMap';
 import CountyShapeDisplay from './CountyShapeDisplay';
+import EducationalContentModal from './EducationalContentModal';
 
 interface StudyModeProps {
   onClose: () => void;
@@ -33,6 +34,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const [selectedCounty, setSelectedCounty] = useState<any>(null);
   const [contentTab, setContentTab] = useState<ContentTab>('overview');
   const [showHints, setShowHints] = useState(false);
+  const [showEducationalModal, setShowEducationalModal] = useState(false);
   const [quizQuestion, setQuizQuestion] = useState<any>(null);
   const [progress, setProgress] = useState<StudyProgress>({
     studiedCounties: new Set(),
@@ -828,10 +830,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         {educationContent && (
                           <div className="pt-4 border-t">
                             <button
-                              onClick={() => setContentTab('overview')}
-                              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                              onClick={() => setShowEducationalModal(true)}
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all transform hover:scale-105"
                             >
-                              View Full Educational Content →
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                              </svg>
+                              <span>View Full Educational Content</span>
                             </button>
                           </div>
                         )}
@@ -1068,6 +1073,15 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           </div>
         </div>
       </div>
+
+      {/* Educational Content Modal */}
+      <EducationalContentModal
+        isOpen={showEducationalModal}
+        onClose={() => setShowEducationalModal(false)}
+        county={selectedCounty}
+        educationContent={educationContent}
+        memoryAid={memoryAid}
+      />
     </div>
   );
 }
