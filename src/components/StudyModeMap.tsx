@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { californiaCountyShapes, getCountyShape } from '../data/californiaCountyShapes';
+import { realCaliforniaCountyShapes } from '../data/californiaCountyBoundaries';
 
 interface StudyModeMapProps {
   onCountySelect?: (countyId: string) => void;
@@ -28,7 +28,11 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
 
   // Get county display info
   const getCountyInfo = (countyId: string) => {
-    return getCountyShape(countyId);
+    return realCaliforniaCountyShapes.find(
+      county => county.id === countyId ||
+      county.id === countyId.replace(/_/g, '-') ||
+      county.id === countyId.replace(/-/g, '_')
+    );
   };
 
   const handleCountyClick = (countyId: string) => {
@@ -39,25 +43,24 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
 
   return (
     <div className="relative w-full h-full">
-      {/* SVG Map with Geographic Shapes */}
+      {/* SVG Map with Real Geographic Boundaries */}
       <svg
-        viewBox="0 0 450 1100"
+        viewBox="0 0 800 900"
         className="w-full h-full"
         style={{ maxHeight: '600px' }}
         preserveAspectRatio="xMidYMid meet"
       >
-        {/* Background - California outline effect */}
-        <rect width="450" height="1100" fill="#E5E7EB" />
+        {/* Background - Ocean blue gradient */}
+        <defs>
+          <linearGradient id="ocean" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style={{ stopColor: '#E0F2FE', stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: '#F0F9FF', stopOpacity: 1 }} />
+          </linearGradient>
+        </defs>
+        <rect width="800" height="900" fill="url(#ocean)" />
 
-        {/* Ocean/Water effect on the left */}
-        <path
-          d="M 0,0 L 50,0 L 45,400 L 55,600 L 45,900 L 50,1100 L 0,1100 Z"
-          fill="#CBD5E1"
-          opacity="0.5"
-        />
-
-        {/* County Geographic Shapes */}
-        {californiaCountyShapes.map((county) => {
+        {/* Real County Geographic Boundaries */}
+        {realCaliforniaCountyShapes.map((county) => {
           const isHovered = hoveredCounty === county.id;
           const isSelected = selectedCounty?.id === county.id ||
                            selectedCounty?.id === county.id.replace(/-/g, '_');
@@ -115,15 +118,24 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
           );
         })}
 
-        {/* California State Border Outline for visual effect */}
-        <path
-          d="M 45,40 L 290,33 L 400,428 L 383,1090 L 145,1075 L 68,1000 L 55,600 L 48,210 L 68,50 Z"
-          fill="none"
-          stroke="#6B7280"
-          strokeWidth="2"
-          strokeDasharray="5,5"
-          opacity="0.3"
-        />
+        {/* Legend */}
+        <g transform="translate(650, 20)">
+          <text x="0" y="0" className="text-xs font-bold fill-gray-700">Regions</text>
+          {[
+            { name: 'Bay Area', color: '#3B82F6' },
+            { name: 'Southern CA', color: '#EF4444' },
+            { name: 'Central Valley', color: '#10B981' },
+            { name: 'Central Coast', color: '#A855F7' },
+            { name: 'Northern CA', color: '#F59E0B' },
+            { name: 'North Coast', color: '#06B6D4' },
+            { name: 'Sierra Nevada', color: '#8B5CF6' }
+          ].map((region, idx) => (
+            <g key={region.name} transform={`translate(0, ${20 + idx * 15})`}>
+              <rect x="0" y="0" width="10" height="10" fill={region.color} opacity="0.8" />
+              <text x="15" y="8" className="text-xs fill-gray-600">{region.name}</text>
+            </g>
+          ))}
+        </g>
       </svg>
 
       {/* Enhanced Hover Tooltip */}

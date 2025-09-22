@@ -1,5 +1,5 @@
 import React from 'react';
-import { getCountyShape, getCountyBounds } from '../data/californiaCountyShapes';
+import { realCaliforniaCountyShapes } from '../data/californiaCountyBoundaries';
 
 interface CountyShapeDisplayProps {
   countyId: string;
@@ -20,20 +20,40 @@ export default function CountyShapeDisplay({
   showLabel = false,
   fillColor
 }: CountyShapeDisplayProps) {
-  const county = getCountyShape(countyId);
+  const county = realCaliforniaCountyShapes.find(
+    c => c.id === countyId ||
+    c.id === countyId.replace(/_/g, '-') ||
+    c.id === countyId.replace(/-/g, '_')
+  );
 
   if (!county) return null;
 
-  // Get the bounding box of the county shape
-  const bounds = getCountyBounds(county.path);
+  // Extract bounds from the path for viewBox calculation
+  const getPathBounds = (pathData: string) => {
+    const numbers = pathData.match(/[\d.]+/g)?.map(Number) || [];
+    const coords: number[][] = [];
+    for (let i = 0; i < numbers.length; i += 2) {
+      if (numbers[i] !== undefined && numbers[i + 1] !== undefined) {
+        coords.push([numbers[i], numbers[i + 1]]);
+      }
+    }
+    if (coords.length === 0) return { minX: 0, minY: 0, maxX: 100, maxY: 100 };
+
+    const xs = coords.map(c => c[0]);
+    const ys = coords.map(c => c[1]);
+    return {
+      minX: Math.min(...xs),
+      maxX: Math.max(...xs),
+      minY: Math.min(...ys),
+      maxY: Math.max(...ys)
+    };
+  };
+
+  const bounds = getPathBounds(county.pathDetailed || county.path);
   const width = bounds.maxX - bounds.minX;
   const height = bounds.maxY - bounds.minY;
-
-  // Add padding around the shape
-  const padding = 10;
-  const viewBoxWidth = width + (padding * 2);
-  const viewBoxHeight = height + (padding * 2);
-  const viewBox = `${bounds.minX - padding} ${bounds.minY - padding} ${viewBoxWidth} ${viewBoxHeight}`;
+  const padding = Math.max(width, height) * 0.1;
+  const viewBox = `${bounds.minX - padding} ${bounds.minY - padding} ${width + padding * 2} ${height + padding * 2}`;
 
   // Determine fill color based on region if not provided
   const getRegionColor = (region: string) => {
@@ -49,7 +69,7 @@ export default function CountyShapeDisplay({
     }
   };
 
-  const fill = fillColor || getRegionColor(county.region);
+  const fill = fillColor || getRegionColor(county.region || '');
 
   return (
     <div className={`inline-block ${className}`}>
@@ -60,13 +80,13 @@ export default function CountyShapeDisplay({
         className="border border-gray-200 rounded-lg bg-white shadow-sm"
         preserveAspectRatio="xMidYMid meet"
       >
-        {/* County shape */}
+        {/* County shape with real boundaries */}
         <path
-          d={county.path}
+          d={county.pathDetailed || county.path}
           fill={fill}
-          fillOpacity="0.8"
-          stroke="#4B5563"
-          strokeWidth="1.5"
+          fillOpacity="0.85"
+          stroke="#374151"
+          strokeWidth="1"
           strokeLinejoin="round"
           strokeLinecap="round"
         />
@@ -80,7 +100,7 @@ export default function CountyShapeDisplay({
             className="text-xs font-bold fill-white"
             style={{ fontSize: Math.min(12, width / 8) }}
           >
-            {county.name.substring(0, 3).toUpperCase()}
+            {county.abbrev || county.name.substring(0, 3).toUpperCase()}
           </text>
         )}
       </svg>
@@ -115,7 +135,7 @@ export function CountyShapeGrid({
             className="mb-1"
           />
           <span className="text-xs text-gray-600 text-center">
-            {getCountyShape(id)?.name}
+            {realCaliforniaCountyShapes.find(c => c.id === id)?.name}
           </span>
         </div>
       ))}
