@@ -5,6 +5,7 @@ import { getCountyEducationComplete } from '../data/countyEducationComplete';
 import { getMemoryAid as getMemoryAidData, memoryPatterns, spatialRelationships, learningStrategies } from '../data/memoryAids';
 import { useSoundEffect } from '../utils/simpleSoundManager';
 import { californiaCounties, CaliforniaCounty } from '../data/californiaCounties';
+import StudyModeMap from './StudyModeMap';
 
 interface StudyModeProps {
   onClose: () => void;
@@ -744,74 +745,143 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           {/* Map Mode - Interactive Visual Learning */}
           {viewMode === 'map' && (
             <div className="flex-1 p-8 overflow-y-auto">
-              <div className="max-w-6xl mx-auto">
+              <div className="max-w-7xl mx-auto">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">🗺️ Interactive County Map</h2>
-                <p className="text-gray-600 mb-6">Click on counties to learn about them!</p>
+                <p className="text-gray-600 mb-6">Hover to see county names • Click to select and view details</p>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Map Display Area */}
-                  <div className="lg:col-span-2 bg-gray-100 rounded-lg p-8 min-h-[500px] flex items-center justify-center">
-                    <div className="text-center text-gray-500">
-                      <div className="text-6xl mb-4">🗺️</div>
-                      <p className="text-lg">Interactive map coming soon!</p>
-                      <p className="text-sm mt-2">This will display California with clickable counties</p>
-                    </div>
+                  <div className="lg:col-span-2 bg-white rounded-lg shadow-lg p-4 min-h-[600px]">
+                    <StudyModeMap
+                      onCountySelect={(countyId) => {
+                        const county = counties.find(c => c.id === countyId || c.id === countyId.replace(/-/g, '_'));
+                        if (county) {
+                          handleCountySelect(county);
+                        }
+                      }}
+                      selectedCounty={selectedCounty}
+                    />
                   </div>
 
                   {/* County Info Panel */}
                   <div className="bg-white rounded-lg shadow-lg p-6">
-                    <h3 className="font-bold text-lg mb-4">County Information</h3>
+                    <h3 className="font-bold text-lg mb-4">📍 County Information</h3>
                     {selectedCounty ? (
-                      <div className="space-y-3">
-                        <h4 className="text-xl font-semibold text-blue-600">{selectedCounty.name}</h4>
-                        <div className="text-sm space-y-2 text-gray-600">
-                          <div><strong>Region:</strong> {selectedCounty.region}</div>
-                          <div><strong>County Seat:</strong> {selectedCounty.capital || 'N/A'}</div>
-                          <div><strong>Population:</strong> {selectedCounty.population?.toLocaleString() || 'N/A'}</div>
-                          <div><strong>Area:</strong> {selectedCounty.area ? `${selectedCounty.area} sq mi` : 'N/A'}</div>
-                          <div><strong>Founded:</strong> {selectedCounty.founded || 'N/A'}</div>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="text-xl font-semibold text-blue-600">{selectedCounty.name}</h4>
+                          <div className="text-sm text-gray-500">{selectedCounty.region}</div>
                         </div>
-                        <div className="pt-4 border-t">
-                          <p className="text-sm text-gray-600">{selectedCounty.funFact}</p>
+
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="font-medium text-gray-600">County Seat:</span>
+                            <span className="text-gray-800">{selectedCounty.capital || selectedCounty.countySeat || 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="font-medium text-gray-600">Population:</span>
+                            <span className="text-gray-800">{selectedCounty.population?.toLocaleString() || 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="font-medium text-gray-600">Area:</span>
+                            <span className="text-gray-800">{selectedCounty.area ? `${selectedCounty.area.toLocaleString()} sq mi` : 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="font-medium text-gray-600">Established:</span>
+                            <span className="text-gray-800">{selectedCounty.founded || selectedCounty.established || 'N/A'}</span>
+                          </div>
                         </div>
+
+                        {selectedCounty.funFact && (
+                          <div className="pt-4 border-t">
+                            <h5 className="font-medium text-gray-700 mb-2">Fun Fact:</h5>
+                            <p className="text-sm text-gray-600 italic">{selectedCounty.funFact}</p>
+                          </div>
+                        )}
+
+                        {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 && (
+                          <div className="pt-4 border-t">
+                            <h5 className="font-medium text-gray-700 mb-2">Interesting Facts:</h5>
+                            <ul className="text-sm text-gray-600 space-y-1">
+                              {selectedCounty.funFacts.slice(0, 3).map((fact: string, idx: number) => (
+                                <li key={idx} className="flex items-start">
+                                  <span className="text-blue-500 mr-2">•</span>
+                                  <span>{fact}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {educationContent && (
+                          <div className="pt-4 border-t">
+                            <button
+                              onClick={() => setContentTab('overview')}
+                              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                            >
+                              View Full Educational Content →
+                            </button>
+                          </div>
+                        )}
                       </div>
                     ) : (
-                      <p className="text-gray-500">Select a county on the map to view details</p>
+                      <div className="text-center py-8">
+                        <div className="text-4xl mb-3">👆</div>
+                        <p className="text-gray-500">Hover over counties to see their names</p>
+                        <p className="text-gray-500 text-sm mt-2">Click on a county to view detailed information</p>
+                      </div>
                     )}
                   </div>
                 </div>
 
                 {/* Region Legend */}
                 <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-semibold mb-3">Regions:</h4>
-                  <div className="flex flex-wrap gap-3">
-                    {regions.map(region => (
-                      <div key={region} className="flex items-center gap-2">
-                        <div className={`w-4 h-4 rounded ${
-                          region === 'Bay Area' ? 'bg-blue-500' :
-                          region === 'Southern California' ? 'bg-red-500' :
-                          region === 'Central Valley' ? 'bg-green-500' :
-                          region === 'Central Coast' ? 'bg-purple-500' :
-                          'bg-gray-500'
-                        }`} />
-                        <span className="text-sm text-gray-700">{region}</span>
-                      </div>
-                    ))}
+                  <h4 className="font-semibold mb-3">🎨 Color Legend by Region:</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded" style={{ backgroundColor: '#3B82F6' }} />
+                      <span className="text-sm text-gray-700">Bay Area</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded" style={{ backgroundColor: '#EF4444' }} />
+                      <span className="text-sm text-gray-700">Southern California</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded" style={{ backgroundColor: '#10B981' }} />
+                      <span className="text-sm text-gray-700">Central Valley</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded" style={{ backgroundColor: '#A855F7' }} />
+                      <span className="text-sm text-gray-700">Central Coast</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded" style={{ backgroundColor: '#F59E0B' }} />
+                      <span className="text-sm text-gray-700">Northern California</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded" style={{ backgroundColor: '#06B6D4' }} />
+                      <span className="text-sm text-gray-700">North Coast</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded" style={{ backgroundColor: '#8B5CF6' }} />
+                      <span className="text-sm text-gray-700">Sierra Nevada</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Timeline Mode - Historical Perspective */}
+          {/* Timeline Mode - Historical Perspective with Side Panel */}
           {viewMode === 'timeline' && (
-            <div className="flex-1 p-8 overflow-y-auto">
-              <div className="max-w-6xl mx-auto">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">📅 California Counties Timeline</h2>
-                <p className="text-gray-600 mb-6">Explore when counties were established</p>
+            <div className="flex-1 flex gap-4 p-6 overflow-hidden">
+              {/* Main Timeline Area - Left Side */}
+              <div className="flex-1 overflow-y-auto pr-2">
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">📅 California Counties Timeline</h2>
+                <p className="text-gray-600 mb-5 text-sm">Click any county to view detailed information →</p>
 
                 {/* Timeline visualization */}
-                <div className="space-y-6">
+                <div className="space-y-5">
                   {/* Group counties by decade */}
                   {(() => {
                     const countiesByDecade = counties.reduce((acc: any, county) => {
@@ -829,29 +899,34 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     return sortedDecades.map(decade => (
                       <div key={decade} className="relative">
                         {/* Decade Header */}
-                        <div className="flex items-center mb-4">
-                          <div className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">
+                        <div className="flex items-center mb-3">
+                          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg">
                             {decade}s
                           </div>
-                          <div className="flex-1 h-0.5 bg-gray-300 ml-4"></div>
+                          <div className="flex-1 h-0.5 bg-gradient-to-r from-gray-300 to-transparent ml-4"></div>
                         </div>
 
                         {/* Counties in this decade */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 ml-8">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 ml-6">
                           {countiesByDecade[decade]
                             .sort((a: any, b: any) => (a.founded || a.established) - (b.founded || b.established))
                             .map((county: any) => (
                             <button
                               key={county.id}
                               onClick={() => handleCountySelect(county)}
-                              className={`p-3 rounded-lg border transition-all ${
+                              className={`p-2.5 rounded-xl border-2 transition-all transform hover:scale-105 ${
                                 selectedCounty?.id === county.id
-                                  ? 'bg-blue-100 border-blue-400'
-                                  : 'bg-white border-gray-200 hover:border-blue-300'
+                                  ? 'bg-gradient-to-br from-blue-100 to-purple-100 border-blue-500 shadow-lg scale-105'
+                                  : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow-md hover:bg-blue-50'
                               }`}
                             >
-                              <div className="text-sm font-medium text-gray-800">{county.name}</div>
-                              <div className="text-xs text-gray-500">{county.founded || county.established}</div>
+                              <div className="text-sm font-semibold text-gray-800">{county.name}</div>
+                              <div className="text-xs text-gray-500 font-medium">{county.founded || county.established}</div>
+                              {selectedCounty?.id === county.id && (
+                                <div className="mt-0.5">
+                                  <span className="text-xs text-blue-600 font-bold">✓ Selected</span>
+                                </div>
+                              )}
                             </button>
                           ))}
                         </div>
@@ -859,27 +934,81 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     ));
                   })()}
                 </div>
+              </div>
 
-                {/* Historical Context Panel */}
-                {selectedCounty && (
-                  <div className="mt-8 p-6 bg-white rounded-lg shadow-lg">
-                    <h3 className="text-xl font-bold mb-4">{selectedCounty.name} County</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-semibold text-gray-700 mb-2">📅 Established</h4>
-                        <p className="text-2xl font-bold text-blue-600">{selectedCounty.founded || selectedCounty.established || 'Unknown'}</p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-700 mb-2">🏛️ County Seat</h4>
-                        <p className="text-lg">{selectedCounty.capital || selectedCounty.countySeat || 'N/A'}</p>
-                      </div>
+              {/* Right Side Panel for County Details */}
+              <div className="w-80 flex-shrink-0">
+                {selectedCounty ? (
+                  <div className="sticky top-0 bg-white rounded-2xl shadow-2xl p-5 border-2 border-gray-100 max-h-[calc(100vh-200px)] overflow-y-auto">
+                    <div className="mb-4">
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">{selectedCounty.name} County</h3>
+                      <div className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                     </div>
-                    {educationContent && (
-                      <div className="mt-4 pt-4 border-t">
-                        <h4 className="font-semibold text-gray-700 mb-2">Historical Context</h4>
-                        <p className="text-sm text-gray-600">{educationContent.historicalContext}</p>
+
+                    <div className="space-y-3">
+                      <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
+                        <h4 className="font-bold text-blue-900 mb-1 text-sm flex items-center gap-2">
+                          <span>📅</span> Established
+                        </h4>
+                        <p className="text-2xl font-bold text-blue-700">{selectedCounty.founded || selectedCounty.established || 'Unknown'}</p>
                       </div>
-                    )}
+
+                      <div className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
+                        <h4 className="font-bold text-purple-900 mb-1 text-sm flex items-center gap-2">
+                          <span>🏛️</span> County Seat
+                        </h4>
+                        <p className="text-lg font-semibold text-purple-700">{selectedCounty.capital || selectedCounty.countySeat || 'N/A'}</p>
+                      </div>
+
+                      <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl">
+                        <h4 className="font-bold text-green-900 mb-1 text-sm flex items-center gap-2">
+                          <span>📍</span> Region
+                        </h4>
+                        <p className="text-base font-medium text-green-700">{selectedCounty.region || 'N/A'}</p>
+                      </div>
+
+                      {selectedCounty.population && (
+                        <div className="p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl">
+                          <h4 className="font-bold text-amber-900 mb-1 text-sm flex items-center gap-2">
+                            <span>👥</span> Population
+                          </h4>
+                          <p className="text-base font-semibold text-amber-700">{selectedCounty.population.toLocaleString()}</p>
+                        </div>
+                      )}
+
+                      {educationContent && (
+                        <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl">
+                          <h4 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-2">
+                            <span>📚</span> Historical Context
+                          </h4>
+                          <p className="text-xs text-gray-700 leading-relaxed">{educationContent.historicalContext}</p>
+                        </div>
+                      )}
+
+                      {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 && (
+                        <div className="p-3 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl">
+                          <h4 className="font-bold text-yellow-900 mb-2 text-sm flex items-center gap-2">
+                            <span>✨</span> Fun Facts
+                          </h4>
+                          <ul className="space-y-1">
+                            {selectedCounty.funFacts.slice(0, 3).map((fact: string, idx: number) => (
+                              <li key={idx} className="text-xs text-yellow-800 flex gap-1.5">
+                                <span className="text-yellow-600">•</span>
+                                <span>{fact}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="sticky top-0 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg p-6 border-2 border-gray-200 h-[400px] flex flex-col items-center justify-center text-center">
+                    <span className="text-5xl mb-3 opacity-50">📋</span>
+                    <h3 className="text-lg font-bold text-gray-700 mb-2">Select a County</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">
+                      Click on any county from the timeline to view its detailed historical information and facts.
+                    </p>
                   </div>
                 )}
               </div>
