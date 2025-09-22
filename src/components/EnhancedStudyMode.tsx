@@ -69,8 +69,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   useEffect(() => {
     if (counties.length > 0 && !selectedCounty) {
       const firstCounty = counties[0];
-      const mergedCounty = getMergedCountyData(firstCounty);
-      setSelectedCounty(mergedCounty);
+      // Check if county already has the data we need
+      if (firstCounty.capital && firstCounty.population) {
+        setSelectedCounty(firstCounty);
+      } else {
+        const mergedCounty = getMergedCountyData(firstCounty);
+        setSelectedCounty(mergedCounty);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [counties]);
@@ -128,8 +133,14 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   // Handle county selection
   const handleCountySelect = (county: any) => {
-    const mergedCounty = getMergedCountyData(county);
-    setSelectedCounty(mergedCounty);
+    // Check if county already has the data we need (from californiaCountiesComplete.ts)
+    if (county.capital && county.population && county.area && county.founded) {
+      setSelectedCounty(county);
+    } else {
+      const mergedCounty = getMergedCountyData(county);
+      setSelectedCounty(mergedCounty);
+    }
+
     setContentTab('overview');
     setProgress(prev => ({
       ...prev,
@@ -378,13 +389,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                           <div className="grid grid-cols-2 gap-4">
                             <div className="p-4 bg-blue-50 rounded-lg">
                               <h4 className="font-semibold text-blue-900 mb-2">📊 Quick Facts</h4>
-                              <div className="space-y-1 text-sm">
-                                <div><strong>County Seat:</strong> {selectedCounty.capital || selectedCounty.countySeat || 'N/A'}</div>
-                                <div><strong>Population:</strong> {selectedCounty.population ? selectedCounty.population.toLocaleString() : 'N/A'}</div>
-                                <div><strong>Area:</strong> {selectedCounty.area ? `${selectedCounty.area.toLocaleString()} sq mi` : 'N/A'}</div>
-                                <div><strong>Established:</strong> {selectedCounty.founded || selectedCounty.established || 'N/A'}</div>
-                                <div><strong>Region:</strong> {selectedCounty.region || 'N/A'}</div>
-                                <div><strong>Difficulty:</strong> {selectedCounty.difficulty ? selectedCounty.difficulty.charAt(0).toUpperCase() + selectedCounty.difficulty.slice(1) : 'N/A'}</div>
+                              <div className="space-y-1 text-sm text-gray-700">
+                                <div><strong className="text-gray-900">County Seat:</strong> <span className="text-gray-700">{selectedCounty?.capital || selectedCounty?.countySeat || 'N/A'}</span></div>
+                                <div><strong className="text-gray-900">Population:</strong> <span className="text-gray-700">{selectedCounty?.population ? selectedCounty.population.toLocaleString() : 'N/A'}</span></div>
+                                <div><strong className="text-gray-900">Area:</strong> <span className="text-gray-700">{selectedCounty?.area ? `${selectedCounty.area.toLocaleString()} sq mi` : 'N/A'}</span></div>
+                                <div><strong className="text-gray-900">Established:</strong> <span className="text-gray-700">{selectedCounty?.founded || selectedCounty?.established || 'N/A'}</span></div>
+                                <div><strong className="text-gray-900">Region:</strong> <span className="text-gray-700">{selectedCounty?.region || 'N/A'}</span></div>
+                                <div><strong className="text-gray-900">Difficulty:</strong> <span className="text-gray-700">{selectedCounty?.difficulty ? selectedCounty.difficulty.charAt(0).toUpperCase() + selectedCounty.difficulty.slice(1) : 'N/A'}</span></div>
                               </div>
                             </div>
                             <div className="p-4 bg-green-50 rounded-lg">
