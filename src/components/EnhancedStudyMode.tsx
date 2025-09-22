@@ -185,9 +185,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   // Generate quiz question using the comprehensive database
   const generateQuizQuestion = () => {
-    // Apply quiz settings filters
+    // Apply quiz settings filters - use selectedRegion as the source of truth
     const filters: any = {
-      region: quizSettings.region !== 'all' ? quizSettings.region : selectedRegion,
+      region: selectedRegion !== 'all' ? selectedRegion : undefined,
       excludeIds: Array.from(usedQuestionIds)
     };
 
@@ -232,6 +232,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   // Start a new quiz session
   const startQuiz = () => {
+    // Sync quiz settings with current region
+    setQuizSettings(prev => ({ ...prev, region: selectedRegion }));
     setQuizState('active');
     setQuestionHistory([]);
     setCurrentQuestionIndex(0);
@@ -250,10 +252,14 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     if (currentQuestionIndex > 0) {
       const newIndex = currentQuestionIndex - 1;
       setCurrentQuestionIndex(newIndex);
-      const prevResult = questionHistory[newIndex];
-      setQuizQuestion(prevResult.question);
-      setSelectedAnswer(prevResult.userAnswer);
-      setShowAnswer(true);
+
+      // If we have history for this question, show it
+      if (newIndex < questionHistory.length) {
+        const prevResult = questionHistory[newIndex];
+        setQuizQuestion(prevResult.question);
+        setSelectedAnswer(prevResult.userAnswer);
+        setShowAnswer(true);
+      }
     }
   };
 
@@ -323,24 +329,25 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     setSelectedAnswer(null);
   };
 
-  // Handle region change during active quiz
+  // Handle region change - works for both selectedRegion and quiz settings
   const handleRegionChange = (newRegion: string) => {
-    if (quizState === 'active' && newRegion !== quizSettings.region) {
+    if (quizState === 'active') {
       // Store the pending region and show modal
       setPendingRegion(newRegion);
       setShowRegionChangeModal(true);
     } else {
       // Not in active quiz, change directly
+      setSelectedRegion(newRegion);
       setQuizSettings(prev => ({ ...prev, region: newRegion }));
     }
   };
 
   // Confirm region change and start new quiz
   const confirmRegionChange = () => {
+    setSelectedRegion(pendingRegion);
     setQuizSettings(prev => ({ ...prev, region: pendingRegion }));
     setShowRegionChangeModal(false);
     resetQuiz();
-    startQuiz();
   };
 
   // Handle keyboard shortcuts
@@ -409,8 +416,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
               {/* Progress indicators */}
               <div className="text-sm">
                 <div>📍 Studied: {progress.studiedCounties.size}/58</div>
-                <div>🏆 Points: {progress.totalPoints}</div>
-                <div>🔥 Streak: {progress.currentStreak}</div>
               </div>
               <button
                 onClick={onClose}
@@ -447,7 +452,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
         <div className="bg-gray-100 p-3 border-b flex items-center gap-2 overflow-x-auto">
           <span className="text-sm font-medium text-gray-600 whitespace-nowrap">Filter by Region:</span>
           <button
-            onClick={() => setSelectedRegion('all')}
+            onClick={() => handleRegionChange('all')}
             className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
               selectedRegion === 'all'
                 ? 'bg-blue-500 text-white'
@@ -461,7 +466,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
             return (
               <button
                 key={region}
-                onClick={() => setSelectedRegion(region)}
+                onClick={() => handleRegionChange(region)}
                 className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                   selectedRegion === region
                     ? 'bg-blue-500 text-white'
@@ -1447,7 +1452,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
         <div className="bg-gray-100 p-4 border-t">
           <div className="flex justify-between items-center">
             <div className="text-sm text-gray-600">
-              Progress: {progress.studiedCounties.size} counties studied • {progress.totalPoints} points earned
+              Progress: {progress.studiedCounties.size} counties studied
             </div>
             <div className="flex gap-2">
               <button
