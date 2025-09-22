@@ -34,7 +34,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [selectedCounty, setSelectedCounty] = useState<any>(null);
   const [contentTab, setContentTab] = useState<ContentTab>('overview');
-  const [showHints, setShowHints] = useState(false);
   const [showEducationalModal, setShowEducationalModal] = useState(false);
   const [showCountyDetailsModal, setShowCountyDetailsModal] = useState(false);
   const [quizQuestion, setQuizQuestion] = useState<any>(null);
@@ -1076,18 +1075,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
               Progress: {progress.studiedCounties.size} counties studied • {progress.totalPoints} points earned
             </div>
             <div className="flex gap-2">
-              <button
-                onClick={() => setShowHints(!showHints)}
-                className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
-              >
-                {showHints ? 'Hide' : 'Show'} Learning Tips
-              </button>
-              <button
-                onClick={onStartGame}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-              >
-                Practice Game
-              </button>
               <button
                 onClick={onClose}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
