@@ -1140,6 +1140,11 @@ export const countyEducationData: CountyEducation[] = [
 export function getCountyEducationComplete(countyId: string): CountyEducation | null {
   // Convert hyphens to underscores to match the data format
   const normalizedId = countyId.toLowerCase().replace(/-/g, '_');
+  console.log(`getCountyEducationComplete: Looking for "${normalizedId}", Total counties in data: ${countyEducationData.length}`);
   const education = countyEducationData.find(e => e.countyId === normalizedId);
+  if (!education) {
+    console.warn(`County "${normalizedId}" not found in countyEducationComplete`);
+    console.log('First 5 counties in data:', countyEducationData.slice(0, 5).map(e => e.countyId));
+  }
   return education || null;
 }

@@ -164,9 +164,17 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   // Get education content for selected county
   // Try to get complete data first, fall back to basic data if not available
-  const educationContent = selectedCounty ?
-    (getCountyEducationComplete(selectedCounty.id) || getCountyEducation(selectedCounty.id)) :
-    null;
+  const completeEducation = selectedCounty ? getCountyEducationComplete(selectedCounty.id) : null;
+  const basicEducation = selectedCounty ? getCountyEducation(selectedCounty.id) : null;
+  const educationContent = completeEducation || basicEducation;
+
+  // Debug logging
+  if (selectedCounty) {
+    console.log(`EnhancedStudyMode: Selected "${selectedCounty.id}", Has complete: ${!!completeEducation}, Has basic: ${!!basicEducation}`);
+    if (completeEducation) {
+      console.log('Using complete education data with keys:', Object.keys(completeEducation));
+    }
+  }
   const memoryAid = selectedCounty ? getMemoryAidData(selectedCounty.id) : null;
 
   return (
