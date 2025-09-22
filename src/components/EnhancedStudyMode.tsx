@@ -625,7 +625,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                               <button
                                 key={countyId}
                                 onClick={() => handleCountySelect(relatedCounty)}
-                                className="px-3 py-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                                className="px-3 py-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-sm text-gray-700 hover:text-gray-900"
                               >
                                 {relatedCounty.name}
                               </button>
