@@ -10,10 +10,12 @@ interface StudyModeMapProps {
 const specialLabelHandling: Record<string, { abbreviation?: string; offset?: [number, number] }> = {
   'san-luis-obispo': { abbreviation: 'SLO' },
   'san-bernardino': { abbreviation: 'San Bern.' },
-  'monterey': { abbreviation: 'Monterey' },
+  'monterey': { abbreviation: 'Monterey', offset: [0, -5] },
   'san-francisco': { abbreviation: 'SF' },
   'contra-costa': { abbreviation: 'Contra C.' },
-  'santa-barbara': { abbreviation: 'Santa B.' }
+  'santa-barbara': { abbreviation: 'Santa B.' },
+  'santa-clara': { abbreviation: 'Santa Clara', offset: [0, -3] },
+  'nevada': { abbreviation: 'Nevada', offset: [0, -3] }
 };
 
 export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyModeMapProps) {
@@ -57,7 +59,7 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
       <svg
         viewBox="0 0 800 900"
         className="w-full h-full"
-        style={{ maxHeight: '600px' }}
+        style={{ maxHeight: '600px', overflow: 'visible' }}
         preserveAspectRatio="xMidYMid meet"
       >
         {/* Background - Ocean blue gradient */}
@@ -123,25 +125,26 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
                     const labelX = baseX + (special?.offset?.[0] || 0);
                     const labelY = baseY + (special?.offset?.[1] || 0);
 
-                    // Ensure label stays within SVG bounds with padding
-                    const padding_x = labelWidth / 2 + 5;
+                    // Ensure label stays within SVG bounds with more aggressive padding
+                    const padding_x = labelWidth / 2 + 10;
+                    const padding_y = 12;
                     const adjustedX = Math.max(padding_x, Math.min(800 - padding_x, labelX));
-                    const adjustedY = Math.max(15, Math.min(885, labelY));
+                    const adjustedY = Math.max(padding_y, Math.min(880, labelY));
 
                     return (
                       <>
-                        {/* Enhanced label background */}
+                        {/* Enhanced label background with clipping prevention */}
                         <rect
                           x={adjustedX - labelWidth / 2}
-                          y={adjustedY - 9}
+                          y={adjustedY - 8}
                           width={labelWidth}
-                          height="18"
+                          height="16"
                           fill="white"
-                          fillOpacity="0.95"
+                          fillOpacity="0.96"
                           rx="2"
                           stroke={fillColor}
-                          strokeWidth="1.2"
-                          filter="drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15))"
+                          strokeWidth="1"
+                          style={{ overflow: 'visible' }}
                         />
                         {/* County name with better styling */}
                         <text
@@ -185,9 +188,9 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
         </g>
       </svg>
 
-      {/* Enhanced Hover Tooltip */}
+      {/* Enhanced Hover Tooltip - Positioned at bottom right to avoid covering map */}
       {hoveredCounty && (
-        <div className="absolute top-2 left-2 bg-white rounded-xl shadow-2xl p-4 pointer-events-none border border-gray-200">
+        <div className="absolute bottom-4 right-4 bg-white rounded-xl shadow-2xl p-4 pointer-events-none border border-gray-200 z-50">
           <div className="flex items-center gap-3">
             <div>
               <div className="text-sm font-bold text-gray-900">{getCountyInfo(hoveredCounty)?.name}</div>
