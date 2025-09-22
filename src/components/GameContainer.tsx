@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { DndContext, DragEndEvent, DragStartEvent, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 import { useSoundEffect, SoundType } from '../utils/simpleSoundManager';
@@ -187,6 +188,11 @@ export default function GameContainer() {
           ) : null}
         </DragOverlay>
       </DndContext>
+      {/* Render Study Mode with Portal to ensure it appears above everything */}
+      {showStudyMode && createPortal(
+        <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />,
+        document.body
+      )}
     </div>
   );
 }

@@ -220,8 +220,8 @@ export default function GameHeader() {
         document.body
       )}
 
-      {/* Render Study Mode Modal */}
-      {showStudyMode && (
+      {/* Render Study Mode Modal with Portal to ensure it appears above game */}
+      {showStudyMode && createPortal(
         <EnhancedStudyMode
           onClose={() => {
             setShowStudyMode(false);
@@ -231,7 +231,8 @@ export default function GameHeader() {
             setShowStudyMode(false);
             resumeGame();
           }}
-        />
+        />,
+        document.body
       )}
     </div>
   );
