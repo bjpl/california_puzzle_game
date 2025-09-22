@@ -6,6 +6,7 @@ import { getMemoryAid as getMemoryAidData, memoryPatterns, spatialRelationships,
 import { useSoundEffect } from '../utils/simpleSoundManager';
 import { californiaCounties, CaliforniaCounty } from '../data/californiaCounties';
 import StudyModeMap from './StudyModeMap';
+import CountyShapeDisplay from './CountyShapeDisplay';
 
 interface StudyModeProps {
   onClose: () => void;
@@ -768,9 +769,20 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     <h3 className="font-bold text-lg mb-4">📍 County Information</h3>
                     {selectedCounty ? (
                       <div className="space-y-4">
-                        <div>
-                          <h4 className="text-xl font-semibold text-blue-600">{selectedCounty.name}</h4>
-                          <div className="text-sm text-gray-500">{selectedCounty.region}</div>
+                        {/* County Shape and Name */}
+                        <div className="flex items-start gap-4">
+                          <CountyShapeDisplay
+                            countyId={selectedCounty.id}
+                            size={90}
+                            className="flex-shrink-0 shadow-md"
+                          />
+                          <div className="flex-1">
+                            <h4 className="text-xl font-semibold text-blue-600">{selectedCounty.name}</h4>
+                            <div className="text-sm text-gray-500 mb-2">{selectedCounty.region}</div>
+                            <div className="text-xs text-gray-600 bg-blue-50 px-2 py-1 rounded inline-block">
+                              County ID: {selectedCounty.id}
+                            </div>
+                          </div>
                         </div>
 
                         <div className="space-y-2 text-sm">
@@ -941,7 +953,18 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 {selectedCounty ? (
                   <div className="sticky top-0 bg-white rounded-2xl shadow-2xl p-5 border-2 border-gray-100 max-h-[calc(100vh-200px)] overflow-y-auto">
                     <div className="mb-4">
-                      <h3 className="text-xl font-bold text-gray-800 mb-2">{selectedCounty.name} County</h3>
+                      {/* Header with County Shape */}
+                      <div className="flex items-start gap-3 mb-3">
+                        <CountyShapeDisplay
+                          countyId={selectedCounty.id}
+                          size={75}
+                          className="flex-shrink-0 shadow-lg"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-gray-800">{selectedCounty.name} County</h3>
+                          <p className="text-sm text-gray-500 font-medium">{selectedCounty.region}</p>
+                        </div>
+                      </div>
                       <div className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                     </div>
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { californiaCountyPaths } from '../data/californiaMapPaths';
+import { californiaCountyShapes, getCountyShape } from '../data/californiaCountyShapes';
 
 interface StudyModeMapProps {
   onCountySelect?: (countyId: string) => void;
@@ -28,8 +28,7 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
 
   // Get county display info
   const getCountyInfo = (countyId: string) => {
-    // This would come from the counties data
-    return californiaCountyPaths[countyId];
+    return getCountyShape(countyId);
   };
 
   const handleCountyClick = (countyId: string) => {
@@ -40,71 +39,112 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
 
   return (
     <div className="relative w-full h-full">
-      {/* SVG Map */}
+      {/* SVG Map with Geographic Shapes */}
       <svg
-        viewBox="0 0 800 1000"
+        viewBox="0 0 450 1100"
         className="w-full h-full"
         style={{ maxHeight: '600px' }}
+        preserveAspectRatio="xMidYMid meet"
       >
-        {/* Background */}
-        <rect width="800" height="1000" fill="#F3F4F6" />
+        {/* Background - California outline effect */}
+        <rect width="450" height="1100" fill="#E5E7EB" />
 
-        {/* County Paths */}
-        {Object.entries(californiaCountyPaths).map(([countyId, countyData]) => {
-          const isHovered = hoveredCounty === countyId;
-          const isSelected = selectedCounty?.id === countyId;
-          const fillColor = getRegionColor(countyData.region);
+        {/* Ocean/Water effect on the left */}
+        <path
+          d="M 0,0 L 50,0 L 45,400 L 55,600 L 45,900 L 50,1100 L 0,1100 Z"
+          fill="#CBD5E1"
+          opacity="0.5"
+        />
+
+        {/* County Geographic Shapes */}
+        {californiaCountyShapes.map((county) => {
+          const isHovered = hoveredCounty === county.id;
+          const isSelected = selectedCounty?.id === county.id ||
+                           selectedCounty?.id === county.id.replace(/-/g, '_');
+          const fillColor = getRegionColor(county.region);
 
           return (
-            <g key={countyId}>
+            <g key={county.id}>
               <path
-                d={countyData.path}
+                d={county.path}
                 fill={fillColor}
-                fillOpacity={isSelected ? 0.9 : isHovered ? 0.8 : 0.6}
+                fillOpacity={isSelected ? 0.95 : isHovered ? 0.85 : 0.7}
                 stroke="#ffffff"
-                strokeWidth={isSelected ? 2 : 1}
-                className="cursor-pointer transition-all duration-200"
-                onMouseEnter={() => setHoveredCounty(countyId)}
+                strokeWidth={isSelected ? 2.5 : isHovered ? 2 : 1}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                className="cursor-pointer transition-all duration-200 hover:filter hover:brightness-110"
+                style={{
+                  filter: isSelected ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2))' :
+                         isHovered ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))' : 'none'
+                }}
+                onMouseEnter={() => setHoveredCounty(county.id)}
                 onMouseLeave={() => setHoveredCounty(null)}
-                onClick={() => handleCountyClick(countyId)}
+                onClick={() => handleCountyClick(county.id)}
               />
 
-              {/* Show label on hover or selection */}
-              {(isHovered || isSelected) && countyData.center && (
+              {/* Show label on hover or selection with improved positioning */}
+              {(isHovered || isSelected) && county.center && (
                 <g pointerEvents="none">
-                  {/* Background for label */}
+                  {/* Enhanced label background */}
                   <rect
-                    x={countyData.center[0] - 40}
-                    y={countyData.center[1] - 12}
-                    width="80"
-                    height="24"
+                    x={(county.labelPosition || county.center)[0] - 35}
+                    y={(county.labelPosition || county.center)[1] - 10}
+                    width={county.name.length * 7 + 10}
+                    height="20"
                     fill="white"
-                    fillOpacity="0.95"
-                    rx="4"
+                    fillOpacity="0.98"
+                    rx="3"
                     stroke={fillColor}
-                    strokeWidth="1"
+                    strokeWidth="1.5"
+                    filter="drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))"
                   />
-                  {/* County name */}
+                  {/* County name with better styling */}
                   <text
-                    x={countyData.center[0]}
-                    y={countyData.center[1] + 4}
+                    x={(county.labelPosition || county.center)[0]}
+                    y={(county.labelPosition || county.center)[1] + 4}
                     textAnchor="middle"
-                    className="text-xs font-semibold fill-gray-800"
+                    className="text-xs font-bold fill-gray-900"
+                    style={{ fontSize: '11px' }}
                   >
-                    {countyData.name}
+                    {county.name}
                   </text>
                 </g>
               )}
             </g>
           );
         })}
+
+        {/* California State Border Outline for visual effect */}
+        <path
+          d="M 45,40 L 290,33 L 400,428 L 383,1090 L 145,1075 L 68,1000 L 55,600 L 48,210 L 68,50 Z"
+          fill="none"
+          stroke="#6B7280"
+          strokeWidth="2"
+          strokeDasharray="5,5"
+          opacity="0.3"
+        />
       </svg>
 
-      {/* Hover tooltip */}
+      {/* Enhanced Hover Tooltip */}
       {hoveredCounty && (
-        <div className="absolute top-2 left-2 bg-white rounded-lg shadow-lg p-3 pointer-events-none">
-          <div className="text-sm font-semibold">{getCountyInfo(hoveredCounty)?.name}</div>
-          <div className="text-xs text-gray-600">{getCountyInfo(hoveredCounty)?.region}</div>
+        <div className="absolute top-2 left-2 bg-white rounded-xl shadow-2xl p-4 pointer-events-none border border-gray-200">
+          <div className="flex items-center gap-3">
+            <div>
+              <div className="text-sm font-bold text-gray-900">{getCountyInfo(hoveredCounty)?.name}</div>
+              <div className="text-xs text-gray-600 mt-1">{getCountyInfo(hoveredCounty)?.region}</div>
+            </div>
+            {/* Mini county shape preview */}
+            <svg width="30" height="30" viewBox="0 0 450 1100" className="border border-gray-200 rounded bg-gray-50">
+              <path
+                d={getCountyInfo(hoveredCounty)?.path}
+                fill={getRegionColor(getCountyInfo(hoveredCounty)?.region || '')}
+                fillOpacity="0.8"
+                stroke="#4B5563"
+                strokeWidth="8"
+              />
+            </svg>
+          </div>
         </div>
       )}
     </div>
