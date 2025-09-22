@@ -23,10 +23,48 @@ export default function HintModal({ isOpen, onClose, county, hintLevel }: HintMo
 
   if (!isOpen || !county) return null;
 
+  // Debug: Log county info to see what we're working with
+  console.log('HintModal - County:', county);
+  console.log('HintModal - County name:', county.name);
+  console.log('HintModal - Hint level:', hintLevel);
+
   const hints = geographicHints[county.name];
   const characteristics = getCountyCharacteristics(county.name);
 
+  console.log('HintModal - Found hints:', hints);
+  console.log('HintModal - Characteristics:', characteristics);
+
   const getHintContent = () => {
+    // If no hints found for this county, show a generic message
+    if (!hints) {
+      return (
+        <>
+          <div className="text-6xl mb-4 animate-bounce">🗺️</div>
+          <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-gray-500 to-gray-600 bg-clip-text text-transparent">
+            {county.name} County
+          </h3>
+          <div className="space-y-4">
+            <div className="bg-gray-50 rounded-lg p-4">
+              <p className="text-lg font-semibold text-gray-900 mb-2">
+                Looking for {county.name}?
+              </p>
+              <p className="text-gray-700 mb-2">
+                Region: {county.region || 'California'}
+              </p>
+              {county.capital && (
+                <p className="text-gray-600 text-sm mt-2">
+                  County Seat: {county.capital}
+                </p>
+              )}
+              <p className="text-sm text-gray-500 mt-3">
+                💡 Try looking in the {county.region || 'California'} region
+              </p>
+            </div>
+          </div>
+        </>
+      );
+    }
+
     // Progressive hints based on level
     if (hintLevel === 1) {
       // Level 1: General characteristics and region
