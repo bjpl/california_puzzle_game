@@ -4,6 +4,7 @@ import { getCountyEducation, getMemoryAid, getRelatedCounties, historicalConnect
 import { getCountyEducationComplete } from '../data/countyEducationComplete';
 import { getMemoryAid as getMemoryAidData, memoryPatterns, spatialRelationships, learningStrategies } from '../data/memoryAids';
 import { useSoundEffect } from '../utils/simpleSoundManager';
+import { californiaCounties, CaliforniaCounty } from '../data/californiaCounties';
 
 interface StudyModeProps {
   onClose: () => void;
@@ -75,9 +76,36 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   // Sort counties alphabetically
   const sortedCounties = [...filteredCounties].sort((a, b) => a.name.localeCompare(b.name));
 
+  // Helper function to merge county data from multiple sources
+  const getMergedCountyData = (county: any) => {
+    // Find the comprehensive county data
+    const comprehensiveData = californiaCounties.find(
+      c => c.id.toLowerCase() === county.id.toLowerCase().replace(/-/g, '_')
+    );
+
+    if (comprehensiveData) {
+      // Merge the data
+      return {
+        ...county,
+        countySeat: comprehensiveData.countySeat,
+        established: comprehensiveData.established,
+        population: comprehensiveData.population || county.population,
+        area: comprehensiveData.area || county.area,
+        economicFocus: comprehensiveData.economicFocus,
+        naturalFeatures: comprehensiveData.naturalFeatures,
+        culturalLandmarks: comprehensiveData.culturalLandmarks,
+        funFacts: comprehensiveData.funFacts,
+        trivia: comprehensiveData.trivia
+      };
+    }
+
+    return county;
+  };
+
   // Handle county selection
   const handleCountySelect = (county: any) => {
-    setSelectedCounty(county);
+    const mergedCounty = getMergedCountyData(county);
+    setSelectedCounty(mergedCounty);
     setContentTab('overview');
     setProgress(prev => ({
       ...prev,
@@ -326,20 +354,21 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         <>
                           <div className="grid grid-cols-2 gap-4">
                             <div className="p-4 bg-blue-50 rounded-lg">
-                              <h4 className="font-semibold text-blue-900 mb-2">Quick Facts</h4>
+                              <h4 className="font-semibold text-blue-900 mb-2">📊 Quick Facts</h4>
                               <div className="space-y-1 text-sm">
-                                <div><strong>County Seat:</strong> {selectedCounty.countySeat || selectedCounty.capital}</div>
-                                <div><strong>Population:</strong> {selectedCounty.population?.toLocaleString()}</div>
-                                <div><strong>Area:</strong> {selectedCounty.area?.toLocaleString()} sq mi</div>
-                                <div><strong>Established:</strong> {selectedCounty.established || selectedCounty.founded}</div>
+                                <div><strong>County Seat:</strong> {selectedCounty.countySeat || selectedCounty.capital || 'N/A'}</div>
+                                <div><strong>Population:</strong> {selectedCounty.population ? selectedCounty.population.toLocaleString() : 'N/A'}</div>
+                                <div><strong>Area:</strong> {selectedCounty.area ? `${selectedCounty.area.toLocaleString()} sq mi` : 'N/A'}</div>
+                                <div><strong>Established:</strong> {selectedCounty.established || selectedCounty.founded || 'N/A'}</div>
+                                <div><strong>Region:</strong> {selectedCounty.region}</div>
                               </div>
                             </div>
                             <div className="p-4 bg-green-50 rounded-lg">
-                              <h4 className="font-semibold text-green-900 mb-2">Fun Facts</h4>
-                              {selectedCounty.funFacts ? (
+                              <h4 className="font-semibold text-green-900 mb-2">🎉 Fun Facts</h4>
+                              {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 ? (
                                 <ul className="text-sm text-green-800 space-y-1">
-                                  {selectedCounty.funFacts.map((fact: string, idx: number) => (
-                                    <li key={idx}>• {fact}</li>
+                                  {selectedCounty.funFacts.slice(0, 3).map((fact: string, idx: number) => (
+                                    <li key={idx} className="text-xs">• {fact}</li>
                                   ))}
                                 </ul>
                               ) : selectedCounty.funFact ? (
@@ -349,6 +378,32 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                               )}
                             </div>
                           </div>
+
+                          {/* Natural Features and Economic Focus */}
+                          {(selectedCounty.naturalFeatures || selectedCounty.economicFocus) && (
+                            <div className="grid grid-cols-2 gap-4">
+                              {selectedCounty.naturalFeatures && selectedCounty.naturalFeatures.length > 0 && (
+                                <div className="p-4 bg-cyan-50 rounded-lg">
+                                  <h4 className="font-semibold text-cyan-900 mb-2">🏔️ Natural Features</h4>
+                                  <ul className="text-sm text-cyan-800 space-y-1">
+                                    {selectedCounty.naturalFeatures.slice(0, 3).map((feature: string, idx: number) => (
+                                      <li key={idx}>• {feature}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              {selectedCounty.economicFocus && selectedCounty.economicFocus.length > 0 && (
+                                <div className="p-4 bg-purple-50 rounded-lg">
+                                  <h4 className="font-semibold text-purple-900 mb-2">💼 Economic Focus</h4>
+                                  <ul className="text-sm text-purple-800 space-y-1">
+                                    {selectedCounty.economicFocus.slice(0, 3).map((focus: string, idx: number) => (
+                                      <li key={idx}>• {focus}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
                           {educationContent && (
                             <>
                               <div className="p-4 bg-yellow-50 rounded-lg">
@@ -503,19 +558,45 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                       <h4 className="font-semibold text-gray-700 mb-3">🔗 Related Counties to Study</h4>
                       <div className="flex flex-wrap gap-2">
-                        {getRelatedCounties(selectedCounty.id).slice(0, 6).map(countyId => {
-                          const relatedCounty = counties.find(c => c.id === countyId);
-                          if (!relatedCounty) return null;
-                          return (
-                            <button
-                              key={countyId}
-                              onClick={() => handleCountySelect(relatedCounty)}
-                              className="px-3 py-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-sm"
-                            >
-                              {relatedCounty.name}
-                            </button>
-                          );
-                        })}
+                        {(() => {
+                          // Try both ID formats (with hyphens and underscores)
+                          const normalizedId = selectedCounty.id.toLowerCase().replace(/-/g, '_');
+                          let relatedIds = getRelatedCounties(normalizedId);
+
+                          // If no related counties found, try the original ID
+                          if (relatedIds.length === 0) {
+                            relatedIds = getRelatedCounties(selectedCounty.id);
+                          }
+
+                          // If still no related counties, show neighboring counties from same region
+                          if (relatedIds.length === 0) {
+                            relatedIds = counties
+                              .filter(c => c.region === selectedCounty.region && c.id !== selectedCounty.id)
+                              .slice(0, 6)
+                              .map(c => c.id);
+                          }
+
+                          return relatedIds.slice(0, 6).map(countyId => {
+                            // Try to find the county with both ID formats
+                            const relatedCounty = counties.find(c =>
+                              c.id === countyId ||
+                              c.id === countyId.replace(/_/g, '-') ||
+                              c.id.toLowerCase().replace(/-/g, '_') === countyId
+                            );
+
+                            if (!relatedCounty) return null;
+
+                            return (
+                              <button
+                                key={countyId}
+                                onClick={() => handleCountySelect(relatedCounty)}
+                                className="px-3 py-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                              >
+                                {relatedCounty.name}
+                              </button>
+                            );
+                          });
+                        })()}
                       </div>
                     </div>
                   </div>
