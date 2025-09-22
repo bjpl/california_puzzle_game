@@ -328,15 +328,25 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                             <div className="p-4 bg-blue-50 rounded-lg">
                               <h4 className="font-semibold text-blue-900 mb-2">Quick Facts</h4>
                               <div className="space-y-1 text-sm">
-                                <div><strong>County Seat:</strong> {selectedCounty.capital}</div>
+                                <div><strong>County Seat:</strong> {selectedCounty.countySeat || selectedCounty.capital}</div>
                                 <div><strong>Population:</strong> {selectedCounty.population?.toLocaleString()}</div>
                                 <div><strong>Area:</strong> {selectedCounty.area?.toLocaleString()} sq mi</div>
-                                <div><strong>Founded:</strong> {selectedCounty.founded}</div>
+                                <div><strong>Established:</strong> {selectedCounty.established || selectedCounty.founded}</div>
                               </div>
                             </div>
                             <div className="p-4 bg-green-50 rounded-lg">
-                              <h4 className="font-semibold text-green-900 mb-2">Fun Fact</h4>
-                              <p className="text-sm text-green-800">{selectedCounty.funFact}</p>
+                              <h4 className="font-semibold text-green-900 mb-2">Fun Facts</h4>
+                              {selectedCounty.funFacts ? (
+                                <ul className="text-sm text-green-800 space-y-1">
+                                  {selectedCounty.funFacts.map((fact: string, idx: number) => (
+                                    <li key={idx}>• {fact}</li>
+                                  ))}
+                                </ul>
+                              ) : selectedCounty.funFact ? (
+                                <p className="text-sm text-green-800">{selectedCounty.funFact}</p>
+                              ) : (
+                                <p className="text-sm text-green-800 italic">No fun facts available</p>
+                              )}
                             </div>
                           </div>
                           {educationContent && (
@@ -459,9 +469,39 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       )}
                     </div>
 
+                    {/* Natural Features & Landmarks */}
+                    {(selectedCounty.naturalFeatures || selectedCounty.culturalLandmarks) && (
+                      <div className="mt-6 grid grid-cols-2 gap-4">
+                        {selectedCounty.naturalFeatures && (
+                          <div className="p-4 bg-teal-50 rounded-lg">
+                            <h4 className="font-semibold text-teal-900 mb-2">🏔️ Natural Features</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedCounty.naturalFeatures.map((feature: string, idx: number) => (
+                                <span key={idx} className="px-2 py-1 bg-teal-100 text-teal-800 rounded text-sm">
+                                  {feature}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {selectedCounty.culturalLandmarks && (
+                          <div className="p-4 bg-pink-50 rounded-lg">
+                            <h4 className="font-semibold text-pink-900 mb-2">🏛️ Cultural Landmarks</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedCounty.culturalLandmarks.map((landmark: string, idx: number) => (
+                                <span key={idx} className="px-2 py-1 bg-pink-100 text-pink-800 rounded text-sm">
+                                  {landmark}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {/* Related Counties */}
-                    <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold text-gray-700 mb-3">Related Counties to Study</h4>
+                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-semibold text-gray-700 mb-3">🔗 Related Counties to Study</h4>
                       <div className="flex flex-wrap gap-2">
                         {getRelatedCounties(selectedCounty.id).slice(0, 6).map(countyId => {
                           const relatedCounty = counties.find(c => c.id === countyId);
@@ -470,7 +510,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                             <button
                               key={countyId}
                               onClick={() => handleCountySelect(relatedCounty)}
-                              className="px-3 py-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                              className="px-3 py-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-sm"
                             >
                               {relatedCounty.name}
                             </button>
