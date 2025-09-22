@@ -6,25 +6,6 @@ interface StudyModeMapProps {
   selectedCounty?: any;
 }
 
-// Counties with special label handling for better display
-const specialLabelHandling: Record<string, { abbreviation?: string; offset?: [number, number]; position?: 'above' | 'below' | 'left' | 'right' }> = {
-  'san-luis-obispo': { abbreviation: 'SLO' },
-  'san-bernardino': { abbreviation: 'San Bern.' },
-  'monterey': { abbreviation: 'Monterey', offset: [0, 10] },
-  'san-francisco': { abbreviation: 'SF' },
-  'contra-costa': { abbreviation: 'Contra C.' },
-  'santa-barbara': { abbreviation: 'Santa B.' },
-  'santa-clara': { abbreviation: 'Santa Clara', offset: [0, 5] },
-  'nevada': { abbreviation: 'Nevada', offset: [0, 8], position: 'below' },
-  'san-joaquin': { abbreviation: 'San Joaquin', offset: [5, 5] },
-  'sacramento': { abbreviation: 'Sacramento', offset: [0, 5] },
-  'los-angeles': { abbreviation: 'LA' },
-  'san-diego': { abbreviation: 'San Diego', offset: [0, 5] },
-  'madera': { abbreviation: 'Madera', offset: [0, 10], position: 'below' },
-  'placer': { abbreviation: 'Placer', offset: [0, 8] },
-  'el-dorado': { abbreviation: 'El Dorado', offset: [0, 8] }
-};
-
 export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyModeMapProps) {
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -129,89 +110,7 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
                 onClick={() => handleCountyClick(county.id)}
               />
 
-              {/* Show label on hover or selection with improved positioning */}
-              {(isHovered || isSelected) && county.center && (
-                <g pointerEvents="none">
-                  {/* Calculate better label dimensions */}
-                  {(() => {
-                    // Check if county needs special label handling
-                    const special = specialLabelHandling[county.id];
-                    const displayName = special?.abbreviation || county.name;
-
-                    // Use smarter text truncation
-                    const labelText = displayName.length > 15
-                      ? displayName.substring(0, 12) + '...'
-                      : displayName;
-
-                    // Calculate width based on actual text length
-                    const charWidth = 6;
-                    const padding = 10;
-                    const labelWidth = Math.min(labelText.length * charWidth + padding, 85);
-
-                    // Get base position
-                    const baseX = (county.labelPosition || county.center)[0];
-                    const baseY = (county.labelPosition || county.center)[1];
-
-                    // Apply special offset if defined
-                    const labelX = baseX + (special?.offset?.[0] || 0);
-                    const labelY = baseY + (special?.offset?.[1] || 0);
-
-                    // Position adjustment based on special handling
-                    const position = special?.position;
-                    let finalOffset = [0, 0];
-
-                    if (position === 'below' || special?.offset?.[1] > 0) {
-                      finalOffset[1] = 15; // Move label below
-                    } else if (position === 'above') {
-                      finalOffset[1] = -15; // Move label above
-                    }
-
-                    // Apply custom offset if provided
-                    if (special?.offset) {
-                      finalOffset[0] += special.offset[0];
-                      finalOffset[1] += special.offset[1];
-                    }
-
-                    // Ensure label stays within SVG bounds with padding
-                    const padding_x = labelWidth / 2 + 15;
-                    const padding_y = 20;
-                    const adjustedX = Math.max(padding_x, Math.min(800 - padding_x, labelX + finalOffset[0]));
-                    const adjustedY = Math.max(padding_y, Math.min(870, labelY + finalOffset[1]));
-
-                    return (
-                      <>
-                        {/* Enhanced label background with better visibility */}
-                        <rect
-                          x={adjustedX - labelWidth / 2}
-                          y={adjustedY - 9}
-                          width={labelWidth}
-                          height="18"
-                          fill="white"
-                          fillOpacity="0.98"
-                          rx="3"
-                          stroke={fillColor}
-                          strokeWidth="1.5"
-                          filter="drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))"
-                        />
-                        {/* County name with improved readability */}
-                        <text
-                          x={adjustedX}
-                          y={adjustedY + 3}
-                          textAnchor="middle"
-                          className="text-xs font-bold fill-gray-900"
-                          style={{
-                            fontSize: '10px',
-                            letterSpacing: '0em',
-                            textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)'
-                          }}
-                        >
-                          {labelText}
-                        </text>
-                      </>
-                    );
-                  })()}
-                </g>
-              )}
+              {/* Removed inline labels - using hover tooltip instead */}
             </g>
           );
         })}
