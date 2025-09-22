@@ -7,19 +7,22 @@ interface StudyModeMapProps {
 }
 
 // Counties with special label handling for better display
-const specialLabelHandling: Record<string, { abbreviation?: string; offset?: [number, number] }> = {
+const specialLabelHandling: Record<string, { abbreviation?: string; offset?: [number, number]; position?: 'above' | 'below' | 'left' | 'right' }> = {
   'san-luis-obispo': { abbreviation: 'SLO' },
   'san-bernardino': { abbreviation: 'San Bern.' },
-  'monterey': { abbreviation: 'Monterey', offset: [0, -5] },
+  'monterey': { abbreviation: 'Monterey', offset: [0, 10] },
   'san-francisco': { abbreviation: 'SF' },
   'contra-costa': { abbreviation: 'Contra C.' },
   'santa-barbara': { abbreviation: 'Santa B.' },
-  'santa-clara': { abbreviation: 'Santa Clara', offset: [0, -3] },
-  'nevada': { abbreviation: 'Nevada', offset: [0, -3] },
-  'san-joaquin': { abbreviation: 'San Joaquin', offset: [5, -3] },
-  'sacramento': { abbreviation: 'Sacramento', offset: [0, -2] },
-  'los-angeles': { abbreviation: 'LA', offset: [0, 0] },
-  'san-diego': { abbreviation: 'San Diego', offset: [0, -5] }
+  'santa-clara': { abbreviation: 'Santa Clara', offset: [0, 5] },
+  'nevada': { abbreviation: 'Nevada', offset: [0, 8], position: 'below' },
+  'san-joaquin': { abbreviation: 'San Joaquin', offset: [5, 5] },
+  'sacramento': { abbreviation: 'Sacramento', offset: [0, 5] },
+  'los-angeles': { abbreviation: 'LA' },
+  'san-diego': { abbreviation: 'San Diego', offset: [0, 5] },
+  'madera': { abbreviation: 'Madera', offset: [0, 10], position: 'below' },
+  'placer': { abbreviation: 'Placer', offset: [0, 8] },
+  'el-dorado': { abbreviation: 'El Dorado', offset: [0, 8] }
 };
 
 export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyModeMapProps) {
@@ -153,36 +156,53 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
                     const labelX = baseX + (special?.offset?.[0] || 0);
                     const labelY = baseY + (special?.offset?.[1] || 0);
 
-                    // Ensure label stays within SVG bounds with more aggressive padding
-                    const padding_x = labelWidth / 2 + 10;
-                    const padding_y = 12;
-                    const adjustedX = Math.max(padding_x, Math.min(800 - padding_x, labelX));
-                    const adjustedY = Math.max(padding_y, Math.min(880, labelY));
+                    // Position adjustment based on special handling
+                    const position = special?.position;
+                    let finalOffset = [0, 0];
+
+                    if (position === 'below' || special?.offset?.[1] > 0) {
+                      finalOffset[1] = 15; // Move label below
+                    } else if (position === 'above') {
+                      finalOffset[1] = -15; // Move label above
+                    }
+
+                    // Apply custom offset if provided
+                    if (special?.offset) {
+                      finalOffset[0] += special.offset[0];
+                      finalOffset[1] += special.offset[1];
+                    }
+
+                    // Ensure label stays within SVG bounds with padding
+                    const padding_x = labelWidth / 2 + 15;
+                    const padding_y = 20;
+                    const adjustedX = Math.max(padding_x, Math.min(800 - padding_x, labelX + finalOffset[0]));
+                    const adjustedY = Math.max(padding_y, Math.min(870, labelY + finalOffset[1]));
 
                     return (
                       <>
-                        {/* Enhanced label background with clipping prevention */}
+                        {/* Enhanced label background with better visibility */}
                         <rect
                           x={adjustedX - labelWidth / 2}
-                          y={adjustedY - 8}
+                          y={adjustedY - 9}
                           width={labelWidth}
-                          height="16"
+                          height="18"
                           fill="white"
-                          fillOpacity="0.96"
-                          rx="2"
+                          fillOpacity="0.98"
+                          rx="3"
                           stroke={fillColor}
-                          strokeWidth="1"
-                          style={{ overflow: 'visible' }}
+                          strokeWidth="1.5"
+                          filter="drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))"
                         />
-                        {/* County name with better styling */}
+                        {/* County name with improved readability */}
                         <text
                           x={adjustedX}
                           y={adjustedY + 3}
                           textAnchor="middle"
-                          className="text-xs font-semibold fill-gray-900"
+                          className="text-xs font-bold fill-gray-900"
                           style={{
-                            fontSize: '9px',
-                            letterSpacing: '-0.01em'
+                            fontSize: '10px',
+                            letterSpacing: '0em',
+                            textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)'
                           }}
                         >
                           {labelText}
