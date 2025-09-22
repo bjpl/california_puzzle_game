@@ -6,6 +6,16 @@ interface StudyModeMapProps {
   selectedCounty?: any;
 }
 
+// Counties with special label handling for better display
+const specialLabelHandling: Record<string, { abbreviation?: string; offset?: [number, number] }> = {
+  'san-luis-obispo': { abbreviation: 'SLO' },
+  'san-bernardino': { abbreviation: 'San Bern.' },
+  'monterey': { abbreviation: 'Monterey' },
+  'san-francisco': { abbreviation: 'SF' },
+  'contra-costa': { abbreviation: 'Contra C.' },
+  'santa-barbara': { abbreviation: 'Santa B.' }
+};
+
 export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyModeMapProps) {
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
 
@@ -89,29 +99,66 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
               {/* Show label on hover or selection with improved positioning */}
               {(isHovered || isSelected) && county.center && (
                 <g pointerEvents="none">
-                  {/* Enhanced label background */}
-                  <rect
-                    x={(county.labelPosition || county.center)[0] - 35}
-                    y={(county.labelPosition || county.center)[1] - 10}
-                    width={county.name.length * 7 + 10}
-                    height="20"
-                    fill="white"
-                    fillOpacity="0.98"
-                    rx="3"
-                    stroke={fillColor}
-                    strokeWidth="1.5"
-                    filter="drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))"
-                  />
-                  {/* County name with better styling */}
-                  <text
-                    x={(county.labelPosition || county.center)[0]}
-                    y={(county.labelPosition || county.center)[1] + 4}
-                    textAnchor="middle"
-                    className="text-xs font-bold fill-gray-900"
-                    style={{ fontSize: '11px' }}
-                  >
-                    {county.name}
-                  </text>
+                  {/* Calculate better label dimensions */}
+                  {(() => {
+                    // Check if county needs special label handling
+                    const special = specialLabelHandling[county.id];
+                    const displayName = special?.abbreviation || county.name;
+
+                    // Use smarter text truncation
+                    const labelText = displayName.length > 15
+                      ? displayName.substring(0, 12) + '...'
+                      : displayName;
+
+                    // Calculate width based on actual text length
+                    const charWidth = 6;
+                    const padding = 10;
+                    const labelWidth = Math.min(labelText.length * charWidth + padding, 85);
+
+                    // Get base position
+                    const baseX = (county.labelPosition || county.center)[0];
+                    const baseY = (county.labelPosition || county.center)[1];
+
+                    // Apply special offset if defined
+                    const labelX = baseX + (special?.offset?.[0] || 0);
+                    const labelY = baseY + (special?.offset?.[1] || 0);
+
+                    // Ensure label stays within SVG bounds with padding
+                    const padding_x = labelWidth / 2 + 5;
+                    const adjustedX = Math.max(padding_x, Math.min(800 - padding_x, labelX));
+                    const adjustedY = Math.max(15, Math.min(885, labelY));
+
+                    return (
+                      <>
+                        {/* Enhanced label background */}
+                        <rect
+                          x={adjustedX - labelWidth / 2}
+                          y={adjustedY - 9}
+                          width={labelWidth}
+                          height="18"
+                          fill="white"
+                          fillOpacity="0.95"
+                          rx="2"
+                          stroke={fillColor}
+                          strokeWidth="1.2"
+                          filter="drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15))"
+                        />
+                        {/* County name with better styling */}
+                        <text
+                          x={adjustedX}
+                          y={adjustedY + 3}
+                          textAnchor="middle"
+                          className="text-xs font-semibold fill-gray-900"
+                          style={{
+                            fontSize: '9px',
+                            letterSpacing: '-0.01em'
+                          }}
+                        >
+                          {labelText}
+                        </text>
+                      </>
+                    );
+                  })()}
                 </g>
               )}
             </g>
