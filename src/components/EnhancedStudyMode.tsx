@@ -770,6 +770,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         }
                       }}
                       selectedCounty={selectedCounty}
+                      filteredCounties={sortedCounties}
+                      showAllCounties={selectedRegion === 'all'}
                     />
                   </div>
 

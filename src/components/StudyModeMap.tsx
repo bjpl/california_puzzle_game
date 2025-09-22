@@ -4,9 +4,16 @@ import { realCaliforniaCountyShapes } from '../data/californiaCountyBoundaries';
 interface StudyModeMapProps {
   onCountySelect?: (countyId: string) => void;
   selectedCounty?: any;
+  filteredCounties?: any[];
+  showAllCounties?: boolean;
 }
 
-export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyModeMapProps) {
+export default function StudyModeMap({
+  onCountySelect,
+  selectedCounty,
+  filteredCounties,
+  showAllCounties = true
+}: StudyModeMapProps) {
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
@@ -78,36 +85,66 @@ export default function StudyModeMap({ onCountySelect, selectedCounty }: StudyMo
           const isHovered = hoveredCounty === county.id;
           const isSelected = selectedCounty?.id === county.id ||
                            selectedCounty?.id === county.id.replace(/-/g, '_');
-          const fillColor = getRegionColor(county.region);
+
+          // Check if county should be visible based on filter
+          const isFiltered = filteredCounties && !showAllCounties
+            ? filteredCounties.some(fc =>
+                fc.id === county.id ||
+                fc.id === county.id.replace(/-/g, '_') ||
+                fc.id === county.id.replace(/_/g, '-')
+              )
+            : true;
+
+          const fillColor = isFiltered
+            ? getRegionColor(county.region)
+            : '#E5E7EB'; // Gray color for filtered out counties
 
           return (
             <g key={county.id}>
               <path
                 d={county.path}
                 fill={fillColor}
-                fillOpacity={isSelected ? 0.98 : isHovered ? 0.90 : 0.7}
-                stroke={isSelected ? '#FFD700' : isHovered ? '#FFFFFF' : '#ffffff'}
-                strokeWidth={isSelected ? 3.5 : isHovered ? 2.5 : 1}
+                fillOpacity={
+                  !isFiltered ? 0.3 :
+                  isSelected ? 0.98 :
+                  isHovered ? 0.90 : 0.7
+                }
+                stroke={
+                  !isFiltered ? '#D1D5DB' :
+                  isSelected ? '#FFD700' :
+                  isHovered ? '#FFFFFF' : '#ffffff'
+                }
+                strokeWidth={
+                  !isFiltered ? 0.5 :
+                  isSelected ? 3.5 :
+                  isHovered ? 2.5 : 1
+                }
                 strokeLinejoin="round"
                 strokeLinecap="round"
-                className="cursor-pointer transition-all duration-200 hover:filter hover:brightness-110"
+                className={isFiltered ? "cursor-pointer transition-all duration-200 hover:filter hover:brightness-110" : "transition-all duration-200"}
                 style={{
-                  filter: isSelected ? 'drop-shadow(0 6px 12px rgba(255, 215, 0, 0.4))' :
-                         isHovered ? 'drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5))' : 'none',
+                  filter: !isFiltered ? 'none' :
+                         isSelected ? 'drop-shadow(0 6px 12px rgba(255, 215, 0, 0.4))' :
+                         isHovered && isFiltered ? 'drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5))' : 'none',
                   transition: 'all 0.3s ease',
-                  strokeDasharray: isSelected ? '5, 2' : 'none',
-                  animation: isSelected ? 'pulse 2s infinite' : 'none'
+                  strokeDasharray: isSelected && isFiltered ? '5, 2' : 'none',
+                  animation: isSelected && isFiltered ? 'pulse 2s infinite' : 'none',
+                  pointerEvents: isFiltered ? 'auto' : 'none'
                 }}
                 onMouseEnter={(e) => {
-                  setHoveredCounty(county.id);
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  setMousePosition({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+                  if (isFiltered) {
+                    setHoveredCounty(county.id);
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    setMousePosition({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+                  }
                 }}
-                onMouseLeave={() => setHoveredCounty(null)}
+                onMouseLeave={() => {
+                  if (isFiltered) setHoveredCounty(null);
+                }}
                 onMouseMove={(e) => {
-                  setMousePosition({ x: e.clientX, y: e.clientY });
+                  if (isFiltered) setMousePosition({ x: e.clientX, y: e.clientY });
                 }}
-                onClick={() => handleCountyClick(county.id)}
+                onClick={() => isFiltered && handleCountyClick(county.id)}
               />
 
               {/* Removed inline labels - using hover tooltip instead */}
