@@ -164,17 +164,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   // Get education content for selected county
   // Try to get complete data first, fall back to basic data if not available
-  const completeEducation = selectedCounty ? getCountyEducationComplete(selectedCounty.id) : null;
-  const basicEducation = selectedCounty ? getCountyEducation(selectedCounty.id) : null;
-  const educationContent = completeEducation || basicEducation;
-
-  // Debug logging
-  if (selectedCounty) {
-    console.log(`EnhancedStudyMode: Selected "${selectedCounty.id}", Has complete: ${!!completeEducation}, Has basic: ${!!basicEducation}`);
-    if (completeEducation) {
-      console.log('Using complete education data with keys:', Object.keys(completeEducation));
-    }
-  }
+  const educationContent = selectedCounty ?
+    (getCountyEducationComplete(selectedCounty.id) || getCountyEducation(selectedCounty.id)) :
+    null;
   const memoryAid = selectedCounty ? getMemoryAidData(selectedCounty.id) : null;
 
   return (
@@ -347,17 +339,29 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                               <p className="text-sm text-green-800">{selectedCounty.funFact}</p>
                             </div>
                           </div>
-                          {educationContent?.specificData?.majorAttractions && (
-                            <div>
-                              <h4 className="font-semibold text-gray-700 mb-2">Major Attractions</h4>
-                              <div className="flex flex-wrap gap-2">
-                                {educationContent.specificData.majorAttractions.map((attraction: string, idx: number) => (
-                                  <span key={idx} className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
-                                    {attraction}
-                                  </span>
-                                ))}
+                          {educationContent && (
+                            <>
+                              <div className="p-4 bg-yellow-50 rounded-lg">
+                                <h4 className="font-semibold text-gray-700 mb-2">Historical Context</h4>
+                                <p className="text-sm text-gray-600">{educationContent.historicalContext}</p>
                               </div>
-                            </div>
+                              <div className="p-4 bg-indigo-50 rounded-lg">
+                                <h4 className="font-semibold text-gray-700 mb-2">Economic Importance</h4>
+                                <p className="text-sm text-gray-600">{educationContent.economicImportance}</p>
+                              </div>
+                              {educationContent.specificData?.majorAttractions && (
+                                <div>
+                                  <h4 className="font-semibold text-gray-700 mb-2">Major Attractions</h4>
+                                  <div className="flex flex-wrap gap-2">
+                                    {educationContent.specificData.majorAttractions.map((attraction: string, idx: number) => (
+                                      <span key={idx} className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                                        {attraction}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </>
                           )}
                         </>
                       )}
