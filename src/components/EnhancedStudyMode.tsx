@@ -8,6 +8,7 @@ import { californiaCounties, CaliforniaCounty } from '../data/californiaCounties
 import StudyModeMap from './StudyModeMap';
 import CountyShapeDisplay from './CountyShapeDisplay';
 import EducationalContentModal from './EducationalContentModal';
+import CountyDetailsModal from './CountyDetailsModal';
 
 interface StudyModeProps {
   onClose: () => void;
@@ -35,6 +36,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const [contentTab, setContentTab] = useState<ContentTab>('overview');
   const [showHints, setShowHints] = useState(false);
   const [showEducationalModal, setShowEducationalModal] = useState(false);
+  const [showCountyDetailsModal, setShowCountyDetailsModal] = useState(false);
   const [quizQuestion, setQuizQuestion] = useState<any>(null);
   const [progress, setProgress] = useState<StudyProgress>({
     studiedCounties: new Set(),
@@ -764,6 +766,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         const county = counties.find(c => c.id === countyId || c.id === countyId.replace(/-/g, '_'));
                         if (county) {
                           handleCountySelect(county);
+                          setShowCountyDetailsModal(true);
                         }
                       }}
                       selectedCounty={selectedCounty}
@@ -1085,6 +1088,19 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
         county={selectedCounty}
         educationContent={educationContent}
         memoryAid={memoryAid}
+      />
+
+      {/* County Details Modal */}
+      <CountyDetailsModal
+        isOpen={showCountyDetailsModal}
+        onClose={() => setShowCountyDetailsModal(false)}
+        county={selectedCounty}
+        educationContent={educationContent}
+        memoryAid={memoryAid}
+        onViewEducationalContent={() => {
+          setShowCountyDetailsModal(false);
+          setShowEducationalModal(true);
+        }}
       />
     </div>
   );
