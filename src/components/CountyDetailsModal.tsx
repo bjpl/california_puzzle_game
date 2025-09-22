@@ -43,22 +43,37 @@ export default function CountyDetailsModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
       onClick={onClose}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        style={{ animation: 'fadeIn 0.2s ease-out' }}
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+        style={{
+          animation: 'fadeIn 0.2s ease-out',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
       />
 
       {/* Modal Content */}
       <div
-        className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto z-[10000]"
         onClick={e => e.stopPropagation()}
         style={{
           animation: 'slideUp 0.3s ease-out',
           transform: 'translateY(0)',
+          position: 'relative',
         }}
       >
         {/* Close Button */}
