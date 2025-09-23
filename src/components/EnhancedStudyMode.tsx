@@ -501,9 +501,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
               </div>
 
               {/* County Details */}
-              <div className="flex-1 p-6 overflow-y-auto">
-                {selectedCounty ? (
-                  <div>
+              <div className="flex-1 overflow-hidden flex flex-col">
+                <div className="flex-1 p-6 overflow-y-auto">
+                  {selectedCounty ? (
+                    <div>
                     {/* County Header */}
                     <div className="mb-6">
                       <h3 className="text-3xl font-bold text-gray-800 mb-2">
@@ -793,6 +794,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     <p className="text-sm mt-2">Explore comprehensive educational content for all 58 counties</p>
                   </div>
                 )}
+                </div>
               </div>
             </>
           )}
