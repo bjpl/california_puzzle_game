@@ -466,7 +466,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           {viewMode === 'explore' && (
             <>
               {/* County List */}
-              <div className="w-1/3 border-r bg-gray-50 p-4 overflow-y-auto h-full">
+              <div className="w-1/3 border-r bg-gray-50 p-4 overflow-y-auto">
                 <h3 className="font-semibold text-gray-700 mb-3">
                   {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
                 </h3>
@@ -501,7 +501,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
               </div>
 
               {/* County Details */}
-              <div className="flex-1 p-6 overflow-y-auto h-full">
+              <div className="flex-1 p-6 overflow-y-auto">
                 {selectedCounty ? (
                   <div>
                     {/* County Header */}
