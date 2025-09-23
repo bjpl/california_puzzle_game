@@ -101,31 +101,31 @@ export default function GameContainer() {
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full text-center">
           <h1 className="text-4xl font-bold text-blue-900 mb-4">
-            🗺️ California Counties Puzzle
+            🗺️ California Counties Explorer
           </h1>
           <p className="text-lg text-gray-700 mb-8">
-            Learn California geography by placing counties in their correct locations!
+            Discover California's geography through interactive exploration and learning
           </p>
           <div className="space-y-4 text-left mb-8">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">🎯</span>
+              <span className="text-2xl">📍</span>
               <div>
-                <h3 className="font-semibold">How to Play</h3>
-                <p className="text-gray-600">Drag counties from the tray and drop them on the correct location on the map</p>
+                <h3 className="font-semibold">Interactive Learning</h3>
+                <p className="text-gray-600">Explore each county's unique location by placing them on the map</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <span className="text-2xl">⭐</span>
+              <span className="text-2xl">🌟</span>
               <div>
-                <h3 className="font-semibold">Score Points</h3>
-                <p className="text-gray-600">Earn 100 points for each correct placement, lose 10 for mistakes</p>
+                <h3 className="font-semibold">Build Knowledge</h3>
+                <p className="text-gray-600">Learn about California's diverse regions and county boundaries</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <span className="text-2xl">🏆</span>
+              <span className="text-2xl">🎓</span>
               <div>
-                <h3 className="font-semibold">Complete the Map</h3>
-                <p className="text-gray-600">Place all 20 major California counties to win!</p>
+                <h3 className="font-semibold">Master Geography</h3>
+                <p className="text-gray-600">Develop a deep understanding of California's 58 counties</p>
               </div>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function GameContainer() {
               onClick={startGame}
               className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
             >
-              Start Game
+              Begin Exploration
             </button>
             <button
               onClick={() => setShowStudyMode(true)}
