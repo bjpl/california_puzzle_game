@@ -382,7 +382,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl h-[90vh] flex flex-col">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
           <div className="flex justify-between items-center">
@@ -462,11 +462,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden min-h-0">
           {viewMode === 'explore' && (
             <>
               {/* County List */}
-              <div className="w-1/3 border-r bg-gray-50 p-4 overflow-y-auto">
+              <div className="w-1/3 border-r bg-gray-50 p-4 overflow-y-auto min-h-0">
                 <h3 className="font-semibold text-gray-700 mb-3">
                   {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
                 </h3>
@@ -501,8 +501,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
               </div>
 
               {/* County Details */}
-              <div className="flex-1 overflow-hidden flex flex-col">
-                <div className="flex-1 p-6 overflow-y-auto">
+              <div className="flex-1 flex flex-col min-h-0">
+                <div className="flex-1 p-6 overflow-y-auto min-h-0">
                   {selectedCounty ? (
                     <div>
                     {/* County Header */}
@@ -800,7 +800,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           )}
 
           {viewMode === 'quiz' && (
-            <div className="flex-1 p-8 overflow-y-auto">
+            <div className="flex-1 p-8 overflow-y-auto min-h-0">
               <div className="max-w-5xl mx-auto">
                 {/* Quiz States */}
                 {quizState === 'idle' && (
@@ -1038,7 +1038,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* Map Mode - Interactive Visual Learning */}
           {viewMode === 'map' && (
-            <div className="flex-1 p-8 overflow-y-auto">
+            <div className="flex-1 p-8 overflow-y-auto min-h-0">
               <div className="max-w-7xl mx-auto">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">🗺️ Interactive County Map</h2>
                 <p className="text-gray-600 mb-6">Hover to see county names • Click to select and view details</p>
@@ -1185,9 +1185,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* Timeline Mode - Historical Perspective with Side Panel */}
           {viewMode === 'timeline' && (
-            <div className="flex-1 flex gap-4 p-6 overflow-hidden">
+            <div className="flex-1 flex gap-4 p-6 overflow-hidden min-h-0">
               {/* Main Timeline Area - Left Side */}
-              <div className="flex-1 overflow-y-auto pr-2">
+              <div className="flex-1 overflow-y-auto pr-2 min-h-0">
                 <h2 className="text-2xl font-bold text-gray-800 mb-3">📅 California Counties Timeline</h2>
                 <p className="text-gray-600 mb-5 text-sm">Click any county to view detailed information →</p>
 
@@ -1266,7 +1266,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
               {/* Right Side Panel for County Details */}
               <div className="w-80 flex-shrink-0">
                 {selectedCounty ? (
-                  <div className="sticky top-0 bg-white rounded-2xl shadow-2xl p-5 border-2 border-gray-100 max-h-[calc(100vh-200px)] overflow-y-auto">
+                  <div className="bg-white rounded-2xl shadow-2xl p-5 border-2 border-gray-100 h-full overflow-y-auto">
                     <div className="mb-4">
                       {/* Header with County Shape */}
                       <div className="flex items-start gap-3 mb-3">
