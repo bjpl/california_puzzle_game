@@ -52,6 +52,7 @@ interface GameContextType {
 
   // Timer state
   timerState: TimerState;
+  timerStarted: boolean;
 
   // Scoring and analytics
   currentStreak: number;
@@ -109,6 +110,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const [hints, setHints] = useState(3);
   const [hintedCounty, setHintedCounty] = useState<string | null>(null);
   const [showRegions, setShowRegions] = useState(false);
+  const [timerStarted, setTimerStarted] = useState(false);
 
   // Advanced scoring state
   const [currentStreak, setCurrentStreak] = useState(0);
@@ -183,6 +185,12 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, [gameSettings.enableTimer, timerControls]);
 
   const placeCounty = useCallback((countyId: string, isCorrect: boolean, placementAccuracy: number = 1.0) => {
+    // Start timer on first county placement
+    if (!timerStarted && gameSettings.enableTimer) {
+      timerControls.start();
+      setTimerStarted(true);
+    }
+
     const placementTime = Date.now() - countySelectionTime;
     const county = counties.find(c => c.id === countyId);
 
@@ -296,7 +304,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
     setPlacementHistory(prev => [...prev, placementRecord]);
   }, [currentCounty, currentStreak, countySelectionTime, counties, completedRegions,
-      gameSettings.difficulty, gameSettings.enableScoring, gameSettings.enableTimer, timerControls]);
+      gameSettings.difficulty, gameSettings.enableScoring, gameSettings.enableTimer, timerControls, timerStarted]);
 
   const clearCurrentCounty = useCallback(() => {
     setCurrentCounty(null);
@@ -320,6 +328,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     setIsPaused(false);
     setHints(3);
     setHintedCounty(null);
+    setTimerStarted(false);
 
     // Reset timer
     timerControls.reset();
@@ -328,11 +337,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const startGame = useCallback(() => {
     setIsGameStarted(true);
     setIsPaused(false);
-
-    if (gameSettings.enableTimer) {
-      timerControls.start();
-    }
-  }, [gameSettings.enableTimer, timerControls]);
+    // Timer will start on first county placement
+  }, []);
 
   const pauseGame = useCallback(() => {
     setIsPaused(true);
@@ -413,6 +419,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
         // Timer state
         timerState,
+        timerStarted,
 
         // Scoring and analytics
         currentStreak,

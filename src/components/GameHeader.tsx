@@ -6,7 +6,7 @@ import HintModal from './HintModal';
 import EnhancedStudyMode from './EnhancedStudyMode';
 
 export default function GameHeader() {
-  const { score, mistakes, placedCounties, counties, resetGame, timerState, pauseGame, resumeGame, isGameStarted, isPaused, hints, useHint, currentCounty } = useGame();
+  const { score, mistakes, placedCounties, counties, resetGame, timerState, timerStarted, pauseGame, resumeGame, isGameStarted, isPaused, hints, useHint, currentCounty } = useGame();
   const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
   const [showHintModal, setShowHintModal] = useState(false);
   const [showStudyMode, setShowStudyMode] = useState(false);
@@ -185,10 +185,18 @@ export default function GameHeader() {
 
         {/* Timer */}
         <div className="flex items-center gap-2">
-          <div className="w-auto min-w-[3.5rem] px-2 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-            <span className="text-purple-600 text-xs font-bold">{formatTime(timerState.elapsed)}</span>
+          <div className={`w-auto min-w-[3.5rem] px-2 h-8 rounded-lg flex items-center justify-center transition-all ${
+            !timerStarted ? 'bg-gray-100 border border-gray-300' : 'bg-purple-100'
+          }`}>
+            <span className={`text-xs font-bold ${
+              !timerStarted ? 'text-gray-400' : 'text-purple-600'
+            }`}>
+              {!timerStarted ? 'Ready' : formatTime(timerState.elapsed)}
+            </span>
           </div>
-          <span className="text-xs text-gray-500">{isPaused ? 'Paused' : 'Time'}</span>
+          <span className="text-xs text-gray-500">
+            {!timerStarted ? 'Timer starts on first move' : isPaused ? 'Paused' : 'Time'}
+          </span>
         </div>
 
         {/* Progress */}
