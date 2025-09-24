@@ -1,10 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useGame } from '../context/GameContext';
 
-export default function StudyMode({ onClose }: { onClose: () => void }) {
+export default function StudyMode({ onClose, focusCounty }: { onClose: () => void; focusCounty?: any }) {
   const { counties } = useGame();
-  const [selectedRegion, setSelectedRegion] = useState<string>('all');
-  const [selectedCounty, setSelectedCounty] = useState<any>(null);
+  const [selectedRegion, setSelectedRegion] = useState<string>(focusCounty ? focusCounty.region : 'all');
+  const [selectedCounty, setSelectedCounty] = useState<any>(focusCounty || null);
+  const focusCountyRef = useRef<HTMLButtonElement>(null);
+
+  // Scroll to focused county when component mounts
+  useEffect(() => {
+    if (focusCounty && focusCountyRef.current) {
+      setTimeout(() => {
+        focusCountyRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 100); // Small delay to ensure DOM is ready
+    }
+  }, [focusCounty]);
 
   // Get unique regions
   const regions = Array.from(new Set(counties.map(c => c.region))).sort();
@@ -34,7 +47,7 @@ export default function StudyMode({ onClose }: { onClose: () => void }) {
         <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold flex items-center gap-2">
-              📚 Study Mode - California Counties
+              📚 Study Mode - {focusCounty ? `${focusCounty.name} County` : 'California Counties'}
             </h2>
             <button
               onClick={onClose}
@@ -44,7 +57,10 @@ export default function StudyMode({ onClose }: { onClose: () => void }) {
             </button>
           </div>
           <p className="mt-2 text-blue-100">
-            Learn about California's {counties.length} counties. Click on any county to see details!
+            {focusCounty
+              ? `Learn about ${focusCounty.name} County and explore other California counties.`
+              : `Learn about California's ${counties.length} counties. Click on any county to see details!`
+            }
           </p>
         </div>
 
@@ -94,6 +110,7 @@ export default function StudyMode({ onClose }: { onClose: () => void }) {
                   return (
                     <button
                       key={county.id}
+                      ref={focusCounty && county.id === focusCounty.id ? focusCountyRef : null}
                       onClick={() => setSelectedCounty(county)}
                       className={`p-2 border rounded-lg text-left hover:shadow-md transition-all ${
                         selectedCounty?.id === county.id
