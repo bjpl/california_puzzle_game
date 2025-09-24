@@ -15,17 +15,7 @@ interface CountyFeature {
   };
 }
 
-function CountyDropZone({
-  county,
-  isDragging,
-  renderLabels = true,
-  renderShapes = true
-}: {
-  county: CountyFeature;
-  isDragging: boolean;
-  renderLabels?: boolean;
-  renderShapes?: boolean;
-}) {
+function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragging: boolean }) {
   const { placedCounties, currentCounty, showRegions, counties } = useGame();
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
@@ -161,34 +151,29 @@ function CountyDropZone({
   const [labelX, labelY] = isPlaced ? getLabelPosition() : [0, 0];
 
   return (
-    <g ref={renderShapes ? setNodeRef : undefined}>
-      {/* Conditionally render county shape */}
-      {renderShapes && (
-        <path
-          d={path}
-          fill={fillColor}
-          stroke={strokeColor}
-          strokeWidth={isDragging && isOver ? "1.5" : strokeWidth}
-          className="transition-all duration-200 hover:opacity-90"
-          style={{
-            cursor: isPlaced ? 'default' : 'pointer',
-            filter: isDragging && isOver ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' : isPlaced ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
-            opacity: 1
-          }}
-        />
-      )}
-
-      {/* Conditionally render county label */}
-      {renderLabels && isPlaced && (
-        <g className="county-label-group">
+    <g ref={setNodeRef}>
+      <path
+        d={path}
+        fill={fillColor}
+        stroke={strokeColor}
+        strokeWidth={isDragging && isOver ? "1.5" : strokeWidth}
+        className="transition-all duration-200 hover:opacity-90"
+        style={{
+          cursor: isPlaced ? 'default' : 'pointer',
+          filter: isDragging && isOver ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' : isPlaced ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
+          opacity: 1
+        }}
+      />
+      {isPlaced && (
+        <g className="county-label-group" style={{ zIndex: 1000 }}>
           {/* Background rectangle for better text visibility */}
           <rect
             x={labelX - (countyName.length * 4)}
             y={labelY - 8}
             width={countyName.length * 8}
             height={16}
-            fill="rgba(255, 255, 255, 0.8)"
-            stroke="rgba(0, 0, 0, 0.2)"
+            fill="rgba(255, 255, 255, 0.9)"
+            stroke="rgba(0, 0, 0, 0.3)"
             strokeWidth="0.5"
             rx="3"
             pointerEvents="none"
@@ -198,12 +183,13 @@ function CountyDropZone({
             y={labelY}
             textAnchor="middle"
             dominantBaseline="middle"
-            fontSize="11"
+            fontSize="12"
             fill={textColor}
             fontWeight="bold"
             pointerEvents="none"
             style={{
-              textShadow: textColor === '#ffffff' ? '1px 1px 2px rgba(0,0,0,0.9)' : '1px 1px 2px rgba(255,255,255,0.9)'
+              textShadow: textColor === '#ffffff' ? '2px 2px 4px rgba(0,0,0,0.9)' : '2px 2px 4px rgba(255,255,255,0.9)',
+              zIndex: 1001
             }}
           >
             {countyName}
@@ -375,27 +361,13 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         {/* Apply zoom and pan transformation - zoom from center */}
         <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${300 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
 
-        {/* Render all county shapes first */}
-        <g className="county-shapes">
+        {/* Render all counties */}
+        <g>
           {geoData.features.map((feature: CountyFeature, idx: number) => (
             <CountyDropZone
               key={feature.properties.NAME || `county-${idx}`}
               county={feature}
               isDragging={isDragging}
-              renderLabels={false}
-            />
-          ))}
-        </g>
-
-        {/* Render all county labels on top */}
-        <g className="county-labels">
-          {geoData.features.map((feature: CountyFeature, idx: number) => (
-            <CountyDropZone
-              key={`label-${feature.properties.NAME || idx}`}
-              county={feature}
-              isDragging={isDragging}
-              renderLabels={true}
-              renderShapes={false}
             />
           ))}
         </g>
