@@ -164,44 +164,12 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
           opacity: 1
         }}
       />
-      {isPlaced && (
-        <g className="county-label-group" style={{ zIndex: 1000 }}>
-          {/* Background rectangle for better text visibility */}
-          <rect
-            x={labelX - (countyName.length * 4)}
-            y={labelY - 8}
-            width={countyName.length * 8}
-            height={16}
-            fill="rgba(255, 255, 255, 0.9)"
-            stroke="rgba(0, 0, 0, 0.3)"
-            strokeWidth="0.5"
-            rx="3"
-            pointerEvents="none"
-          />
-          <text
-            x={labelX}
-            y={labelY}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize="12"
-            fill={textColor}
-            fontWeight="bold"
-            pointerEvents="none"
-            style={{
-              textShadow: textColor === '#ffffff' ? '2px 2px 4px rgba(0,0,0,0.9)' : '2px 2px 4px rgba(255,255,255,0.9)',
-              zIndex: 1001
-            }}
-          >
-            {countyName}
-          </text>
-        </g>
-      )}
     </g>
   );
 }
 
 export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolean }) {
-  const { showRegions } = useGame();
+  const { showRegions, placedCounties, counties } = useGame();
   const [geoData, setGeoData] = useState<any>(null);
   const [bounds, setBounds] = useState<any>(null);
   const [zoom, setZoom] = useState(1);
@@ -361,8 +329,8 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         {/* Apply zoom and pan transformation - zoom from center */}
         <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${300 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
 
-        {/* Render all counties */}
-        <g>
+        {/* Render all county shapes (with drag and drop zones) */}
+        <g className="county-shapes">
           {geoData.features.map((feature: CountyFeature, idx: number) => (
             <CountyDropZone
               key={feature.properties.NAME || `county-${idx}`}
@@ -370,6 +338,118 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
               isDragging={isDragging}
             />
           ))}
+        </g>
+
+        {/* Render all county labels on top */}
+        <g className="county-labels-overlay">
+          {geoData.features.map((feature: CountyFeature, idx: number) => {
+            const countyName = feature.properties.NAME;
+            const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
+            const isPlaced = placedCounties.has(countyId);
+
+            if (!isPlaced) return null;
+
+            // Get county data for centroid calculation - check both name and id match
+            const countyData = counties.find(c =>
+              c.name === countyName ||
+              c.id === countyId ||
+              c.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '') === countyId
+            );
+
+            // Use the EXACT same projection function as in CountyDropZone
+            const webMercatorToLatLon = (x: number, y: number): [number, number] => {
+              const lon = (x / 20037508.34) * 180;
+              const lat = (Math.atan(Math.exp((y / 20037508.34) * Math.PI)) * 360 / Math.PI) - 90;
+              return [lon, lat];
+            };
+
+            const project = ([x, y]: [number, number]): [number, number] => {
+              // Check if coordinates are in Web Mercator (large values)
+              if (Math.abs(x) > 180) {
+                // Convert from Web Mercator to lat/lon
+                [x, y] = webMercatorToLatLon(x, y);
+              }
+
+              // California's approximate bounds in lat/lon
+              const caMinLon = -124.5;
+              const caMaxLon = -114.0;
+              const caMinLat = 32.5;
+              const caMaxLat = 42.0;
+
+              // Project to SVG coordinates
+              const svgX = ((x - caMinLon) / (caMaxLon - caMinLon)) * 800;
+              const svgY = ((caMaxLat - y) / (caMaxLat - caMinLat)) * 600;
+              return [svgX, svgY];
+            };
+
+            // Calculate label position using same logic as CountyDropZone
+            const getLabelPosition = (): [number, number] => {
+              // If we have predefined centroid data, use it
+              if (countyData?.centroid) {
+                return project([countyData.centroid[0], countyData.centroid[1]]);
+              }
+
+              // Otherwise, calculate approximate centroid from geometry
+              const geom = feature.geometry;
+              let sumX = 0, sumY = 0, count = 0;
+
+              const processRing = (ring: number[][]) => {
+                ring.forEach(coord => {
+                  const [x, y] = project([coord[0], coord[1]]);
+                  sumX += x;
+                  sumY += y;
+                  count++;
+                });
+              };
+
+              if (geom.type === 'Polygon') {
+                processRing(geom.coordinates[0]);
+              } else if (geom.type === 'MultiPolygon') {
+                geom.coordinates.forEach((polygon: number[][][]) => {
+                  processRing(polygon[0]);
+                });
+              }
+
+              // Return average position (approximate centroid)
+              return count > 0 ? [sumX / count, sumY / count] : [400, 300];
+            };
+
+            const [labelX, labelY] = getLabelPosition();
+            const fillColor = '#10b981'; // Green for placed counties
+            const textColor = getSvgTextFill(fillColor);
+
+            return (
+              <g key={`label-overlay-${countyName}`} className="county-label-group">
+                {/* Background rectangle for better text visibility */}
+                <rect
+                  x={labelX - (countyName.length * 4)}
+                  y={labelY - 8}
+                  width={countyName.length * 8}
+                  height={16}
+                  fill="rgba(255, 255, 255, 0.9)"
+                  stroke="rgba(0, 0, 0, 0.3)"
+                  strokeWidth="0.5"
+                  rx="3"
+                  pointerEvents="none"
+                />
+                <text
+                  x={labelX}
+                  y={labelY}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize="12"
+                  fill={textColor}
+                  fontWeight="bold"
+                  pointerEvents="none"
+                  style={{
+                    textShadow: textColor === '#ffffff' ? '2px 2px 4px rgba(0,0,0,0.9)' : '2px 2px 4px rgba(255,255,255,0.9)'
+                  }}
+                >
+                  {countyName}
+                </text>
+              </g>
+            );
+          })}
         </g>
 
         </g>
