@@ -2,6 +2,9 @@ import { useEffect, useState, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 import { getSvgTextFill } from '../utils/colorContrast';
+import CountyDetailsModal from './CountyDetailsModal';
+import { saveGameState, generateStudyModeUrl } from '../utils/gameStateManager';
+import '../styles/educational-design.css';
 
 interface CountyFeature {
   type: string;
@@ -15,8 +18,13 @@ interface CountyFeature {
   };
 }
 
-function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragging: boolean }) {
+function CountyDropZone({ county, isDragging, onCountyClick }: {
+  county: CountyFeature;
+  isDragging: boolean;
+  onCountyClick?: (county: any) => void;
+}) {
   const { placedCounties, currentCounty, showRegions, counties } = useGame();
+  const [isHovered, setIsHovered] = useState(false);
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
   const isPlaced = placedCounties.has(countyId);
@@ -29,32 +37,32 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
     id: countyId,
   });
 
-  // Region colors mapping
+  // Region colors mapping - Educational, California-authentic colors
   const regionColors: { [key: string]: string } = {
-    'Southern California': '#fca5a5', // Light red
-    'Bay Area': '#93c5fd', // Light blue
-    'Central Valley': '#86efac', // Light green
-    'Central Coast': '#c4b5fd', // Light purple
-    'Northern California': '#fdba74', // Light orange
-    'Sierra Nevada': '#fde047', // Light yellow
-    'North Coast': '#5eead4', // Light teal
+    'Southern California': '#f5d5ae', // Warm sand
+    'Bay Area': '#b8d4e3', // Soft bay blue
+    'Central Valley': '#d4d4aa', // Farmland green
+    'Central Coast': '#c8b8d4', // Coastal purple
+    'Northern California': '#e6c2a6', // Redwood brown
+    'Sierra Nevada': '#e3d5a7', // Mountain gold
+    'North Coast': '#a8c8b8', // Forest green
   };
 
-  // Determine fill color based on state and regions
-  let fillColor = '#ffffff'; // Clean white for available counties
-  let strokeColor = '#6b7280'; // Medium gray stroke
+  // Determine fill color based on state and regions - using educational colors
+  let fillColor = '#fefefe'; // Paper white for available counties
+  let strokeColor = '#8c8c8c'; // Granite gray stroke
   let strokeWidth = "0.75";
 
   if (isPlaced) {
-    fillColor = '#10b981'; // Green when placed
-    strokeColor = '#047857'; // Darker green stroke
-    strokeWidth = "1";
-  } else if (isDragging && isOver) {
-    fillColor = '#fde68a'; // Softer yellow when hovering over during drag
-    strokeColor = '#f59e0b'; // Amber stroke
+    fillColor = '#e6d5b8'; // CA sand color when placed
+    strokeColor = '#1e3a5f'; // CA navy stroke
     strokeWidth = "1.5";
+  } else if (isDragging && isOver) {
+    fillColor = '#daa520'; // CA gold when hovering over during drag
+    strokeColor = '#2d5016'; // CA forest stroke
+    strokeWidth = "2";
   } else if (showRegions && region) {
-    fillColor = regionColors[region] || '#ffffff'; // Show region color if enabled
+    fillColor = regionColors[region] || '#fefefe'; // Show region color if enabled
   }
 
   // Calculate optimal text color based on background
@@ -148,7 +156,13 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
     return count > 0 ? [sumX / count, sumY / count] : [400, 300];
   };
 
-  const [labelX, labelY] = isPlaced ? getLabelPosition() : [0, 0];
+  const [labelX, labelY] = (isPlaced && isHovered) ? getLabelPosition() : [0, 0];
+
+  const handleClick = () => {
+    if (isPlaced && onCountyClick && countyData) {
+      onCountyClick(countyData);
+    }
+  };
 
   return (
     <g ref={setNodeRef}>
@@ -161,17 +175,45 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
         strokeLinecap="round"
         className="transition-all duration-200 hover:opacity-90"
         style={{
-          cursor: isPlaced ? 'default' : 'pointer',
+          cursor: isPlaced ? 'pointer' : 'pointer',
           filter: isDragging && isOver ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' : isPlaced ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
           opacity: 1
         }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={handleClick}
       />
+      {/* Hover label for placed counties */}
+      {isPlaced && isHovered && (
+        <g className="county-hover-label">
+          <rect
+            className="county-label-bg"
+            x={labelX - (countyName.length * 4)}
+            y={labelY - 8}
+            width={countyName.length * 8}
+            height={16}
+            pointerEvents="none"
+          />
+          <text
+            className="county-label"
+            x={labelX}
+            y={labelY}
+            fontSize="12"
+            fontWeight="600"
+            pointerEvents="none"
+          >
+            {countyName}
+          </text>
+        </g>
+      )}
     </g>
   );
 }
 
 export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolean }) {
-  const { showRegions, placedCounties, counties } = useGame();
+  const gameContext = useGame();
+  const { showRegions, placedCounties, counties, score, timerState, mistakes, gameSettings, placementHistory } = gameContext;
+  const [selectedCounty, setSelectedCounty] = useState<any>(null);
   const [geoData, setGeoData] = useState<any>(null);
   const [bounds, setBounds] = useState<any>(null);
   const [zoom, setZoom] = useState(1);
@@ -263,12 +305,12 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   };
 
   return (
-    <div className="w-full h-full bg-white relative flex items-center justify-center">
-      {/* Zoom Controls */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
+    <div className="w-full h-full relative flex items-center justify-center" style={{ backgroundColor: '#fefefe' }}>
+      {/* Zoom Controls - Clean educational styling */}
+      <div className="map-controls">
         <button
           onClick={() => setZoom(Math.min(zoom + 0.25, 3))}
-          className="bg-white/90 backdrop-blur hover:bg-white text-gray-700 w-8 h-8 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+          className="map-control-btn"
           title="Zoom In"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -277,7 +319,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         </button>
         <button
           onClick={() => setZoom(Math.max(zoom - 0.25, 0.5))}
-          className="bg-white/90 backdrop-blur hover:bg-white text-gray-700 w-8 h-8 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+          className="map-control-btn"
           title="Zoom Out"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -286,7 +328,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         </button>
         <button
           onClick={resetView}
-          className="bg-white/90 backdrop-blur hover:bg-white text-gray-700 w-8 h-8 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+          className="map-control-btn"
           title="Reset View"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,14 +337,12 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         </button>
       </div>
 
-      {/* Only show drag instruction when dragging */}
+      {/* Only show drag instruction when dragging - Clean educational styling */}
       {isDragging && (
-        <div className="absolute top-4 left-0 right-0 z-10 text-center pointer-events-none">
-          <div className="inline-block bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow-lg">
-            <p className="text-sm text-gray-700 font-medium">
-              Drop on the correct location
-            </p>
-          </div>
+        <div className="instruction-banner">
+          <p className="instruction-text">
+            Drop the county on its correct location
+          </p>
         </div>
       )}
 
@@ -324,147 +364,68 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       >
         <defs>
           <filter id="mapShadow">
-            <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.1"/>
+            <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.05"/>
           </filter>
-          {/* Background pattern to help mask boundary gaps */}
-          <pattern id="backgroundPattern" patternUnits="userSpaceOnUse" width="20" height="20">
-            <rect width="20" height="20" fill="#f8fafc"/>
-            <circle cx="10" cy="10" r="0.5" fill="#e2e8f0" opacity="0.3"/>
+          {/* Clean educational background pattern */}
+          <pattern id="educationalPattern" patternUnits="userSpaceOnUse" width="20" height="20">
+            <rect width="20" height="20" fill="#fefefe"/>
+            <circle cx="10" cy="10" r="0.3" fill="#8c8c8c" opacity="0.1"/>
           </pattern>
         </defs>
 
-        {/* Subtle background to minimize gap visibility */}
-        <rect width="800" height="600" fill="#f8fafc" opacity="0.5" />
+        {/* Clean educational background */}
+        <rect width="800" height="600" fill="#fefefe" />
 
         {/* Apply zoom and pan transformation - zoom from center */}
         <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${300 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
 
-        {/* Render all county shapes (with drag and drop zones) */}
+        {/* Render all county shapes with hover labels and click handlers */}
         <g className="county-shapes">
           {geoData.features.map((feature: CountyFeature, idx: number) => (
             <CountyDropZone
               key={feature.properties.NAME || `county-${idx}`}
               county={feature}
               isDragging={isDragging}
+              onCountyClick={(county) => setSelectedCounty(county)}
             />
           ))}
-        </g>
-
-        {/* Render all county labels on top */}
-        <g className="county-labels-overlay">
-          {geoData.features.map((feature: CountyFeature, idx: number) => {
-            const countyName = feature.properties.NAME;
-            const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
-            const isPlaced = placedCounties.has(countyId);
-
-            if (!isPlaced) return null;
-
-            // Get county data for centroid calculation - check both name and id match
-            const countyData = counties.find(c =>
-              c.name === countyName ||
-              c.id === countyId ||
-              c.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '') === countyId
-            );
-
-            // Use the EXACT same projection function as in CountyDropZone
-            const webMercatorToLatLon = (x: number, y: number): [number, number] => {
-              const lon = (x / 20037508.34) * 180;
-              const lat = (Math.atan(Math.exp((y / 20037508.34) * Math.PI)) * 360 / Math.PI) - 90;
-              return [lon, lat];
-            };
-
-            const project = ([x, y]: [number, number]): [number, number] => {
-              // Check if coordinates are in Web Mercator (large values)
-              if (Math.abs(x) > 180) {
-                // Convert from Web Mercator to lat/lon
-                [x, y] = webMercatorToLatLon(x, y);
-              }
-
-              // California's approximate bounds in lat/lon
-              const caMinLon = -124.5;
-              const caMaxLon = -114.0;
-              const caMinLat = 32.5;
-              const caMaxLat = 42.0;
-
-              // Project to SVG coordinates
-              const svgX = ((x - caMinLon) / (caMaxLon - caMinLon)) * 800;
-              const svgY = ((caMaxLat - y) / (caMaxLat - caMinLat)) * 600;
-              return [svgX, svgY];
-            };
-
-            // Calculate label position using same logic as CountyDropZone
-            const getLabelPosition = (): [number, number] => {
-              // If we have predefined centroid data, use it
-              if (countyData?.centroid) {
-                return project([countyData.centroid[0], countyData.centroid[1]]);
-              }
-
-              // Otherwise, calculate approximate centroid from geometry
-              const geom = feature.geometry;
-              let sumX = 0, sumY = 0, count = 0;
-
-              const processRing = (ring: number[][]) => {
-                ring.forEach(coord => {
-                  const [x, y] = project([coord[0], coord[1]]);
-                  sumX += x;
-                  sumY += y;
-                  count++;
-                });
-              };
-
-              if (geom.type === 'Polygon') {
-                processRing(geom.coordinates[0]);
-              } else if (geom.type === 'MultiPolygon') {
-                geom.coordinates.forEach((polygon: number[][][]) => {
-                  processRing(polygon[0]);
-                });
-              }
-
-              // Return average position (approximate centroid)
-              return count > 0 ? [sumX / count, sumY / count] : [400, 300];
-            };
-
-            const [labelX, labelY] = getLabelPosition();
-            const fillColor = '#10b981'; // Green for placed counties
-            const textColor = getSvgTextFill(fillColor);
-
-            return (
-              <g key={`label-overlay-${countyName}`} className="county-label-group">
-                {/* Background rectangle for better text visibility */}
-                <rect
-                  x={labelX - (countyName.length * 4)}
-                  y={labelY - 8}
-                  width={countyName.length * 8}
-                  height={16}
-                  fill="rgba(255, 255, 255, 0.9)"
-                  stroke="rgba(0, 0, 0, 0.3)"
-                  strokeWidth="0.5"
-                  rx="3"
-                  pointerEvents="none"
-                />
-                <text
-                  x={labelX}
-                  y={labelY}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  fontSize="12"
-                  fill={textColor}
-                  fontWeight="bold"
-                  pointerEvents="none"
-                  style={{
-                    textShadow: textColor === '#ffffff' ? '2px 2px 4px rgba(0,0,0,0.9)' : '2px 2px 4px rgba(255,255,255,0.9)'
-                  }}
-                >
-                  {countyName}
-                </text>
-              </g>
-            );
-          })}
         </g>
 
         </g>
         {/* End of zoom/pan group */}
       </svg>
+
+      {/* County Details Modal */}
+      <CountyDetailsModal
+        isOpen={!!selectedCounty}
+        onClose={() => setSelectedCounty(null)}
+        county={selectedCounty}
+        onViewEducationalContent={() => {
+          // Only save game state if there's actual progress (placed counties)
+          const hasProgress = placedCounties.size > 0;
+
+          if (hasProgress) {
+            // Save current game state before navigating
+            const success = saveGameState({
+              placedCounties: Array.from(placedCounties),
+              score,
+              mistakes,
+              timerState,
+              gameSettings,
+              placementHistory,
+              currentCountyId: selectedCounty?.id
+            });
+
+            if (!success) {
+              console.warn('Failed to save game state');
+            }
+          }
+
+          // Navigate to study mode with appropriate context
+          const studyModeUrl = generateStudyModeUrl(selectedCounty?.id || '', hasProgress);
+          window.location.href = studyModeUrl;
+        }}
+      />
     </div>
   );
 }

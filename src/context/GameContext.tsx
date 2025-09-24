@@ -4,6 +4,7 @@ import { allCaliforniaCounties, County as CompleteCounty } from '../data/califor
 import { useTimer, TimerState } from '../hooks/useTimer';
 import { calculateScore, calculateGameMetrics, ScoreCalculation, GameMetrics } from '../utils/scoring';
 import { saveLeaderboardEntry, LeaderboardEntry } from '../utils/leaderboard';
+import { loadGameState, clearGameState } from '../utils/gameStateManager';
 
 // Use the complete County interface but make some fields optional for compatibility
 interface County {
@@ -119,6 +120,33 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const [placementHistory, setPlacementHistory] = useState<PlacementRecord[]>([]);
   const [completedRegions, setCompletedRegions] = useState<Set<string>>(new Set());
   const [countySelectionTime, setCountySelectionTime] = useState<number>(0);
+
+  // Initialize game state - check for saved game to restore
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const shouldResume = urlParams.get('resume') === 'true';
+
+    if (shouldResume) {
+      const savedState = loadGameState();
+      if (savedState) {
+        // Restore game state
+        setPlacedCounties(new Set(savedState.placedCounties));
+        setScore(savedState.score);
+        setMistakes(savedState.mistakes);
+        setGameSettings(savedState.gameSettings as GameSettings);
+        setPlacementHistory(savedState.placementHistory);
+        setIsGameStarted(true);
+        setTimerStarted(true);
+
+        // Clear the saved state since we've restored it
+        clearGameState();
+
+        // Remove the resume parameter from URL to avoid confusion on refresh
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+  }, []);
 
   // Timer setup
   const [timerState, timerControls] = useTimer({

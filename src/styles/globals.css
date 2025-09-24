@@ -1,12 +1,9 @@
-/* California Counties Puzzle Game - Global Styles */
+/* California Counties Puzzle Game - Educational Design System */
 
-/* Import California-specific fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+/* Import the clean educational design system */
+@import './educational-design.css';
 
-/* Import animation styles */
+/* Import minimal animations for educational purposes */
 @import './animations.css';
 
 @tailwind base;
@@ -29,63 +26,8 @@
   animation: fade-in 0.3s ease-out;
 }
 
-/* California Design System CSS Variables */
-:root {
-  /* California Color Palette */
-  --ca-gold: #FFD700;
-  --ca-sunset: #FF6B35;
-  --ca-ocean: #0077BE;
-  --ca-redwood: #A0522D;
-  --ca-poppy: #FF8C00;
-  --ca-sky: #87CEEB;
-  --ca-desert: #DEB887;
-  --ca-vineyard: #722F37;
-  --ca-tech: #6366F1;
-  --ca-fog: #F5F5F5;
-  --ca-charcoal: #2D3748;
-  --ca-slate: #4A5568;
-  --ca-gray: #718096;
-  --ca-white: #FFFFFF;
-  --ca-cream: #FFFEF7;
-
-  /* Gradient Definitions */
-  --ca-sunset-gradient: linear-gradient(135deg, #FF6B35 0%, #FFD700 100%);
-  --ca-ocean-gradient: linear-gradient(135deg, #0077BE 0%, #87CEEB 100%);
-  --ca-redwood-gradient: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
-  --ca-tech-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-  --ca-desert-gradient: linear-gradient(135deg, #DEB887 0%, #F4A460 100%);
-
-  /* Typography Scale */
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', Consolas, monospace;
-  --font-handwritten: 'Caveat', cursive;
-
-  /* Spacing Scale */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(45, 55, 72, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(45, 55, 72, 0.1), 0 2px 4px -1px rgba(45, 55, 72, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(45, 55, 72, 0.1), 0 4px 6px -2px rgba(45, 55, 72, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(45, 55, 72, 0.1), 0 10px 10px -5px rgba(45, 55, 72, 0.04);
-
-  /* California-specific shadows */
-  --shadow-ca-gold: 0 4px 16px rgba(255, 215, 0, 0.2);
-  --shadow-ca-sunset: 0 4px 16px rgba(255, 107, 53, 0.2);
-  --shadow-ca-ocean: 0 4px 16px rgba(0, 119, 190, 0.2);
-}
+/* Educational design variables are now defined in educational-design.css */
+/* This file now focuses on minimal overrides and app-specific styles */
 
 /* Dark mode color adjustments */
 @media (prefers-color-scheme: dark) {
@@ -202,46 +144,19 @@
   }
 }
 
-/* Component layer - California-specific components */
+/* Legacy component overrides - minimal, clean educational styles */
 @layer components {
-  /* California Button Variants */
+  /* Clean button overrides for legacy compatibility */
   .btn-ca-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white transition-all duration-300 ease-out rounded-xl;
-    background: var(--ca-tech-gradient);
-    box-shadow: var(--shadow-md);
-  }
-
-  .btn-ca-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
-  }
-
-  .btn-ca-primary:active {
-    transform: translateY(0);
+    @apply btn-primary;
   }
 
   .btn-ca-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white transition-all duration-300 ease-out rounded-xl;
-    background: var(--ca-sunset-gradient);
-    box-shadow: var(--shadow-md);
-  }
-
-  .btn-ca-secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-ca-sunset);
+    @apply btn-secondary;
   }
 
   .btn-ca-outline {
-    @apply inline-flex items-center justify-center px-6 py-3 text-base font-semibold transition-all duration-300 ease-out border-2 rounded-xl;
-    color: var(--ca-ocean);
-    border-color: var(--ca-ocean);
-    background: transparent;
-  }
-
-  .btn-ca-outline:hover {
-    background: var(--ca-ocean);
-    color: white;
-    transform: translateY(-1px);
+    @apply btn-secondary;
   }
 
   /* California Card Components */
@@ -339,17 +254,9 @@
     100% { background-position: -200% 0; }
   }
 
-  /* Glass Morphism Effects */
-  .glass-ca {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .glass-ca-dark {
-    background: rgba(45, 55, 72, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(45, 55, 72, 0.2);
+  /* Removed glassmorphism - using clean educational cards instead */
+  .glass-ca, .glass-ca-dark {
+    @apply edu-card;
   }
 
   /* Game Layout Components */
@@ -440,51 +347,19 @@
 
 /* Utility layer - California-specific utilities */
 @layer utilities {
-  /* Text Gradients */
-  .text-ca-gradient {
-    background: var(--ca-sunset-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* Removed gradients and glow effects - using clean educational text styling */
+  .text-ca-gradient, .text-ca-ocean-gradient {
+    @apply text-title;
   }
 
-  .text-ca-ocean-gradient {
-    background: var(--ca-ocean-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* Removed all glow effects */
+  .glow-ca-gold, .glow-ca-sunset, .glow-ca-ocean {
+    /* No glow effects in educational design */
   }
 
-  /* Glow Effects */
-  .glow-ca-gold {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.1);
-  }
-
-  .glow-ca-sunset {
-    box-shadow: 0 0 20px rgba(255, 107, 53, 0.3), 0 0 40px rgba(255, 107, 53, 0.1);
-  }
-
-  .glow-ca-ocean {
-    box-shadow: 0 0 20px rgba(0, 119, 190, 0.3), 0 0 40px rgba(0, 119, 190, 0.1);
-  }
-
-  /* Animation Utilities */
-  .animate-ca-float {
-    animation: ca-float 3s ease-in-out infinite;
-  }
-
-  @keyframes ca-float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .animate-ca-pulse {
-    animation: ca-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes ca-pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.02); opacity: 0.8; }
+  /* Removed floating animations - using minimal educational animations */
+  .animate-ca-float, .animate-ca-pulse {
+    /* No floating animations in educational design */
   }
 
   /* Hide scrollbar while maintaining functionality */
@@ -516,15 +391,10 @@
     --tw-ring-color: var(--ca-tech);
   }
 
-  /* Backdrop utilities */
-  .backdrop-ca {
-    backdrop-filter: blur(8px) saturate(180%);
-    background: rgba(255, 255, 255, 0.72);
-  }
-
-  .backdrop-ca-dark {
-    backdrop-filter: blur(8px) saturate(180%);
-    background: rgba(45, 55, 72, 0.72);
+  /* Removed backdrop blur utilities - using clean educational backgrounds */
+  .backdrop-ca, .backdrop-ca-dark {
+    background: var(--paper-white);
+    border: 1px solid #e5e5e5;
   }
 }
 

@@ -1,0 +1,480 @@
+/* Educational California Counties - Authentic Design System */
+
+/* Remove all the AI website nonsense and create something trustworthy */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* AUTHENTIC CALIFORNIA EDUCATIONAL COLORS */
+:root {
+  /* Real California landscape colors - no neon, no purple tech nonsense */
+  --ca-navy: #1e3a5f;           /* Deep ocean blue, trustworthy */
+  --ca-forest: #2d5016;        /* Redwood forest green */
+  --ca-sand: #e6d5b8;          /* Beach sand, warm neutral */
+  --ca-clay: #b85c38;          /* Terra cotta, earthy */
+  --ca-granite: #8c8c8c;       /* Sierra granite gray */
+  --ca-sky: #87ceeb;           /* Clear California sky */
+  --ca-gold: #daa520;          /* Actual gold, not neon yellow */
+
+  /* Educational neutrals - like textbooks and classrooms */
+  --paper-white: #fefefe;
+  --ink-black: #2c2c2c;
+  --pencil-gray: #6b6b6b;
+  --eraser-pink: #f5f5f5;
+
+  /* Semantic colors for learning */
+  --correct-green: #28a745;    /* Clear success, not neon */
+  --warning-amber: #dc7633;    /* Amber warning, not aggressive */
+  --info-blue: #17a2b8;       /* Information blue */
+  --error-red: #dc3545;       /* Clear error state */
+
+  /* Typography */
+  --font-serif: 'Source Serif Pro', Georgia, serif;  /* Academic serif */
+  --font-sans: 'Inter', system-ui, sans-serif;       /* Clean sans */
+
+  /* Academic spacing - based on book/paper design */
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2rem;      /* 32px */
+  --space-2xl: 3rem;     /* 48px */
+
+  /* Realistic shadows - like paper on desk */
+  --paper-shadow: 0 2px 4px rgba(44, 44, 44, 0.1);
+  --book-shadow: 0 4px 8px rgba(44, 44, 44, 0.12);
+  --deep-shadow: 0 8px 16px rgba(44, 44, 44, 0.15);
+
+  /* Border radius - subtle, not over-designed */
+  --radius: 0.375rem;     /* 6px - like rounded paper corners */
+  --radius-lg: 0.5rem;   /* 8px */
+}
+
+/* BASE LAYER - Clean, educational foundation */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink-black);
+    background-color: var(--paper-white);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Typography hierarchy - academic and readable */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--ca-navy);
+    margin-bottom: var(--space-md);
+  }
+
+  h1 { font-size: 2.25rem; font-weight: 700; }  /* Page titles */
+  h2 { font-size: 1.875rem; }                   /* Section headers */
+  h3 { font-size: 1.5rem; }                     /* Subsections */
+  h4 { font-size: 1.25rem; }                    /* Small headers */
+
+  p {
+    margin-bottom: var(--space-md);
+    color: var(--ink-black);
+  }
+
+  a {
+    color: var(--ca-navy);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: var(--ca-clay);
+  }
+
+  /* Focus styles - clear and accessible */
+  *:focus-visible {
+    outline: 2px solid var(--ca-navy);
+    outline-offset: 2px;
+    border-radius: var(--radius);
+  }
+}
+
+/* COMPONENT LAYER - Educational components that actually serve learning */
+@layer components {
+
+  /* Educational Card - like flashcards or textbook boxes */
+  .edu-card {
+    background: var(--paper-white);
+    border: 1px solid #e5e5e5;
+    border-radius: var(--radius);
+    box-shadow: var(--paper-shadow);
+    padding: var(--space-lg);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .edu-card:hover {
+    box-shadow: var(--book-shadow);
+  }
+
+  /* Buttons - like textbook elements, not startup CTAs */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--ca-navy);
+    color: var(--paper-white);
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: var(--ca-forest);
+    color: var(--paper-white);
+    text-decoration: none;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-sm) var(--space-lg);
+    background: transparent;
+    color: var(--ca-navy);
+    border: 1px solid var(--ca-navy);
+    border-radius: var(--radius);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover {
+    background: var(--ca-navy);
+    color: var(--paper-white);
+    text-decoration: none;
+  }
+
+  /* Map Controls - clean, functional, no blur nonsense */
+  .map-controls {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    z-index: 10;
+  }
+
+  .map-control-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--paper-white);
+    border: 1px solid #d1d5db;
+    border-radius: var(--radius);
+    box-shadow: var(--paper-shadow);
+    color: var(--pencil-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .map-control-btn:hover {
+    background: var(--eraser-pink);
+    border-color: var(--ca-navy);
+    color: var(--ca-navy);
+    box-shadow: var(--book-shadow);
+  }
+
+  /* Instruction Banner - clear educational messaging */
+  .instruction-banner {
+    position: absolute;
+    top: var(--space-md);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--paper-white);
+    border: 1px solid var(--ca-gold);
+    border-radius: var(--radius-lg);
+    padding: var(--space-sm) var(--space-lg);
+    box-shadow: var(--book-shadow);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .instruction-text {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ca-navy);
+    margin: 0;
+  }
+
+  /* County Labels - clean, readable, educational */
+  .county-label {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    fill: var(--ink-black);
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+  }
+
+  .county-label-bg {
+    fill: rgba(254, 254, 254, 0.95);
+    stroke: rgba(209, 213, 219, 0.8);
+    stroke-width: 0.5;
+    rx: 3;
+  }
+
+  /* Progress Indicators - like grade trackers */
+  .progress-bar {
+    width: 100%;
+    height: 0.5rem;
+    background: var(--eraser-pink);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--correct-green);
+    border-radius: var(--radius);
+    transition: width 0.5s ease;
+  }
+
+  /* Achievement Elements - like merit badges, not gamification overload */
+  .achievement {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    background: var(--eraser-pink);
+    border: 1px solid #e5e5e5;
+    border-radius: var(--radius);
+  }
+
+  .achievement.earned {
+    background: rgba(218, 165, 32, 0.1);
+    border-color: var(--ca-gold);
+  }
+
+  .achievement-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--pencil-gray);
+  }
+
+  .achievement.earned .achievement-icon {
+    color: var(--ca-gold);
+  }
+
+  /* Game Layout - classroom-inspired organization */
+  .game-layout {
+    min-height: 100vh;
+    background: var(--paper-white);
+    padding: var(--space-lg);
+  }
+
+  .game-header {
+    background: var(--paper-white);
+    border-bottom: 2px solid var(--ca-navy);
+    padding: var(--space-lg) 0;
+    margin-bottom: var(--space-xl);
+  }
+
+  .game-title {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ca-navy);
+    margin: 0;
+    text-align: center;
+  }
+
+  .game-subtitle {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--pencil-gray);
+    text-align: center;
+    margin: var(--space-sm) 0 0 0;
+  }
+
+  /* County Grid - organized like a textbook layout */
+  .county-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+  }
+
+  /* Navigation - clean, academic */
+  .nav-edu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-lg);
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .nav-link {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--pencil-gray);
+    text-decoration: none;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--ca-navy);
+    background: var(--eraser-pink);
+    text-decoration: none;
+  }
+}
+
+/* UTILITY LAYER - Minimal, purposeful utilities */
+@layer utilities {
+
+  /* Text utilities - educational hierarchy */
+  .text-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ca-navy);
+  }
+
+  .text-body {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--ink-black);
+    line-height: 1.6;
+  }
+
+  .text-caption {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--pencil-gray);
+  }
+
+  /* Status colors - clear educational feedback */
+  .text-correct { color: var(--correct-green); }
+  .text-warning { color: var(--warning-amber); }
+  .text-error { color: var(--error-red); }
+  .text-info { color: var(--info-blue); }
+
+  .bg-correct { background-color: rgba(40, 167, 69, 0.1); }
+  .bg-warning { background-color: rgba(220, 118, 51, 0.1); }
+  .bg-error { background-color: rgba(220, 53, 69, 0.1); }
+  .bg-info { background-color: rgba(23, 162, 184, 0.1); }
+
+  /* Spacing utilities that make sense */
+  .space-educational > * + * {
+    margin-top: var(--space-lg);
+  }
+
+  /* Clean animations - only when they serve learning */
+  .fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive utilities */
+  .stack-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 768px) {
+    .stack-mobile {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+}
+
+/* ACCESSIBILITY AND PREFERENCES */
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+  :root {
+    --ink-black: #000000;
+    --paper-white: #ffffff;
+    --ca-navy: #000000;
+    --pencil-gray: #000000;
+  }
+
+  .edu-card {
+    border-width: 2px;
+    border-color: var(--ink-black);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles - because teachers print things */
+@media print {
+  .game-layout {
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  .map-controls,
+  .instruction-banner {
+    display: none !important;
+  }
+
+  .edu-card {
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    border: 1px solid #000 !important;
+    background: white !important;
+    color: #000 !important;
+  }
+}
