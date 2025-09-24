@@ -183,8 +183,8 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
 
   useEffect(() => {
     const basePath = window.location.hostname === 'localhost'
-      ? '/data/geo/ca-counties-ultra-low.geojson'
-      : '/california_puzzle_game/data/geo/ca-counties-ultra-low.geojson';
+      ? '/data/geo/ca-counties-medium.geojson'
+      : '/california_puzzle_game/data/geo/ca-counties-medium.geojson';
 
     fetch(basePath)
       .then(response => response.json())
