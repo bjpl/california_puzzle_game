@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { geographicHints, getCountyCharacteristics } from '../data/californiaGeographicHints';
 import { County } from '../data/californiaCounties';
 
@@ -9,10 +9,8 @@ interface HintModalProps {
   hintLevel: number;
 }
 
-export default function HintModal({ isOpen, onClose, county, hintLevel }: HintModalProps) {
+function HintModal({ isOpen, onClose, county, hintLevel }: HintModalProps) {
   const [showContent, setShowContent] = useState(false);
-
-  console.log('HintModal render - isOpen:', isOpen, 'county:', county, 'hintLevel:', hintLevel);
 
   useEffect(() => {
     if (isOpen) {
@@ -24,7 +22,6 @@ export default function HintModal({ isOpen, onClose, county, hintLevel }: HintMo
   }, [isOpen]);
 
   if (!isOpen || !county) {
-    console.log('HintModal returning null - isOpen:', isOpen, 'county:', county);
     return null;
   }
 
@@ -342,3 +339,12 @@ export default function HintModal({ isOpen, onClose, county, hintLevel }: HintMo
     </>
   );
 }
+
+// Memoize the component to prevent unnecessary re-renders
+export default memo(HintModal, (prevProps, nextProps) => {
+  return (
+    prevProps.isOpen === nextProps.isOpen &&
+    prevProps.hintLevel === nextProps.hintLevel &&
+    prevProps.county?.name === nextProps.county?.name
+  );
+});
