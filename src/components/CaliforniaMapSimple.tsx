@@ -48,21 +48,21 @@ function CountyDropZone({ county, isDragging, onCountyClick }: {
     'North Coast': '#a8c8b8', // Forest green
   };
 
-  // Determine fill color based on state and regions - using educational colors
-  let fillColor = '#fefefe'; // Paper white for available counties
-  let strokeColor = '#8c8c8c'; // Granite gray stroke
+  // Determine fill color based on state and regions - restored original nice colors
+  let fillColor = '#ffffff'; // Clean white for available counties
+  let strokeColor = '#6b7280'; // Medium gray stroke
   let strokeWidth = "0.75";
 
   if (isPlaced) {
-    fillColor = '#e6d5b8'; // CA sand color when placed
-    strokeColor = '#1e3a5f'; // CA navy stroke
-    strokeWidth = "1.5";
+    fillColor = '#10b981'; // Green when placed
+    strokeColor = '#047857'; // Darker green stroke
+    strokeWidth = "1";
   } else if (isDragging && isOver) {
-    fillColor = '#daa520'; // CA gold when hovering over during drag
-    strokeColor = '#2d5016'; // CA forest stroke
-    strokeWidth = "2";
+    fillColor = '#fde68a'; // Softer yellow when hovering over during drag
+    strokeColor = '#f59e0b'; // Amber stroke
+    strokeWidth = "1.5";
   } else if (showRegions && region) {
-    fillColor = regionColors[region] || '#fefefe'; // Show region color if enabled
+    fillColor = regionColors[region] || '#ffffff'; // Show region color if enabled
   }
 
   // Calculate optimal text color based on background

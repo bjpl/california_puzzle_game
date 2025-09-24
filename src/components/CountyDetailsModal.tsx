@@ -189,8 +189,8 @@ export default function CountyDetailsModal({
             </div>
           )}
 
-          {/* Educational Content Button */}
-          {educationContent && (
+          {/* Educational Content Button - Always show for placed counties */}
+          {onViewEducationalContent && (
             <div className="border-t pt-4">
               <button
                 onClick={onViewEducationalContent}
