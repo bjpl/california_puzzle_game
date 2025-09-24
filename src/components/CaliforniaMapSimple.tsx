@@ -157,6 +157,8 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
         fill={fillColor}
         stroke={strokeColor}
         strokeWidth={isDragging && isOver ? "1.5" : strokeWidth}
+        strokeLinejoin="round"
+        strokeLinecap="round"
         className="transition-all duration-200 hover:opacity-90"
         style={{
           cursor: isPlaced ? 'default' : 'pointer',
@@ -324,7 +326,15 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
           <filter id="mapShadow">
             <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.1"/>
           </filter>
+          {/* Background pattern to help mask boundary gaps */}
+          <pattern id="backgroundPattern" patternUnits="userSpaceOnUse" width="20" height="20">
+            <rect width="20" height="20" fill="#f8fafc"/>
+            <circle cx="10" cy="10" r="0.5" fill="#e2e8f0" opacity="0.3"/>
+          </pattern>
         </defs>
+
+        {/* Subtle background to minimize gap visibility */}
+        <rect width="800" height="600" fill="#f8fafc" opacity="0.5" />
 
         {/* Apply zoom and pan transformation - zoom from center */}
         <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${300 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
