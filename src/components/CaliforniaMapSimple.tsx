@@ -1,10 +1,11 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 import { getSvgTextFill } from '../utils/colorContrast';
 import CountyDetailsModal from './CountyDetailsModal';
 import StudyMode from './StudyMode';
 import { saveGameState, generateStudyModeUrl } from '../utils/gameStateManager';
+import { CALIFORNIA_COUNTIES } from '../utils/californiaData';
 import '../styles/educational-design.css';
 
 interface CountyFeature {
@@ -19,12 +20,13 @@ interface CountyFeature {
   };
 }
 
-function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCountyLeave }: {
+function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCountyLeave, onLabelPosition }: {
   county: CountyFeature;
   isDragging: boolean;
   onCountyClick?: (county: any) => void;
   onCountyHover?: (countyId: string) => void;
   onCountyLeave?: () => void;
+  onLabelPosition?: (countyId: string, position: [number, number]) => void;
 }) {
   const { placedCounties, currentCounty, showRegions, counties } = useGame();
   const [isHovered, setIsHovered] = useState(false);
@@ -129,7 +131,13 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
 
   // Calculate the label position for the county
   const getLabelPosition = (): [number, number] => {
-    // If we have predefined centroid data, use it
+    // First try to find centroid data from the californiaData
+    const californiaCountyData = CALIFORNIA_COUNTIES.find(c => c.id === countyId);
+    if (californiaCountyData?.centroid) {
+      return project([californiaCountyData.centroid[0], californiaCountyData.centroid[1]]);
+    }
+
+    // If we have predefined centroid data in game context, use it
     if (countyData?.centroid) {
       return project([countyData.centroid[0], countyData.centroid[1]]);
     }
@@ -140,26 +148,56 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
 
     const processRing = (ring: number[][]) => {
       ring.forEach(coord => {
-        const [x, y] = project([coord[0], coord[1]]);
-        sumX += x;
-        sumY += y;
-        count++;
+        if (coord.length >= 2) {
+          const [x, y] = project([coord[0], coord[1]]);
+          // Only add valid projected coordinates
+          if (!isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y)) {
+            sumX += x;
+            sumY += y;
+            count++;
+          }
+        }
       });
     };
 
-    if (geom.type === 'Polygon') {
-      processRing(geom.coordinates[0]);
-    } else if (geom.type === 'MultiPolygon') {
-      geom.coordinates.forEach((polygon: number[][][]) => {
-        processRing(polygon[0]);
-      });
+    try {
+      if (geom.type === 'Polygon') {
+        if (geom.coordinates && geom.coordinates.length > 0) {
+          processRing(geom.coordinates[0]);
+        }
+      } else if (geom.type === 'MultiPolygon') {
+        if (geom.coordinates && geom.coordinates.length > 0) {
+          geom.coordinates.forEach((polygon: number[][][]) => {
+            if (polygon && polygon.length > 0) {
+              processRing(polygon[0]);
+            }
+          });
+        }
+      }
+    } catch (error) {
+      console.warn(`Error calculating centroid for ${countyName}:`, error);
     }
 
-    // Return average position (approximate centroid)
-    return count > 0 ? [sumX / count, sumY / count] : [400, 300];
+    // Return average position (approximate centroid) if we have valid data
+    if (count > 0) {
+      const centroidX = sumX / count;
+      const centroidY = sumY / count;
+      return [centroidX, centroidY];
+    }
+
+    // Fallback: return map center
+    console.warn(`No valid coordinates found for ${countyName}, using map center`);
+    return [400, 300];
   };
 
-  const [labelX, labelY] = (isPlaced && isHovered) ? getLabelPosition() : [0, 0];
+  const [labelX, labelY] = getLabelPosition();
+
+  // Store label position for the parent component if this county is placed
+  React.useEffect(() => {
+    if (isPlaced && onLabelPosition) {
+      onLabelPosition(countyId, [labelX, labelY]);
+    }
+  }, [isPlaced, labelX, labelY, countyId, onLabelPosition]);
 
   const handleClick = () => {
     if (isPlaced && onCountyClick && countyData) {
@@ -206,6 +244,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   const [selectedCounty, setSelectedCounty] = useState<any>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
+  const [labelPositions, setLabelPositions] = useState<Map<string, [number, number]>>(new Map());
   const [geoData, setGeoData] = useState<any>(null);
   const [bounds, setBounds] = useState<any>(null);
   const [zoom, setZoom] = useState(1);
@@ -381,43 +420,25 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
               onCountyClick={(county) => setSelectedCounty(county)}
               onCountyHover={(countyId) => setHoveredCounty(countyId)}
               onCountyLeave={() => setHoveredCounty(null)}
+              onLabelPosition={(countyId, position) => {
+                setLabelPositions(prev => new Map(prev.set(countyId, position)));
+              }}
             />
           ))}
         </g>
 
         {/* Render county labels above all shapes for proper layering */}
         <g className="county-labels" style={{ pointerEvents: 'none' }}>
-          {geoData.features.map((feature: CountyFeature, idx: number) => {
-            const countyName = feature.properties.NAME;
-            const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
+          {Array.from(labelPositions.entries()).map(([countyId, position]) => {
+            const shouldShowLabel = hoveredCounty === countyId;
             const isPlaced = placedCounties.has(countyId);
-            const countyData = counties.find(c => c.id === countyId);
 
-            // Only prepare labels for placed counties
             if (!isPlaced) return null;
 
-            // Calculate label position
-            const getLabelPosition = (): [number, number] => {
-              if (countyData?.centroid) {
-                const project = ([x, y]: [number, number]): [number, number] => {
-                  if (Math.abs(x) > 180) {
-                    const lon = (x / 20037508.34) * 180;
-                    const lat = (Math.atan(Math.exp((y / 20037508.34) * Math.PI)) * 360 / Math.PI) - 90;
-                    x = lon; y = lat;
-                  }
-                  const caMinLon = -124.5, caMaxLon = -114.0, caMinLat = 32.5, caMaxLat = 42.0;
-                  const svgX = ((x - caMinLon) / (caMaxLon - caMinLon)) * 800;
-                  const svgY = ((caMaxLat - y) / (caMaxLat - caMinLat)) * 600;
-                  return [svgX, svgY];
-                };
-                return project([countyData.centroid[0], countyData.centroid[1]]);
-              }
-              return [400, 300];
-            };
-
-            const [labelX, labelY] = getLabelPosition();
-
-            const shouldShowLabel = hoveredCounty === countyId;
+            // Find the county name from the countyId
+            const countyData = counties.find(c => c.id === countyId);
+            const countyName = countyData?.name || countyId.replace(/-/g, ' ');
+            const [labelX, labelY] = position;
 
             return (
               <g
