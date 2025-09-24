@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
+import { getSvgTextFill } from '../utils/colorContrast';
 
 interface CountyFeature {
   type: string;
@@ -55,6 +56,9 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
   } else if (showRegions && region) {
     fillColor = regionColors[region] || '#ffffff'; // Show region color if enabled
   }
+
+  // Calculate optimal text color based on background
+  const textColor = getSvgTextFill(fillColor);
 
   // Convert Web Mercator (EPSG:3857) to lat/lon (EPSG:4326)
   const webMercatorToLatLon = (x: number, y: number): [number, number] => {
@@ -166,11 +170,11 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
           y={labelY}
           textAnchor="middle"
           fontSize="8"
-          fill="white"
+          fill={textColor}
           fontWeight="bold"
           pointerEvents="none"
           style={{
-            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
+            textShadow: textColor === '#ffffff' ? '1px 1px 2px rgba(0,0,0,0.7)' : '1px 1px 2px rgba(255,255,255,0.7)'
           }}
         >
           {countyName}

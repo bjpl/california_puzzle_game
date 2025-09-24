@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 import * as d3 from 'd3-geo';
+import { getSvgTextFill } from '../utils/colorContrast';
 
 interface CountyFeature {
   type: string;
@@ -40,6 +41,9 @@ function CountyDropZone({ county, path, centroid }: CountyDropZoneProps) {
   else if (isWrongHover) fillColor = '#fca5a5'; // Light red on wrong hover
   else if (isActive) fillColor = '#fef3c7'; // Yellow when active
 
+  // Calculate optimal text color based on background
+  const textColor = getSvgTextFill(fillColor);
+
   return (
     <g ref={setNodeRef}>
       <path
@@ -56,11 +60,11 @@ function CountyDropZone({ county, path, centroid }: CountyDropZoneProps) {
           y={centroid[1]}
           textAnchor="middle"
           fontSize="8"
-          fill="white"
+          fill={textColor}
           fontWeight="bold"
           pointerEvents="none"
           style={{
-            textShadow: '1px 1px 2px rgba(0,0,0,0.7)',
+            textShadow: textColor === '#ffffff' ? '1px 1px 2px rgba(0,0,0,0.7)' : '1px 1px 2px rgba(255,255,255,0.7)',
           }}
         >
           {county.properties.NAME}
