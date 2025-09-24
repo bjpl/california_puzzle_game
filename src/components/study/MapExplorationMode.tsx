@@ -5,6 +5,7 @@ import { allCaliforniaCounties, californiaRegions } from '../../data/californiaC
 import CountyInfoPanel from './CountyInfoPanel';
 import StudyProgress from './StudyProgress';
 import CaliforniaButton from '../CaliforniaButton';
+import { getSvgTextFill } from '../../utils/colorContrast';
 
 interface MapExplorationModeProps {
   onBack: () => void;
@@ -212,13 +213,17 @@ const MapExplorationMode: React.FC<MapExplorationModeProps> = ({ onBack }) => {
                       const x = (index % cols) * 80 + 85;
                       const y = Math.floor(index / cols) * 60 + 75;
 
+                      const countyFillColor = getCountyColor(county.id);
+                      const textFillColor = getSvgTextFill(countyFillColor);
+
                       return (
                         <text
                           key={`label-${county.id}`}
                           x={x}
                           y={y}
                           textAnchor="middle"
-                          className="text-xs fill-gray-700 pointer-events-none font-medium"
+                          className="text-xs pointer-events-none font-medium"
+                          fill={textFillColor}
                         >
                           {county.name}
                         </text>

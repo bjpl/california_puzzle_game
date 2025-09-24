@@ -1,5 +1,6 @@
 import React from 'react';
 import { realCaliforniaCountyShapes } from '../data/californiaCountyBoundaries';
+import { getSvgTextFill } from '../utils/colorContrast';
 
 interface CountyShapeDisplayProps {
   countyId: string;
@@ -70,6 +71,7 @@ export default function CountyShapeDisplay({
   };
 
   const fill = fillColor || getRegionColor(county.region || '');
+  const textFill = getSvgTextFill(fill);
 
   return (
     <div className={`inline-block ${className}`}>
@@ -91,13 +93,14 @@ export default function CountyShapeDisplay({
           strokeLinecap="round"
         />
 
-        {/* Optional label */}
+        {/* Optional label with dynamic color for maximum contrast */}
         {showLabel && (
           <text
             x={county.center[0]}
             y={county.center[1]}
             textAnchor="middle"
-            className="text-xs font-bold fill-white"
+            className="text-xs font-bold"
+            fill={textFill}
             style={{ fontSize: Math.min(12, width / 8) }}
           >
             {county.abbrev || county.name.substring(0, 3).toUpperCase()}

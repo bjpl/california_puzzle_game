@@ -9,6 +9,7 @@ import {
   DropZone
 } from '@/types';
 import { CALIFORNIA_CENTER, CALIFORNIA_PROJECTION_CONFIG } from '@/utils/californiaData';
+import { getSvgTextFill } from '@/utils/colorContrast';
 
 interface MapCanvasState {
   projection: d3.GeoProjection | null;
@@ -379,7 +380,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
             <text
               x="10"
               y="30"
-              fill="#374151"
+              fill={getSvgTextFill('#f0f9ff')} // Match the background gradient
               fontSize="14"
               fontWeight="bold"
             >
