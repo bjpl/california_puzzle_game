@@ -3,6 +3,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 import { getSvgTextFill } from '../utils/colorContrast';
 import CountyDetailsModal from './CountyDetailsModal';
+import StudyMode from './StudyMode';
 import { saveGameState, generateStudyModeUrl } from '../utils/gameStateManager';
 import '../styles/educational-design.css';
 
@@ -18,10 +19,12 @@ interface CountyFeature {
   };
 }
 
-function CountyDropZone({ county, isDragging, onCountyClick }: {
+function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCountyLeave }: {
   county: CountyFeature;
   isDragging: boolean;
   onCountyClick?: (county: any) => void;
+  onCountyHover?: (countyId: string) => void;
+  onCountyLeave?: () => void;
 }) {
   const { placedCounties, currentCounty, showRegions, counties } = useGame();
   const [isHovered, setIsHovered] = useState(false);
@@ -179,33 +182,20 @@ function CountyDropZone({ county, isDragging, onCountyClick }: {
           filter: isDragging && isOver ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' : isPlaced ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
           opacity: 1
         }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          if (isPlaced && onCountyHover) {
+            onCountyHover(countyId);
+          }
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          if (isPlaced && onCountyLeave) {
+            onCountyLeave();
+          }
+        }}
         onClick={handleClick}
       />
-      {/* Hover label for placed counties */}
-      {isPlaced && isHovered && (
-        <g className="county-hover-label">
-          <rect
-            className="county-label-bg"
-            x={labelX - (countyName.length * 4)}
-            y={labelY - 8}
-            width={countyName.length * 8}
-            height={16}
-            pointerEvents="none"
-          />
-          <text
-            className="county-label"
-            x={labelX}
-            y={labelY}
-            fontSize="12"
-            fontWeight="600"
-            pointerEvents="none"
-          >
-            {countyName}
-          </text>
-        </g>
-      )}
     </g>
   );
 }
@@ -214,6 +204,8 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   const gameContext = useGame();
   const { showRegions, placedCounties, counties, score, timerState, mistakes, gameSettings, placementHistory } = gameContext;
   const [selectedCounty, setSelectedCounty] = useState<any>(null);
+  const [showStudyMode, setShowStudyMode] = useState(false);
+  const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
   const [geoData, setGeoData] = useState<any>(null);
   const [bounds, setBounds] = useState<any>(null);
   const [zoom, setZoom] = useState(1);
@@ -387,8 +379,71 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
               county={feature}
               isDragging={isDragging}
               onCountyClick={(county) => setSelectedCounty(county)}
+              onCountyHover={(countyId) => setHoveredCounty(countyId)}
+              onCountyLeave={() => setHoveredCounty(null)}
             />
           ))}
+        </g>
+
+        {/* Render county labels above all shapes for proper layering */}
+        <g className="county-labels" style={{ pointerEvents: 'none' }}>
+          {geoData.features.map((feature: CountyFeature, idx: number) => {
+            const countyName = feature.properties.NAME;
+            const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
+            const isPlaced = placedCounties.has(countyId);
+            const countyData = counties.find(c => c.id === countyId);
+
+            // Only prepare labels for placed counties
+            if (!isPlaced) return null;
+
+            // Calculate label position
+            const getLabelPosition = (): [number, number] => {
+              if (countyData?.centroid) {
+                const project = ([x, y]: [number, number]): [number, number] => {
+                  if (Math.abs(x) > 180) {
+                    const lon = (x / 20037508.34) * 180;
+                    const lat = (Math.atan(Math.exp((y / 20037508.34) * Math.PI)) * 360 / Math.PI) - 90;
+                    x = lon; y = lat;
+                  }
+                  const caMinLon = -124.5, caMaxLon = -114.0, caMinLat = 32.5, caMaxLat = 42.0;
+                  const svgX = ((x - caMinLon) / (caMaxLon - caMinLon)) * 800;
+                  const svgY = ((caMaxLat - y) / (caMaxLat - caMinLat)) * 600;
+                  return [svgX, svgY];
+                };
+                return project([countyData.centroid[0], countyData.centroid[1]]);
+              }
+              return [400, 300];
+            };
+
+            const [labelX, labelY] = getLabelPosition();
+
+            const shouldShowLabel = hoveredCounty === countyId;
+
+            return (
+              <g
+                key={`label-${countyId}`}
+                className={`county-hover-label ${shouldShowLabel ? 'visible' : ''}`}
+                style={{ opacity: shouldShowLabel ? 1 : 0 }}
+              >
+                <rect
+                  className="county-label-bg"
+                  x={labelX - (countyName.length * 4)}
+                  y={labelY - 8}
+                  width={countyName.length * 8}
+                  height={16}
+                />
+                <text
+                  className="county-label"
+                  x={labelX}
+                  y={labelY}
+                  fontSize="12"
+                  fontWeight="600"
+                >
+                  {countyName}
+                </text>
+              </g>
+            );
+          })}
         </g>
 
         </g>
@@ -401,31 +456,16 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         onClose={() => setSelectedCounty(null)}
         county={selectedCounty}
         onViewEducationalContent={() => {
-          // Only save game state if there's actual progress (placed counties)
-          const hasProgress = placedCounties.size > 0;
-
-          if (hasProgress) {
-            // Save current game state before navigating
-            const success = saveGameState({
-              placedCounties: Array.from(placedCounties),
-              score,
-              mistakes,
-              timerState,
-              gameSettings,
-              placementHistory,
-              currentCountyId: selectedCounty?.id
-            });
-
-            if (!success) {
-              console.warn('Failed to save game state');
-            }
-          }
-
-          // Navigate to study mode with appropriate context
-          const studyModeUrl = generateStudyModeUrl(selectedCounty?.id || '', hasProgress);
-          window.location.href = studyModeUrl;
+          // Close county modal and show study mode
+          setSelectedCounty(null);
+          setShowStudyMode(true);
         }}
       />
+
+      {/* Study Mode Modal */}
+      {showStudyMode && (
+        <StudyMode onClose={() => setShowStudyMode(false)} />
+      )}
     </div>
   );
 }

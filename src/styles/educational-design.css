@@ -477,4 +477,30 @@
     background: white !important;
     color: #000 !important;
   }
+
+  /* County label styling - clean and readable */
+  .county-hover-label {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
+  }
+
+  .county-hover-label.visible {
+    opacity: 1;
+  }
+
+  .county-label-bg {
+    fill: rgba(255, 255, 255, 0.95);
+    stroke: #8c8c8c;
+    stroke-width: 0.5;
+    rx: 3;
+    ry: 3;
+  }
+
+  .county-label {
+    fill: #1f2937;
+    text-anchor: middle;
+    dominant-baseline: central;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
 }
