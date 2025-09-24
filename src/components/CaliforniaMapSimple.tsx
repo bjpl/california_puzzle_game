@@ -165,20 +165,35 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
         }}
       />
       {isPlaced && (
-        <text
-          x={labelX}
-          y={labelY}
-          textAnchor="middle"
-          fontSize="8"
-          fill={textColor}
-          fontWeight="bold"
-          pointerEvents="none"
-          style={{
-            textShadow: textColor === '#ffffff' ? '1px 1px 2px rgba(0,0,0,0.7)' : '1px 1px 2px rgba(255,255,255,0.7)'
-          }}
-        >
-          {countyName}
-        </text>
+        <g className="county-label-group">
+          {/* Background rectangle for better text visibility */}
+          <rect
+            x={labelX - (countyName.length * 4)}
+            y={labelY - 8}
+            width={countyName.length * 8}
+            height={16}
+            fill="rgba(255, 255, 255, 0.8)"
+            stroke="rgba(0, 0, 0, 0.2)"
+            strokeWidth="0.5"
+            rx="3"
+            pointerEvents="none"
+          />
+          <text
+            x={labelX}
+            y={labelY}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize="11"
+            fill={textColor}
+            fontWeight="bold"
+            pointerEvents="none"
+            style={{
+              textShadow: textColor === '#ffffff' ? '1px 1px 2px rgba(0,0,0,0.9)' : '1px 1px 2px rgba(255,255,255,0.9)'
+            }}
+          >
+            {countyName}
+          </text>
+        </g>
       )}
     </g>
   );

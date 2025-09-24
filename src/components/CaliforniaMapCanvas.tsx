@@ -267,8 +267,9 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
       }
 
       // Add county name label AFTER the shape (renders on top)
-      if (mapState.projection) {
+      if (mapState.projection && county.centroid) {
         const centroid = mapState.projection(county.centroid);
+
         if (centroid) {
           const textColor = getSvgTextFill(fillColor);
 
@@ -279,7 +280,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
             .attr('y', centroid[1])
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'middle')
-            .attr('font-size', '12')
+            .attr('font-size', '14')
             .attr('font-weight', 'bold')
             .attr('fill', textColor)
             .attr('pointer-events', 'none')
