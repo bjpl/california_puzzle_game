@@ -15,7 +15,17 @@ interface CountyFeature {
   };
 }
 
-function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragging: boolean }) {
+function CountyDropZone({
+  county,
+  isDragging,
+  renderLabels = true,
+  renderShapes = true
+}: {
+  county: CountyFeature;
+  isDragging: boolean;
+  renderLabels?: boolean;
+  renderShapes?: boolean;
+}) {
   const { placedCounties, currentCounty, showRegions, counties } = useGame();
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
@@ -152,19 +162,24 @@ function CountyDropZone({ county, isDragging }: { county: CountyFeature; isDragg
 
   return (
     <g ref={setNodeRef}>
-      <path
-        d={path}
-        fill={fillColor}
-        stroke={strokeColor}
-        strokeWidth={isDragging && isOver ? "1.5" : strokeWidth}
-        className="transition-all duration-200 hover:opacity-90"
-        style={{
-          cursor: isPlaced ? 'default' : 'pointer',
-          filter: isDragging && isOver ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' : isPlaced ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
-          opacity: 1
-        }}
-      />
-      {isPlaced && (
+      {/* Conditionally render county shape */}
+      {renderShapes && (
+        <path
+          d={path}
+          fill={fillColor}
+          stroke={strokeColor}
+          strokeWidth={isDragging && isOver ? "1.5" : strokeWidth}
+          className="transition-all duration-200 hover:opacity-90"
+          style={{
+            cursor: isPlaced ? 'default' : 'pointer',
+            filter: isDragging && isOver ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' : isPlaced ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
+            opacity: 1
+          }}
+        />
+      )}
+
+      {/* Conditionally render county label */}
+      {renderLabels && isPlaced && (
         <g className="county-label-group">
           {/* Background rectangle for better text visibility */}
           <rect
@@ -360,13 +375,27 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         {/* Apply zoom and pan transformation - zoom from center */}
         <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${300 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
 
-        {/* Render all counties */}
-        <g>
+        {/* Render all county shapes first */}
+        <g className="county-shapes">
           {geoData.features.map((feature: CountyFeature, idx: number) => (
             <CountyDropZone
               key={feature.properties.NAME || `county-${idx}`}
               county={feature}
               isDragging={isDragging}
+              renderLabels={false}
+            />
+          ))}
+        </g>
+
+        {/* Render all county labels on top */}
+        <g className="county-labels">
+          {geoData.features.map((feature: CountyFeature, idx: number) => (
+            <CountyDropZone
+              key={`label-${feature.properties.NAME || idx}`}
+              county={feature}
+              isDragging={isDragging}
+              renderLabels={true}
+              renderShapes={false}
             />
           ))}
         </g>
