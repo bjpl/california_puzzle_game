@@ -161,7 +161,7 @@ function CountyDropZone({
   const [labelX, labelY] = isPlaced ? getLabelPosition() : [0, 0];
 
   return (
-    <g ref={setNodeRef}>
+    <g ref={renderShapes ? setNodeRef : undefined}>
       {/* Conditionally render county shape */}
       {renderShapes && (
         <path
