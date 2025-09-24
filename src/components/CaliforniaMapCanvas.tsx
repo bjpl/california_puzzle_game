@@ -236,19 +236,22 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
 
     const mapGroup = mapState.svg.select('.map-group');
 
-    // Remove existing placed counties
+    // Remove existing placed counties and their labels
     mapGroup.selectAll('.placed-county').remove();
+    mapGroup.selectAll('.placed-county-label').remove();
 
     // Draw placed counties
     placedCounties.forEach(county => {
       if (!county.geometry) return;
+
+      const fillColor = getPlacedCountyFill(county);
 
       const placedElement = mapGroup
         .append('path')
         .datum(county)
         .attr('class', `placed-county placed-${county.id}`)
         .attr('d', mapState.path)
-        .attr('fill', getPlacedCountyFill(county))
+        .attr('fill', fillColor)
         .attr('stroke', '#059669')
         .attr('stroke-width', 2)
         .style('opacity', 0.8)
@@ -261,6 +264,29 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
         placedElement
           .attr('stroke', accuracy > 0.8 ? '#f59e0b' : '#ef4444')
           .attr('stroke-width', 3);
+      }
+
+      // Add county name label AFTER the shape (renders on top)
+      if (mapState.projection) {
+        const centroid = mapState.projection(county.centroid);
+        if (centroid) {
+          const textColor = getSvgTextFill(fillColor);
+
+          mapGroup
+            .append('text')
+            .attr('class', `placed-county-label label-${county.id}`)
+            .attr('x', centroid[0])
+            .attr('y', centroid[1])
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'middle')
+            .attr('font-size', '12')
+            .attr('font-weight', 'bold')
+            .attr('fill', textColor)
+            .attr('pointer-events', 'none')
+            .attr('transform', `translate(${county.currentPosition.x}, ${county.currentPosition.y}) scale(${county.scale}) rotate(${county.rotation})`)
+            .style('text-shadow', textColor === '#ffffff' ? '1px 1px 2px rgba(0,0,0,0.7)' : '1px 1px 2px rgba(255,255,255,0.7)')
+            .text(county.name);
+        }
       }
     });
   }, [mapState, placedCounties]);
