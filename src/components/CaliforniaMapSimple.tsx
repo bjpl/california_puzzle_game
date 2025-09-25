@@ -6,6 +6,7 @@ import CountyDetailsModal from './CountyDetailsModal';
 import EnhancedStudyMode from './EnhancedStudyMode';
 import { saveGameState, generateStudyModeUrl } from '../utils/gameStateManager';
 import { CALIFORNIA_COUNTIES } from '../utils/californiaData';
+import { getRegionHexColor } from '../config/regionColors';
 import '../styles/educational-design.css';
 
 interface CountyFeature {
@@ -42,16 +43,7 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
     id: countyId,
   });
 
-  // Region colors mapping - Educational, California-authentic colors
-  const regionColors: { [key: string]: string } = {
-    'Southern California': '#ef4444', // Red-500 - matching UI colors
-    'Bay Area': '#3b82f6', // Blue-500 - matching UI colors
-    'Central Valley': '#22c55e', // Green-500 - matching UI colors
-    'Central Coast': '#a855f7', // Purple-500 - matching UI colors
-    'Northern California': '#f97316', // Orange-500 - matching UI colors
-    'Sierra Nevada': '#eab308', // Yellow-500 - matching UI colors
-    'North Coast': '#14b8a6', // Teal-500 - matching UI colors
-  };
+  // Use centralized color configuration for consistency
 
   // Determine fill color based on state and regions - restored original nice colors
   let fillColor = '#ffffff'; // Clean white for available counties
@@ -67,7 +59,7 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
     strokeColor = '#f59e0b'; // Amber stroke
     strokeWidth = "1.5";
   } else if (showRegions && region) {
-    fillColor = regionColors[region] || '#ffffff'; // Show region color if enabled
+    fillColor = getRegionHexColor(region); // Show region color if enabled
   }
 
   // Calculate optimal text color based on background

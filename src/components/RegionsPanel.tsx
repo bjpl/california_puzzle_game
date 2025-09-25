@@ -1,17 +1,18 @@
 import { useGame } from '../context/GameContext';
+import { REGION_COLORS, getRegionColor } from '../config/regionColors';
 
 export default function RegionsPanel() {
   const { showRegions, toggleShowRegions } = useGame();
 
-  const regions = [
-    { name: 'Southern California', color: '#ef4444', bgColor: '#fca5a5' },
-    { name: 'Bay Area', color: '#3b82f6', bgColor: '#93c5fd' },
-    { name: 'Central Valley', color: '#10b981', bgColor: '#86efac' },
-    { name: 'Central Coast', color: '#8b5cf6', bgColor: '#c4b5fd' },
-    { name: 'Northern California', color: '#f97316', bgColor: '#fdba74' },
-    { name: 'Sierra Nevada', color: '#eab308', bgColor: '#fde047' },
-    { name: 'North Coast', color: '#14b8a6', bgColor: '#5eead4' },
-  ];
+  // Use centralized color configuration
+  const regions = Object.keys(REGION_COLORS).map(regionName => {
+    const colorConfig = getRegionColor(regionName);
+    return {
+      name: regionName,
+      color: colorConfig.hex,
+      bgColor: colorConfig.hex + '66' // Add opacity for lighter background
+    };
+  });
 
   return (
     <div className="absolute top-20 right-4 z-20 w-64">

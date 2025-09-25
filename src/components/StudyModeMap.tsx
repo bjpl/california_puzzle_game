@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { realCaliforniaCountyShapes } from '../data/californiaCountyBoundaries';
+import { getRegionHexColor } from '../config/regionColors';
 
 interface StudyModeMapProps {
   onCountySelect?: (countyId: string) => void;
@@ -17,21 +18,9 @@ export default function StudyModeMap({
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Region color mapping
-  const getRegionColor = (region: string) => {
-    switch(region?.toLowerCase()) {
-      case 'bay area': return '#3B82F6'; // blue
-      case 'southern california': return '#EF4444'; // red
-      case 'central valley': return '#10B981'; // green
-      case 'central coast': return '#A855F7'; // purple
-      case 'northern california': return '#F59E0B'; // amber
-      case 'north coast': return '#06B6D4'; // cyan
-      case 'sacramento valley': return '#F97316'; // orange
-      case 'san joaquin valley': return '#84CC16'; // lime
-      case 'sierra nevada': return '#8B5CF6'; // violet
-      case 'desert': return '#F59E0B'; // yellow
-      default: return '#6B7280'; // gray
-    }
+  // Use centralized color configuration for consistency
+  const getRegionColorForMap = (region: string) => {
+    return getRegionHexColor(region);
   };
 
   // Get county display info
@@ -96,7 +85,7 @@ export default function StudyModeMap({
             : true;
 
           const fillColor = isFiltered
-            ? getRegionColor(county.region)
+            ? getRegionColorForMap(county.region)
             : '#E5E7EB'; // Gray color for filtered out counties
 
           return (

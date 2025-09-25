@@ -1,6 +1,7 @@
 import { useDraggable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 import { useSoundEffect } from '../utils/simpleSoundManager';
+import { getRegionColor } from '../config/regionColors';
 
 function DraggableCounty({ county }: { county: any }) {
   const { placedCounties, selectCounty, currentCounty } = useGame();
@@ -21,17 +22,9 @@ function DraggableCounty({ county }: { county: any }) {
       }
     : undefined;
 
-  const regionColors: { [key: string]: string } = {
-    'Southern California': 'bg-red-100 border-red-400',
-    'Bay Area': 'bg-blue-100 border-blue-400',
-    'Central Valley': 'bg-green-100 border-green-400',
-    'Central Coast': 'bg-purple-100 border-purple-400',
-    'Northern California': 'bg-orange-100 border-orange-400',
-    'Sierra Nevada': 'bg-yellow-100 border-yellow-400',
-    'North Coast': 'bg-teal-100 border-teal-400',
-  };
-
-  const colorClass = regionColors[county.region] || 'bg-gray-100 border-gray-400';
+  // Use centralized color configuration
+  const regionColor = getRegionColor(county.region);
+  const colorClass = `${regionColor.tailwindLight} ${regionColor.tailwindLightBorder}`;
 
   if (isPlaced) {
     return (

@@ -10,6 +10,7 @@ import StudyModeMap from './StudyModeMap';
 import CountyShapeDisplay from './CountyShapeDisplay';
 import EducationalContentModal from './EducationalContentModal';
 import CountyDetailsModal from './CountyDetailsModal';
+import { getRegionColor } from '../config/regionColors';
 
 interface StudyModeProps {
   onClose: () => void;
@@ -362,15 +363,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [viewMode, quizState, quizQuestion, showAnswer, currentQuestionIndex, questionHistory]);
 
-  // Region colors for visual distinction
-  const regionColors: { [key: string]: string } = {
-    'Southern California': 'from-red-400 to-red-500',
-    'Bay Area': 'from-blue-400 to-blue-500',
-    'Central Valley': 'from-green-400 to-green-500',
-    'Central Coast': 'from-purple-400 to-purple-500',
-    'Northern California': 'from-orange-400 to-orange-500',
-    'Sierra Nevada': 'from-yellow-400 to-yellow-500',
-    'North Coast': 'from-teal-400 to-teal-500',
+  // Get region colors from centralized configuration
+  const getRegionGradient = (region: string): string => {
+    const colorConfig = getRegionColor(region);
+    return colorConfig.tailwindGradient;
   };
 
   // Get education content for selected county
@@ -395,55 +391,55 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* Main Header Content */}
           <div className="relative">
-            {/* Top Bar */}
-            <div className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-start gap-4">
-              <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2 sm:gap-3">
-                  <span className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
-                    📚
-                  </span>
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+            {/* Compact Top Bar */}
+            <div className="px-4 sm:px-6 py-2 flex flex-col sm:flex-row justify-between items-center gap-2">
+              <div className="flex-1 flex items-center gap-3">
+                <span className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+                  📚
+                </span>
+                <div>
+                  <h1 className="text-lg sm:text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
                     California Counties Study Mode
-                  </span>
-                </h1>
-                <p className="text-blue-100/80 mt-2 text-xs sm:text-sm font-medium tracking-wide ml-0 sm:ml-14">
-                  Master all 58 counties with comprehensive educational content
-                </p>
+                  </h1>
+                  <p className="text-blue-100/60 text-xs font-medium hidden sm:block">
+                    Master all 58 counties
+                  </p>
+                </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                {/* Progress Badge */}
-                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-2">
-                  <div className="flex items-center gap-3">
-                    <div className="flex flex-col items-end">
-                      <span className="text-xs text-blue-200 font-medium uppercase tracking-wider">Progress</span>
-                      <span className="text-xl font-bold">{progress.studiedCounties.size}/58</span>
-                    </div>
-                    <div className="relative w-12 h-12">
-                      <svg className="transform -rotate-90 w-12 h-12">
+              <div className="flex items-center gap-3">
+                {/* Compact Progress Badge */}
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-3 py-1.5">
+                  <div className="flex items-center gap-2">
+                    <div className="relative w-8 h-8">
+                      <svg className="transform -rotate-90 w-8 h-8">
                         <circle
-                          cx="24"
-                          cy="24"
-                          r="20"
+                          cx="16"
+                          cy="16"
+                          r="14"
                           stroke="currentColor"
-                          strokeWidth="3"
+                          strokeWidth="2.5"
                           fill="none"
                           className="text-white/20"
                         />
                         <circle
-                          cx="24"
-                          cy="24"
-                          r="20"
+                          cx="16"
+                          cy="16"
+                          r="14"
                           stroke="currentColor"
-                          strokeWidth="3"
+                          strokeWidth="2.5"
                           fill="none"
-                          strokeDasharray={`${(progress.studiedCounties.size / 58) * 125.6} 125.6`}
+                          strokeDasharray={`${(progress.studiedCounties.size / 58) * 88} 88`}
                           className="text-blue-400 transition-all duration-500"
                         />
                       </svg>
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
+                      <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold">
                         {Math.round((progress.studiedCounties.size / 58) * 100)}%
                       </span>
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold">{progress.studiedCounties.size}</span>
+                      <span className="text-blue-200/70">/58</span>
                     </div>
                   </div>
                 </div>
@@ -461,9 +457,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
               </div>
             </div>
 
-            {/* Navigation Tabs - Integrated Design */}
-            <div className="px-4 sm:px-6 pb-4">
-              <nav className="flex gap-1 p-1 bg-black/20 backdrop-blur-sm rounded-xl overflow-x-auto">
+            {/* Navigation Tabs - Compact Design */}
+            <div className="px-4 sm:px-6 pb-2">
+              <nav className="flex gap-1 p-0.5 bg-black/20 backdrop-blur-sm rounded-lg overflow-x-auto">
                 {[
                   { mode: 'explore' as ViewMode, icon: '📚', label: 'Explore' },
                   { mode: 'quiz' as ViewMode, icon: '🎯', label: 'Quiz' },
@@ -474,11 +470,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     key={mode}
                     onClick={() => setViewMode(mode)}
                     className={`
-                      relative flex-1 flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5 rounded-lg
-                      font-medium text-xs sm:text-sm transition-all duration-200 whitespace-nowrap min-w-[80px]
+                      relative flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md
+                      font-medium text-xs sm:text-sm transition-all duration-200 whitespace-nowrap min-w-[70px]
                       ${
                         viewMode === mode
-                          ? 'bg-white text-gray-900 shadow-lg'
+                          ? 'bg-white text-gray-900 shadow-md'
                           : 'text-white/80 hover:text-white hover:bg-white/10'
                       }
                     `}
@@ -498,9 +494,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           </div>
         </div>
 
-        {/* Refined Region Filter Bar - Sticky Position */}
+        {/* Refined Region Filter Bar - Compact & Sticky */}
         <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 shadow-sm flex-shrink-0 sticky top-0 z-40">
-          <div className="px-6 py-3">
+          <div className="px-4 sm:px-6 py-2">
             <div className="flex items-center gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
               {/* Filter Label */}
               <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
@@ -539,16 +535,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 {/* Region Buttons */}
                 {regions.map(region => {
                   const count = counties.filter(c => c.region === region).length;
-                  const regionColorMap: { [key: string]: string } = {
-                    'Southern California': 'from-red-400 to-red-500',
-                    'Bay Area': 'from-blue-400 to-blue-500',
-                    'Central Valley': 'from-green-400 to-green-500',
-                    'Central Coast': 'from-purple-400 to-purple-500',
-                    'Northern California': 'from-orange-400 to-orange-500',
-                    'Sierra Nevada': 'from-yellow-400 to-yellow-500',
-                    'North Coast': 'from-teal-400 to-teal-500'
-                  };
-
                   return (
                     <button
                       key={region}
@@ -558,7 +544,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         transition-all duration-200 whitespace-nowrap
                         ${
                           selectedRegion === region
-                            ? `bg-gradient-to-r ${regionColorMap[region] || 'from-gray-500 to-gray-600'} text-white shadow-md transform scale-105`
+                            ? `bg-gradient-to-r ${getRegionGradient(region)} text-white shadow-md transform scale-105`
                             : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
                         }
                       `}
@@ -635,7 +621,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                             {selectedCounty.name} County
                           </h3>
                           <div className={`inline-block px-5 py-2.5 rounded-full text-white font-semibold bg-gradient-to-r shadow-lg ${
-                            regionColors[selectedCounty.region] || 'from-gray-500 to-gray-600'
+                            getRegionGradient(selectedCounty.region)
                           }`}>
                             {selectedCounty.region}
                           </div>
@@ -1190,14 +1176,16 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* Map Mode - Interactive Visual Learning */}
           {viewMode === 'map' && (
-            <div className="flex-1 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 overflow-hidden">
-              <div className="h-full w-full p-8">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">🗺️ Interactive County Map</h2>
-                <p className="text-gray-600 mb-6">Hover to see county names • Click to select and view details</p>
+            <div className="flex-1 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 overflow-y-auto">
+              <div className="h-full w-full p-4 sm:p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-xl font-bold text-gray-800">🗺️ Interactive County Map</h2>
+                  <p className="text-xs sm:text-sm text-gray-500">Hover to see • Click to select</p>
+                </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Map Display Area */}
-                  <div className="lg:col-span-2 bg-white rounded-lg shadow-lg p-4 min-h-[600px]">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {/* Map Display Area - Made Scrollable */}
+                  <div className="lg:col-span-2 bg-white rounded-lg shadow-lg p-3 h-[calc(100vh-240px)] overflow-auto">
                     <StudyModeMap
                       onCountySelect={(countyId) => {
                         const county = counties.find(c => c.id === countyId || c.id === countyId.replace(/-/g, '_'));
