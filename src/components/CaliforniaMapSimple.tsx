@@ -44,13 +44,13 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
 
   // Region colors mapping - Educational, California-authentic colors
   const regionColors: { [key: string]: string } = {
-    'Southern California': '#f5d5ae', // Warm sand
-    'Bay Area': '#b8d4e3', // Soft bay blue
-    'Central Valley': '#d4d4aa', // Farmland green
-    'Central Coast': '#c8b8d4', // Coastal purple
-    'Northern California': '#e6c2a6', // Redwood brown
-    'Sierra Nevada': '#e3d5a7', // Mountain gold
-    'North Coast': '#a8c8b8', // Forest green
+    'Southern California': '#ef4444', // Red-500 - matching UI colors
+    'Bay Area': '#3b82f6', // Blue-500 - matching UI colors
+    'Central Valley': '#22c55e', // Green-500 - matching UI colors
+    'Central Coast': '#a855f7', // Purple-500 - matching UI colors
+    'Northern California': '#f97316', // Orange-500 - matching UI colors
+    'Sierra Nevada': '#eab308', // Yellow-500 - matching UI colors
+    'North Coast': '#14b8a6', // Teal-500 - matching UI colors
   };
 
   // Determine fill color based on state and regions - restored original nice colors
