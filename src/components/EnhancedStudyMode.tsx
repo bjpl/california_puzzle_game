@@ -1184,8 +1184,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  {/* Map Display Area - Made Scrollable */}
-                  <div className="lg:col-span-2 bg-white rounded-lg shadow-lg p-3 h-[calc(100vh-240px)] overflow-auto">
+                  {/* Map Display Area - Fixed height, no scroll (map handles its own zoom) */}
+                  <div className="lg:col-span-2 bg-white rounded-lg shadow-lg p-3 h-[calc(100vh-240px)]">
                     <StudyModeMap
                       onCountySelect={(countyId) => {
                         const county = counties.find(c => c.id === countyId || c.id === countyId.replace(/-/g, '_'));

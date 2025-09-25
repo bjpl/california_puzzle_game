@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { realCaliforniaCountyShapes } from '../data/californiaCountyBoundaries';
-import { getRegionHexColor } from '../config/regionColors';
+import { getRegionHexColor, REGION_COLORS } from '../config/regionColors';
 
 interface StudyModeMapProps {
   onCountySelect?: (countyId: string) => void;
@@ -17,6 +17,12 @@ export default function StudyModeMap({
 }: StudyModeMapProps) {
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const svgRef = useRef<SVGSVGElement>(null);
+  const isPanning = useRef(false);
+  const startPan = useRef({ x: 0, y: 0 });
+  const startMouse = useRef({ x: 0, y: 0 });
 
   // Use centralized color configuration for consistency
   const getRegionColorForMap = (region: string) => {
@@ -33,9 +39,51 @@ export default function StudyModeMap({
   };
 
   const handleCountyClick = (countyId: string) => {
-    if (onCountySelect) {
+    if (onCountySelect && !isPanning.current) {
       onCountySelect(countyId);
     }
+  };
+
+  // Handle mouse wheel for zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const delta = e.deltaY * -0.001;
+    const newZoom = Math.min(Math.max(0.5, zoom + delta), 3);
+    setZoom(newZoom);
+  };
+
+  // Handle mouse events for panning
+  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (e.button !== 0) return;
+    const target = e.target as Element;
+    if (target.tagName === 'path' && target.getAttribute('data-clickable') === 'true') {
+      return;
+    }
+    isPanning.current = true;
+    startPan.current = { ...pan };
+    startMouse.current = { x: e.clientX, y: e.clientY };
+    e.currentTarget.style.cursor = 'grabbing';
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!isPanning.current) return;
+    const dx = (e.clientX - startMouse.current.x) / zoom;
+    const dy = (e.clientY - startMouse.current.y) / zoom;
+    setPan({
+      x: startPan.current.x + dx,
+      y: startPan.current.y + dy
+    });
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<SVGSVGElement>) => {
+    isPanning.current = false;
+    e.currentTarget.style.cursor = 'grab';
+  };
+
+  const resetView = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
   };
 
   return (
@@ -52,13 +100,53 @@ export default function StudyModeMap({
           }
         }
       `}</style>
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full overflow-hidden">
+      {/* Zoom Controls */}
+      <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
+        <button
+          onClick={() => setZoom(Math.min(zoom + 0.25, 3))}
+          className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
+          title="Zoom In"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+        </button>
+        <button
+          onClick={() => setZoom(Math.max(zoom - 0.25, 0.5))}
+          className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
+          title="Zoom Out"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
+          </svg>
+        </button>
+        <button
+          onClick={resetView}
+          className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
+          title="Reset View"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+      </div>
+
       {/* SVG Map with Real Geographic Boundaries */}
       <svg
+        ref={svgRef}
         viewBox="0 0 800 900"
         className="w-full h-full"
-        style={{ maxHeight: '600px', overflow: 'visible' }}
+        style={{
+          maxHeight: '600px',
+          cursor: isPanning.current ? 'grabbing' : 'grab'
+        }}
         preserveAspectRatio="xMidYMid meet"
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
         {/* Background - Ocean blue gradient */}
         <defs>
@@ -68,6 +156,9 @@ export default function StudyModeMap({
           </linearGradient>
         </defs>
         <rect width="800" height="900" fill="url(#ocean)" />
+
+        {/* Apply zoom and pan transformation */}
+        <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${450 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
 
         {/* Real County Geographic Boundaries */}
         {realCaliforniaCountyShapes.map((county) => {
@@ -110,6 +201,7 @@ export default function StudyModeMap({
                 }
                 strokeLinejoin="round"
                 strokeLinecap="round"
+                data-clickable={isFiltered ? "true" : "false"}
                 className={isFiltered ? "cursor-pointer transition-all duration-200 hover:filter hover:brightness-110" : "transition-all duration-200"}
                 style={{
                   filter: !isFiltered ? 'none' :
@@ -141,21 +233,16 @@ export default function StudyModeMap({
           );
         })}
 
-        {/* Legend */}
+        </g>
+        {/* End of zoom/pan transform group */}
+
+        {/* Legend - not affected by zoom */}
         <g transform="translate(650, 20)">
           <text x="0" y="0" className="text-xs font-bold fill-gray-700">Regions</text>
-          {[
-            { name: 'Bay Area', color: '#3B82F6' },
-            { name: 'Southern CA', color: '#EF4444' },
-            { name: 'Central Valley', color: '#10B981' },
-            { name: 'Central Coast', color: '#A855F7' },
-            { name: 'Northern CA', color: '#F59E0B' },
-            { name: 'North Coast', color: '#06B6D4' },
-            { name: 'Sierra Nevada', color: '#8B5CF6' }
-          ].map((region, idx) => (
-            <g key={region.name} transform={`translate(0, ${20 + idx * 15})`}>
-              <rect x="0" y="0" width="10" height="10" fill={region.color} opacity="0.8" />
-              <text x="15" y="8" className="text-xs fill-gray-600">{region.name}</text>
+          {Object.entries(REGION_COLORS).map(([regionName, config], idx) => (
+            <g key={regionName} transform={`translate(0, ${20 + idx * 15})`}>
+              <rect x="0" y="0" width="10" height="10" fill={config.hex} opacity="0.8" />
+              <text x="15" y="8" className="text-xs fill-gray-600">{regionName.replace('California', 'CA').replace('Central ', '')}</text>
             </g>
           ))}
         </g>
@@ -186,7 +273,7 @@ export default function StudyModeMap({
             <svg width="28" height="28" viewBox="0 0 450 1100" className="border border-gray-200 rounded bg-gray-50 flex-shrink-0">
               <path
                 d={getCountyInfo(hoveredCounty)?.path}
-                fill={getRegionColor(getCountyInfo(hoveredCounty)?.region || '')}
+                fill={getRegionHexColor(getCountyInfo(hoveredCounty)?.region || '')}
                 fillOpacity="0.8"
                 stroke="#4B5563"
                 strokeWidth="8"
