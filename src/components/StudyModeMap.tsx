@@ -158,14 +158,8 @@ export default function StudyModeMap({
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
-        {/* Background - Ocean blue gradient */}
-        <defs>
-          <linearGradient id="ocean" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style={{ stopColor: '#E0F2FE', stopOpacity: 1 }} />
-            <stop offset="100%" style={{ stopColor: '#F0F9FF', stopOpacity: 1 }} />
-          </linearGradient>
-        </defs>
-        <rect width="800" height="900" fill="url(#ocean)" />
+        {/* Clean white background for study mode */}
+        <rect width="800" height="900" fill="#FFFFFF" />
 
         {/* Apply zoom and pan transformation */}
         <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${450 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
