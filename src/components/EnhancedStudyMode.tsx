@@ -490,22 +490,22 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           </div>
         </div>
 
-        {/* Refined Region Filter Bar - Compact & Sticky */}
-        <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 shadow-sm flex-shrink-0 sticky top-0 z-40">
-          <div className="px-4 sm:px-6 py-2">
-            <div className="flex items-center gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+        {/* Refined Region Filter Bar - Sticky with Full Height */}
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 shadow-sm flex-shrink-0 sticky top-0 z-40 overflow-visible">
+          <div className="px-4 sm:px-6 py-6">
+            <div className="flex items-center gap-4 overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent min-h-[44px]">
               {/* Filter Label */}
-              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap">
+              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap flex-shrink-0">
                 Filter by Region:
               </span>
 
               {/* Region Pills Container */}
-              <div className="flex gap-2">
+              <div className="flex gap-3 flex-shrink-0">
                 {/* All Counties Button */}
                 <button
                   onClick={() => handleRegionChange('all')}
                   className={`
-                    relative px-4 py-1 rounded-full text-sm font-medium leading-5
+                    relative px-5 py-2.5 rounded-full text-sm font-medium leading-6
                     transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
                     ${
                       selectedRegion === 'all'
@@ -514,9 +514,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     }
                   `}
                 >
-                  <span className="inline-block align-middle">All Counties</span>
+                  <span className="flex-shrink-0">All Counties</span>
                   <span className={`
-                    ml-2 inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full text-xs font-bold align-middle
+                    ml-2 inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 rounded-full text-xs font-bold flex-shrink-0
                     ${selectedRegion === 'all' ? 'bg-white/20' : 'bg-gray-100'}
                   `}>
                     {counties.length}
@@ -524,7 +524,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 </button>
 
                 {/* Divider */}
-                <div className="w-px h-8 bg-gray-300 self-center mx-1"></div>
+                <div className="w-px h-10 bg-gray-300 self-center mx-2"></div>
 
                 {/* Region Buttons */}
                 {regions.map(region => {
@@ -534,7 +534,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       key={region}
                       onClick={() => handleRegionChange(region)}
                       className={`
-                        relative px-4 py-1 rounded-full text-sm font-medium leading-5
+                        relative px-5 py-2.5 rounded-full text-sm font-medium leading-6
                         transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
                         ${
                           selectedRegion === region
@@ -543,9 +543,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         }
                       `}
                     >
-                      <span className="inline-block align-middle">{region}</span>
+                      <span className="flex-shrink-0">{region}</span>
                       <span className={`
-                        ml-2 inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full text-xs font-bold align-middle
+                        ml-2 inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 rounded-full text-xs font-bold flex-shrink-0
                         ${selectedRegion === region ? 'bg-white/20' : 'bg-gray-100'}
                       `}>
                         {count}
