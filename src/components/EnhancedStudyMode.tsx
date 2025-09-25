@@ -505,7 +505,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 <button
                   onClick={() => handleRegionChange('all')}
                   className={`
-                    relative px-5 py-2.5 rounded-full text-sm font-medium leading-6
+                    relative px-3 py-1 rounded-full text-sm font-medium leading-5
                     transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
                     ${
                       selectedRegion === 'all'
@@ -516,7 +516,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 >
                   <span className="flex-shrink-0">All Counties</span>
                   <span className={`
-                    ml-2 inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 rounded-full text-xs font-bold flex-shrink-0
+                    ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 rounded-full text-xs font-bold flex-shrink-0
                     ${selectedRegion === 'all' ? 'bg-white/20' : 'bg-gray-100'}
                   `}>
                     {counties.length}
@@ -524,7 +524,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 </button>
 
                 {/* Divider */}
-                <div className="w-px h-10 bg-gray-300 self-center mx-2"></div>
+                <div className="w-px h-7 bg-gray-300 self-center mx-2"></div>
 
                 {/* Region Buttons */}
                 {regions.map(region => {
@@ -534,7 +534,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       key={region}
                       onClick={() => handleRegionChange(region)}
                       className={`
-                        relative px-5 py-2.5 rounded-full text-sm font-medium leading-6
+                        relative px-3 py-1 rounded-full text-sm font-medium leading-5
                         transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
                         ${
                           selectedRegion === region
@@ -545,7 +545,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     >
                       <span className="flex-shrink-0">{region}</span>
                       <span className={`
-                        ml-2 inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 rounded-full text-xs font-bold flex-shrink-0
+                        ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 rounded-full text-xs font-bold flex-shrink-0
                         ${selectedRegion === region ? 'bg-white/20' : 'bg-gray-100'}
                       `}>
                         {count}
