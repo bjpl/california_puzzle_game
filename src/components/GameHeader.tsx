@@ -101,7 +101,8 @@ export default function GameHeader() {
               setShowStudyMode(true);
               pauseGame(); // Pause the game when opening study mode
             }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white shadow-lg hover:shadow-xl hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all"
+            aria-label="Open study mode to learn county locations"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
@@ -114,9 +115,10 @@ export default function GameHeader() {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               hints === 0 || !currentCounty
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95'
+                : 'bg-amber-500 text-white shadow-lg hover:shadow-xl hover:bg-amber-600 hover:scale-105 active:scale-95'
             }`}
             disabled={hints === 0 || !currentCounty}
+            aria-label={`Get hint for placing ${currentCounty?.name || 'county'}. ${hints} hints remaining`}
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
@@ -133,6 +135,7 @@ export default function GameHeader() {
                 : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
             }`}
             title={soundEnabled ? 'Mute' : 'Unmute'}
+            aria-label={soundEnabled ? 'Mute sound effects' : 'Unmute sound effects'}
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               {soundEnabled ? (
@@ -151,6 +154,7 @@ export default function GameHeader() {
                 : 'bg-blue-100 text-blue-600 hover:bg-blue-200'
             }`}
             title={isPaused ? 'Resume' : 'Pause'}
+            aria-label={isPaused ? 'Resume game' : 'Pause game'}
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               {isPaused ? (
@@ -165,6 +169,7 @@ export default function GameHeader() {
             onClick={resetGame}
             className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 transition-all"
             title="Reset Game"
+            aria-label="Reset game and start over"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />

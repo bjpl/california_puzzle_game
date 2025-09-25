@@ -341,8 +341,9 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       <div className="map-controls">
         <button
           onClick={() => setZoom(Math.min(zoom + 0.25, 3))}
-          className="map-control-btn"
+          className="map-control-btn focus:outline-2 focus:outline-offset-2 focus:outline-blue-600"
           title="Zoom In"
+          aria-label="Zoom in on map"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m6-6H6" />
@@ -350,8 +351,9 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         </button>
         <button
           onClick={() => setZoom(Math.max(zoom - 0.25, 0.5))}
-          className="map-control-btn"
+          className="map-control-btn focus:outline-2 focus:outline-offset-2 focus:outline-blue-600"
           title="Zoom Out"
+          aria-label="Zoom out on map"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
@@ -359,8 +361,9 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         </button>
         <button
           onClick={resetView}
-          className="map-control-btn"
+          className="map-control-btn focus:outline-2 focus:outline-offset-2 focus:outline-blue-600"
           title="Reset View"
+          aria-label="Reset map view to default"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -381,6 +384,8 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         ref={svgRef}
         viewBox="0 0 800 600"
         className="w-full h-full"
+        role="img"
+        aria-label="Interactive map of California counties"
         style={{
           maxHeight: '100%',
           maxWidth: '100%',
