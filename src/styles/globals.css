@@ -1,8 +1,5 @@
 /* California Counties Puzzle Game - Educational Design System */
 
-/* Import topographic color system first */
-@import './topographic-colors.css';
-
 /* Import the clean educational design system */
 @import './educational-design.css';
 
@@ -32,8 +29,17 @@
 /* Educational design variables are now defined in educational-design.css */
 /* This file now focuses on minimal overrides and app-specific styles */
 
-/* Topographic colors are now imported from topographic-colors.css */
-/* Dark mode handled in topographic-colors.css */
+/* Dark mode color adjustments */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ca-fog: #2D3748;
+    --ca-white: #1A202C;
+    --ca-cream: #2D3748;
+    --ca-charcoal: #F7FAFC;
+    --ca-slate: #E2E8F0;
+    --ca-gray: #CBD5E0;
+  }
+}
 
 /* Base styles */
 @layer base {
@@ -48,50 +54,49 @@
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    font-size: 1rem;  /* 16px base */
+    font-family: var(--font-body);
     line-height: 1.6;
-    color: var(--text-primary);
-    background-color: var(--surface-primary);
+    color: var(--ca-charcoal);
+    background-color: var(--ca-cream);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-family: var(--font-display);
     font-weight: 600;
     line-height: 1.2;
-    letter-spacing: normal;
+    letter-spacing: -0.025em;
   }
 
   h1 {
-    font-size: 1.5rem;  /* 24px */
-    font-weight: 600;
+    font-size: 2.5rem;
+    font-weight: 700;
   }
 
   h2 {
-    font-size: 1.25rem;  /* 20px */
+    font-size: 2rem;
     font-weight: 600;
   }
 
   h3 {
-    font-size: 1rem;  /* 16px */
+    font-size: 1.5rem;
     font-weight: 600;
   }
 
   h4 {
-    font-size: 0.875rem;  /* 14px */
+    font-size: 1.25rem;
     font-weight: 500;
   }
 
   h5 {
-    font-size: 0.75rem;  /* 12px */
+    font-size: 1.125rem;
     font-weight: 500;
   }
 
   h6 {
-    font-size: 0.75rem;  /* 12px */
+    font-size: 1rem;
     font-weight: 500;
   }
 
@@ -100,12 +105,13 @@
   }
 
   a {
-    color: var(--interactive-primary);
+    color: var(--ca-ocean);
     text-decoration: none;
+    transition: color 0.2s ease;
   }
 
   a:hover {
-    color: var(--interactive-primary-hover);
+    color: var(--ca-sunset);
   }
 
   button {
@@ -115,9 +121,8 @@
 
   /* Focus styles for accessibility */
   *:focus-visible {
-    outline: 2px solid var(--focus);
+    outline: 2px solid var(--ca-tech);
     outline-offset: 2px;
-    border-radius: 4px;
   }
 
   /* Custom scrollbar for webkit browsers */
@@ -126,16 +131,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--surface-secondary);
+    background: var(--ca-fog);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--text-tertiary);
+    background: var(--ca-gray);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--text-secondary);
+    background: var(--ca-slate);
   }
 }
 
@@ -154,12 +159,17 @@
     @apply btn-secondary;
   }
 
-  /* California Card Components - Minimal styling without animations */
+  /* California Card Components */
   .card-ca {
-    @apply relative overflow-hidden rounded-xl;
+    @apply relative overflow-hidden transition-all duration-300 ease-out rounded-xl;
     background: white;
     box-shadow: var(--shadow-md);
     border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .card-ca:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
   }
 
   .card-ca-elevated {
@@ -167,12 +177,24 @@
     box-shadow: var(--shadow-lg);
   }
 
-  /* Map Interaction Styles - Minimal without hover effects */
+  .card-ca-elevated:hover {
+    box-shadow: var(--shadow-xl), 0 0 0 1px var(--ca-gold);
+  }
+
+  /* Map Interaction Styles */
   .map-county-region {
     fill: var(--ca-fog);
     stroke: var(--ca-ocean);
     stroke-width: 1px;
+    transition: all 0.3s ease;
     cursor: pointer;
+  }
+
+  .map-county-region:hover {
+    fill: var(--ca-sky);
+    stroke: var(--ca-sunset);
+    stroke-width: 2px;
+    filter: drop-shadow(0 4px 8px rgba(255, 107, 53, 0.3));
   }
 
   .map-county-region.completed {
@@ -203,21 +225,33 @@
     filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3));
   }
 
-  /* Progress Indicators - Minimal without transitions */
+  /* Progress Indicators */
   .progress-ca {
     @apply w-full h-3 overflow-hidden rounded-full;
     background: var(--ca-fog);
   }
 
   .progress-ca-fill {
-    @apply h-full rounded-full;
+    @apply h-full transition-all duration-700 ease-out rounded-full;
     background: var(--ca-sunset-gradient);
   }
 
-  /* Loading States - Static without animation */
+  /* Loading States */
   .loading-skeleton {
-    @apply rounded;
-    background: var(--ca-fog);
+    @apply animate-pulse rounded;
+    background: linear-gradient(
+      90deg,
+      var(--ca-fog) 25%,
+      var(--ca-sky) 50%,
+      var(--ca-fog) 75%
+    );
+    background-size: 200% 100%;
+    animation: ca-shimmer 1.5s infinite;
+  }
+
+  @keyframes ca-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 
   /* Removed glassmorphism - using clean educational cards instead */
@@ -262,8 +296,8 @@
 
   /* Responsive Typography */
   .text-ca-hero {
-    @apply text-xl font-semibold leading-tight;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    @apply text-4xl font-bold leading-tight;
+    font-family: var(--font-display);
     background: var(--ca-sunset-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -272,18 +306,18 @@
 
   @media (max-width: 768px) {
     .text-ca-hero {
-      @apply text-lg;
+      @apply text-3xl;
     }
   }
 
   .text-ca-subtitle {
-    @apply text-lg font-medium;
+    @apply text-xl font-medium;
     color: var(--ca-slate);
   }
 
   @media (max-width: 768px) {
     .text-ca-subtitle {
-      @apply text-base;
+      @apply text-lg;
     }
   }
 
@@ -296,7 +330,7 @@
   }
 
   .nav-ca-item {
-    @apply px-4 py-2 font-medium rounded-lg;
+    @apply px-4 py-2 font-medium transition-colors duration-200 rounded-lg;
     color: var(--ca-slate);
   }
 
@@ -416,7 +450,7 @@
   }
 }
 
-/* Enhanced reduced motion preferences */
+/* Reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -424,20 +458,23 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 
-  /* Ensure all animations are disabled */
-  [class*="animate-"],
-  [class*="transition-"] {
-    animation: none !important;
+  .progress-ca-fill {
     transition: none !important;
   }
 
-  /* Remove any remaining transforms */
-  .card-ca:hover,
+  .card-ca:hover {
+    transform: none !important;
+  }
+
   .btn-ca-primary:hover,
   .btn-ca-secondary:hover {
     transform: none !important;
+  }
+
+  .animate-ca-float,
+  .animate-ca-pulse {
+    animation: none !important;
   }
 }

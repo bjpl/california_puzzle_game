@@ -77,10 +77,10 @@ export default function GameHeader() {
       <div className="flex justify-between items-start mb-4">
         <div className="flex flex-col">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-8 h-8 bg-topo-ocean-500 rounded-lg flex items-center justify-center shadow-md">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
               <span className="text-white text-sm">CA</span>
             </div>
-            <h1 className="text-xl font-bold text-topo-ink-700">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               California Counties Puzzle
             </h1>
           </div>
@@ -101,7 +101,7 @@ export default function GameHeader() {
               setShowStudyMode(true);
               pauseGame(); // Pause the game when opening study mode
             }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-topo-ink-600 text-white shadow-lg hover:bg-topo-ink-700 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
@@ -114,7 +114,7 @@ export default function GameHeader() {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               hints === 0 || !currentCounty
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-topo-peak-500 text-white shadow-lg hover:bg-topo-peak-600 hover:shadow-xl hover:scale-105 active:scale-95'
+                : 'bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95'
             }`}
             disabled={hints === 0 || !currentCounty}
           >
@@ -204,7 +204,7 @@ export default function GameHeader() {
           <span className="text-xs text-gray-500">Progress</span>
           <div className="flex-1 bg-gray-200 rounded-full h-2 relative overflow-hidden">
             <div
-              className="absolute inset-y-0 left-0 bg-topo-ocean-500 rounded-full transition-all duration-500 ease-out"
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             />
             <div

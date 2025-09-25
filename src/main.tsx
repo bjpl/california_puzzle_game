@@ -178,7 +178,7 @@ button:focus {
 
 /* Achievement notification styles */
 .achievement-notification {
-  background: #f59e0b;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
   box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }

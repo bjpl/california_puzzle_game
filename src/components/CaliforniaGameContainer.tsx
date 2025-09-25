@@ -338,7 +338,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                 cursor: 'pointer'
               }}
             >
-              Hint
+              💡 Hint
             </button>
           )}
 
@@ -356,7 +356,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                 cursor: 'pointer'
               }}
             >
-              {isPaused ? 'Resume' : 'Pause'}
+              {isPaused ? '▶️ Resume' : '⏸️ Pause'}
             </button>
           )}
 
@@ -374,7 +374,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
               fontWeight: '500'
             }}
           >
-            {containerState.gameStarted ? 'Reset' : 'Start Game'}
+            {containerState.gameStarted ? '🔄 Reset' : '🎮 Start Game'}
           </button>
         </div>
       </div>
@@ -486,11 +486,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
               flexDirection: 'column',
               color: '#6b7280'
             }}>
-              <div className="text-gray-400 mb-4">
-                <svg className="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                </svg>
-              </div>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🗺️</div>
               <h2 style={{ margin: '0 0 8px 0', color: '#374151' }}>
                 Ready to Start?
               </h2>
@@ -523,7 +519,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                 }}
               >
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '48px', marginBottom: '16px' }}>||</div>
+                  <div style={{ fontSize: '48px', marginBottom: '16px' }}>⏸️</div>
                   <div>Game Paused</div>
                   <button
                     onClick={handlePauseToggle}
@@ -571,7 +567,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                   }, 2000);
                 }}
               >
-                {containerState.recentPlacement.isCorrect ? '✓' : '!'}
+                {containerState.recentPlacement.isCorrect ? '✅' : '⚠️'}
                 {containerState.recentPlacement.county.name} •
                 +{containerState.recentPlacement.scoreAwarded} points •
                 {Math.round(containerState.recentPlacement.accuracy * 100)}% accuracy

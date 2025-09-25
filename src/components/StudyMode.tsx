@@ -47,13 +47,13 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
         <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold flex items-center gap-2">
-              Study Mode - {focusCounty ? `${focusCounty.name} County` : 'California Counties'}
+              📚 Study Mode - {focusCounty ? `${focusCounty.name} County` : 'California Counties'}
             </h2>
             <button
               onClick={onClose}
               className="text-white hover:bg-white hover:bg-opacity-20 rounded-lg px-3 py-1 transition-colors"
             >
-              Close
+              ✕ Close
             </button>
           </div>
           <p className="mt-2 text-blue-100">
@@ -176,7 +176,7 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
                   {selectedCounty.funFact && (
                     <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                       <h4 className="font-semibold text-blue-900 mb-2">
-                        Fun Fact
+                        💡 Fun Fact
                       </h4>
                       <p className="text-blue-800">{selectedCounty.funFact}</p>
                     </div>
@@ -186,7 +186,7 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
                 {/* Study Tips */}
                 <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                   <h4 className="font-semibold text-yellow-900 mb-2">
-                    Location Tip
+                    📍 Location Tip
                   </h4>
                   <p className="text-yellow-800 text-sm">
                     {selectedCounty.name} is located in {selectedCounty.region}.
@@ -196,11 +196,7 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                <div className="text-gray-400 mb-4">
-                  <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-                  </svg>
-                </div>
+                <span className="text-6xl mb-4">📖</span>
                 <p className="text-lg font-medium">Select a county to study</p>
                 <p className="text-sm mt-2">Click on any county card to see details</p>
               </div>

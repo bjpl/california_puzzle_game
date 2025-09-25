@@ -219,7 +219,7 @@ const CountyList: React.FC<CountyListProps> = ({
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <motion.div
-              className="bg-topo-ocean-500 h-2 rounded-full"
+              className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${(progress / total) * 100}%` }}
               transition={{ duration: 0.5, ease: 'easeOut' }}

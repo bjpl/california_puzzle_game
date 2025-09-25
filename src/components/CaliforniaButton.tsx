@@ -28,13 +28,13 @@ export const CaliforniaButton = forwardRef<HTMLButtonElement, CaliforniaButtonPr
     onMouseEnter,
     ...props
   }, ref) => {
-    const baseClasses = 'inline-flex items-center justify-center font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+    const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
 
     const variantClasses = {
-      primary: 'bg-ca-tech text-white focus-visible:ring-ca-tech-500',
-      secondary: 'bg-ca-sunset text-white focus-visible:ring-ca-sunset-500',
-      outline: 'border-2 border-ca-ocean-500 text-ca-ocean-600 bg-transparent focus-visible:ring-ca-ocean-500',
-      ghost: 'text-ca-slate-600 bg-transparent focus-visible:ring-ca-tech-500'
+      primary: 'bg-ca-tech text-white hover:shadow-lg hover:-translate-y-0.5 focus-visible:ring-ca-tech-500',
+      secondary: 'bg-ca-sunset text-white hover:shadow-lg hover:-translate-y-0.5 focus-visible:ring-ca-sunset-500',
+      outline: 'border-2 border-ca-ocean-500 text-ca-ocean-600 bg-transparent hover:bg-ca-ocean-500 hover:text-white focus-visible:ring-ca-ocean-500',
+      ghost: 'text-ca-slate-600 bg-transparent hover:bg-ca-fog-100 hover:text-ca-charcoal-700 focus-visible:ring-ca-tech-500'
     };
 
     const sizeClasses = {
@@ -80,7 +80,7 @@ export const CaliforniaButton = forwardRef<HTMLButtonElement, CaliforniaButtonPr
         {...props}
       >
         {isLoading ? (
-          <div className={clsx('rounded-full border-2 border-current border-t-transparent', iconSizeClasses[size])} />
+          <div className={clsx('animate-spin rounded-full border-2 border-current border-t-transparent', iconSizeClasses[size])} />
         ) : (
           <>
             {Icon && iconPosition === 'left' && (

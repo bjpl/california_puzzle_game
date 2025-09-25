@@ -148,7 +148,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
             <p className="text-gray-600">
               {remainingCounties.length > 0
                 ? `Find and place: ${currentTargetCounty.name}`
-                : 'All counties placed!'
+                : 'All counties placed! 🎉'
               }
             </p>
           </div>
@@ -178,7 +178,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
           )}
           {hintSystem.strugglingCounties.length > 0 && (
             <span className="text-blue-600">
-              Analyzing difficulty patterns
+              📊 Analyzing difficulty patterns
             </span>
           )}
         </div>
@@ -189,7 +189,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
         {/* Game Map Area */}
         <div className="game-map-container flex-1">
           <div
-            className="game-map relative bg-topo-sand rounded-lg shadow-lg overflow-hidden"
+            className="game-map relative bg-gradient-to-br from-blue-50 to-green-50 rounded-lg shadow-lg overflow-hidden"
             style={{ width, height }}
             onDrop={handleCountyDrop}
             onDragOver={handleDragOver}
@@ -292,7 +292,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
                 {/* Struggle Indicator */}
                 {hintSystem.strugglingCounties.find(s => s.countyId === county.id) && (
                   <div className="text-xs text-orange-600 mt-1 flex items-center gap-1">
-                    <span>!</span>
+                    <span>⚠️</span>
                     <span>Needs attention</span>
                   </div>
                 )}
@@ -331,11 +331,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
             exit={{ opacity: 0, x: 50 }}
           >
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-                </svg>
-              </div>
+              <span className="text-2xl">🎓</span>
               <h4 className="font-bold text-green-800">Learn About This County</h4>
             </div>
 
@@ -352,7 +348,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
                       i < activeHint.educationalValue ? 'text-green-500' : 'text-gray-300'
                     }`}
                   >
-                    ★
+                    ⭐
                   </span>
                 ))}
               </div>
@@ -371,7 +367,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
       {/* Struggle Analysis Debug Panel (Development Only) */}
       {process.env.NODE_ENV === 'development' && hintSystem.strugglingCounties.length > 0 && (
         <div className="debug-panel fixed top-4 right-4 w-64 bg-gray-900 text-white p-3 rounded-lg text-xs">
-          <h4 className="font-bold mb-2">Struggle Analysis</h4>
+          <h4 className="font-bold mb-2">🔍 Struggle Analysis</h4>
           {hintSystem.strugglingCounties.map((struggle) => (
             <div key={struggle.countyId} className="mb-2 p-2 bg-gray-800 rounded">
               <div className="font-semibold">{struggle.countyId}</div>

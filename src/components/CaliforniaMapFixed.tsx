@@ -214,7 +214,7 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center bg-topo-sand">
+    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
       <svg
         ref={svgRef}
         viewBox="0 0 800 600"
@@ -222,7 +222,13 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
         style={{ maxHeight: '100%', maxWidth: '100%' }}
       >
         {/* Background */}
-        <rect width="800" height="600" fill="#f5f2e8" />
+        <defs>
+          <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#dbeafe" />
+            <stop offset="100%" stopColor="#bfdbfe" />
+          </linearGradient>
+        </defs>
+        <rect width="800" height="600" fill="url(#oceanGradient)" />
 
         {/* Title */}
         <text

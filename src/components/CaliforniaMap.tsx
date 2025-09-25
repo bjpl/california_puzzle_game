@@ -32,7 +32,7 @@ function CountyDropZone({ countyId, path, name, x, y }: CountyDropZoneProps) {
         fill={fillColor}
         stroke="#333"
         strokeWidth="1"
-        className=""
+        className="transition-colors duration-200"
       />
       <text
         x={x}

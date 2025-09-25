@@ -362,15 +362,15 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [viewMode, quizState, quizQuestion, showAnswer, currentQuestionIndex, questionHistory]);
 
-  // Region colors for visual distinction - solid colors preserved for regions
+  // Region colors for visual distinction
   const regionColors: { [key: string]: string } = {
-    'Southern California': 'bg-red-500',
-    'Bay Area': 'bg-topo-ocean-500',
-    'Central Valley': 'bg-green-500',
-    'Central Coast': 'bg-purple-500',
-    'Northern California': 'bg-orange-500',
-    'Sierra Nevada': 'bg-topo-peak-500',
-    'North Coast': 'bg-teal-500',
+    'Southern California': 'from-red-500 to-orange-500',
+    'Bay Area': 'from-blue-500 to-indigo-500',
+    'Central Valley': 'from-green-500 to-emerald-500',
+    'Central Coast': 'from-purple-500 to-pink-500',
+    'Northern California': 'from-orange-500 to-yellow-500',
+    'Sierra Nevada': 'from-yellow-500 to-amber-500',
+    'North Coast': 'from-teal-500 to-cyan-500',
   };
 
   // Get education content for selected county
@@ -384,11 +384,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4 overflow-y-auto">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl max-h-[90vh] my-auto flex flex-col">
         {/* Header */}
-        <div className="bg-topo-ocean-600 text-white p-4">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                California Counties Study Mode
+                📚 California Counties Study Mode
               </h2>
               <p className="text-sm opacity-90 mt-1">
                 Master all 58 counties with comprehensive educational content
@@ -397,13 +397,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
             <div className="flex items-center gap-4">
               {/* Progress indicators */}
               <div className="text-sm">
-                <div>Studied: {progress.studiedCounties.size}/58</div>
+                <div>📍 Studied: {progress.studiedCounties.size}/58</div>
               </div>
               <button
                 onClick={onClose}
                 className="text-white hover:bg-white hover:bg-opacity-20 rounded-lg px-3 py-1 transition-colors"
               >
-                Close
+                ✕ Close
               </button>
             </div>
           </div>
@@ -420,10 +420,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     : 'bg-white bg-opacity-20 hover:bg-opacity-30'
                 }`}
               >
-                {mode === 'explore' ? 'Explore' :
-                 mode === 'quiz' ? 'Quiz' :
-                 mode === 'map' ? 'Map' :
-                 mode === 'timeline' ? 'Timeline' :
+                {mode === 'explore' ? '📚 Explore' :
+                 mode === 'quiz' ? '🎯 Quiz' :
+                 mode === 'map' ? '🗺️ Map' :
+                 mode === 'timeline' ? '📅 Timeline' :
                  mode.charAt(0).toUpperCase() + mode.slice(1)}
               </button>
             ))}
@@ -491,7 +491,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                           </div>
                           <div className="flex gap-1">
                             {isStudied && <span className="text-green-500">✓</span>}
-                            {isMastered && <span className="text-yellow-500">★</span>}
+                            {isMastered && <span className="text-yellow-500">⭐</span>}
                           </div>
                         </div>
                       </button>
@@ -510,8 +510,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       <h3 className="text-3xl font-bold text-gray-800 mb-2">
                         {selectedCounty.name} County
                       </h3>
-                      <div className={`inline-block px-4 py-2 rounded-full text-white font-medium ${
-                        regionColors[selectedCounty.region] || 'bg-gray-500'
+                      <div className={`inline-block px-4 py-2 rounded-full text-white font-medium bg-gradient-to-r ${
+                        regionColors[selectedCounty.region] || 'from-gray-500 to-gray-600'
                       }`}>
                         {selectedCounty.region}
                       </div>
@@ -540,7 +540,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         <>
                           <div className="grid grid-cols-2 gap-4">
                             <div className="p-4 bg-blue-50 rounded-lg">
-                              <h4 className="font-semibold text-blue-900 mb-2">Quick Facts</h4>
+                              <h4 className="font-semibold text-blue-900 mb-2">📊 Quick Facts</h4>
                               <div className="space-y-1 text-sm text-gray-700">
                                 <div><strong className="text-gray-900">County Seat:</strong> <span className="text-gray-700">{selectedCounty?.capital || selectedCounty?.countySeat || 'N/A'}</span></div>
                                 <div><strong className="text-gray-900">Population:</strong> <span className="text-gray-700">{selectedCounty?.population ? selectedCounty.population.toLocaleString() : 'N/A'}</span></div>
@@ -551,7 +551,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                               </div>
                             </div>
                             <div className="p-4 bg-green-50 rounded-lg">
-                              <h4 className="font-semibold text-green-900 mb-2">Fun Facts</h4>
+                              <h4 className="font-semibold text-green-900 mb-2">🎉 Fun Facts</h4>
                               {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 ? (
                                 <ul className="text-sm text-green-800 space-y-1">
                                   {selectedCounty.funFacts.slice(0, 3).map((fact: string, idx: number) => (
@@ -571,7 +571,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                             <div className="grid grid-cols-2 gap-4">
                               {selectedCounty.naturalFeatures && selectedCounty.naturalFeatures.length > 0 && (
                                 <div className="p-4 bg-cyan-50 rounded-lg">
-                                  <h4 className="font-semibold text-cyan-900 mb-2">Natural Features</h4>
+                                  <h4 className="font-semibold text-cyan-900 mb-2">🏔️ Natural Features</h4>
                                   <ul className="text-sm text-cyan-800 space-y-1">
                                     {selectedCounty.naturalFeatures.slice(0, 3).map((feature: string, idx: number) => (
                                       <li key={idx}>• {feature}</li>
@@ -581,7 +581,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                               )}
                               {selectedCounty.economicFocus && selectedCounty.economicFocus.length > 0 && (
                                 <div className="p-4 bg-purple-50 rounded-lg">
-                                  <h4 className="font-semibold text-purple-900 mb-2">Economic Focus</h4>
+                                  <h4 className="font-semibold text-purple-900 mb-2">💼 Economic Focus</h4>
                                   <ul className="text-sm text-purple-800 space-y-1">
                                     {selectedCounty.economicFocus.slice(0, 3).map((focus: string, idx: number) => (
                                       <li key={idx}>• {focus}</li>
@@ -685,16 +685,16 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                           <h4 className="font-semibold text-gray-700 mb-3">Memory Aids</h4>
                           <div className="space-y-4">
                             <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                              <h5 className="font-medium text-yellow-900 mb-2">Location Memory Aid</h5>
+                              <h5 className="font-medium text-yellow-900 mb-2">📍 Location Memory Aid</h5>
                               <p className="text-yellow-800">{memoryAid.locationMnemonic}</p>
                             </div>
                             <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                              <h5 className="font-medium text-blue-900 mb-2">Shape Memory Aid</h5>
+                              <h5 className="font-medium text-blue-900 mb-2">🔷 Shape Memory Aid</h5>
                               <p className="text-blue-800">{memoryAid.shapeMnemonic}</p>
                             </div>
                             {memoryAid.rhymes && (
                               <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                                <h5 className="font-medium text-purple-900 mb-2">Rhyme to Remember</h5>
+                                <h5 className="font-medium text-purple-900 mb-2">🎵 Rhyme to Remember</h5>
                                 <p className="text-purple-800 italic">{memoryAid.rhymes}</p>
                               </div>
                             )}
@@ -716,7 +716,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       <div className="mt-6 grid grid-cols-2 gap-4">
                         {selectedCounty.naturalFeatures && (
                           <div className="p-4 bg-teal-50 rounded-lg">
-                            <h4 className="font-semibold text-teal-900 mb-2">Natural Features</h4>
+                            <h4 className="font-semibold text-teal-900 mb-2">🏔️ Natural Features</h4>
                             <div className="flex flex-wrap gap-2">
                               {selectedCounty.naturalFeatures.map((feature: string, idx: number) => (
                                 <span key={idx} className="px-2 py-1 bg-teal-100 text-teal-800 rounded text-sm">
@@ -728,7 +728,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         )}
                         {selectedCounty.culturalLandmarks && (
                           <div className="p-4 bg-pink-50 rounded-lg">
-                            <h4 className="font-semibold text-pink-900 mb-2">Cultural Landmarks</h4>
+                            <h4 className="font-semibold text-pink-900 mb-2">🏛️ Cultural Landmarks</h4>
                             <div className="flex flex-wrap gap-2">
                               {selectedCounty.culturalLandmarks.map((landmark: string, idx: number) => (
                                 <span key={idx} className="px-2 py-1 bg-pink-100 text-pink-800 rounded text-sm">
@@ -743,7 +743,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
                     {/* Related Counties */}
                     <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold text-gray-700 mb-3">Related Counties to Study</h4>
+                      <h4 className="font-semibold text-gray-700 mb-3">🔗 Related Counties to Study</h4>
                       <div className="flex flex-wrap gap-2">
                         {(() => {
                           // Try both ID formats (with hyphens and underscores)
@@ -789,11 +789,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                    <div className="text-gray-400 mb-4">
-                      <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-                      </svg>
-                    </div>
+                    <span className="text-6xl mb-4">📖</span>
                     <p className="text-lg font-medium">Select a county to begin studying</p>
                     <p className="text-sm mt-2">Explore comprehensive educational content for all 58 counties</p>
                   </div>
@@ -809,7 +805,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 {/* Quiz States */}
                 {quizState === 'idle' && (
                   <div className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-6">County Knowledge Quiz</h2>
+                    <h2 className="text-3xl font-bold text-gray-800 mb-6">🎯 County Knowledge Quiz</h2>
                     <p className="text-gray-600 mb-8">Test your knowledge of California counties!</p>
 
                     {/* Quiz Statistics */}
@@ -824,15 +820,15 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     <div className="flex gap-4 justify-center">
                       <button
                         onClick={() => startQuiz(5)}
-                        className="px-8 py-4 bg-topo-ocean-500 text-white rounded-xl text-xl font-bold hover:bg-topo-ocean-600 transition-all transform hover:scale-105"
+                        className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl text-xl font-bold hover:from-blue-600 hover:to-purple-600 transition-all transform hover:scale-105"
                       >
-                        Quick Quiz (5)
+                        🎯 Quick Quiz (5)
                       </button>
                       <button
                         onClick={() => startQuiz(15)}
-                        className="px-8 py-4 bg-purple-500 text-white rounded-xl text-xl font-bold hover:bg-purple-600 transition-all transform hover:scale-105"
+                        className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl text-xl font-bold hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105"
                       >
-                        Full Quiz (15)
+                        🏆 Full Quiz (15)
                       </button>
                     </div>
 
@@ -854,7 +850,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-topo-ocean-500 h-2 rounded-full transition-all duration-300"
+                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${((currentQuestionIndex + 1) / quizSettings.questionsPerSession) * 100}%` }}
                         />
                       </div>
@@ -975,7 +971,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 {/* Quiz Summary */}
                 {quizState === 'summary' && (
                   <div className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-6">Quiz Complete!</h2>
+                    <h2 className="text-3xl font-bold text-gray-800 mb-6">📊 Quiz Complete!</h2>
 
                     {/* Score Summary */}
                     <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
@@ -1023,7 +1019,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     <div className="flex gap-4 justify-center">
                       <button
                         onClick={startQuiz}
-                        className="px-6 py-3 bg-topo-ocean-500 text-white rounded-lg font-semibold hover:bg-topo-ocean-600"
+                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600"
                       >
                         New Quiz
                       </button>
@@ -1044,7 +1040,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           {viewMode === 'map' && (
             <div className="flex-1 p-8 overflow-y-auto">
               <div className="max-w-7xl mx-auto">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Interactive County Map</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">🗺️ Interactive County Map</h2>
                 <p className="text-gray-600 mb-6">Hover to see county names • Click to select and view details</p>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1066,7 +1062,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
                   {/* County Info Panel */}
                   <div className="bg-white rounded-lg shadow-lg p-6">
-                    <h3 className="font-bold text-lg mb-4">County Information</h3>
+                    <h3 className="font-bold text-lg mb-4">📍 County Information</h3>
                     {selectedCounty ? (
                       <div className="space-y-4">
                         {/* County Shape and Name */}
@@ -1129,7 +1125,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                           <div className="pt-4 border-t">
                             <button
                               onClick={() => setShowEducationalModal(true)}
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-topo-ocean-600 text-white rounded-lg text-sm font-medium hover:bg-topo-ocean-700 hover:shadow-lg transition-all transform hover:scale-105"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all transform hover:scale-105"
                             >
                               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
@@ -1141,7 +1137,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <div className="text-4xl mb-3 text-gray-400">↑</div>
+                        <div className="text-4xl mb-3">👆</div>
                         <p className="text-gray-500">Hover over counties to see their names</p>
                         <p className="text-gray-500 text-sm mt-2">Click on a county to view detailed information</p>
                       </div>
@@ -1151,7 +1147,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
                 {/* Region Legend */}
                 <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-semibold mb-3">Color Legend by Region:</h4>
+                  <h4 className="font-semibold mb-3">🎨 Color Legend by Region:</h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 rounded" style={{ backgroundColor: '#3B82F6' }} />
@@ -1192,7 +1188,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
             <div className="flex-1 flex gap-4 p-6 overflow-hidden">
               {/* Main Timeline Area - Left Side */}
               <div className="flex-1 overflow-y-auto pr-2">
-                <h2 className="text-2xl font-bold text-gray-800 mb-3">California Counties Timeline</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">📅 California Counties Timeline</h2>
                 <p className="text-gray-600 mb-5 text-sm">Click any county to view detailed information →</p>
 
                 {/* Timeline visualization */}
@@ -1214,11 +1210,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     if (sortedDecades.length === 0) {
                       return (
                         <div className="text-center py-12">
-                          <div className="text-gray-400 mb-4">
-                            <svg className="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                            </svg>
-                          </div>
+                          <div className="text-5xl mb-4">🔍</div>
                           <h3 className="text-xl font-semibold text-gray-700 mb-2">No Counties Found</h3>
                           <p className="text-gray-500">No counties match the selected region filter.</p>
                           <button
@@ -1235,10 +1227,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       <div key={decade} className="relative">
                         {/* Decade Header */}
                         <div className="flex items-center mb-3">
-                          <div className="bg-topo-ocean-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg">
+                          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg">
                             {decade}s
                           </div>
-                          <div className="flex-1 h-0.5 bg-gray-300 ml-4"></div>
+                          <div className="flex-1 h-0.5 bg-gradient-to-r from-gray-300 to-transparent ml-4"></div>
                         </div>
 
                         {/* Counties in this decade */}
@@ -1251,7 +1243,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                               onClick={() => handleCountySelect(county)}
                               className={`min-w-[140px] max-w-[180px] p-3 rounded-xl border-2 transition-all transform hover:scale-105 ${
                                 selectedCounty?.id === county.id
-                                  ? 'bg-blue-50 border-blue-500 shadow-lg scale-105'
+                                  ? 'bg-gradient-to-br from-blue-100 to-purple-100 border-blue-500 shadow-lg scale-105'
                                   : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow-md hover:bg-blue-50'
                               }`}
                             >
@@ -1288,53 +1280,53 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                           <p className="text-sm text-gray-500 font-medium">{selectedCounty.region}</p>
                         </div>
                       </div>
-                      <div className="h-1 bg-topo-ocean-500 rounded-full"></div>
+                      <div className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                     </div>
 
                     <div className="space-y-3">
-                      <div className="p-3 bg-blue-50 rounded-xl">
+                      <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
                         <h4 className="font-bold text-blue-900 mb-1 text-sm flex items-center gap-2">
-                          Established
+                          <span>📅</span> Established
                         </h4>
                         <p className="text-2xl font-bold text-blue-700">{selectedCounty.founded || selectedCounty.established || 'Unknown'}</p>
                       </div>
 
-                      <div className="p-3 bg-purple-50 rounded-xl">
+                      <div className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
                         <h4 className="font-bold text-purple-900 mb-1 text-sm flex items-center gap-2">
-                          County Seat
+                          <span>🏛️</span> County Seat
                         </h4>
                         <p className="text-lg font-semibold text-purple-700">{selectedCounty.capital || selectedCounty.countySeat || 'N/A'}</p>
                       </div>
 
-                      <div className="p-3 bg-green-50 rounded-xl">
+                      <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl">
                         <h4 className="font-bold text-green-900 mb-1 text-sm flex items-center gap-2">
-                          Region
+                          <span>📍</span> Region
                         </h4>
                         <p className="text-base font-medium text-green-700">{selectedCounty.region || 'N/A'}</p>
                       </div>
 
                       {selectedCounty.population && (
-                        <div className="p-3 bg-amber-50 rounded-xl">
+                        <div className="p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl">
                           <h4 className="font-bold text-amber-900 mb-1 text-sm flex items-center gap-2">
-                            Population
+                            <span>👥</span> Population
                           </h4>
                           <p className="text-base font-semibold text-amber-700">{selectedCounty.population.toLocaleString()}</p>
                         </div>
                       )}
 
                       {educationContent && (
-                        <div className="p-3 bg-gray-50 rounded-xl">
+                        <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl">
                           <h4 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-2">
-                            Historical Context
+                            <span>📚</span> Historical Context
                           </h4>
                           <p className="text-xs text-gray-700 leading-relaxed">{educationContent.historicalContext}</p>
                         </div>
                       )}
 
                       {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 && (
-                        <div className="p-3 bg-yellow-50 rounded-xl">
+                        <div className="p-3 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl">
                           <h4 className="font-bold text-yellow-900 mb-2 text-sm flex items-center gap-2">
-                            Fun Facts
+                            <span>✨</span> Fun Facts
                           </h4>
                           <ul className="space-y-1">
                             {selectedCounty.funFacts.slice(0, 3).map((fact: string, idx: number) => (
@@ -1349,13 +1341,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     </div>
                   </div>
                 ) : (
-                  <div className="sticky top-0 bg-gray-50 rounded-2xl shadow-lg p-6 border-2 border-gray-200 h-[400px] flex flex-col items-center justify-center text-center">
-                    <div className="text-gray-400 mb-3">
-                      <svg className="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                        <path fillRule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 002 0V3a2 2 0 012 2v6.5a.5.5 0 01-.5.5h-5a.5.5 0 01-.5-.5V5zM8.5 6a.5.5 0 000 1h3a.5.5 0 000-1h-3zM6 8.5a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5zm.5 1.5a.5.5 0 000 1h7a.5.5 0 000-1h-7z" clipRule="evenodd"></path>
-                      </svg>
-                    </div>
+                  <div className="sticky top-0 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg p-6 border-2 border-gray-200 h-[400px] flex flex-col items-center justify-center text-center">
+                    <span className="text-5xl mb-3 opacity-50">📋</span>
                     <h3 className="text-lg font-bold text-gray-700 mb-2">Select a County</h3>
                     <p className="text-sm text-gray-500 leading-relaxed">
                       Click on any county from the timeline to view its detailed historical information and facts.

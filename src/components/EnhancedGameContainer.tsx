@@ -212,7 +212,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
   switch (gamePhase) {
     case 'mode_selection':
       return (
-        <div className="min-h-screen bg-topo-sand">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
           <div className="container mx-auto p-6">
             {/* Header */}
             <div className="text-center mb-8">
@@ -247,7 +247,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
 
     case 'progression':
       return (
-        <div className="min-h-screen bg-topo-sand">
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100">
           <div className="container mx-auto p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
@@ -273,7 +273,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
 
     case 'study':
       return (
-        <div className="min-h-screen bg-topo-sand">
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
           <div className="container mx-auto p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
@@ -370,7 +370,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
 
     case 'complete':
       return (
-        <div className="min-h-screen bg-topo-sand">
+        <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100">
           <div className="container mx-auto p-6">
             <GameComplete />
 

@@ -37,7 +37,7 @@ export default function EducationalContentModal({
       {/* Modal Content */}
       <div className="relative w-full max-w-5xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden animate-slideInUp">
         {/* Header */}
-        <div className="bg-topo-ocean-600 text-white p-6">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
               <CountyShapeDisplay
@@ -319,7 +319,7 @@ export default function EducationalContentModal({
               </div>
 
               {/* County Shape Visual */}
-              <div className="bg-topo-sand rounded-xl p-6 border border-topo-slate-200">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-purple-200">
                 <h4 className="font-bold text-purple-900 mb-4 text-center">County Geographic Shape</h4>
                 <div className="flex justify-center">
                   <CountyShapeDisplay
@@ -389,7 +389,7 @@ export default function EducationalContentModal({
             </p>
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-topo-ocean-600 text-white rounded-lg font-medium hover:bg-topo-ocean-700 hover:shadow-lg transition-all"
+              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transition-all"
             >
               Close
             </button>

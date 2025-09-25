@@ -7,7 +7,7 @@ import './styles/globals.css';
 function App() {
   return (
     <GameProvider>
-      <div className="min-h-screen bg-topo-sand">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
         <GameContainer />
       </div>
     </GameProvider>

@@ -88,7 +88,7 @@ export default function CountyDetailsModal({
         </button>
 
         {/* Header with County Shape */}
-        <div className="bg-topo-ocean-600 p-6 rounded-t-2xl">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-t-2xl">
           <div className="flex items-start gap-4">
             <div className="bg-white p-3 rounded-xl shadow-lg">
               <CountyShapeDisplay
@@ -144,7 +144,7 @@ export default function CountyDetailsModal({
           {county.funFacts && county.funFacts.length > 0 && (
             <div className="border-t pt-4">
               <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                Fun Facts
+                <span className="text-xl">🎉</span> Fun Facts
               </h3>
               <ul className="space-y-2">
                 {county.funFacts.slice(0, 3).map((fact: string, idx: number) => (
@@ -161,7 +161,7 @@ export default function CountyDetailsModal({
           {county.naturalFeatures && county.naturalFeatures.length > 0 && (
             <div className="border-t pt-4">
               <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                Natural Features
+                <span className="text-xl">🏔️</span> Natural Features
               </h3>
               <div className="flex flex-wrap gap-2">
                 {county.naturalFeatures.map((feature: string, idx: number) => (
@@ -177,7 +177,7 @@ export default function CountyDetailsModal({
           {county.economicFocus && county.economicFocus.length > 0 && (
             <div className="border-t pt-4">
               <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                Economic Focus
+                <span className="text-xl">💼</span> Economic Focus
               </h3>
               <div className="flex flex-wrap gap-2">
                 {county.economicFocus.map((focus: string, idx: number) => (
@@ -194,7 +194,7 @@ export default function CountyDetailsModal({
             <div className="border-t pt-4">
               <button
                 onClick={onViewEducationalContent}
-                className="w-full py-3 px-4 bg-topo-ocean-600 text-white rounded-xl font-medium hover:bg-topo-ocean-700 hover:shadow-lg transition-all transform hover:scale-[1.02]"
+                className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all transform hover:scale-[1.02]"
               >
                 <span className="flex items-center justify-center gap-2">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

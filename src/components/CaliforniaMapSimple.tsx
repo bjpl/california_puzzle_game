@@ -42,28 +42,32 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
     id: countyId,
   });
 
-  // Determine fill color based on state - clean topographic styling
-  let fillColor = 'transparent'; // Transparent fill for empty counties
+  // Region colors mapping - Educational, California-authentic colors
+  const regionColors: { [key: string]: string } = {
+    'Southern California': '#f5d5ae', // Warm sand
+    'Bay Area': '#b8d4e3', // Soft bay blue
+    'Central Valley': '#d4d4aa', // Farmland green
+    'Central Coast': '#c8b8d4', // Coastal purple
+    'Northern California': '#e6c2a6', // Redwood brown
+    'Sierra Nevada': '#e3d5a7', // Mountain gold
+    'North Coast': '#a8c8b8', // Forest green
+  };
+
+  // Determine fill color based on state and regions - restored original nice colors
+  let fillColor = '#ffffff'; // Clean white for available counties
   let strokeColor = '#6b7280'; // Medium gray stroke
   let strokeWidth = "0.75";
-  let strokeDasharray = '';
 
   if (isPlaced) {
-    fillColor = '#9CAF88'; // Solid topo-sage fill when placed
-    strokeColor = '#7D8F70'; // Slightly darker sage stroke
+    fillColor = '#10b981'; // Green when placed
+    strokeColor = '#047857'; // Darker green stroke
     strokeWidth = "1";
-  } else {
-    // Ghost counties: transparent fill with dashed stroke
-    fillColor = 'transparent';
-    strokeColor = '#9ca3af';
-    strokeWidth = "1";
-    strokeDasharray = '3,3';
-  }
-
-  // Hover state for active drag
-  if (isDragging && isOver) {
-    strokeColor = '#6b7280';
-    strokeWidth = "2";
+  } else if (isDragging && isOver) {
+    fillColor = '#fde68a'; // Softer yellow when hovering over during drag
+    strokeColor = '#f59e0b'; // Amber stroke
+    strokeWidth = "1.5";
+  } else if (showRegions && region) {
+    fillColor = regionColors[region] || '#ffffff'; // Show region color if enabled
   }
 
   // Calculate optimal text color based on background
@@ -207,18 +211,15 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
         d={path}
         fill={fillColor}
         stroke={strokeColor}
-        strokeWidth={strokeWidth}
-        strokeDasharray={strokeDasharray}
+        strokeWidth={isDragging && isOver ? "1.5" : strokeWidth}
         strokeLinejoin="round"
         strokeLinecap="round"
-        className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+        className="transition-all duration-200 hover:opacity-90"
         style={{
-          cursor: isPlaced ? 'pointer' : 'default',
-          outline: 'none'
+          cursor: isPlaced ? 'pointer' : 'pointer',
+          filter: isDragging && isOver ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' : isPlaced ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
+          opacity: 1
         }}
-        tabIndex={isPlaced ? 0 : -1}
-        role={isPlaced ? 'button' : undefined}
-        aria-label={isPlaced ? `${countyName} county` : undefined}
         onMouseEnter={() => {
           setIsHovered(true);
           if (isPlaced && onCountyHover) {
@@ -229,12 +230,6 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
           setIsHovered(false);
           if (isPlaced && onCountyLeave) {
             onCountyLeave();
-          }
-        }}
-        onKeyDown={(e) => {
-          if (isPlaced && (e.key === 'Enter' || e.key === ' ')) {
-            e.preventDefault();
-            handleClick();
           }
         }}
         onClick={handleClick}
@@ -280,7 +275,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   if (!geoData || !bounds) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <div className="text-gray-500">Loading California map...</div>
+        <div className="text-gray-500 animate-pulse">Loading California map...</div>
       </div>
     );
   }
@@ -399,8 +394,11 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         onMouseLeave={handleMouseUp}
       >
         <defs>
-          {/* Clean topographic background pattern */}
-          <pattern id="topoPattern" patternUnits="userSpaceOnUse" width="20" height="20">
+          <filter id="mapShadow">
+            <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.05"/>
+          </filter>
+          {/* Clean educational background pattern */}
+          <pattern id="educationalPattern" patternUnits="userSpaceOnUse" width="20" height="20">
             <rect width="20" height="20" fill="#fefefe"/>
             <circle cx="10" cy="10" r="0.3" fill="#8c8c8c" opacity="0.1"/>
           </pattern>

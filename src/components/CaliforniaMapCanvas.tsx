@@ -281,7 +281,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'middle')
             .attr('font-size', '14')
-            .attr('font-weight', '600')
+            .attr('font-weight', 'bold')
             .attr('fill', textColor)
             .attr('pointer-events', 'none')
             .attr('transform', `translate(${county.currentPosition.x}, ${county.currentPosition.y}) scale(${county.scale}) rotate(${county.rotation})`)
