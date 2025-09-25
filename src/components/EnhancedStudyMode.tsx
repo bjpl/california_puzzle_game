@@ -364,13 +364,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   // Region colors for visual distinction
   const regionColors: { [key: string]: string } = {
-    'Southern California': 'from-red-500 to-orange-500',
-    'Bay Area': 'from-blue-500 to-indigo-500',
-    'Central Valley': 'from-green-500 to-emerald-500',
-    'Central Coast': 'from-purple-500 to-pink-500',
-    'Northern California': 'from-orange-500 to-yellow-500',
-    'Sierra Nevada': 'from-yellow-500 to-amber-500',
-    'North Coast': 'from-teal-500 to-cyan-500',
+    'Southern California': 'from-red-400 to-red-500',
+    'Bay Area': 'from-blue-400 to-blue-500',
+    'Central Valley': 'from-green-400 to-green-500',
+    'Central Coast': 'from-purple-400 to-purple-500',
+    'Northern California': 'from-orange-400 to-orange-500',
+    'Sierra Nevada': 'from-yellow-400 to-yellow-500',
+    'North Coast': 'from-teal-400 to-teal-500',
   };
 
   // Get education content for selected county
@@ -381,96 +381,218 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const memoryAid = selectedCounty ? getMemoryAidData(selectedCounty.id) : null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4 overflow-y-auto">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl max-h-[90vh] my-auto flex flex-col">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold flex items-center gap-2">
-                📚 California Counties Study Mode
-              </h2>
-              <p className="text-sm opacity-90 mt-1">
-                Master all 58 counties with comprehensive educational content
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              {/* Progress indicators */}
-              <div className="text-sm">
-                <div>📍 Studied: {progress.studiedCounties.size}/58</div>
+    <div className="fixed inset-0 bg-white z-[9999] flex flex-col h-screen w-screen overflow-hidden">
+        {/* Enhanced Header with Modern Design - Fixed Position */}
+        <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white overflow-hidden flex-shrink-0">
+          {/* Subtle background pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                               radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
+                               radial-gradient(circle at 40% 20%, rgba(139, 92, 246, 0.3) 0%, transparent 50%)`
+            }}></div>
+          </div>
+
+          {/* Main Header Content */}
+          <div className="relative">
+            {/* Top Bar */}
+            <div className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-start gap-4">
+              <div className="flex-1">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2 sm:gap-3">
+                  <span className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
+                    📚
+                  </span>
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                    California Counties Study Mode
+                  </span>
+                </h1>
+                <p className="text-blue-100/80 mt-2 text-xs sm:text-sm font-medium tracking-wide ml-0 sm:ml-14">
+                  Master all 58 counties with comprehensive educational content
+                </p>
               </div>
-              <button
-                onClick={onClose}
-                className="text-white hover:bg-white hover:bg-opacity-20 rounded-lg px-3 py-1 transition-colors"
-              >
-                ✕ Close
-              </button>
+
+              <div className="flex items-center gap-4">
+                {/* Progress Badge */}
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-2">
+                  <div className="flex items-center gap-3">
+                    <div className="flex flex-col items-end">
+                      <span className="text-xs text-blue-200 font-medium uppercase tracking-wider">Progress</span>
+                      <span className="text-xl font-bold">{progress.studiedCounties.size}/58</span>
+                    </div>
+                    <div className="relative w-12 h-12">
+                      <svg className="transform -rotate-90 w-12 h-12">
+                        <circle
+                          cx="24"
+                          cy="24"
+                          r="20"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          fill="none"
+                          className="text-white/20"
+                        />
+                        <circle
+                          cx="24"
+                          cy="24"
+                          r="20"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          fill="none"
+                          strokeDasharray={`${(progress.studiedCounties.size / 58) * 125.6} 125.6`}
+                          className="text-blue-400 transition-all duration-500"
+                        />
+                      </svg>
+                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
+                        {Math.round((progress.studiedCounties.size / 58) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Close Button */}
+                <button
+                  onClick={onClose}
+                  className="group relative p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-200"
+                  aria-label="Close Study Mode"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Navigation Tabs - Integrated Design */}
+            <div className="px-4 sm:px-6 pb-4">
+              <nav className="flex gap-1 p-1 bg-black/20 backdrop-blur-sm rounded-xl overflow-x-auto">
+                {[
+                  { mode: 'explore' as ViewMode, icon: '📚', label: 'Explore' },
+                  { mode: 'quiz' as ViewMode, icon: '🎯', label: 'Quiz' },
+                  { mode: 'map' as ViewMode, icon: '🗺️', label: 'Map' },
+                  { mode: 'timeline' as ViewMode, icon: '📅', label: 'Timeline' }
+                ].map(({ mode, icon, label }) => (
+                  <button
+                    key={mode}
+                    onClick={() => setViewMode(mode)}
+                    className={`
+                      relative flex-1 flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5 rounded-lg
+                      font-medium text-xs sm:text-sm transition-all duration-200 whitespace-nowrap min-w-[80px]
+                      ${
+                        viewMode === mode
+                          ? 'bg-white text-gray-900 shadow-lg'
+                          : 'text-white/80 hover:text-white hover:bg-white/10'
+                      }
+                    `}
+                  >
+                    <span className="text-sm sm:text-base">{icon}</span>
+                    <span className="hidden sm:inline">{label}</span>
+                    <span className="sm:hidden">{label.slice(0, 3)}</span>
+                    {viewMode === mode && (
+                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full hidden sm:block">
+                        <div className="w-2 h-2 bg-white transform rotate-45 -mt-1"></div>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </nav>
             </div>
           </div>
+        </div>
 
-          {/* View Mode Tabs */}
-          <div className="flex gap-2 mt-4">
-            {(['explore', 'quiz', 'map', 'timeline'] as ViewMode[]).map(mode => (
-              <button
-                key={mode}
-                onClick={() => setViewMode(mode)}
-                className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                  viewMode === mode
-                    ? 'bg-white text-blue-600'
-                    : 'bg-white bg-opacity-20 hover:bg-opacity-30'
-                }`}
-              >
-                {mode === 'explore' ? '📚 Explore' :
-                 mode === 'quiz' ? '🎯 Quiz' :
-                 mode === 'map' ? '🗺️ Map' :
-                 mode === 'timeline' ? '📅 Timeline' :
-                 mode.charAt(0).toUpperCase() + mode.slice(1)}
-              </button>
-            ))}
+        {/* Refined Region Filter Bar - Sticky Position */}
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 shadow-sm flex-shrink-0 sticky top-0 z-40">
+          <div className="px-6 py-3">
+            <div className="flex items-center gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+              {/* Filter Label */}
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                Filter by Region:
+              </span>
+
+              {/* Region Pills Container */}
+              <div className="flex gap-2">
+                {/* All Counties Button */}
+                <button
+                  onClick={() => handleRegionChange('all')}
+                  className={`
+                    relative px-4 py-1.5 rounded-full text-sm font-medium
+                    transition-all duration-200 whitespace-nowrap
+                    ${
+                      selectedRegion === 'all'
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md transform scale-105'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
+                    }
+                  `}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>All Counties</span>
+                    <span className={`
+                      inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 rounded-full text-xs font-bold
+                      ${selectedRegion === 'all' ? 'bg-white/20' : 'bg-gray-100'}
+                    `}>
+                      {counties.length}
+                    </span>
+                  </span>
+                </button>
+
+                {/* Divider */}
+                <div className="w-px h-8 bg-gray-300 self-center mx-1"></div>
+
+                {/* Region Buttons */}
+                {regions.map(region => {
+                  const count = counties.filter(c => c.region === region).length;
+                  const regionColorMap: { [key: string]: string } = {
+                    'Southern California': 'from-red-400 to-red-500',
+                    'Bay Area': 'from-blue-400 to-blue-500',
+                    'Central Valley': 'from-green-400 to-green-500',
+                    'Central Coast': 'from-purple-400 to-purple-500',
+                    'Northern California': 'from-orange-400 to-orange-500',
+                    'Sierra Nevada': 'from-yellow-400 to-yellow-500',
+                    'North Coast': 'from-teal-400 to-teal-500'
+                  };
+
+                  return (
+                    <button
+                      key={region}
+                      onClick={() => handleRegionChange(region)}
+                      className={`
+                        relative px-4 py-1.5 rounded-full text-sm font-medium
+                        transition-all duration-200 whitespace-nowrap
+                        ${
+                          selectedRegion === region
+                            ? `bg-gradient-to-r ${regionColorMap[region] || 'from-gray-500 to-gray-600'} text-white shadow-md transform scale-105`
+                            : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
+                        }
+                      `}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{region}</span>
+                        <span className={`
+                          inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 rounded-full text-xs font-bold
+                          ${selectedRegion === region ? 'bg-white/20' : 'bg-gray-100'}
+                        `}>
+                          {count}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Region Filter */}
-        <div className="bg-gray-100 p-3 border-b flex items-center gap-2 overflow-x-auto">
-          <span className="text-sm font-medium text-gray-600 whitespace-nowrap">Filter by Region:</span>
-          <button
-            onClick={() => handleRegionChange('all')}
-            className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-              selectedRegion === 'all'
-                ? 'bg-blue-500 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            All Counties ({counties.length})
-          </button>
-          {regions.map(region => {
-            const count = counties.filter(c => c.region === region).length;
-            return (
-              <button
-                key={region}
-                onClick={() => handleRegionChange(region)}
-                className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                  selectedRegion === region
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {region} ({count})
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Main Content Area */}
-        <div className="flex-1 flex overflow-hidden">
+        {/* Main Content Area - Full Height */}
+        <div className="flex-1 flex overflow-hidden bg-gray-50">
           {viewMode === 'explore' && (
             <>
-              {/* County List */}
-              <div className="w-1/3 border-r bg-gray-50 p-4 overflow-y-auto">
-                <h3 className="font-semibold text-gray-700 mb-3">
-                  {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
-                </h3>
-                <div className="space-y-2">
+              {/* County List - Optimized Width */}
+              <div className="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-[280px] max-w-[400px] border-r border-gray-200 bg-white overflow-y-auto">
+                <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-10">
+                  <h3 className="font-bold text-gray-900 text-lg">
+                    {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1">{sortedCounties.length} counties</p>
+                </div>
+                <div className="p-4 space-y-2">
                   {sortedCounties.map(county => {
                     const isStudied = progress.studiedCounties.has(county.id);
                     const isMastered = progress.masteredCounties.has(county.id);
@@ -478,16 +600,16 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       <button
                         key={county.id}
                         onClick={() => handleCountySelect(county)}
-                        className={`w-full p-3 rounded-lg text-left transition-all hover:shadow-md ${
+                        className={`w-full p-4 rounded-xl text-left transition-all duration-200 border ${
                           selectedCounty?.id === county.id
-                            ? 'ring-2 ring-blue-500 shadow-md bg-white'
-                            : 'bg-white hover:bg-gray-50'
+                            ? 'ring-2 ring-blue-500 shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'
+                            : 'bg-white hover:bg-gray-50 hover:shadow-md border-gray-200'
                         }`}
                       >
                         <div className="flex justify-between items-center">
-                          <div>
-                            <div className="font-medium">{county.name}</div>
-                            <div className="text-xs text-gray-500">{county.capital}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-gray-900">{county.name}</div>
+                            <div className="text-xs text-gray-500 mt-0.5">{county.capital || county.countySeat}</div>
                           </div>
                           <div className="flex gap-1">
                             {isStudied && <span className="text-green-500">✓</span>}
@@ -500,47 +622,75 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 </div>
               </div>
 
-              {/* County Details */}
-              <div className="flex-1 flex flex-col">
-                <div className="flex-1 p-6 overflow-y-auto">
+              {/* County Details - Expanded Layout */}
+              <div className="flex-1 flex flex-col bg-gray-50">
+                <div className="flex-1 p-8 overflow-y-auto max-w-6xl mx-auto w-full">
                   {selectedCounty ? (
                     <div>
-                    {/* County Header */}
-                    <div className="mb-6">
-                      <h3 className="text-3xl font-bold text-gray-800 mb-2">
-                        {selectedCounty.name} County
-                      </h3>
-                      <div className={`inline-block px-4 py-2 rounded-full text-white font-medium bg-gradient-to-r ${
-                        regionColors[selectedCounty.region] || 'from-gray-500 to-gray-600'
-                      }`}>
-                        {selectedCounty.region}
+                    {/* County Header - Enhanced */}
+                    <div className="mb-8">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-4xl font-bold text-gray-900 mb-3">
+                            {selectedCounty.name} County
+                          </h3>
+                          <div className={`inline-block px-5 py-2.5 rounded-full text-white font-semibold bg-gradient-to-r shadow-lg ${
+                            regionColors[selectedCounty.region] || 'from-gray-500 to-gray-600'
+                          }`}>
+                            {selectedCounty.region}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          {selectedCounty.founded && (
+                            <div className="text-sm text-gray-500">Established</div>
+                          )}
+                          <div className="text-2xl font-bold text-gray-800">
+                            {selectedCounty.founded || selectedCounty.established || 'N/A'}
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Content Tabs */}
-                    <div className="flex gap-2 mb-4 border-b">
-                      {(['overview', 'history', 'economy', 'culture', 'geography', 'memory'] as ContentTab[]).map(tab => (
-                        <button
-                          key={tab}
-                          onClick={() => setContentTab(tab)}
-                          className={`px-4 py-2 font-medium transition-colors ${
-                            contentTab === tab
-                              ? 'border-b-2 border-blue-500 text-blue-600'
-                              : 'text-gray-600 hover:text-gray-800'
-                          }`}
-                        >
-                          {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                        </button>
-                      ))}
+                    {/* Content Tabs - Enhanced Design */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-1 mb-6">
+                      <div className="flex gap-1 flex-wrap">
+                        {[
+                          { id: 'overview' as ContentTab, label: 'Overview', icon: '📊' },
+                          { id: 'history' as ContentTab, label: 'History', icon: '📜' },
+                          { id: 'economy' as ContentTab, label: 'Economy', icon: '💼' },
+                          { id: 'culture' as ContentTab, label: 'Culture', icon: '🎭' },
+                          { id: 'geography' as ContentTab, label: 'Geography', icon: '🗺️' },
+                          { id: 'memory' as ContentTab, label: 'Memory Aid', icon: '🧠' }
+                        ].map(tab => (
+                          <button
+                            key={tab.id}
+                            onClick={() => setContentTab(tab.id)}
+                            className={`
+                              flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-3 rounded-lg
+                              font-medium transition-all duration-200
+                              ${
+                                contentTab === tab.id
+                                  ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
+                                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                              }
+                            `}
+                          >
+                            <span>{tab.icon}</span>
+                            <span className="hidden sm:inline">{tab.label}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
-                    {/* Tab Content */}
+                    {/* Tab Content - Improved Spacing */}
                     <div className="space-y-6">
                       {contentTab === 'overview' && (
                         <>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 bg-blue-50 rounded-lg">
-                              <h4 className="font-semibold text-blue-900 mb-2">📊 Quick Facts</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 shadow-sm">
+                              <h4 className="font-bold text-blue-900 mb-4 text-lg flex items-center gap-2">
+                                <span className="text-2xl">📊</span> Quick Facts
+                              </h4>
                               <div className="space-y-1 text-sm text-gray-700">
                                 <div><strong className="text-gray-900">County Seat:</strong> <span className="text-gray-700">{selectedCounty?.capital || selectedCounty?.countySeat || 'N/A'}</span></div>
                                 <div><strong className="text-gray-900">Population:</strong> <span className="text-gray-700">{selectedCounty?.population ? selectedCounty.population.toLocaleString() : 'N/A'}</span></div>
@@ -550,8 +700,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                                 <div><strong className="text-gray-900">Difficulty:</strong> <span className="text-gray-700">{selectedCounty?.difficulty ? selectedCounty.difficulty.charAt(0).toUpperCase() + selectedCounty.difficulty.slice(1) : 'N/A'}</span></div>
                               </div>
                             </div>
-                            <div className="p-4 bg-green-50 rounded-lg">
-                              <h4 className="font-semibold text-green-900 mb-2">🎉 Fun Facts</h4>
+                            <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 shadow-sm">
+                              <h4 className="font-bold text-green-900 mb-4 text-lg flex items-center gap-2">
+                                <span className="text-2xl">🎉</span> Fun Facts
+                              </h4>
                               {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 ? (
                                 <ul className="text-sm text-green-800 space-y-1">
                                   {selectedCounty.funFacts.slice(0, 3).map((fact: string, idx: number) => (
@@ -800,8 +952,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           )}
 
           {viewMode === 'quiz' && (
-            <div className="flex-1 p-8 overflow-y-auto">
-              <div className="max-w-5xl mx-auto">
+            <div className="flex-1 bg-gradient-to-br from-gray-50 to-indigo-50 overflow-y-auto">
+              <div className="max-w-6xl mx-auto p-8">
                 {/* Quiz States */}
                 {quizState === 'idle' && (
                   <div className="text-center">
@@ -1038,8 +1190,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* Map Mode - Interactive Visual Learning */}
           {viewMode === 'map' && (
-            <div className="flex-1 p-8 overflow-y-auto">
-              <div className="max-w-7xl mx-auto">
+            <div className="flex-1 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 overflow-hidden">
+              <div className="h-full w-full p-8">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">🗺️ Interactive County Map</h2>
                 <p className="text-gray-600 mb-6">Hover to see county names • Click to select and view details</p>
 
@@ -1185,7 +1337,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* Timeline Mode - Historical Perspective with Side Panel */}
           {viewMode === 'timeline' && (
-            <div className="flex-1 flex gap-4 p-6 overflow-hidden">
+            <div className="flex-1 flex gap-6 bg-gradient-to-br from-gray-50 to-amber-50 overflow-hidden p-8">
               {/* Main Timeline Area - Left Side */}
               <div className="flex-1 overflow-y-auto pr-2">
                 <h2 className="text-2xl font-bold text-gray-800 mb-3">📅 California Counties Timeline</h2>
@@ -1370,7 +1522,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
             </div>
           </div>
         </div>
-      </div>
 
       {/* Educational Content Modal */}
       <EducationalContentModal

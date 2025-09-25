@@ -3,7 +3,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../context/GameContext';
 import { getSvgTextFill } from '../utils/colorContrast';
 import CountyDetailsModal from './CountyDetailsModal';
-import StudyMode from './StudyMode';
+import EnhancedStudyMode from './EnhancedStudyMode';
 import { saveGameState, generateStudyModeUrl } from '../utils/gameStateManager';
 import { CALIFORNIA_COUNTIES } from '../utils/californiaData';
 import '../styles/educational-design.css';
@@ -488,14 +488,14 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         }}
       />
 
-      {/* Study Mode Modal */}
+      {/* Enhanced Study Mode Modal */}
       {showStudyMode && (
-        <StudyMode
+        <EnhancedStudyMode
           onClose={() => {
             setShowStudyMode(false);
             setSelectedCounty(null); // Close county modal when Study Mode closes
           }}
-          focusCounty={selectedCounty}
+          onStartGame={() => {}} // Empty function as it's not needed here
         />
       )}
     </div>
