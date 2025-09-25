@@ -9,6 +9,7 @@
 
 export interface RegionColorConfig {
   hex: string;           // For SVG/Canvas rendering
+  hexLight: string;      // Light version for legend boxes
   tailwindGradient: string;  // For gradient backgrounds
   tailwindBg: string;    // For solid backgrounds
   tailwindBorder: string; // For borders
@@ -21,6 +22,7 @@ export interface RegionColorConfig {
 export const REGION_COLORS: Record<string, RegionColorConfig> = {
   'Southern California': {
     hex: '#ef4444',
+    hexLight: '#fca5a5',
     tailwindGradient: 'from-red-400 to-red-500',
     tailwindBg: 'bg-red-500',
     tailwindBorder: 'border-red-400',
@@ -31,6 +33,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
   },
   'Bay Area': {
     hex: '#3b82f6',
+    hexLight: '#93c5fd',
     tailwindGradient: 'from-blue-400 to-blue-500',
     tailwindBg: 'bg-blue-500',
     tailwindBorder: 'border-blue-400',
@@ -41,6 +44,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
   },
   'Central Valley': {
     hex: '#22c55e',
+    hexLight: '#86efac',
     tailwindGradient: 'from-green-400 to-green-500',
     tailwindBg: 'bg-green-500',
     tailwindBorder: 'border-green-400',
@@ -51,6 +55,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
   },
   'Central Coast': {
     hex: '#a855f7',
+    hexLight: '#c4b5fd',
     tailwindGradient: 'from-purple-400 to-purple-500',
     tailwindBg: 'bg-purple-500',
     tailwindBorder: 'border-purple-400',
@@ -61,6 +66,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
   },
   'Northern California': {
     hex: '#f97316',
+    hexLight: '#fdba74',
     tailwindGradient: 'from-orange-400 to-orange-500',
     tailwindBg: 'bg-orange-500',
     tailwindBorder: 'border-orange-400',
@@ -71,6 +77,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
   },
   'Sierra Nevada': {
     hex: '#eab308',
+    hexLight: '#fde047',
     tailwindGradient: 'from-yellow-400 to-yellow-500',
     tailwindBg: 'bg-yellow-500',
     tailwindBorder: 'border-yellow-400',
@@ -81,6 +88,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
   },
   'North Coast': {
     hex: '#14b8a6',
+    hexLight: '#5eead4',
     tailwindGradient: 'from-teal-400 to-teal-500',
     tailwindBg: 'bg-teal-500',
     tailwindBorder: 'border-teal-400',
@@ -113,6 +121,7 @@ export function getRegionColor(region: string): RegionColorConfig {
   // Return the color config or a default
   return REGION_COLORS[mappedRegion] || {
     hex: '#6b7280',
+    hexLight: '#d1d5db',
     tailwindGradient: 'from-gray-400 to-gray-500',
     tailwindBg: 'bg-gray-500',
     tailwindBorder: 'border-gray-400',

@@ -4,13 +4,25 @@ import { REGION_COLORS, getRegionColor } from '../config/regionColors';
 export default function RegionsPanel() {
   const { showRegions, toggleShowRegions } = useGame();
 
-  // Use centralized color configuration
+  // Use centralized color configuration with proper light colors
   const regions = Object.keys(REGION_COLORS).map(regionName => {
     const colorConfig = getRegionColor(regionName);
+    // Abbreviate names for display
+    let displayName = regionName
+      .replace('California', '')
+      .replace('Central ', '')
+      .trim();
+
+    if (displayName === 'Southern') displayName = 'Southern';
+    if (displayName === 'Northern') displayName = 'Northern';
+    if (displayName === 'Central Valley') displayName = 'Valley';
+    if (displayName === 'Central Coast') displayName = 'Coast';
+
     return {
       name: regionName,
+      displayName,
       color: colorConfig.hex,
-      bgColor: colorConfig.hex + '66' // Add opacity for lighter background
+      bgColor: colorConfig.hexLight // Use proper light hex color
     };
   });
 
@@ -49,7 +61,7 @@ export default function RegionsPanel() {
                   style={{ backgroundColor: region.bgColor }}
                 />
                 <span className="text-xs font-medium text-gray-700">
-                  {region.name.replace('California', '').replace('Central ', '')}
+                  {region.displayName}
                 </span>
               </div>
             ))}
