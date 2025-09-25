@@ -38,35 +38,35 @@ const AchievementNotification: React.FC<AchievementNotificationProps> = ({
     switch (rarity) {
       case AchievementRarity.COMMON:
         return {
-          bg: 'bg-gradient-to-r from-gray-500 to-gray-600',
+          bg: 'bg-topo-slate-500',
           text: 'text-white',
           glow: 'shadow-lg shadow-gray-500/50',
           border: 'border-gray-400'
         };
       case AchievementRarity.RARE:
         return {
-          bg: 'bg-gradient-to-r from-blue-500 to-blue-600',
+          bg: 'bg-topo-ocean-500',
           text: 'text-white',
           glow: 'shadow-lg shadow-blue-500/50',
           border: 'border-blue-400'
         };
       case AchievementRarity.EPIC:
         return {
-          bg: 'bg-gradient-to-r from-purple-500 to-purple-600',
+          bg: 'bg-topo-ink-600',
           text: 'text-white',
           glow: 'shadow-lg shadow-purple-500/50',
           border: 'border-purple-400'
         };
       case AchievementRarity.LEGENDARY:
         return {
-          bg: 'bg-gradient-to-r from-yellow-400 to-yellow-500',
+          bg: 'bg-topo-peak-500',
           text: 'text-black',
           glow: 'shadow-lg shadow-yellow-500/50',
           border: 'border-yellow-300'
         };
       default:
         return {
-          bg: 'bg-gradient-to-r from-gray-500 to-gray-600',
+          bg: 'bg-topo-slate-500',
           text: 'text-white',
           glow: 'shadow-lg shadow-gray-500/50',
           border: 'border-gray-400'

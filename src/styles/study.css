@@ -1,4 +1,5 @@
-/* Study Mode Animations and Utilities */
+/* Study Mode Minimal Animations and Utilities */
+/* Removing unnecessary animations - keeping only essential functionality */
 
 /* Flashcard Flip Animation */
 .study-card-flip {
@@ -31,42 +32,16 @@
   transform: rotateY(180deg);
 }
 
-/* County Card Hover Effects */
+/* County Card - Minimal styling without hover effects */
 .county-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.county-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  /* Removed transitions and hover transforms */
 }
 
 .county-card-studied {
-  position: relative;
-  overflow: hidden;
+  /* Removed decorative animations */
 }
 
-.county-card-studied::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(59, 130, 246, 0.1),
-    transparent
-  );
-  transition: left 0.5s;
-}
-
-.county-card-studied:hover::before {
-  left: 100%;
-}
-
-/* Progress Bar Animations */
+/* Progress Bar - Simple without animations */
 .progress-bar {
   position: relative;
   overflow: hidden;
@@ -76,38 +51,8 @@
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-}
-
-.progress-fill::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-image: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.2) 25%,
-    transparent 25%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.2) 75%,
-    transparent 75%,
-    transparent
-  );
-  background-size: 30px 30px;
-  animation: progress-stripes 1s linear infinite;
-}
-
-@keyframes progress-stripes {
-  0% {
-    background-position-x: 0;
-  }
-  100% {
-    background-position-x: 30px;
-  }
+  /* Removed transitions and animated stripes */
 }
 
 /* Modal Backdrop Blur */
@@ -116,15 +61,10 @@
   -webkit-backdrop-filter: blur(4px);
 }
 
-/* County Map Hover Effects */
+/* County Map - Simple without hover effects */
 .map-county {
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.map-county:hover {
-  filter: brightness(1.1);
-  stroke-width: 2;
+  /* Removed transitions and hover effects */
 }
 
 .map-county-studied {
@@ -137,86 +77,24 @@
   opacity: 0.8;
 }
 
-.map-county-pulse {
-  animation: county-pulse 2s infinite;
-}
+/* Removed pulse animation */
 
-@keyframes county-pulse {
-  0%, 100% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.02);
-  }
-}
-
-/* Study Streak Animation */
+/* Study Streak - Static without animation */
 .streak-fire {
-  animation: fire-flicker 1.5s ease-in-out infinite alternate;
+  /* Removed fire flicker animation */
 }
 
-@keyframes fire-flicker {
-  0% {
-    transform: rotate(-1deg) scale(1);
-    filter: hue-rotate(0deg);
-  }
-  100% {
-    transform: rotate(1deg) scale(1.05);
-    filter: hue-rotate(10deg);
-  }
-}
-
-/* Achievement Badge Animation */
+/* Achievement Badge - Simple without shine animation */
 .achievement-badge {
   position: relative;
   overflow: hidden;
+  /* Removed shine animation */
 }
 
-.achievement-badge::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(
-    from 0deg,
-    transparent,
-    rgba(255, 215, 0, 0.1),
-    transparent
-  );
-  animation: achievement-shine 2s linear infinite;
-  opacity: 0;
-}
-
-.achievement-badge.unlocked::before {
-  opacity: 1;
-}
-
-@keyframes achievement-shine {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Study Session Timer */
+/* Study Session Timer - Static without pulse */
 .session-timer {
   font-variant-numeric: tabular-nums;
-  animation: timer-pulse 1s ease-in-out infinite;
-}
-
-@keyframes timer-pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
+  /* Removed pulse animation */
 }
 
 /* Grid Layout Responsive */
@@ -238,20 +116,10 @@
   }
 }
 
-/* Loading Skeleton */
+/* Loading Skeleton - Static without animation */
 .skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: skeleton-loading 1.5s infinite;
-}
-
-@keyframes skeleton-loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+  background: #f0f0f0;
+  /* Removed shimmer animation */
 }
 
 /* Difficulty Indicators */
@@ -273,25 +141,7 @@
   overflow: hidden;
 }
 
-.mode-selector-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(59, 130, 246, 0.1),
-    transparent
-  );
-  transition: left 0.5s;
-}
-
-.mode-selector-card:hover::before {
-  left: 100%;
-}
+/* Removed shine effect */
 
 /* Mastery Level Indicator */
 .mastery-ring {
@@ -321,37 +171,28 @@
   mask-composite: exclude;
 }
 
-/* Toast Notifications */
+/* Toast Notifications - Simple without slide animations */
 .toast {
-  transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Removed slide animations */
 }
 
 .toast.show {
-  transform: translateX(0);
+  display: block;
 }
 
 .toast.hide {
-  transform: translateX(100%);
+  display: none;
 }
 
-/* County Info Panel Slide Animation */
-.info-panel-enter {
-  transform: translateX(100%);
-}
-
+/* County Info Panel - Simple without slide animations */
+.info-panel-enter,
 .info-panel-enter-active {
-  transform: translateX(0);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Removed slide animations */
 }
 
-.info-panel-exit {
-  transform: translateX(0);
-}
-
+.info-panel-exit,
 .info-panel-exit-active {
-  transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Removed slide animations */
 }
 
 /* Responsive Design Utilities */
@@ -371,12 +212,11 @@
     right: 0;
     max-height: 70vh;
     border-radius: 16px 16px 0 0;
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Removed slide animation for mobile */
   }
 
   .info-panel-mobile.open {
-    transform: translateY(0);
+    /* Removed slide animation */
   }
 }
 
@@ -395,24 +235,34 @@
   }
 
   .skeleton {
-    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    background: #374151;
   }
 }
 
-/* Accessibility Improvements */
+/* Enhanced Accessibility - Prefers Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 
-  .study-card-inner {
-    transition: none;
-  }
-
-  .county-card {
-    transition: none;
+  /* Ensure all study mode animations are disabled */
+  .study-card-inner,
+  .county-card,
+  .progress-fill,
+  .toast,
+  .info-panel-enter,
+  .info-panel-enter-active,
+  .info-panel-exit,
+  .info-panel-exit-active,
+  .info-panel-mobile {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
   }
 }
 

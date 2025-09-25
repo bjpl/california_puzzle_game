@@ -86,22 +86,22 @@ const categoryConfig = {
 
 const rarityConfig = {
   common: {
-    gradient: 'from-gray-400 to-gray-600',
+    background: 'bg-topo-slate-400',
     glow: 'shadow-gray-200',
     stars: 1
   },
   rare: {
-    gradient: 'from-blue-400 to-blue-600',
+    background: 'bg-topo-ocean-500',
     glow: 'shadow-blue-200',
     stars: 2
   },
   epic: {
-    gradient: 'from-purple-400 to-purple-600',
+    background: 'bg-topo-ink-600',
     glow: 'shadow-purple-200',
     stars: 3
   },
   legendary: {
-    gradient: 'from-yellow-400 to-yellow-600',
+    background: 'bg-topo-peak-500',
     glow: 'shadow-yellow-200',
     stars: 4
   }
@@ -153,7 +153,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         'relative bg-white rounded-2xl border-2 transition-all duration-300',
         sizeClasses[size].container,
         achievement.earned
-          ? `border-${category.borderColor} bg-gradient-to-br from-${category.bgColor} to-white shadow-lg`
+          ? `border-${category.borderColor} bg-${category.bgColor} shadow-lg`
           : 'border-ca-fog-200 hover:border-ca-fog-300',
         interactive && 'cursor-pointer hover:shadow-xl hover:-translate-y-1',
         !achievement.earned && 'opacity-75 grayscale hover:grayscale-0',
@@ -175,7 +175,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         <div
           className={clsx(
             'absolute inset-0 rounded-2xl opacity-20 transition-opacity duration-300',
-            `bg-gradient-to-br ${rarity.gradient}`,
+            rarity.background,
             interactive && 'group-hover:opacity-30'
           )}
         />

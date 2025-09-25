@@ -42,10 +42,9 @@ export const CountyCard: React.FC<CountyCardProps> = ({
   return (
     <div
       className={clsx(
-        'group relative overflow-hidden bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 ease-out border border-ca-fog-200',
-        'hover:-translate-y-1 hover:border-ca-gold-300',
-        county.completed && 'ring-2 ring-ca-gold-300 bg-gradient-to-br from-ca-gold-50 to-white',
-        county.featured && 'ring-2 ring-ca-sunset-300 bg-gradient-to-br from-ca-sunset-50 to-white',
+        'group relative overflow-hidden bg-white rounded-2xl shadow-md border border-ca-fog-200',
+        county.completed && 'ring-2 ring-ca-gold-300 bg-ca-gold-50',
+        county.featured && 'ring-2 ring-ca-sunset-300 bg-ca-sunset-50',
         className
       )}
     >
@@ -69,10 +68,10 @@ export const CountyCard: React.FC<CountyCardProps> = ({
         <img
           src={county.image}
           alt={`${county.name} County landscape`}
-          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          className="w-full h-full object-cover"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-black/10" />
 
         {/* Floating difficulty indicator */}
         <div className="absolute bottom-3 left-3">
@@ -96,7 +95,7 @@ export const CountyCard: React.FC<CountyCardProps> = ({
       {/* Card Content */}
       <div className="p-6">
         {/* County Name */}
-        <h3 className="text-xl font-bold text-ca-charcoal-700 mb-2 group-hover:text-ca-sunset-600 transition-colors duration-200">
+        <h3 className="text-xl font-bold text-ca-charcoal-700 mb-2">
           {county.name}
         </h3>
 
@@ -130,17 +129,7 @@ export const CountyCard: React.FC<CountyCardProps> = ({
         </CaliforniaButton>
       </div>
 
-      {/* Hover Glow Effect */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-        <div
-          className={clsx(
-            'absolute inset-0 rounded-2xl',
-            county.completed && 'shadow-[0_0_30px_rgba(255,215,0,0.2)]',
-            county.featured && 'shadow-[0_0_30px_rgba(255,107,53,0.2)]',
-            !county.completed && !county.featured && 'shadow-[0_0_30px_rgba(99,102,241,0.15)]'
-          )}
-        />
-      </div>
+      {/* Removed hover glow effect */}
     </div>
   );
 };
