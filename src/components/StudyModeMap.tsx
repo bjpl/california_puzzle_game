@@ -23,6 +23,7 @@ export default function StudyModeMap({
   const isPanning = useRef(false);
   const startPan = useRef({ x: 0, y: 0 });
   const startMouse = useRef({ x: 0, y: 0 });
+  const hasPanned = useRef(false);
 
   // Use centralized color configuration for consistency
   const getRegionColorForMap = (region: string) => {
@@ -39,7 +40,7 @@ export default function StudyModeMap({
   };
 
   const handleCountyClick = (countyId: string) => {
-    if (onCountySelect && !isPanning.current) {
+    if (onCountySelect && !hasPanned.current) {
       onCountySelect(countyId);
     }
   };
@@ -56,20 +57,24 @@ export default function StudyModeMap({
   // Handle mouse events for panning
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
     if (e.button !== 0) return;
-    const target = e.target as Element;
-    if (target.tagName === 'path' && target.getAttribute('data-clickable') === 'true') {
-      return;
-    }
+    // Always allow panning, regardless of what element is clicked
     isPanning.current = true;
     startPan.current = { ...pan };
     startMouse.current = { x: e.clientX, y: e.clientY };
     e.currentTarget.style.cursor = 'grabbing';
+    e.preventDefault(); // Prevent text selection while dragging
   };
 
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
     if (!isPanning.current) return;
     const dx = (e.clientX - startMouse.current.x) / zoom;
     const dy = (e.clientY - startMouse.current.y) / zoom;
+
+    // Mark that we've actually panned if movement is significant
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+      hasPanned.current = true;
+    }
+
     setPan({
       x: startPan.current.x + dx,
       y: startPan.current.y + dy
@@ -79,6 +84,11 @@ export default function StudyModeMap({
   const handleMouseUp = (e: React.MouseEvent<SVGSVGElement>) => {
     isPanning.current = false;
     e.currentTarget.style.cursor = 'grab';
+
+    // Reset pan flag after a short delay to allow click handlers to check it
+    setTimeout(() => {
+      hasPanned.current = false;
+    }, 100);
   };
 
   const resetView = () => {
@@ -225,7 +235,12 @@ export default function StudyModeMap({
                 onMouseMove={(e) => {
                   if (isFiltered) setMousePosition({ x: e.clientX, y: e.clientY });
                 }}
-                onClick={() => isFiltered && handleCountyClick(county.id)}
+                onClick={(e) => {
+                  // Only trigger click if we haven't panned
+                  if (!hasPanned.current && isFiltered) {
+                    handleCountyClick(county.id);
+                  }
+                }}
               />
 
               {/* Removed inline labels - using hover tooltip instead */}
