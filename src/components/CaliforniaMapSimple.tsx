@@ -45,21 +45,26 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
 
   // Use centralized color configuration for consistency
 
-  // Determine fill color based on state and regions - restored original nice colors
-  let fillColor = '#ffffff'; // Clean white for available counties
-  let strokeColor = '#6b7280'; // Medium gray stroke
-  let strokeWidth = "0.75";
+  // Determine fill color based on state and regions - matching Study Mode colors
+  let fillColor = region ? getRegionHexColor(region) : '#ffffff'; // Always show region colors like Study Mode
+  let strokeColor = '#ffffff'; // White stroke for clean look
+  let strokeWidth = "1";
+  let fillOpacity = 0.7; // Default opacity for unplaced counties
 
   if (isPlaced) {
     fillColor = '#10b981'; // Green when placed
     strokeColor = '#047857'; // Darker green stroke
     strokeWidth = "1";
+    fillOpacity = 0.98; // Nearly opaque when placed
   } else if (isDragging && isOver) {
     fillColor = '#fde68a'; // Softer yellow when hovering over during drag
     strokeColor = '#f59e0b'; // Amber stroke
     strokeWidth = "1.5";
-  } else if (showRegions && region) {
-    fillColor = getRegionHexColor(region); // Show region color if enabled
+    fillOpacity = 0.9; // More visible when hovering
+  } else if (isHovered) {
+    fillOpacity = 0.9; // Brighten on hover
+    strokeColor = '#FFFFFF';
+    strokeWidth = "2.5";
   }
 
   // Calculate optimal text color based on background
@@ -202,6 +207,7 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
       <path
         d={path}
         fill={fillColor}
+        fillOpacity={fillOpacity}
         stroke={strokeColor}
         strokeWidth={isDragging && isOver ? "1.5" : strokeWidth}
         strokeLinejoin="round"
