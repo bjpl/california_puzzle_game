@@ -505,8 +505,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 <button
                   onClick={() => handleRegionChange('all')}
                   className={`
-                    relative px-3 rounded-full text-xs font-medium
-                    transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center h-6
+                    relative px-3 py-0.5 rounded-full text-xs font-medium leading-none
+                    transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center h-auto
                     ${
                       selectedRegion === 'all'
                         ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md transform scale-105'
@@ -514,9 +514,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     }
                   `}
                 >
-                  <span>All Counties</span>
+                  <span className="leading-none">All Counties</span>
                   <span className={`
-                    ml-1.5 inline-flex items-center justify-center min-w-[20px] h-4 px-1 rounded-full text-[10px] font-bold
+                    ml-1.5 inline-flex items-center justify-center min-w-[20px] px-1 py-px rounded-full text-[10px] font-bold leading-none
                     ${selectedRegion === 'all' ? 'bg-white/20' : 'bg-gray-100'}
                   `}>
                     {counties.length}
@@ -534,8 +534,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       key={region}
                       onClick={() => handleRegionChange(region)}
                       className={`
-                        relative px-3 rounded-full text-xs font-medium
-                        transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center h-6
+                        relative px-3 py-0.5 rounded-full text-xs font-medium leading-none
+                        transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center h-auto
                         ${
                           selectedRegion === region
                             ? `bg-gradient-to-r ${getRegionGradient(region)} text-white shadow-md transform scale-105`
@@ -543,9 +543,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         }
                       `}
                     >
-                      <span>{region}</span>
+                      <span className="leading-none">{region}</span>
                       <span className={`
-                        ml-1.5 inline-flex items-center justify-center min-w-[20px] h-4 px-1 rounded-full text-[10px] font-bold
+                        ml-1.5 inline-flex items-center justify-center min-w-[20px] px-1 py-px rounded-full text-[10px] font-bold leading-none
                         ${selectedRegion === region ? 'bg-white/20' : 'bg-gray-100'}
                       `}>
                         {count}
