@@ -391,66 +391,62 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* Main Header Content */}
           <div className="relative">
-            {/* Compact Top Bar */}
-            <div className="px-4 sm:px-6 py-2 flex flex-col sm:flex-row justify-between items-center gap-2">
-              <div className="flex-1 flex items-center gap-3">
-                <span className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+            {/* Ultra-Compact Top Bar */}
+            <div className="px-4 sm:px-6 py-1 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded bg-white/10 backdrop-blur-sm border border-white/20 text-xs">
                   📚
                 </span>
-                <div>
-                  <h1 className="text-lg sm:text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
-                    California Counties Study Mode
-                  </h1>
-                  <p className="text-blue-100/60 text-xs font-medium hidden sm:block">
-                    Master all 58 counties
-                  </p>
-                </div>
+                <h1 className="text-sm font-bold tracking-tight text-white">
+                  California Counties Study Mode
+                </h1>
+                <span className="hidden sm:inline text-xs text-blue-200/60">
+                  • Master all 58 counties
+                </span>
               </div>
 
-              <div className="flex items-center gap-3">
-                {/* Compact Progress Badge */}
-                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-3 py-1.5">
-                  <div className="flex items-center gap-2">
-                    <div className="relative w-8 h-8">
-                      <svg className="transform -rotate-90 w-8 h-8">
-                        <circle
-                          cx="16"
-                          cy="16"
-                          r="14"
-                          stroke="currentColor"
-                          strokeWidth="2.5"
-                          fill="none"
-                          className="text-white/20"
-                        />
-                        <circle
-                          cx="16"
-                          cy="16"
-                          r="14"
-                          stroke="currentColor"
-                          strokeWidth="2.5"
-                          fill="none"
-                          strokeDasharray={`${(progress.studiedCounties.size / 58) * 88} 88`}
-                          className="text-blue-400 transition-all duration-500"
-                        />
-                      </svg>
-                      <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold">
-                        {Math.round((progress.studiedCounties.size / 58) * 100)}%
-                      </span>
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-semibold">{progress.studiedCounties.size}</span>
-                      <span className="text-blue-200/70">/58</span>
-                    </div>
+              <div className="flex items-center gap-2">
+                {/* Ultra-Compact Progress */}
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg px-2 py-0.5 flex items-center gap-1.5">
+                  <div className="relative w-6 h-6">
+                    <svg className="transform -rotate-90 w-6 h-6">
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        fill="none"
+                        className="text-white/20"
+                      />
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        fill="none"
+                        strokeDasharray={`${(progress.studiedCounties.size / 58) * 63} 63`}
+                        className="text-blue-400 transition-all duration-500"
+                      />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">
+                      {Math.round((progress.studiedCounties.size / 58) * 100)}%
+                    </span>
+                  </div>
+                  <div className="text-xs">
+                    <span className="font-semibold">{progress.studiedCounties.size}</span>
+                    <span className="text-blue-200/70">/58</span>
                   </div>
                 </div>
 
                 {/* Close Button */}
                 <button
                   onClick={onClose}
-                  className="group relative p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-200"
+                  className="p-1 rounded bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all"
                   aria-label="Close Study Mode"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -458,7 +454,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
             </div>
 
             {/* Navigation Tabs - Compact Design */}
-            <div className="px-4 sm:px-6 pb-2">
+            <div className="px-4 sm:px-6 pb-1">
               <nav className="flex gap-1 p-0.5 bg-black/20 backdrop-blur-sm rounded-lg overflow-x-auto">
                 {[
                   { mode: 'explore' as ViewMode, icon: '📚', label: 'Explore' },
