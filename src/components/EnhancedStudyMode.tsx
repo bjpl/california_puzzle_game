@@ -505,7 +505,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 <button
                   onClick={() => handleRegionChange('all')}
                   className={`
-                    relative px-4 py-1.5 rounded-full text-sm font-medium
+                    relative px-4 py-1 rounded-full text-sm font-medium leading-5
                     transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
                     ${
                       selectedRegion === 'all'
@@ -514,9 +514,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     }
                   `}
                 >
-                  <span>All Counties</span>
+                  <span className="inline-block align-middle">All Counties</span>
                   <span className={`
-                    ml-2 inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full text-xs font-bold
+                    ml-2 inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full text-xs font-bold align-middle
                     ${selectedRegion === 'all' ? 'bg-white/20' : 'bg-gray-100'}
                   `}>
                     {counties.length}
@@ -534,7 +534,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       key={region}
                       onClick={() => handleRegionChange(region)}
                       className={`
-                        relative px-4 py-1.5 rounded-full text-sm font-medium
+                        relative px-4 py-1 rounded-full text-sm font-medium leading-5
                         transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
                         ${
                           selectedRegion === region
@@ -543,9 +543,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         }
                       `}
                     >
-                      <span>{region}</span>
+                      <span className="inline-block align-middle">{region}</span>
                       <span className={`
-                        ml-2 inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full text-xs font-bold
+                        ml-2 inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full text-xs font-bold align-middle
                         ${selectedRegion === region ? 'bg-white/20' : 'bg-gray-100'}
                       `}>
                         {count}
