@@ -492,7 +492,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
         {/* Refined Region Filter Bar - Compact & Sticky */}
         <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 shadow-sm flex-shrink-0 sticky top-0 z-40">
-          <div className="px-4 sm:px-6 py-1">
+          <div className="px-4 sm:px-6 py-2">
             <div className="flex items-center gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
               {/* Filter Label */}
               <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap">
@@ -505,8 +505,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 <button
                   onClick={() => handleRegionChange('all')}
                   className={`
-                    relative px-3 py-0.5 rounded-full text-xs font-medium leading-none
-                    transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center h-auto
+                    relative px-4 py-1.5 rounded-full text-sm font-medium
+                    transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
                     ${
                       selectedRegion === 'all'
                         ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md transform scale-105'
@@ -514,9 +514,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     }
                   `}
                 >
-                  <span className="leading-none">All Counties</span>
+                  <span>All Counties</span>
                   <span className={`
-                    ml-1.5 inline-flex items-center justify-center min-w-[20px] px-1 py-px rounded-full text-[10px] font-bold leading-none
+                    ml-2 inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full text-xs font-bold
                     ${selectedRegion === 'all' ? 'bg-white/20' : 'bg-gray-100'}
                   `}>
                     {counties.length}
@@ -534,8 +534,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       key={region}
                       onClick={() => handleRegionChange(region)}
                       className={`
-                        relative px-3 py-0.5 rounded-full text-xs font-medium leading-none
-                        transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center h-auto
+                        relative px-4 py-1.5 rounded-full text-sm font-medium
+                        transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
                         ${
                           selectedRegion === region
                             ? `bg-gradient-to-r ${getRegionGradient(region)} text-white shadow-md transform scale-105`
@@ -543,9 +543,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         }
                       `}
                     >
-                      <span className="leading-none">{region}</span>
+                      <span>{region}</span>
                       <span className={`
-                        ml-1.5 inline-flex items-center justify-center min-w-[20px] px-1 py-px rounded-full text-[10px] font-bold leading-none
+                        ml-2 inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full text-xs font-bold
                         ${selectedRegion === region ? 'bg-white/20' : 'bg-gray-100'}
                       `}>
                         {count}
