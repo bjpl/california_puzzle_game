@@ -279,13 +279,13 @@ export default function StudyModeMap({
               <div className="text-xs text-gray-600 mt-0.5">{getCountyInfo(hoveredCounty)?.region}</div>
             </div>
             {/* Mini county shape preview */}
-            <svg width="28" height="28" viewBox="0 0 450 1100" className="border border-gray-200 rounded bg-gray-50 flex-shrink-0">
+            <svg width="32" height="32" viewBox="0 0 800 900" className="border border-gray-200 rounded bg-gray-50 flex-shrink-0">
               <path
                 d={getCountyInfo(hoveredCounty)?.path}
                 fill={getRegionHexColor(getCountyInfo(hoveredCounty)?.region || '')}
                 fillOpacity="0.8"
                 stroke="#4B5563"
-                strokeWidth="8"
+                strokeWidth="1.5"
               />
             </svg>
           </div>

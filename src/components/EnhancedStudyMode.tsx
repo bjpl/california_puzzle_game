@@ -1101,11 +1101,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 {/* Quiz Summary */}
                 {quizState === 'summary' && (
                   <div className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-6">📊 Quiz Complete!</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-3">📊 Quiz Complete!</h2>
 
                     {/* Score Summary */}
-                    <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-                      <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div className="bg-white rounded-xl shadow-lg p-4 mb-3">
+                      <div className="grid grid-cols-2 gap-4 mb-3">
                         <div>
                           <div className="text-3xl font-bold text-green-600">
                             {questionHistory.filter(q => q.isCorrect).length}
@@ -1121,9 +1121,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       </div>
 
                       {/* Question Review */}
-                      <div className="border-t pt-6">
-                        <h3 className="font-semibold text-gray-700 mb-4">Question Review</h3>
-                        <div className="space-y-4 max-h-96 overflow-y-auto">
+                      <div className="border-t pt-3">
+                        <h3 className="font-semibold text-gray-700 mb-3">Question Review</h3>
+                        <div className="space-y-3 max-h-[450px] overflow-y-auto">
                           {questionHistory.length === 0 ? (
                             <p className="text-gray-500 text-center py-4">No questions answered yet</p>
                           ) : (
