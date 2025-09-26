@@ -379,7 +379,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
   return (
     <div className="fixed inset-0 bg-white z-[9999] flex flex-col h-screen w-screen overflow-hidden">
-        {/* Enhanced Header with Modern Design - Fixed Position */}
+        {/* Enhanced Header with Modern Design - Fixed Position (Hidden in Formation mode) */}
+        {viewMode !== 'formation' && (
         <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white overflow-hidden flex-shrink-0">
           {/* Subtle background pattern */}
           <div className="absolute inset-0 opacity-10">
@@ -491,6 +492,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
             </div>
           </div>
         </div>
+        )}
 
         {/* Refined Region Filter Bar - Sticky with Full Height (Hidden in Formation mode) */}
         {viewMode !== 'formation' && (
@@ -1564,7 +1566,18 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* County Formation Animation Mode - Full Screen Immersive Experience */}
           {viewMode === 'formation' && (
-            <div className="flex-1 h-full overflow-hidden">
+            <div className="flex-1 h-full overflow-hidden relative">
+              {/* Floating Close Button */}
+              <button
+                onClick={onClose}
+                className="absolute top-4 right-4 z-50 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all flex items-center gap-2 text-sm font-medium"
+                aria-label="Return to Menu"
+              >
+                <span>Return to Menu</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
               <CountyFormationAnimation />
             </div>
           )}
