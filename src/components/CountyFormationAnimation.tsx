@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { realCaliforniaCountyShapes } from '../data/californiaCountyBoundaries';
-import { californiaCountiesComplete } from '../data/californiaCountiesComplete';
+import { allCaliforniaCounties } from '../data/californiaCountiesComplete';
 import { getRegionHexColor } from '../config/regionColors';
 
 interface HistoricalEvent {
@@ -34,7 +34,7 @@ export default function CountyFormationAnimation() {
 
   const countiesByYear = React.useMemo(() => {
     const grouped = new Map<number, string[]>();
-    californiaCountiesComplete.forEach(county => {
+    allCaliforniaCounties.forEach(county => {
       const year = county.founded;
       if (!grouped.has(year)) {
         grouped.set(year, []);
@@ -44,11 +44,11 @@ export default function CountyFormationAnimation() {
     return grouped;
   }, []);
 
-  const totalCounties = californiaCountiesComplete.length;
+  const totalCounties = allCaliforniaCounties.length;
   const currentCount = visibleCounties.size;
 
   const getCountyInfo = (countyId: string) => {
-    return californiaCountiesComplete.find(c => c.id === countyId);
+    return allCaliforniaCounties.find(c => c.id === countyId);
   };
 
   const getCountyPath = (countyId: string) => {

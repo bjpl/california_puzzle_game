@@ -10,6 +10,7 @@ import StudyModeMap from './StudyModeMap';
 import CountyShapeDisplay from './CountyShapeDisplay';
 import EducationalContentModal from './EducationalContentModal';
 import CountyDetailsModal from './CountyDetailsModal';
+import CountyFormationAnimation from './CountyFormationAnimation';
 import { getRegionColor } from '../config/regionColors';
 
 interface StudyModeProps {
@@ -23,7 +24,7 @@ interface StudyProgress {
   masteredCounties: Set<string>;
 }
 
-type ViewMode = 'explore' | 'quiz' | 'map' | 'timeline';
+type ViewMode = 'explore' | 'quiz' | 'map' | 'timeline' | 'formation';
 type ContentTab = 'overview' | 'history' | 'economy' | 'culture' | 'geography' | 'memory';
 type QuizState = 'idle' | 'active' | 'summary';
 
@@ -460,7 +461,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                   { mode: 'explore' as ViewMode, icon: '📚', label: 'Explore' },
                   { mode: 'quiz' as ViewMode, icon: '🎯', label: 'Quiz' },
                   { mode: 'map' as ViewMode, icon: '🗺️', label: 'Map' },
-                  { mode: 'timeline' as ViewMode, icon: '📅', label: 'Timeline' }
+                  { mode: 'timeline' as ViewMode, icon: '📅', label: 'Timeline' },
+                  { mode: 'formation' as ViewMode, icon: '🎬', label: 'Formation' }
                 ].map(({ mode, icon, label }) => (
                   <button
                     key={mode}
@@ -1557,6 +1559,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
             </div>
           </div>
         </div>
+
+          {/* County Formation Animation Mode - Full Screen Immersive Experience */}
+          {viewMode === 'formation' && (
+            <div className="flex-1 overflow-hidden">
+              <CountyFormationAnimation />
+            </div>
+          )}
 
       {/* Educational Content Modal */}
       <EducationalContentModal
