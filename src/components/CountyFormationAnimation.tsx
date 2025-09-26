@@ -41,6 +41,7 @@ export default function CountyFormationAnimation() {
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
   const hasAddedCountiesRef = useRef<boolean>(false);
+  const shouldPauseRef = useRef<boolean>(false);
 
   const countiesByYear = React.useMemo(() => {
     const grouped = new Map<number, string[]>();
@@ -110,6 +111,7 @@ export default function CountyFormationAnimation() {
       if (autoPauseEnabled) {
         if (isInitialYear) {
           // For 1850, pause immediately but delay showing Continue button
+          shouldPauseRef.current = true;
           setIsPlaying(false);
           setIsPaused(true);
           setShowContinueButton(false);
@@ -119,6 +121,7 @@ export default function CountyFormationAnimation() {
           setHasShownInitialYear(true);
         } else {
           // For all other years, pause immediately with button
+          shouldPauseRef.current = true;
           setIsPlaying(false);
           setIsPaused(true);
           setShowContinueButton(true);
@@ -134,6 +137,7 @@ export default function CountyFormationAnimation() {
   };
 
   const continueAnimation = () => {
+    shouldPauseRef.current = false;
     setIsPaused(false);
     setIsPlaying(true);
     setShowContinueButton(true);
@@ -168,6 +172,11 @@ export default function CountyFormationAnimation() {
     if (!isPlaying) return;
 
     const animate = () => {
+      // Check if we should pause (synchronous check)
+      if (shouldPauseRef.current) {
+        return; // Stop animation loop
+      }
+
       const now = Date.now();
       const deltaTime = now - lastUpdateRef.current;
       const yearDuration = 1000 / playbackSpeed;
@@ -188,15 +197,25 @@ export default function CountyFormationAnimation() {
         });
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      // Only schedule next frame if we shouldn't pause
+      if (!shouldPauseRef.current) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+      }
     };
+
+    shouldPauseRef.current = false; // Reset pause flag when starting
 
     if (!hasAddedCountiesRef.current) {
       addCountiesForYear(currentYear);
       hasAddedCountiesRef.current = true;
     }
+
     lastUpdateRef.current = Date.now();
-    animationFrameRef.current = requestAnimationFrame(animate);
+
+    // Only start animation if we haven't been paused
+    if (!shouldPauseRef.current) {
+      animationFrameRef.current = requestAnimationFrame(animate);
+    }
 
     return () => {
       if (animationFrameRef.current) {
