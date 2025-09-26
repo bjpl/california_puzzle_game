@@ -216,10 +216,9 @@ export default function CountyFormationAnimation() {
       </div>
 
       {/* Map Display - Maximum Height */}
-      <div className="flex-1 bg-white overflow-hidden">
-        <div className="relative w-full h-full p-4">
+      <div className="flex-1 bg-white overflow-hidden relative">
             {!hasStarted && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10 rounded-xl">
+              <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10">
                 <div className="text-center">
                   <div className="text-6xl mb-4">🗺️</div>
                   <h2 className="text-2xl font-bold text-gray-800 mb-2">
@@ -240,10 +239,11 @@ export default function CountyFormationAnimation() {
 
             <svg
               viewBox="0 0 800 900"
-              className="w-full h-full"
+              className="absolute inset-0 w-full h-full"
               preserveAspectRatio="xMidYMid meet"
+              style={{ display: 'block' }}
             >
-              <rect width="800" height="900" fill="#FAFAFA" />
+              <rect width="800" height="900" fill="#FAFAFA" opacity="1" />
 
               {realCaliforniaCountyShapes.map(countyShape => {
                 const countyInfo = getCountyInfo(countyShape.id) ||
@@ -331,7 +331,6 @@ export default function CountyFormationAnimation() {
                 );
               })()}
             </svg>
-          </div>
         </div>
 
       {/* Controls - Fixed Bottom */}
