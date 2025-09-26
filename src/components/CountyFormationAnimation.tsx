@@ -39,6 +39,7 @@ export default function CountyFormationAnimation() {
 
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
+  const hasAddedCountiesRef = useRef<boolean>(false);
 
   const countiesByYear = React.useMemo(() => {
     const grouped = new Map<number, string[]>();
@@ -141,6 +142,7 @@ export default function CountyFormationAnimation() {
     setVisibleCounties(new Set());
     setRecentlyAdded([]);
     setCurrentYear(1850);
+    hasAddedCountiesRef.current = false;
     setIsPlaying(true);
     if (currentYear >= 1907) {
       resetAnimation();
@@ -175,7 +177,11 @@ export default function CountyFormationAnimation() {
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    addCountiesForYear(currentYear);
+    if (!hasAddedCountiesRef.current) {
+      addCountiesForYear(currentYear);
+      hasAddedCountiesRef.current = true;
+    }
+    lastUpdateRef.current = Date.now();
     animationFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
@@ -183,7 +189,7 @@ export default function CountyFormationAnimation() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isPlaying, playbackSpeed, currentYear]);
+  }, [isPlaying, playbackSpeed]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -556,36 +562,100 @@ export default function CountyFormationAnimation() {
                 const info = getCountyInfo(highlightedCounty);
                 const shape = getCountyPath(highlightedCounty);
                 if (!info || !shape) return null;
+                const education = getCountyEducation(highlightedCounty);
+                const regionColor = getRegionHexColor(info.region);
 
                 return (
                   <g>
+                    <defs>
+                      <filter id="labelShadow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                        <feOffset dx="0" dy="4" result="offsetblur"/>
+                        <feComponentTransfer>
+                          <feFuncA type="linear" slope="0.3"/>
+                        </feComponentTransfer>
+                        <feMerge>
+                          <feMergeNode/>
+                          <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                    </defs>
+
                     <rect
-                      x="400"
-                      y="30"
-                      width="200"
-                      height="60"
-                      rx="8"
+                      x="200"
+                      y="40"
+                      width="400"
+                      height="110"
+                      rx="12"
                       fill="white"
-                      stroke="#D1D5DB"
-                      strokeWidth="2"
-                      filter="drop-shadow(0 4px 6px rgba(0,0,0,0.1))"
+                      stroke={regionColor}
+                      strokeWidth="4"
+                      filter="url(#labelShadow)"
+                      opacity="0.98"
                     />
+
+                    <rect
+                      x="200"
+                      y="40"
+                      width="400"
+                      height="40"
+                      rx="12"
+                      fill={regionColor}
+                      opacity="0.15"
+                    />
+
                     <text
-                      x="500"
-                      y="55"
+                      x="400"
+                      y="68"
                       textAnchor="middle"
-                      className="text-sm font-bold fill-gray-900"
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        fill: '#1F2937'
+                      }}
                     >
-                      {info.name}
+                      {info.name} County
                     </text>
+
                     <text
-                      x="500"
-                      y="75"
+                      x="400"
+                      y="95"
                       textAnchor="middle"
-                      className="text-xs fill-gray-600"
+                      style={{
+                        fontSize: '16px',
+                        fill: '#6B7280'
+                      }}
                     >
                       Founded: {info.founded}
                     </text>
+
+                    <text
+                      x="400"
+                      y="118"
+                      textAnchor="middle"
+                      style={{
+                        fontSize: '14px',
+                        fill: '#9CA3AF',
+                        fontStyle: 'italic'
+                      }}
+                    >
+                      {info.region} Region
+                    </text>
+
+                    <circle
+                      cx="220"
+                      cy="60"
+                      r="8"
+                      fill={regionColor}
+                      opacity="0.8"
+                    />
+                    <circle
+                      cx="580"
+                      cy="60"
+                      r="8"
+                      fill={regionColor}
+                      opacity="0.8"
+                    />
                   </g>
                 );
               })()}
