@@ -138,6 +138,9 @@ export default function CountyFormationAnimation() {
 
   const startAnimation = () => {
     setHasStarted(true);
+    setVisibleCounties(new Set());
+    setRecentlyAdded([]);
+    setCurrentYear(1850);
     setIsPlaying(true);
     if (currentYear >= 1907) {
       resetAnimation();
@@ -510,7 +513,7 @@ export default function CountyFormationAnimation() {
 
                 if (!countyInfo) return null;
 
-                const isVisible = visibleCounties.has(countyInfo.id);
+                const isVisible = hasStarted && visibleCounties.has(countyInfo.id);
                 const isHighlighted = highlightedCounty === countyInfo.id;
                 const isRecent = recentlyAdded.includes(countyInfo.id);
 
