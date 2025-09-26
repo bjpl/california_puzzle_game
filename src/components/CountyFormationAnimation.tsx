@@ -28,6 +28,9 @@ export default function CountyFormationAnimation() {
   const [recentlyAdded, setRecentlyAdded] = useState<string[]>([]);
   const [highlightedCounty, setHighlightedCounty] = useState<string | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
+  const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [showCompletion, setShowCompletion] = useState(false);
 
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
@@ -105,6 +108,8 @@ export default function CountyFormationAnimation() {
           const nextYear = prev + 1;
           if (nextYear > 1907) {
             setIsPlaying(false);
+            setShowCompletion(true);
+            setTimeout(() => setShowCompletion(false), 5000);
             return 1907;
           }
 
@@ -126,6 +131,56 @@ export default function CountyFormationAnimation() {
       }
     };
   }, [isPlaying, playbackSpeed, currentYear]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement) return;
+
+      switch(e.key) {
+        case ' ':
+          e.preventDefault();
+          isPlaying ? setIsPlaying(false) : startAnimation();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          setCurrentYear(prev => Math.max(1850, prev - 1));
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          setCurrentYear(prev => Math.min(1907, prev + 1));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setPlaybackSpeed(prev => prev === 0.5 ? 1 : prev === 1 ? 2 : prev === 2 ? 5 : 5);
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          setPlaybackSpeed(prev => prev === 5 ? 2 : prev === 2 ? 1 : prev === 1 ? 0.5 : 0.5);
+          break;
+        case 'r':
+        case 'R':
+          e.preventDefault();
+          resetAnimation();
+          break;
+        case '1':
+          setPlaybackSpeed(0.5);
+          break;
+        case '2':
+          setPlaybackSpeed(1);
+          break;
+        case '3':
+          setPlaybackSpeed(2);
+          break;
+        case '4':
+          setPlaybackSpeed(5);
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isPlaying, hasStarted]);
 
   const handleScrubberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const year = parseInt(e.target.value);
@@ -220,7 +275,13 @@ export default function CountyFormationAnimation() {
       </div>
 
       {/* Map Display - Maximum Height */}
-      <div className="flex-1 bg-white overflow-hidden relative">
+      <div className="flex-1 bg-white overflow-hidden relative"
+           onMouseMove={(e) => {
+             const rect = e.currentTarget.getBoundingClientRect();
+             setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+           }}
+           onMouseLeave={() => setHoveredCounty(null)}
+      >
             {!hasStarted && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10">
                 <div className="text-center">
@@ -237,9 +298,55 @@ export default function CountyFormationAnimation() {
                   >
                     Begin Journey
                   </button>
+                  <div className="mt-4 text-xs text-gray-500">
+                    💡 Tip: Use Space to play/pause, Arrow keys to navigate
+                  </div>
                 </div>
               </div>
             )}
+
+            {/* Completion Celebration */}
+            {showCompletion && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-500/90 to-purple-600/90 z-20 animate-in fade-in duration-500">
+                <div className="text-center text-white px-8">
+                  <div className="text-7xl mb-4 animate-bounce">🎉</div>
+                  <h2 className="text-4xl font-bold mb-3">
+                    California Complete!
+                  </h2>
+                  <p className="text-xl mb-6">
+                    All 58 counties established by 1907
+                  </p>
+                  <p className="text-sm text-blue-100">
+                    From 27 original counties in 1850 to the final county, Imperial, in 1907
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Hover Tooltip */}
+            {hoveredCounty && visibleCounties.has(hoveredCounty) && (() => {
+              const info = getCountyInfo(hoveredCounty);
+              if (!info) return null;
+              return (
+                <div
+                  className="absolute z-30 pointer-events-none"
+                  style={{
+                    left: Math.min(mousePosition.x + 15, window.innerWidth - 200),
+                    top: Math.max(mousePosition.y - 60, 10)
+                  }}
+                >
+                  <div className="bg-gray-900 text-white px-3 py-2 rounded-lg shadow-xl text-sm max-w-[200px]">
+                    <div className="font-bold">{info.name}</div>
+                    <div className="text-xs text-gray-300 mt-1">
+                      Founded: {info.founded}
+                    </div>
+                    <div className="text-xs text-gray-300">
+                      Region: {info.region}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             <svg
               viewBox="0 0 800 900"
@@ -284,13 +391,11 @@ export default function CountyFormationAnimation() {
                       }}
                       onMouseEnter={() => {
                         if (isVisible) {
-                          setHighlightedCounty(countyInfo.id);
+                          setHoveredCounty(countyInfo.id);
                         }
                       }}
                       onMouseLeave={() => {
-                        if (!recentlyAdded.includes(countyInfo.id)) {
-                          setHighlightedCounty(null);
-                        }
+                        setHoveredCounty(null);
                       }}
                     />
                   </g>
@@ -414,6 +519,26 @@ export default function CountyFormationAnimation() {
           </div>
 
           <div className="relative">
+            {/* Timeline markers showing years with formations */}
+            <div className="relative w-full h-1 mb-1">
+              {Array.from(countiesByYear.keys()).map(year => {
+                const position = ((year - 1850) / 57) * 100;
+                const count = countiesByYear.get(year)?.length || 0;
+                return (
+                  <div
+                    key={year}
+                    className="absolute w-0.5 bg-blue-400 rounded-full"
+                    style={{
+                      left: `${position}%`,
+                      height: year === 1850 ? '12px' : count > 2 ? '8px' : '6px',
+                      bottom: 0,
+                      transform: 'translateX(-50%)'
+                    }}
+                    title={`${year}: ${count} ${count === 1 ? 'county' : 'counties'}`}
+                  />
+                );
+              })}
+            </div>
             <input
               type="range"
               min="1850"
@@ -427,9 +552,22 @@ export default function CountyFormationAnimation() {
             />
             <div className="flex justify-between mt-1 text-xs text-gray-500">
               <span>1850</span>
-              <span>1880</span>
+              <span className="text-blue-600 font-semibold">{currentYear}</span>
               <span>1907</span>
             </div>
+          </div>
+
+          {/* Keyboard shortcuts hint */}
+          <div className="mt-2 text-center text-xs text-gray-400">
+            <span className="inline-flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600">Space</kbd> Play/Pause
+              <span className="mx-1">•</span>
+              <kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600">←→</kbd> Navigate
+              <span className="mx-1">•</span>
+              <kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600">1-4</kbd> Speed
+              <span className="mx-1">•</span>
+              <kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600">R</kbd> Reset
+            </span>
           </div>
         </div>
       </div>
