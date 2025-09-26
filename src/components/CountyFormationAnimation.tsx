@@ -179,39 +179,43 @@ export default function CountyFormationAnimation() {
               </div>
             </div>
 
-            {currentEvent && (
-              <div className="bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-2">
-                <span className="text-lg">{currentEvent.icon}</span>
-                <div>
-                  <div className="font-semibold text-amber-900 text-xs">
-                    {currentEvent.label}
-                  </div>
-                  <div className="text-xs text-amber-700">
-                    {currentEvent.description}
+            <div className="min-w-[280px] min-h-[52px]">
+              {currentEvent && (
+                <div className="bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-2">
+                  <span className="text-lg">{currentEvent.icon}</span>
+                  <div>
+                    <div className="font-semibold text-amber-900 text-xs">
+                      {currentEvent.label}
+                    </div>
+                    <div className="text-xs text-amber-700">
+                      {currentEvent.description}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
-          {countiesAddedThisYear.length > 0 && (
-            <div className="mt-2 flex items-center gap-2">
-              <span className="text-xs font-semibold text-green-800">New:</span>
-              <div className="flex flex-wrap gap-1.5">
-                {countiesAddedThisYear.map(id => {
-                  const info = getCountyInfo(id);
-                  return (
-                    <span
-                      key={id}
-                      className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs font-medium"
-                    >
-                      {info?.name}
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <div className="mt-2 flex items-center gap-2 min-h-[28px]">
+            {countiesAddedThisYear.length > 0 && (
+              <>
+                <span className="text-xs font-semibold text-green-800">New:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {countiesAddedThisYear.map(id => {
+                    const info = getCountyInfo(id);
+                    return (
+                      <span
+                        key={id}
+                        className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs font-medium"
+                      >
+                        {info?.name}
+                      </span>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
