@@ -11,11 +11,12 @@ interface HistoricalEvent {
 }
 
 const HISTORICAL_EVENTS: HistoricalEvent[] = [
-  { year: 1850, label: 'California Statehood', icon: '🌟', description: '27 original counties established' },
-  { year: 1849, label: 'Gold Rush Begins', icon: '⛏️', description: 'Mass migration to California' },
-  { year: 1861, label: 'Civil War Era', icon: '🎖️', description: 'Nation divided, westward expansion continues' },
-  { year: 1906, label: 'San Francisco Earthquake', icon: '🌋', description: 'Major disaster reshapes Bay Area' },
-  { year: 1907, label: 'Final County', icon: '🏜️', description: 'Imperial County completes California' }
+  { year: 1850, label: 'California Statehood', icon: '🌟', description: 'California joins the Union as the 31st state. The original 27 counties form the foundation of the state\'s governance.' },
+  { year: 1849, label: 'Gold Rush Peak', icon: '⛏️', description: 'Over 300,000 people flood to California seeking fortune, transforming the territory overnight.' },
+  { year: 1861, label: 'Civil War Begins', icon: '🎖️', description: 'Despite being far from the conflict, California remains loyal to the Union and continues to grow westward.' },
+  { year: 1869, label: 'Transcontinental Railroad', icon: '🚂', description: 'The railroad connects California to the rest of the nation, accelerating development and settlement.' },
+  { year: 1906, label: 'Great Earthquake', icon: '🌋', description: 'A devastating 7.9 earthquake destroys much of San Francisco, but the city rebuilds stronger.' },
+  { year: 1907, label: 'California Complete', icon: '🏜️', description: 'Imperial County becomes the 58th and final county, completing California\'s geographic organization.' }
 ];
 
 type PlaybackSpeed = 0.5 | 1 | 2 | 5;
@@ -222,54 +223,123 @@ export default function CountyFormationAnimation() {
           </h1>
         </div>
 
-        {/* Compact Year Display & Info Bar */}
-        <div className="bg-white border-b border-gray-200 px-4 py-2">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-6">
-              <div className="text-4xl font-bold text-blue-600">
+        {/* Enhanced Info Bar with Rich Content */}
+        <div className="bg-gradient-to-r from-white to-gray-50 border-b border-gray-200 px-4 py-3">
+          <div className="flex items-start gap-4">
+            {/* Year Display */}
+            <div className="flex-shrink-0">
+              <div className="text-4xl font-bold text-blue-600 leading-none">
                 {currentYear}
               </div>
-              <div className="text-sm text-gray-600">
-                <span className="font-semibold">{currentCount}</span> / {totalCounties} counties
+              <div className="text-xs text-gray-500 mt-1">
+                <span className="font-bold text-blue-600">{currentCount}</span>/{totalCounties}
               </div>
             </div>
 
-            <div className="min-w-[280px] min-h-[52px]">
-              {currentEvent && (
-                <div className="bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-2">
-                  <span className="text-lg">{currentEvent.icon}</span>
-                  <div>
-                    <div className="font-semibold text-amber-900 text-xs">
-                      {currentEvent.label}
+            {/* Main Content Area - County Spotlight or Historical Event */}
+            <div className="flex-1 min-h-[60px]">
+              {countiesAddedThisYear.length > 0 ? (
+                /* County Formation Spotlight */
+                countiesAddedThisYear.length === 1 ? (
+                  /* Single County - Rich Display */
+                  (() => {
+                    const county = getCountyInfo(countiesAddedThisYear[0]);
+                    if (!county) return null;
+                    return (
+                      <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 rounded-r-lg px-3 py-2">
+                        <div className="flex items-start gap-3">
+                          <div className="text-2xl flex-shrink-0">✨</div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-baseline gap-2 mb-1">
+                              <h3 className="font-bold text-emerald-900 text-sm">
+                                {county.name} County Founded
+                              </h3>
+                              <span className="text-xs text-emerald-600">
+                                {county.region}
+                              </span>
+                            </div>
+                            <p className="text-xs text-emerald-800 leading-relaxed mb-1">
+                              {county.funFact}
+                            </p>
+                            <div className="flex gap-3 text-xs text-emerald-600">
+                              <span>👥 {(county.population / 1000).toFixed(0)}k</span>
+                              <span>📍 {county.capital}</span>
+                              <span>📏 {county.area.toLocaleString()} mi²</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()
+                ) : currentYear === 1850 && countiesAddedThisYear.length === 27 ? (
+                  /* Special 1850 "Big Bang" Display */
+                  <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-l-4 border-purple-500 rounded-r-lg px-3 py-2">
+                    <div className="flex items-start gap-2 mb-2">
+                      <span className="text-2xl">🌟</span>
+                      <div>
+                        <h3 className="font-bold text-purple-900 text-sm">
+                          California Statehood: The Original 27
+                        </h3>
+                        <p className="text-xs text-purple-700 italic mt-0.5">
+                          September 9, 1850 — California becomes the 31st state with 27 founding counties
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-xs text-amber-700">
-                      {currentEvent.description}
+                    <div className="grid grid-cols-3 gap-x-3 gap-y-0.5 text-xs text-purple-800 ml-9">
+                      {countiesAddedThisYear.slice(0, 27).map(id => {
+                        const county = getCountyInfo(id);
+                        return county ? <span key={id} className="font-medium">{county.name}</span> : null;
+                      })}
                     </div>
                   </div>
-                </div>
+                ) : (
+                  /* Multiple Counties - Compact List with Fun Facts */
+                  <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 rounded-r-lg px-3 py-2">
+                    <div className="flex items-start gap-2 mb-1">
+                      <span className="text-lg">✨</span>
+                      <h3 className="font-bold text-emerald-900 text-sm">
+                        {countiesAddedThisYear.length} Counties Founded This Year
+                      </h3>
+                    </div>
+                    <div className="space-y-1 ml-7">
+                      {countiesAddedThisYear.map(id => {
+                        const county = getCountyInfo(id);
+                        if (!county) return null;
+                        return (
+                          <div key={id} className="text-xs">
+                            <span className="font-semibold text-emerald-900">{county.name}</span>
+                            <span className="text-emerald-700"> — {county.funFact}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )
+              ) : (
+                /* No Counties This Year - Show Historical Event or Context */
+                currentEvent ? (
+                  <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-lg px-3 py-2">
+                    <div className="flex items-start gap-3">
+                      <span className="text-2xl flex-shrink-0">{currentEvent.icon}</span>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-amber-900 text-sm mb-1">
+                          {currentEvent.label}
+                        </h3>
+                        <p className="text-xs text-amber-700 leading-relaxed">
+                          {currentEvent.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-blue-50 border-l-4 border-blue-300 rounded-r-lg px-3 py-2">
+                    <p className="text-xs text-blue-700 italic">
+                      No new counties established in {currentYear}
+                    </p>
+                  </div>
+                )
               )}
             </div>
-          </div>
-
-          <div className="mt-2 flex items-center gap-2 min-h-[28px]">
-            {countiesAddedThisYear.length > 0 && (
-              <>
-                <span className="text-xs font-semibold text-green-800">New:</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {countiesAddedThisYear.map(id => {
-                    const info = getCountyInfo(id);
-                    return (
-                      <span
-                        key={id}
-                        className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs font-medium"
-                      >
-                        {info?.name}
-                      </span>
-                    );
-                  })}
-                </div>
-              </>
-            )}
           </div>
         </div>
       </div>
