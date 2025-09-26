@@ -563,7 +563,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
         )}
 
         {/* Main Content Area - Full Height */}
-        <div className="flex-1 flex overflow-hidden bg-gray-50">
+        <div className={`flex-1 flex overflow-hidden ${viewMode === 'formation' ? '' : 'bg-gray-50'}`}>
           {viewMode === 'explore' && (
             <>
               {/* County List - Optimized Width */}
