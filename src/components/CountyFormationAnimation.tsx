@@ -158,8 +158,8 @@ export default function CountyFormationAnimation() {
   const countiesAddedThisYear = countiesByYear.get(currentYear) || [];
 
   return (
-    <div className="w-full h-full bg-gradient-to-b from-blue-50 to-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 py-6">
+    <div className="w-full h-full bg-gradient-to-b from-blue-50 to-white overflow-y-auto">
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 sm:py-6">
 
         {/* Header */}
         <div className="text-center mb-4">
@@ -221,8 +221,8 @@ export default function CountyFormationAnimation() {
         </div>
 
         {/* Map Display */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
-          <div className="relative w-full" style={{ height: '500px' }}>
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4">
+          <div className="relative w-full" style={{ height: '400px', minHeight: '350px', maxHeight: '600px' }}>
             {!hasStarted && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10 rounded-xl">
                 <div className="text-center">
