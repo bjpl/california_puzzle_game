@@ -37,11 +37,18 @@ export default function CountyFormationAnimation() {
   const [autoPauseEnabled, setAutoPauseEnabled] = useState(true);
   const [hasShownInitialYear, setHasShownInitialYear] = useState(false);
   const [showContinueButton, setShowContinueButton] = useState(true);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
 
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
   const hasAddedCountiesRef = useRef<boolean>(false);
   const shouldPauseRef = useRef<boolean>(false);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const isPanning = useRef(false);
+  const startPan = useRef({ x: 0, y: 0 });
+  const startMouse = useRef({ x: 0, y: 0 });
+  const hasPanned = useRef(false);
 
   const countiesByYear = React.useMemo(() => {
     const grouped = new Map<number, string[]>();
@@ -153,6 +160,56 @@ export default function CountyFormationAnimation() {
     setIsPaused(false);
     setHasShownInitialYear(false);
     setShowContinueButton(true);
+  };
+
+  const resetView = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const delta = e.deltaY * -0.001;
+    const newZoom = Math.min(Math.max(0.5, zoom + delta), 3);
+    setZoom(newZoom);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (e.button !== 0) return;
+    isPanning.current = true;
+    startPan.current = { ...pan };
+    startMouse.current = { x: e.clientX, y: e.clientY };
+    if (svgRef.current) {
+      svgRef.current.style.cursor = 'grabbing';
+    }
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!isPanning.current) return;
+    const dx = (e.clientX - startMouse.current.x) / zoom;
+    const dy = (e.clientY - startMouse.current.y) / zoom;
+
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+      hasPanned.current = true;
+    }
+
+    setPan({
+      x: startPan.current.x + dx,
+      y: startPan.current.y + dy
+    });
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<SVGSVGElement>) => {
+    isPanning.current = false;
+    if (svgRef.current) {
+      svgRef.current.style.cursor = 'grab';
+    }
+
+    setTimeout(() => {
+      hasPanned.current = false;
+    }, 100);
   };
 
   const startAnimation = () => {
@@ -537,13 +594,56 @@ export default function CountyFormationAnimation() {
               );
             })()}
 
+            {/* Zoom Controls */}
+            <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
+              <button
+                onClick={() => setZoom(Math.min(zoom + 0.25, 3))}
+                className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
+                title="Zoom In"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setZoom(Math.max(zoom - 0.25, 0.5))}
+                className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
+                title="Zoom Out"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
+                </svg>
+              </button>
+              <button
+                onClick={resetView}
+                className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
+                title="Reset View"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+            </div>
+
             <svg
+              ref={svgRef}
               viewBox="0 0 800 900"
               className="absolute inset-0 w-full h-full"
               preserveAspectRatio="xMidYMid meet"
-              style={{ display: 'block' }}
+              style={{
+                display: 'block',
+                cursor: isPanning.current ? 'grabbing' : 'grab'
+              }}
+              onWheel={handleWheel}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
             >
               <rect width="800" height="900" fill="#FAFAFA" opacity="1" />
+
+              {/* Apply zoom and pan transformation */}
+              <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${450 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
 
               {realCaliforniaCountyShapes.map(countyShape => {
                 const countyInfo = getCountyInfo(countyShape.id) ||
@@ -590,6 +690,7 @@ export default function CountyFormationAnimation() {
                   </g>
                 );
               })}
+              </g>
 
             </svg>
         </div>
