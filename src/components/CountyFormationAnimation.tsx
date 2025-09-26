@@ -36,6 +36,7 @@ export default function CountyFormationAnimation() {
   const [isPaused, setIsPaused] = useState(false);
   const [autoPauseEnabled, setAutoPauseEnabled] = useState(true);
   const [hasShownInitialYear, setHasShownInitialYear] = useState(false);
+  const [showContinueButton, setShowContinueButton] = useState(true);
 
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
@@ -108,16 +109,19 @@ export default function CountyFormationAnimation() {
 
       if (autoPauseEnabled) {
         if (isInitialYear) {
-          // For 1850, pause after 2.5 seconds to let counties appear dramatically
+          // For 1850, pause immediately but delay showing Continue button
+          setIsPlaying(false);
+          setIsPaused(true);
+          setShowContinueButton(false);
           setTimeout(() => {
-            setIsPlaying(false);
-            setIsPaused(true);
+            setShowContinueButton(true);
           }, 2500);
           setHasShownInitialYear(true);
         } else {
-          // For all other years, pause immediately
+          // For all other years, pause immediately with button
           setIsPlaying(false);
           setIsPaused(true);
+          setShowContinueButton(true);
         }
       } else if (isInitialYear) {
         setHasShownInitialYear(true);
@@ -132,6 +136,7 @@ export default function CountyFormationAnimation() {
   const continueAnimation = () => {
     setIsPaused(false);
     setIsPlaying(true);
+    setShowContinueButton(true);
   };
 
   const resetAnimation = () => {
@@ -143,6 +148,7 @@ export default function CountyFormationAnimation() {
     setHasStarted(false);
     setIsPaused(false);
     setHasShownInitialYear(false);
+    setShowContinueButton(true);
   };
 
   const startAnimation = () => {
@@ -420,7 +426,7 @@ export default function CountyFormationAnimation() {
           </div>
 
           {/* Auto-Pause Continue Prompt - Positioned in Info Bar */}
-          {isPaused && countiesAddedThisYear.length > 0 && (
+          {isPaused && countiesAddedThisYear.length > 0 && showContinueButton && (
             <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 animate-in fade-in slide-in-from-right-4 duration-300">
               <button
                 onClick={continueAnimation}
