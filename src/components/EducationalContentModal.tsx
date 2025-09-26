@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import CountyShapeDisplay from './CountyShapeDisplay';
+import { studyModeTheme } from '../styles/studyModeTheme';
 
 interface EducationalContentModalProps {
   isOpen: boolean;
@@ -107,47 +108,76 @@ export default function EducationalContentModal({
         <div className="overflow-y-auto p-6" style={{ maxHeight: 'calc(90vh - 280px)' }}>
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              {/* Key Facts Grid */}
+              {/* Key Facts Grid - Using consistent theme */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
-                  <h4 className="font-bold text-blue-900 mb-2 flex items-center gap-2">
-                    <span>🏛️</span> County Seat
+                {/* County Seat - Governance theme */}
+                <div className="rounded-xl p-4 border" style={{
+                  backgroundColor: studyModeTheme.infoCards.governance.bg,
+                  borderColor: studyModeTheme.infoCards.governance.border
+                }}>
+                  <h4 className="font-semibold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider" style={{
+                    color: studyModeTheme.infoCards.governance.label
+                  }}>
+                    <span>{studyModeTheme.infoCards.governance.icon}</span> County Seat
                   </h4>
-                  <p className="text-xl font-semibold text-blue-700">
+                  <p className="text-2xl font-bold" style={{
+                    color: studyModeTheme.infoCards.governance.text
+                  }}>
                     {county.capital || county.countySeat || 'N/A'}
                   </p>
                 </div>
 
-                <div className="bg-green-50 rounded-xl p-4 border border-green-200">
-                  <h4 className="font-bold text-green-900 mb-2 flex items-center gap-2">
-                    <span>📅</span> Established
+                {/* Established - Historical theme */}
+                <div className="rounded-xl p-4 border" style={{
+                  backgroundColor: studyModeTheme.infoCards.historical.bg,
+                  borderColor: studyModeTheme.infoCards.historical.border
+                }}>
+                  <h4 className="font-semibold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider" style={{
+                    color: studyModeTheme.infoCards.historical.label
+                  }}>
+                    <span>{studyModeTheme.infoCards.historical.icon}</span> Established
                   </h4>
-                  <p className="text-xl font-semibold text-green-700">
+                  <p className="text-2xl font-bold" style={{
+                    color: studyModeTheme.infoCards.historical.text
+                  }}>
                     {county.founded || county.established || 'Unknown'}
                   </p>
                 </div>
 
-                <div className="bg-purple-50 rounded-xl p-4 border border-purple-200">
-                  <h4 className="font-bold text-purple-900 mb-2 flex items-center gap-2">
-                    <span>🌟</span> Known For
+                {/* Known For - Features theme */}
+                <div className="rounded-xl p-4 border" style={{
+                  backgroundColor: studyModeTheme.infoCards.features.bg,
+                  borderColor: studyModeTheme.infoCards.features.border
+                }}>
+                  <h4 className="font-semibold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider" style={{
+                    color: studyModeTheme.infoCards.features.label
+                  }}>
+                    <span>{studyModeTheme.infoCards.features.icon}</span> Known For
                   </h4>
-                  <p className="text-sm text-purple-700">
+                  <p className="text-sm leading-relaxed" style={{
+                    color: studyModeTheme.infoCards.features.text
+                  }}>
                     {county.knownFor || educationContent?.uniqueFeatures || 'Rich history and culture'}
                   </p>
                 </div>
               </div>
 
-              {/* Fun Facts */}
+              {/* Fun Facts - Using neutral theme for better readability */}
               {county.funFacts && county.funFacts.length > 0 && (
-                <div className="bg-amber-50 rounded-xl p-5 border border-amber-200">
-                  <h3 className="font-bold text-amber-900 mb-3 text-lg flex items-center gap-2">
+                <div className="rounded-xl p-5 border" style={{
+                  backgroundColor: studyModeTheme.neutral[50],
+                  borderColor: studyModeTheme.neutral[200]
+                }}>
+                  <h3 className="font-bold mb-3 text-lg flex items-center gap-2" style={{
+                    color: studyModeTheme.neutral[800]
+                  }}>
                     <span>✨</span> Interesting Facts
                   </h3>
                   <div className="grid gap-3">
                     {county.funFacts.map((fact: string, idx: number) => (
                       <div key={idx} className="flex gap-3">
-                        <span className="text-amber-600 font-bold">{idx + 1}.</span>
-                        <p className="text-amber-800">{fact}</p>
+                        <span className="font-bold" style={{ color: studyModeTheme.primary[600] }}>{idx + 1}.</span>
+                        <p style={{ color: studyModeTheme.neutral[700] }}>{fact}</p>
                       </div>
                     ))}
                   </div>
@@ -157,13 +187,22 @@ export default function EducationalContentModal({
               {/* Natural Features & Landmarks */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {county.naturalFeatures && county.naturalFeatures.length > 0 && (
-                  <div className="bg-teal-50 rounded-xl p-5 border border-teal-200">
-                    <h4 className="font-bold text-teal-900 mb-3 flex items-center gap-2">
-                      <span>🏔️</span> Natural Features
+                  <div className="rounded-xl p-5 border" style={{
+                    backgroundColor: studyModeTheme.infoCards.geography.bg,
+                    borderColor: studyModeTheme.infoCards.geography.border
+                  }}>
+                    <h4 className="font-bold mb-3 flex items-center gap-2" style={{
+                      color: studyModeTheme.infoCards.geography.text
+                    }}>
+                      <span>{studyModeTheme.infoCards.geography.icon}</span> Natural Features
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {county.naturalFeatures.map((feature: string, idx: number) => (
-                        <span key={idx} className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm">
+                        <span key={idx} className="px-3 py-1 rounded-full text-sm" style={{
+                          backgroundColor: studyModeTheme.semantic.success.bg,
+                          color: studyModeTheme.semantic.success.text,
+                          border: `1px solid ${studyModeTheme.semantic.success.border}`
+                        }}>
                           {feature}
                         </span>
                       ))}
@@ -172,13 +211,22 @@ export default function EducationalContentModal({
                 )}
 
                 {county.culturalLandmarks && county.culturalLandmarks.length > 0 && (
-                  <div className="bg-pink-50 rounded-xl p-5 border border-pink-200">
-                    <h4 className="font-bold text-pink-900 mb-3 flex items-center gap-2">
+                  <div className="rounded-xl p-5 border" style={{
+                    backgroundColor: studyModeTheme.infoCards.features.bg,
+                    borderColor: studyModeTheme.infoCards.features.border
+                  }}>
+                    <h4 className="font-bold mb-3 flex items-center gap-2" style={{
+                      color: studyModeTheme.infoCards.features.text
+                    }}>
                       <span>🏛️</span> Cultural Landmarks
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {county.culturalLandmarks.map((landmark: string, idx: number) => (
-                        <span key={idx} className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm">
+                        <span key={idx} className="px-3 py-1 rounded-full text-sm" style={{
+                          backgroundColor: studyModeTheme.semantic.cultural.bg,
+                          color: studyModeTheme.semantic.cultural.text,
+                          border: `1px solid ${studyModeTheme.semantic.cultural.border}`
+                        }}>
                           {landmark}
                         </span>
                       ))}
@@ -187,16 +235,23 @@ export default function EducationalContentModal({
                 )}
               </div>
 
-              {/* Economic Focus */}
+              {/* Economic Focus - Using economy theme */}
               {county.economicFocus && county.economicFocus.length > 0 && (
-                <div className="bg-indigo-50 rounded-xl p-5 border border-indigo-200">
-                  <h4 className="font-bold text-indigo-900 mb-3 flex items-center gap-2">
-                    <span>💼</span> Economic Focus Areas
+                <div className="rounded-xl p-5 border" style={{
+                  backgroundColor: studyModeTheme.infoCards.economy.bg,
+                  borderColor: studyModeTheme.infoCards.economy.border
+                }}>
+                  <h4 className="font-bold mb-3 flex items-center gap-2" style={{
+                    color: studyModeTheme.infoCards.economy.text
+                  }}>
+                    <span>{studyModeTheme.infoCards.economy.icon}</span> Economic Focus Areas
                   </h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {county.economicFocus.map((focus: string, idx: number) => (
-                      <div key={idx} className="bg-white p-3 rounded-lg border border-indigo-200">
-                        <span className="text-indigo-700 font-medium">{focus}</span>
+                      <div key={idx} className="bg-white p-3 rounded-lg border" style={{
+                        borderColor: studyModeTheme.semantic.warning.border
+                      }}>
+                        <span className="font-medium" style={{ color: studyModeTheme.infoCards.economy.text }}>{focus}</span>
                       </div>
                     ))}
                   </div>
