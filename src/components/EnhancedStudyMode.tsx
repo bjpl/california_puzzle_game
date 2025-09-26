@@ -1123,24 +1123,79 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                       {/* Question Review */}
                       <div className="border-t pt-6">
                         <h3 className="font-semibold text-gray-700 mb-4">Question Review</h3>
-                        <div className="space-y-2 max-h-60 overflow-y-auto">
-                          {questionHistory.map((result, idx) => (
-                            <div
-                              key={idx}
-                              className={`flex items-center justify-between p-3 rounded-lg ${
-                                result.isCorrect ? 'bg-green-50' : 'bg-red-50'
-                              }`}
-                            >
-                              <span className="text-sm">
-                                Q{idx + 1}: {result.question.countyName} - {result.question.type}
-                              </span>
-                              <span className={`text-sm font-medium ${
-                                result.isCorrect ? 'text-green-600' : 'text-red-600'
-                              }`}>
-                                {result.isCorrect ? '✓' : '✗'}
-                              </span>
-                            </div>
-                          ))}
+                        <div className="space-y-4 max-h-96 overflow-y-auto">
+                          {questionHistory.length === 0 ? (
+                            <p className="text-gray-500 text-center py-4">No questions answered yet</p>
+                          ) : (
+                            questionHistory.map((result, idx) => (
+                              <div
+                                key={idx}
+                                className={`p-4 rounded-lg border ${
+                                  result.isCorrect
+                                    ? 'bg-green-50 border-green-200'
+                                    : 'bg-red-50 border-red-200'
+                                }`}
+                              >
+                                <div className="flex items-start justify-between mb-2">
+                                  <div className="flex-1">
+                                    <span className="font-semibold text-sm text-gray-700">
+                                      Question {idx + 1}
+                                    </span>
+                                    <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                      result.isCorrect
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-red-100 text-red-800'
+                                    }`}>
+                                      {result.isCorrect ? 'Correct' : 'Incorrect'}
+                                    </span>
+                                  </div>
+                                  <span className={`text-2xl ${
+                                    result.isCorrect ? 'text-green-600' : 'text-red-600'
+                                  }`}>
+                                    {result.isCorrect ? '✓' : '✗'}
+                                  </span>
+                                </div>
+
+                                <div className="space-y-2">
+                                  <p className="text-sm text-gray-800 font-medium">
+                                    {result.question.question}
+                                  </p>
+
+                                  <div className="grid grid-cols-2 gap-2 mt-2">
+                                    {result.question.options.map((option, optIdx) => {
+                                      const isUserAnswer = option === result.userAnswer;
+                                      const isCorrectAnswer = option === result.question.correctAnswer;
+
+                                      return (
+                                        <div
+                                          key={optIdx}
+                                          className={`px-3 py-2 rounded text-xs ${
+                                            isCorrectAnswer
+                                              ? 'bg-green-200 text-green-800 font-semibold'
+                                              : isUserAnswer && !result.isCorrect
+                                              ? 'bg-red-200 text-red-800 line-through'
+                                              : 'bg-gray-100 text-gray-600'
+                                          }`}
+                                        >
+                                          {option}
+                                          {isCorrectAnswer && ' ✓'}
+                                          {isUserAnswer && !isCorrectAnswer && ' (Your answer)'}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+
+                                  {result.question.explanation && !result.isCorrect && (
+                                    <div className="mt-2 p-2 bg-blue-50 rounded">
+                                      <p className="text-xs text-blue-800">
+                                        <strong>Explanation:</strong> {result.question.explanation}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1148,7 +1203,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                     {/* Action Buttons */}
                     <div className="flex gap-4 justify-center">
                       <button
-                        onClick={startQuiz}
+                        onClick={() => startQuiz(10)}
                         className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600"
                       >
                         New Quiz
