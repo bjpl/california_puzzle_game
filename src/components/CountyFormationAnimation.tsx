@@ -462,14 +462,16 @@ export default function CountyFormationAnimation() {
         </div>
       </div>
 
-      {/* Map Display - Maximum Height */}
-      <div className="flex-1 bg-white overflow-hidden relative"
-           onMouseMove={(e) => {
-             const rect = e.currentTarget.getBoundingClientRect();
-             setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-           }}
-           onMouseLeave={() => setHoveredCounty(null)}
-      >
+      {/* Map Display with Side Panel - Maximum Height */}
+      <div className="flex-1 bg-gradient-to-br from-gray-50 to-white overflow-hidden relative flex">
+        {/* Main Map Container */}
+        <div className="flex-1 relative"
+             onMouseMove={(e) => {
+               const rect = e.currentTarget.getBoundingClientRect();
+               setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+             }}
+             onMouseLeave={() => setHoveredCounty(null)}
+        >
             {!hasStarted && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10">
                 <div className="text-center">
@@ -694,6 +696,133 @@ export default function CountyFormationAnimation() {
               })()}
             </svg>
         </div>
+
+        {/* Elegant Side Panel - Rich County Information */}
+        {highlightedCounty && (() => {
+          const info = getCountyInfo(highlightedCounty);
+          if (!info) return null;
+          const education = getCountyEducation(highlightedCounty);
+          const foundingStory = getFoundingStory(highlightedCounty);
+          const regionColor = getRegionHexColor(info.region);
+
+          return (
+            <div className="w-96 bg-white border-l-4 shadow-2xl overflow-y-auto animate-in slide-in-from-right duration-500"
+                 style={{ borderLeftColor: regionColor }}>
+              {/* Header with Region Color */}
+              <div className="p-6 bg-gradient-to-br from-gray-50 to-white border-b-2 border-gray-100"
+                   style={{
+                     background: `linear-gradient(135deg, ${regionColor}15, white)`
+                   }}>
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg"
+                       style={{ backgroundColor: `${regionColor}30` }}>
+                    📍
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                      {info.name}
+                    </h2>
+                    <p className="text-sm font-medium" style={{ color: regionColor }}>
+                      {info.region} Region
+                    </p>
+                  </div>
+                </div>
+
+                {/* Key Stats */}
+                <div className="grid grid-cols-2 gap-3 mt-4">
+                  <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                    <div className="text-xs text-gray-500 mb-1">Founded</div>
+                    <div className="text-xl font-bold text-gray-900">{info.founded}</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                    <div className="text-xs text-gray-500 mb-1">Population</div>
+                    <div className="text-xl font-bold text-gray-900">
+                      {(info.population / 1000).toFixed(0)}k
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Founding Story */}
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-2xl">✨</span>
+                  <h3 className="text-lg font-bold text-gray-900">Founding Story</h3>
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {foundingStory || education?.historicalContext.substring(0, 300) + '...' || info.funFact}
+                </p>
+              </div>
+
+              {/* Additional Details */}
+              {education && (
+                <div className="p-6 space-y-4">
+                  {/* County Seat */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-lg">🏛️</span>
+                      <h4 className="text-sm font-bold text-gray-900">County Seat</h4>
+                    </div>
+                    <p className="text-sm text-gray-700 ml-7">{info.capital}</p>
+                  </div>
+
+                  {/* Established Date */}
+                  {education.specificData.established && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">📅</span>
+                        <h4 className="text-sm font-bold text-gray-900">Official Establishment</h4>
+                      </div>
+                      <p className="text-sm text-gray-700 ml-7">{education.specificData.established}</p>
+                    </div>
+                  )}
+
+                  {/* Indigenous History */}
+                  {education.specificData.indigenousHistory && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">🌾</span>
+                        <h4 className="text-sm font-bold text-gray-900">Indigenous Heritage</h4>
+                      </div>
+                      <p className="text-sm text-gray-700 ml-7 leading-relaxed">
+                        {education.specificData.indigenousHistory}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Key Industries */}
+                  {education.specificData.industries && education.specificData.industries.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">🏭</span>
+                        <h4 className="text-sm font-bold text-gray-900">Key Industries</h4>
+                      </div>
+                      <div className="flex flex-wrap gap-2 ml-7">
+                        {education.specificData.industries.slice(0, 5).map((industry, idx) => (
+                          <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                            {industry}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Fun Fact */}
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-lg">💡</span>
+                      <h4 className="text-sm font-bold text-blue-900">Did You Know?</h4>
+                    </div>
+                    <p className="text-sm text-blue-800 leading-relaxed">
+                      {info.funFact}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
+      </div>
 
       {/* Controls - Fixed Bottom */}
       <div className="flex-shrink-0 bg-white border-t border-gray-200 shadow-lg">
