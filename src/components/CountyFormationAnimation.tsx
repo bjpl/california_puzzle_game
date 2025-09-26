@@ -35,6 +35,7 @@ export default function CountyFormationAnimation() {
   const [showCompletion, setShowCompletion] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [autoPauseEnabled, setAutoPauseEnabled] = useState(true);
+  const [hasShownInitialYear, setHasShownInitialYear] = useState(false);
 
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
@@ -102,9 +103,15 @@ export default function CountyFormationAnimation() {
       setHighlightedCounty(newCounties[0]);
 
       // Auto-pause when counties are founded (if enabled)
-      if (autoPauseEnabled) {
+      // Skip auto-pause for the very first year (1850) to let animation start smoothly
+      const isInitialYear = year === 1850 && !hasShownInitialYear;
+      if (autoPauseEnabled && !isInitialYear) {
         setIsPlaying(false);
         setIsPaused(true);
+      }
+
+      if (isInitialYear) {
+        setHasShownInitialYear(true);
       }
 
       setTimeout(() => {
@@ -126,6 +133,7 @@ export default function CountyFormationAnimation() {
     setIsPlaying(false);
     setHasStarted(false);
     setIsPaused(false);
+    setHasShownInitialYear(false);
   };
 
   const startAnimation = () => {
@@ -269,7 +277,7 @@ export default function CountyFormationAnimation() {
         </div>
 
         {/* Enhanced Info Bar with Rich Content */}
-        <div className="bg-gradient-to-r from-white to-gray-50 border-b border-gray-200 px-4 py-3">
+        <div className="bg-gradient-to-r from-white to-gray-50 border-b border-gray-200 px-4 py-3 relative">
           <div className="flex items-start gap-4">
             {/* Year Display */}
             <div className="flex-shrink-0">
@@ -393,6 +401,22 @@ export default function CountyFormationAnimation() {
               )}
             </div>
           </div>
+
+          {/* Auto-Pause Continue Prompt - Positioned in Info Bar */}
+          {isPaused && countiesAddedThisYear.length > 0 && (
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 animate-in fade-in slide-in-from-right-4 duration-300">
+              <button
+                onClick={continueAnimation}
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-bold text-base shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200 flex items-center gap-2 border-2 border-white/20"
+              >
+                <span>Continue</span>
+                <span className="text-xl">→</span>
+              </button>
+              <div className="text-center mt-1 text-xs text-gray-600">
+                <kbd className="px-1.5 py-0.5 bg-gray-200 rounded font-mono text-xs">Space</kbd>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -427,21 +451,6 @@ export default function CountyFormationAnimation() {
               </div>
             )}
 
-            {/* Auto-Pause Continue Prompt */}
-            {isPaused && countiesAddedThisYear.length > 0 && (
-              <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                <button
-                  onClick={continueAnimation}
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-200 flex items-center gap-3 border-2 border-white/20"
-                >
-                  <span>Continue</span>
-                  <span className="text-2xl">→</span>
-                </button>
-                <div className="text-center mt-2 text-xs text-gray-600 bg-white/90 px-3 py-1 rounded-full">
-                  Press <kbd className="px-1.5 py-0.5 bg-gray-200 rounded font-mono">Space</kbd>
-                </div>
-              </div>
-            )}
 
             {/* Completion Celebration */}
             {showCompletion && (
