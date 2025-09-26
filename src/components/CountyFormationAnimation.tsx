@@ -158,39 +158,35 @@ export default function CountyFormationAnimation() {
   const countiesAddedThisYear = countiesByYear.get(currentYear) || [];
 
   return (
-    <div className="w-full h-full bg-gradient-to-b from-blue-50 to-white overflow-y-auto">
-      <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 sm:py-3">
-
-        {/* Header */}
-        <div className="text-center mb-3">
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">
-            California Through Time
+    <div className="w-full h-full bg-gradient-to-b from-blue-50 to-white flex flex-col overflow-hidden">
+      <div className="flex-shrink-0">
+        {/* Compact Header */}
+        <div className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-between">
+          <h1 className="text-xl font-bold">
+            California Through Time <span className="text-sm font-normal text-blue-100 ml-2">1850-1907</span>
           </h1>
-          <p className="text-sm text-gray-600">
-            Watch California's 58 counties emerge from 1850 to 1907
-          </p>
         </div>
 
-        {/* Year Display & Progress */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex-1">
-              <div className="text-6xl font-bold text-blue-600 mb-2">
+        {/* Compact Year Display & Info Bar */}
+        <div className="bg-white border-b border-gray-200 px-4 py-2">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-6">
+              <div className="text-4xl font-bold text-blue-600">
                 {currentYear}
               </div>
               <div className="text-sm text-gray-600">
-                {currentCount} of {totalCounties} counties established
+                <span className="font-semibold">{currentCount}</span> / {totalCounties} counties
               </div>
             </div>
 
             {currentEvent && (
-              <div className="flex-1 text-right">
-                <div className="inline-block bg-amber-50 px-4 py-2 rounded-lg border border-amber-200">
-                  <div className="text-2xl mb-1">{currentEvent.icon}</div>
-                  <div className="font-semibold text-amber-900 text-sm">
+              <div className="bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-2">
+                <span className="text-lg">{currentEvent.icon}</span>
+                <div>
+                  <div className="font-semibold text-amber-900 text-xs">
                     {currentEvent.label}
                   </div>
-                  <div className="text-xs text-amber-700 mt-1">
+                  <div className="text-xs text-amber-700">
                     {currentEvent.description}
                   </div>
                 </div>
@@ -199,17 +195,15 @@ export default function CountyFormationAnimation() {
           </div>
 
           {countiesAddedThisYear.length > 0 && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3">
-              <div className="text-sm font-semibold text-green-800 mb-1">
-                Just Established:
-              </div>
-              <div className="flex flex-wrap gap-2">
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-xs font-semibold text-green-800">New:</span>
+              <div className="flex flex-wrap gap-1.5">
                 {countiesAddedThisYear.map(id => {
                   const info = getCountyInfo(id);
                   return (
                     <span
                       key={id}
-                      className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium"
+                      className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs font-medium"
                     >
                       {info?.name}
                     </span>
@@ -219,10 +213,11 @@ export default function CountyFormationAnimation() {
             </div>
           )}
         </div>
+      </div>
 
-        {/* Map Display */}
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4">
-          <div className="relative w-full" style={{ height: '400px', minHeight: '350px', maxHeight: '600px' }}>
+      {/* Map Display - Maximum Height */}
+      <div className="flex-1 bg-white overflow-hidden">
+        <div className="relative w-full h-full p-4">
             {!hasStarted && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10 rounded-xl">
                 <div className="text-center">
@@ -339,9 +334,10 @@ export default function CountyFormationAnimation() {
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <div className="flex items-center gap-4 mb-4">
+      {/* Controls - Fixed Bottom */}
+      <div className="flex-shrink-0 bg-white border-t border-gray-200 shadow-lg">
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-3 mb-2">
             <button
               onClick={() => {
                 const newYear = Math.max(1850, currentYear - 5);
@@ -426,11 +422,9 @@ export default function CountyFormationAnimation() {
                 background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((currentYear - 1850) / 57) * 100}%, #E5E7EB ${((currentYear - 1850) / 57) * 100}%, #E5E7EB 100%)`
               }}
             />
-            <div className="flex justify-between mt-2 text-xs text-gray-500">
+            <div className="flex justify-between mt-1 text-xs text-gray-500">
               <span>1850</span>
-              <span>1860</span>
               <span>1880</span>
-              <span>1900</span>
               <span>1907</span>
             </div>
           </div>
