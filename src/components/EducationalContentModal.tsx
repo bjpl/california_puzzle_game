@@ -36,29 +36,31 @@ export default function EducationalContentModal({
 
       {/* Modal Content */}
       <div className="relative w-full max-w-5xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden animate-slideInUp">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+        {/* Header - Clean solid background */}
+        <div className="bg-blue-600 text-white p-6">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
-              <CountyShapeDisplay
-                countyId={county.id}
-                size={70}
-                className="bg-white rounded-lg p-1"
-              />
+              <div className="bg-white rounded-lg p-2">
+                <CountyShapeDisplay
+                  countyId={county.id}
+                  size={70}
+                  className=""
+                />
+              </div>
               <div>
-                <h2 className="text-3xl font-bold">{county.name} County</h2>
+                <h2 className="text-3xl font-bold text-white">{county.name} County</h2>
                 <p className="text-blue-100 mt-1">Complete Educational Resource</p>
                 <div className="flex items-center gap-3 mt-2">
-                  <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                  <span className="bg-blue-500 px-3 py-1 rounded-full text-sm">
                     {county.region}
                   </span>
                   {county.population && (
-                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                    <span className="bg-blue-500 px-3 py-1 rounded-full text-sm">
                       Pop: {county.population.toLocaleString()}
                     </span>
                   )}
                   {county.area && (
-                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                    <span className="bg-blue-500 px-3 py-1 rounded-full text-sm">
                       {county.area.toLocaleString()} sq mi
                     </span>
                   )}
@@ -67,7 +69,7 @@ export default function EducationalContentModal({
             </div>
             <button
               onClick={onClose}
-              className="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
+              className="text-white hover:bg-blue-700 rounded-lg p-2 transition-colors"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
