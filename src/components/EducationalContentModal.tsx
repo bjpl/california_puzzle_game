@@ -271,9 +271,9 @@ export default function EducationalContentModal({
                 </p>
               </div>
 
-              <div className="bg-purple-50 rounded-xl p-5 border border-purple-200">
-                <h4 className="font-bold text-purple-900 mb-4 text-lg">Unique Features</h4>
-                <p className="text-purple-800 leading-relaxed">
+              <div className="bg-indigo-50 rounded-xl p-5 border border-indigo-200">
+                <h4 className="font-bold text-indigo-900 mb-4 text-lg">Unique Features</h4>
+                <p className="text-indigo-800 leading-relaxed">
                   {educationContent?.uniqueFeatures || 'This county has many unique characteristics that make it special.'}
                 </p>
               </div>
@@ -394,7 +394,7 @@ export default function EducationalContentModal({
             </p>
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transition-all"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
             >
               Close
             </button>
