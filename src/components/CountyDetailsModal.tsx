@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import CountyShapeDisplay from './CountyShapeDisplay';
-import { studyModeTheme } from '../styles/studyModeTheme';
 
 interface CountyDetailsModalProps {
   isOpen: boolean;
@@ -110,64 +109,36 @@ export default function CountyDetailsModal({
 
         {/* County Details - Scrollable content */}
         <div className="p-8 space-y-6 overflow-y-auto max-h-[calc(85vh-200px)]">
-          {/* Key Information Grid - Using consistent theme */}
+          {/* Key Information Grid - Consistent color scheme */}
           <div className="grid grid-cols-2 gap-4">
-            {/* County Seat - Governance theme */}
-            <div className="p-5 rounded-xl border" style={{
-              backgroundColor: studyModeTheme.infoCards.governance.bg,
-              borderColor: studyModeTheme.infoCards.governance.border
-            }}>
-              <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{
-                color: studyModeTheme.infoCards.governance.label
-              }}>County Seat</div>
-              <div className="text-2xl font-bold" style={{
-                color: studyModeTheme.infoCards.governance.text
-              }}>
+            {/* County Seat - Blue theme */}
+            <div className="bg-blue-50 p-5 rounded-xl border border-blue-200">
+              <div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2">County Seat</div>
+              <div className="text-2xl font-bold text-blue-900">
                 {county.capital || county.countySeat || 'N/A'}
               </div>
             </div>
 
-            {/* Population - Neutral for data */}
-            <div className="p-5 rounded-xl border" style={{
-              backgroundColor: studyModeTheme.neutral[50],
-              borderColor: studyModeTheme.neutral[200]
-            }}>
-              <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{
-                color: studyModeTheme.neutral[500]
-              }}>Population</div>
-              <div className="text-2xl font-bold" style={{
-                color: studyModeTheme.neutral[900]
-              }}>
+            {/* Population - Neutral gray */}
+            <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+              <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Population</div>
+              <div className="text-2xl font-bold text-gray-900">
                 {county.population ? county.population.toLocaleString() : 'N/A'}
               </div>
             </div>
 
-            {/* Area - Geography theme */}
-            <div className="p-5 rounded-xl border" style={{
-              backgroundColor: studyModeTheme.infoCards.geography.bg,
-              borderColor: studyModeTheme.infoCards.geography.border
-            }}>
-              <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{
-                color: studyModeTheme.infoCards.geography.label
-              }}>Area</div>
-              <div className="text-2xl font-bold" style={{
-                color: studyModeTheme.infoCards.geography.text
-              }}>
+            {/* Area - Green theme */}
+            <div className="bg-green-50 p-5 rounded-xl border border-green-200">
+              <div className="text-xs font-medium text-green-600 uppercase tracking-wider mb-2">Area</div>
+              <div className="text-2xl font-bold text-green-900">
                 {county.area ? `${county.area.toLocaleString()} sq mi` : 'N/A'}
               </div>
             </div>
 
-            {/* Established - Historical theme */}
-            <div className="p-5 rounded-xl border" style={{
-              backgroundColor: studyModeTheme.infoCards.historical.bg,
-              borderColor: studyModeTheme.infoCards.historical.border
-            }}>
-              <div className="text-xs font-medium uppercase tracking-wider mb-2" style={{
-                color: studyModeTheme.infoCards.historical.label
-              }}>Established</div>
-              <div className="text-2xl font-bold" style={{
-                color: studyModeTheme.infoCards.historical.text
-              }}>
+            {/* Established - Amber/warm theme */}
+            <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+              <div className="text-xs font-medium text-amber-700 uppercase tracking-wider mb-2">Established</div>
+              <div className="text-2xl font-bold text-amber-900">
                 {county.founded || county.established || 'N/A'}
               </div>
             </div>
