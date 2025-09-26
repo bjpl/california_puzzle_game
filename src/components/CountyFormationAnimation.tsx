@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { realCaliforniaCountyShapes } from '../data/californiaCountyBoundaries';
 import { allCaliforniaCounties } from '../data/californiaCountiesComplete';
 import { getRegionHexColor } from '../config/regionColors';
+import { countyEducationData } from '../data/countyEducationComplete';
 
 interface HistoricalEvent {
   year: number;
@@ -59,6 +60,32 @@ export default function CountyFormationAnimation() {
     return realCaliforniaCountyShapes.find(
       c => c.id === countyId || c.id === countyId.replace(/_/g, '-') || c.id === countyId.replace(/-/g, '_')
     );
+  };
+
+  const getCountyEducation = (countyId: string) => {
+    const normalizedId = countyId.replace(/-/g, '_');
+    return countyEducationData.find(ed => ed.countyId === normalizedId);
+  };
+
+  const getFoundingStory = (countyId: string): string => {
+    const education = getCountyEducation(countyId);
+    if (!education) return '';
+
+    // Extract a concise founding snippet from historicalContext
+    const context = education.historicalContext;
+    const sentences = context.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
+
+    // Find sentence mentioning founding/established/created
+    const foundingSentence = sentences.find(s =>
+      s.match(/founded|established|created|formed|separated|divided/i)
+    );
+
+    if (foundingSentence && foundingSentence.length < 200) {
+      return foundingSentence + '.';
+    }
+
+    // Otherwise return first 2 sentences
+    return sentences.slice(0, 2).join('. ') + '.';
   };
 
   const addCountiesForYear = (year: number) => {
@@ -241,10 +268,12 @@ export default function CountyFormationAnimation() {
               {countiesAddedThisYear.length > 0 ? (
                 /* County Formation Spotlight */
                 countiesAddedThisYear.length === 1 ? (
-                  /* Single County - Rich Display */
+                  /* Single County - Rich Display with Founding Story */
                   (() => {
                     const county = getCountyInfo(countiesAddedThisYear[0]);
                     if (!county) return null;
+                    const foundingStory = getFoundingStory(county.id);
+                    const education = getCountyEducation(county.id);
                     return (
                       <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 rounded-r-lg px-3 py-2">
                         <div className="flex items-start gap-3">
@@ -258,13 +287,15 @@ export default function CountyFormationAnimation() {
                                 {county.region}
                               </span>
                             </div>
-                            <p className="text-xs text-emerald-800 leading-relaxed mb-1">
-                              {county.funFact}
+                            <p className="text-xs text-emerald-800 leading-relaxed mb-1.5">
+                              {foundingStory || county.funFact}
                             </p>
                             <div className="flex gap-3 text-xs text-emerald-600">
                               <span>👥 {(county.population / 1000).toFixed(0)}k</span>
                               <span>📍 {county.capital}</span>
-                              <span>📏 {county.area.toLocaleString()} mi²</span>
+                              {education?.specificData.established && (
+                                <span>📅 {education.specificData.established}</span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -293,22 +324,25 @@ export default function CountyFormationAnimation() {
                     </div>
                   </div>
                 ) : (
-                  /* Multiple Counties - Compact List with Fun Facts */
+                  /* Multiple Counties - Compact List with Founding Snippets */
                   <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 rounded-r-lg px-3 py-2">
-                    <div className="flex items-start gap-2 mb-1">
+                    <div className="flex items-start gap-2 mb-1.5">
                       <span className="text-lg">✨</span>
                       <h3 className="font-bold text-emerald-900 text-sm">
                         {countiesAddedThisYear.length} Counties Founded This Year
                       </h3>
                     </div>
-                    <div className="space-y-1 ml-7">
+                    <div className="space-y-1.5 ml-7">
                       {countiesAddedThisYear.map(id => {
                         const county = getCountyInfo(id);
                         if (!county) return null;
+                        const education = getCountyEducation(id);
+                        // Use first sentence of historical context for multiple counties
+                        const snippet = education?.historicalContext.split(/[.!?]+/)[0] + '.' || county.funFact;
                         return (
                           <div key={id} className="text-xs">
                             <span className="font-semibold text-emerald-900">{county.name}</span>
-                            <span className="text-emerald-700"> — {county.funFact}</span>
+                            <span className="text-emerald-700"> — {snippet.length > 100 ? snippet.substring(0, 100) + '...' : snippet}</span>
                           </div>
                         );
                       })}
