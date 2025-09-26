@@ -492,14 +492,15 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
           </div>
         </div>
 
-        {/* Refined Region Filter Bar - Sticky with Full Height */}
-        <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 shadow-sm flex-shrink-0 sticky top-0 z-40 overflow-visible">
-          <div className="px-4 sm:px-6 py-6">
-            <div className="flex items-center gap-4 overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent min-h-[44px]">
-              {/* Filter Label */}
-              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap flex-shrink-0">
-                Filter by Region:
-              </span>
+        {/* Refined Region Filter Bar - Sticky with Full Height (Hidden in Formation mode) */}
+        {viewMode !== 'formation' && (
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 shadow-sm flex-shrink-0 sticky top-0 z-40 overflow-visible">
+            <div className="px-4 sm:px-6 py-6">
+              <div className="flex items-center gap-4 overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent min-h-[44px]">
+                {/* Filter Label */}
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap flex-shrink-0">
+                  Filter by Region:
+                </span>
 
               {/* Region Pills Container */}
               <div className="flex gap-3 flex-shrink-0">
@@ -559,6 +560,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
             </div>
           </div>
         </div>
+        )}
 
         {/* Main Content Area - Full Height */}
         <div className="flex-1 flex overflow-hidden bg-gray-50">
