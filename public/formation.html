@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>California County Formation - Interactive History</title>
+  <link rel="icon" type="image/svg+xml" href="/california-icon.svg" />
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    #root {
+      width: 100%;
+      min-height: 100vh;
+    }
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #eff6ff, white);
+    }
+    .loading-content {
+      text-align: center;
+    }
+    .loading-logo {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="loading">
+      <div class="loading-content">
+        <div class="loading-logo">🗺️</div>
+        <h2>Loading County Formation...</h2>
+        <p>Preparing to travel through history</p>
+      </div>
+    </div>
+  </div>
+  <script type="module">
+    import { createRoot } from 'react-dom/client';
+    import { createElement } from 'react';
+    import CountyFormationAnimation from '../src/components/CountyFormationAnimation.tsx';
+
+    const root = createRoot(document.getElementById('root'));
+    root.render(createElement(CountyFormationAnimation));
+  </script>
+</body>
+</html>
