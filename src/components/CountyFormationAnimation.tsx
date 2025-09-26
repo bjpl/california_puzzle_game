@@ -33,6 +33,8 @@ export default function CountyFormationAnimation() {
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [showCompletion, setShowCompletion] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [autoPauseEnabled, setAutoPauseEnabled] = useState(true);
 
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
@@ -99,10 +101,21 @@ export default function CountyFormationAnimation() {
       setRecentlyAdded(newCounties);
       setHighlightedCounty(newCounties[0]);
 
+      // Auto-pause when counties are founded (if enabled)
+      if (autoPauseEnabled) {
+        setIsPlaying(false);
+        setIsPaused(true);
+      }
+
       setTimeout(() => {
         setHighlightedCounty(null);
       }, 2000);
     }
+  };
+
+  const continueAnimation = () => {
+    setIsPaused(false);
+    setIsPlaying(true);
   };
 
   const resetAnimation = () => {
@@ -112,6 +125,7 @@ export default function CountyFormationAnimation() {
     setHighlightedCounty(null);
     setIsPlaying(false);
     setHasStarted(false);
+    setIsPaused(false);
   };
 
   const startAnimation = () => {
@@ -168,7 +182,11 @@ export default function CountyFormationAnimation() {
       switch(e.key) {
         case ' ':
           e.preventDefault();
-          isPlaying ? setIsPlaying(false) : startAnimation();
+          if (isPaused) {
+            continueAnimation();
+          } else {
+            isPlaying ? setIsPlaying(false) : startAnimation();
+          }
           break;
         case 'ArrowLeft':
           e.preventDefault();
@@ -409,6 +427,22 @@ export default function CountyFormationAnimation() {
               </div>
             )}
 
+            {/* Auto-Pause Continue Prompt */}
+            {isPaused && countiesAddedThisYear.length > 0 && (
+              <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                <button
+                  onClick={continueAnimation}
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-200 flex items-center gap-3 border-2 border-white/20"
+                >
+                  <span>Continue</span>
+                  <span className="text-2xl">→</span>
+                </button>
+                <div className="text-center mt-2 text-xs text-gray-600 bg-white/90 px-3 py-1 rounded-full">
+                  Press <kbd className="px-1.5 py-0.5 bg-gray-200 rounded font-mono">Space</kbd>
+                </div>
+              </div>
+            )}
+
             {/* Completion Celebration */}
             {showCompletion && (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-500/90 to-purple-600/90 z-20 animate-in fade-in duration-500">
@@ -602,6 +636,20 @@ export default function CountyFormationAnimation() {
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
               </svg>
+            </button>
+
+            {/* Auto-pause toggle */}
+            <button
+              onClick={() => setAutoPauseEnabled(!autoPauseEnabled)}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+                autoPauseEnabled
+                  ? 'bg-green-100 text-green-800 border border-green-300'
+                  : 'bg-gray-100 text-gray-600 border border-gray-300'
+              }`}
+              title={autoPauseEnabled ? 'Auto-pause enabled - will pause after each founding' : 'Auto-pause disabled - continuous playback'}
+            >
+              {autoPauseEnabled ? '⏸' : '▶'}
+              <span className="hidden sm:inline">Auto-pause</span>
             </button>
 
             <div className="flex items-center gap-2 ml-auto">
