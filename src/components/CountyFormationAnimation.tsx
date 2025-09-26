@@ -294,7 +294,7 @@ export default function CountyFormationAnimation() {
 
             {/* Main Content Area - County Spotlight or Historical Event */}
             <div className="flex-1 min-h-[60px]">
-              {countiesAddedThisYear.length > 0 ? (
+              {hasStarted && countiesAddedThisYear.length > 0 ? (
                 /* County Formation Spotlight */
                 countiesAddedThisYear.length === 1 ? (
                   /* Single County - Rich Display with Founding Story */
