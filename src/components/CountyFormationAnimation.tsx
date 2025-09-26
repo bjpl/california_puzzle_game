@@ -104,14 +104,22 @@ export default function CountyFormationAnimation() {
       setHighlightedCounty(newCounties[0]);
 
       // Auto-pause when counties are founded (if enabled)
-      // Skip auto-pause for the very first year (1850) to let animation start smoothly
       const isInitialYear = year === 1850 && !hasShownInitialYear;
-      if (autoPauseEnabled && !isInitialYear) {
-        setIsPlaying(false);
-        setIsPaused(true);
-      }
 
-      if (isInitialYear) {
+      if (autoPauseEnabled) {
+        if (isInitialYear) {
+          // For 1850, pause after 2.5 seconds to let counties appear dramatically
+          setTimeout(() => {
+            setIsPlaying(false);
+            setIsPaused(true);
+          }, 2500);
+          setHasShownInitialYear(true);
+        } else {
+          // For all other years, pause immediately
+          setIsPlaying(false);
+          setIsPaused(true);
+        }
+      } else if (isInitialYear) {
         setHasShownInitialYear(true);
       }
 
