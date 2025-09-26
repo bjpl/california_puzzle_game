@@ -159,14 +159,14 @@ export default function CountyFormationAnimation() {
 
   return (
     <div className="w-full h-full bg-gradient-to-b from-blue-50 to-white overflow-y-auto">
-      <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 sm:py-6">
+      <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 sm:py-3">
 
         {/* Header */}
-        <div className="text-center mb-4">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+        <div className="text-center mb-3">
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">
             California Through Time
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm text-gray-600">
             Watch California's 58 counties emerge from 1850 to 1907
           </p>
         </div>

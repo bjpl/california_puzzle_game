@@ -1564,7 +1564,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* County Formation Animation Mode - Full Screen Immersive Experience */}
           {viewMode === 'formation' && (
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 h-full overflow-hidden">
               <CountyFormationAnimation />
             </div>
           )}
