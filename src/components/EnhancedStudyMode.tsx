@@ -378,7 +378,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const memoryAid = selectedCounty ? getMemoryAidData(selectedCounty.id) : null;
 
   return (
-    <div className="fixed inset-0 bg-white z-[9999] flex flex-col h-screen w-screen overflow-hidden">
+    <div className={`fixed inset-0 z-[9999] flex flex-col h-screen w-screen overflow-hidden ${viewMode === 'formation' ? '' : 'bg-white'}`}>
         {/* Enhanced Header with Modern Design - Fixed Position (Hidden in Formation mode) */}
         {viewMode !== 'formation' && (
         <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white overflow-hidden flex-shrink-0">
@@ -1566,7 +1566,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
 
           {/* County Formation Animation Mode - Full Screen Immersive Experience */}
           {viewMode === 'formation' && (
-            <div className="flex-1 h-full overflow-hidden relative">
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
               {/* Floating Close Button */}
               <button
                 onClick={onClose}
