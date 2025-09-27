@@ -674,7 +674,7 @@ export default function CountyFormationAnimation() {
                       }
                       strokeLinejoin="round"
                       style={{
-                        transition: 'all 0.3s ease-in-out',
+                        transition: 'fill-opacity 0.3s ease-in-out, stroke 0.3s ease-in-out, stroke-width 0.3s ease-in-out, filter 0.3s ease-in-out',
                         filter: isHighlighted ? 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.6))' : 'none',
                         cursor: isVisible ? 'pointer' : 'default'
                       }}
