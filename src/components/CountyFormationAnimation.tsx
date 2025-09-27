@@ -39,16 +39,19 @@ export default function CountyFormationAnimation() {
   const [showContinueButton, setShowContinueButton] = useState(true);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [, forceUpdate] = useState({});
 
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
   const hasAddedCountiesRef = useRef<boolean>(false);
   const shouldPauseRef = useRef<boolean>(false);
   const svgRef = useRef<SVGSVGElement>(null);
+  const gRef = useRef<SVGGElement>(null);
   const isPanning = useRef(false);
   const startPan = useRef({ x: 0, y: 0 });
   const startMouse = useRef({ x: 0, y: 0 });
   const hasPanned = useRef(false);
+  const panRef = useRef({ x: 0, y: 0 });
 
   const countiesByYear = React.useMemo(() => {
     const grouped = new Map<number, string[]>();
@@ -165,6 +168,7 @@ export default function CountyFormationAnimation() {
   const resetView = () => {
     setZoom(1);
     setPan({ x: 0, y: 0 });
+    panRef.current = { x: 0, y: 0 };
   };
 
   const handleWheel = (e: React.WheelEvent) => {
@@ -195,10 +199,16 @@ export default function CountyFormationAnimation() {
       hasPanned.current = true;
     }
 
-    setPan({
+    panRef.current = {
       x: startPan.current.x + dx,
       y: startPan.current.y + dy
-    });
+    };
+
+    // Update transform directly without triggering React re-render
+    if (gRef.current) {
+      const transform = `translate(${400 * (1 - zoom) / 2 + panRef.current.x * zoom}, ${450 * (1 - zoom) / 2 + panRef.current.y * zoom}) scale(${zoom})`;
+      gRef.current.setAttribute('transform', transform);
+    }
   };
 
   const handleMouseUp = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -206,6 +216,9 @@ export default function CountyFormationAnimation() {
     if (svgRef.current) {
       svgRef.current.style.cursor = 'grab';
     }
+
+    // Sync ref value to state
+    setPan({ ...panRef.current });
 
     setTimeout(() => {
       hasPanned.current = false;
@@ -643,7 +656,7 @@ export default function CountyFormationAnimation() {
               <rect width="800" height="900" fill="#FFFFFF" opacity="1" />
 
               {/* Apply zoom and pan transformation */}
-              <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${450 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
+              <g ref={gRef} transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${450 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
 
               {realCaliforniaCountyShapes.map(countyShape => {
                 const countyInfo = getCountyInfo(countyShape.id) ||
