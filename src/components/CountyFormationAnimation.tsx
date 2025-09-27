@@ -640,7 +640,7 @@ export default function CountyFormationAnimation() {
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
             >
-              <rect width="800" height="900" fill="#FAFAFA" opacity="1" />
+              <rect width="800" height="900" fill="#FFFFFF" opacity="1" />
 
               {/* Apply zoom and pan transformation */}
               <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${450 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
