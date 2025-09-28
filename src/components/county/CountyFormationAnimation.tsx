@@ -226,15 +226,23 @@ export default function CountyFormationAnimation() {
   };
 
   const startAnimation = () => {
-    setHasStarted(true);
-    setVisibleCounties(new Set());
-    setRecentlyAdded([]);
-    setCurrentYear(1850);
-    hasAddedCountiesRef.current = false;
-    setIsPlaying(true);
+    // If already at the end, restart from beginning
     if (currentYear >= 1907) {
       resetAnimation();
-      setTimeout(() => setIsPlaying(true), 100);
+      setTimeout(() => {
+        setHasStarted(true);
+        setIsPlaying(true);
+      }, 100);
+    } else {
+      // Starting fresh or resuming
+      setHasStarted(true);
+      if (currentYear === 1850 && visibleCounties.size === 0) {
+        // Fresh start
+        setVisibleCounties(new Set());
+        setRecentlyAdded([]);
+        hasAddedCountiesRef.current = false;
+      }
+      setIsPlaying(true);
     }
   };
 
