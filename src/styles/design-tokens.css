@@ -1,0 +1,212 @@
+/**
+ * California Counties Puzzle - Design Tokens
+ * Single Source of Truth for all design variables
+ *
+ * This file contains all color, typography, spacing, and other design tokens.
+ * Import this file in both the app and documentation to ensure consistency.
+ *
+ * USAGE:
+ * @import './design-tokens.css';
+ */
+
+/* ============================================
+   CALIFORNIA EDUCATIONAL COLOR PALETTE
+   Inspired by California's natural landscape
+   ============================================ */
+
+:root {
+  /* Primary Brand Colors - Real California landscapes */
+  --ca-navy: #1e3a5f;           /* Deep ocean blue, trustworthy */
+  --ca-forest: #2d5016;         /* Redwood forest green */
+  --ca-sand: #e6d5b8;           /* Beach sand, warm neutral */
+  --ca-clay: #b85c38;           /* Terra cotta, earthy */
+  --ca-granite: #8c8c8c;        /* Sierra granite gray */
+  --ca-sky: #87ceeb;            /* Clear California sky */
+  --ca-gold: #daa520;           /* Actual gold, not neon yellow */
+
+  /* Educational Neutrals - Like textbooks and classrooms */
+  --paper-white: #fefefe;
+  --ink-black: #2c2c2c;
+  --pencil-gray: #6b6b6b;
+  --eraser-pink: #f5f5f5;
+
+  /* Semantic Learning Colors - Clear educational feedback */
+  --correct-green: #28a745;     /* Clear success, not neon */
+  --warning-amber: #dc7633;     /* Amber warning, not aggressive */
+  --info-blue: #17a2b8;         /* Information blue */
+  --error-red: #dc3545;         /* Clear error state */
+
+  /* Region Colors - From src/config/regionColors.ts */
+  /* These match Tailwind color palette for consistency */
+  --region-southern-california: #ef4444;  /* Tailwind red-500 */
+  --region-bay-area: #3b82f6;             /* Tailwind blue-500 */
+  --region-central-valley: #22c55e;       /* Tailwind green-500 */
+  --region-central-coast: #a855f7;        /* Tailwind purple-500 */
+  --region-northern-california: #f97316;  /* Tailwind orange-500 */
+  --region-sierra-nevada: #eab308;        /* Tailwind yellow-500 */
+  --region-north-coast: #14b8a6;          /* Tailwind teal-500 */
+  --region-default: #6b7280;              /* Tailwind gray-500 - Fallback */
+
+  /* ============================================
+     TYPOGRAPHY SYSTEM
+     Academic serif + Modern sans combination
+     ============================================ */
+
+  /* Font Families */
+  --font-serif: 'Source Serif Pro', Georgia, serif;  /* Academic serif for headings */
+  --font-sans: 'Inter', system-ui, sans-serif;       /* Clean sans for body text */
+  --font-mono: 'SF Mono', 'Monaco', 'Consolas', monospace; /* Code blocks */
+
+  /* Font Sizes - Based on 16px base */
+  --font-size-xs: 0.75rem;      /* 12px */
+  --font-size-sm: 0.875rem;     /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 1.875rem;    /* 30px */
+  --font-size-4xl: 2.25rem;     /* 36px */
+  --font-size-5xl: 3rem;        /* 48px */
+
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+
+  /* ============================================
+     SPACING SYSTEM
+     Based on 4px base unit (academic book design)
+     ============================================ */
+
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2rem;      /* 32px */
+  --space-2xl: 3rem;     /* 48px */
+
+  /* Shorthand spacing (common in the app) */
+  --space-1: 0.25rem;    /* 4px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-4: 1rem;       /* 16px */
+  --space-5: 1.25rem;    /* 20px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+
+  /* ============================================
+     SHADOWS
+     Realistic shadows - Like paper on a desk
+     ============================================ */
+
+  --paper-shadow: 0 2px 4px rgba(44, 44, 44, 0.1);
+  --book-shadow: 0 4px 8px rgba(44, 44, 44, 0.12);
+  --deep-shadow: 0 8px 16px rgba(44, 44, 44, 0.15);
+
+  /* Shadow scale (for documentation/style guide) */
+  --shadow-xs: 0 2px 4px rgba(44, 44, 44, 0.1);
+  --shadow-sm: 0 2px 4px rgba(44, 44, 44, 0.1);
+  --shadow-md: 0 4px 8px rgba(44, 44, 44, 0.12);
+  --shadow-lg: 0 8px 16px rgba(44, 44, 44, 0.15);
+  --shadow-xl: 0 8px 16px rgba(44, 44, 44, 0.15);
+
+  /* ============================================
+     BORDER RADIUS
+     Subtle, like rounded paper corners
+     ============================================ */
+
+  --radius: 0.375rem;      /* 6px - Default */
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-md: 0.375rem;   /* 6px */
+  --radius-lg: 0.5rem;     /* 8px */
+  --radius-xl: 0.5rem;     /* 8px - Max for educational aesthetic */
+  --radius-2xl: 0.5rem;    /* 8px - Kept consistent */
+  --radius-full: 9999px;   /* Fully rounded */
+
+  /* ============================================
+     TRANSITIONS
+     Subtle, educational-appropriate timing
+     ============================================ */
+
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* ============================================
+     BORDERS
+     ============================================ */
+
+  --border-light: #e5e5e5;
+  --border-default: #d1d5db;
+  --border-dark: #9ca3af;
+
+  /* ============================================
+     BACKGROUNDS (Semantic aliases)
+     ============================================ */
+
+  --bg-primary: #fefefe;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e5e5e5;
+  --bg-dark: #2c2c2c;
+
+  /* ============================================
+     TEXT COLORS (Semantic aliases)
+     ============================================ */
+
+  --text-primary: #2c2c2c;
+  --text-secondary: #6b6b6b;
+  --text-tertiary: #8c8c8c;
+  --text-inverse: #fefefe;
+
+  /* ============================================
+     FOCUS STATES
+     For accessibility and keyboard navigation
+     ============================================ */
+
+  --focus-ring-blue: 0 0 0 3px rgba(30, 58, 95, 0.15);
+  --focus-ring-success: 0 0 0 3px rgba(40, 167, 69, 0.15);
+  --focus-ring-warning: 0 0 0 3px rgba(220, 118, 51, 0.15);
+  --focus-ring-danger: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+/* ============================================
+   DESIGN PHILOSOPHY NOTES
+   ============================================
+
+   This design system is intentionally educational and trustworthy:
+
+   1. COLORS: Inspired by California's natural landscape (ocean, forest, clay, gold)
+      - No neon colors or "tech startup" vibes
+      - Earthy, warm, trustworthy palette
+
+   2. TYPOGRAPHY: Academic and readable
+      - Source Serif Pro: Authority and tradition (like textbooks)
+      - Inter: Modern clarity (like classroom whiteboards)
+
+   3. SPACING: Based on book/paper design principles
+      - 4px base unit (traditional print design)
+      - Generous whitespace for learning
+
+   4. SHADOWS: Subtle and realistic
+      - "Paper on desk" aesthetic
+      - No dramatic elevation or floating effects
+
+   5. ANIMATIONS: Only when they serve learning
+      - No gratuitous motion
+      - Respect prefers-reduced-motion
+
+   ============================================ */

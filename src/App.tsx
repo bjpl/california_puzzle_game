@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
-import GameContainer from './components/GameContainer';
+import GameContainer from './components/game/GameContainer';
 import { GameProvider } from './context/GameContext';
 import './styles/globals.css';
 
