@@ -46,10 +46,10 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
   // Use centralized color configuration for consistency
 
   // Determine fill color based on state and regions
-  let fillColor = (showRegions && region) ? getRegionHexColor(region) : '#ffffff';
-  let strokeColor = '#ffffff'; // White stroke for clean look
-  let strokeWidth = "1";
-  let fillOpacity = 0.7; // Default opacity for unplaced counties
+  let fillColor = (showRegions && region) ? getRegionHexColor(region) : '#f3f4f6'; // Light gray instead of white
+  let strokeColor = '#d1d5db'; // Gray stroke for visibility
+  let strokeWidth = "1.5";
+  let fillOpacity = 1; // Full opacity for visibility
 
   if (isPlaced) {
     fillColor = '#10b981'; // Green when placed
@@ -401,6 +401,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         style={{
           maxHeight: '100%',
           maxWidth: '100%',
+          display: 'block',
           cursor: isDragging ? 'default' : (isPanning.current ? 'grabbing' : 'grab')
         }}
         preserveAspectRatio="xMidYMid meet"
