@@ -237,8 +237,10 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
 }
 
 export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolean }) {
+  console.log('🗺️ CaliforniaMapSimple component rendering');
   const gameContext = useGame();
   const { showRegions, placedCounties, counties, score, timerState, mistakes, gameSettings, placementHistory } = gameContext;
+  console.log('🎨 showRegions value:', showRegions);
   const [selectedCounty, setSelectedCounty] = useState<any>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
@@ -257,9 +259,17 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       ? '/data/geo/ca-counties-medium.geojson'
       : '/california_puzzle_game/data/geo/ca-counties-medium.geojson';
 
+    console.log('Attempting to fetch GeoJSON from:', basePath);
     fetch(basePath)
-      .then(response => response.json())
+      .then(response => {
+        console.log('Fetch response:', response.status, response.statusText);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
+        console.log('GeoJSON loaded successfully, features:', data.features?.length);
         setGeoData(data);
         // We use fixed California bounds in the projection function,
         // so we don't need to calculate them from the data
@@ -267,16 +277,20 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       })
       .catch(error => {
         console.error('Error loading GeoJSON:', error);
+        console.error('Failed path was:', basePath);
       });
   }, []);
 
   if (!geoData || !bounds) {
+    console.log('⏳ Map loading state - geoData:', !!geoData, 'bounds:', !!bounds);
     return (
-      <div className="w-full h-full flex items-center justify-center">
-        <div className="text-gray-500 animate-pulse">Loading California map...</div>
+      <div className="w-full h-full flex items-center justify-center bg-blue-50">
+        <div className="text-gray-700 animate-pulse text-lg font-semibold">Loading California map...</div>
       </div>
     );
   }
+
+  console.log('✅ Map data loaded, rendering', geoData.features?.length, 'counties');
 
   // Handle mouse wheel for zoom
   const handleWheel = (e: React.WheelEvent) => {
