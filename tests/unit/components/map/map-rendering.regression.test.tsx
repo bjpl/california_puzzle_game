@@ -13,17 +13,15 @@ import React from 'react';
  */
 
 // Mock California Map Component simulating fixed behavior
-const MockCaliforniaMap = React.forwardRef<SVGSVGElement, {
-  counties: Array<{ id: string; name: string }>;
-  showRegions?: boolean;
-  formationYear?: number;
-  onAnimationComplete?: () => void;
-}>(({
-  counties,
-  showRegions = false,
-  formationYear,
-  onAnimationComplete
-}, ref) => {
+const MockCaliforniaMap = React.forwardRef<
+  SVGSVGElement,
+  {
+    counties: Array<{ id: string; name: string }>;
+    showRegions?: boolean;
+    formationYear?: number;
+    onAnimationComplete?: () => void;
+  }
+>(({ counties, showRegions = false, formationYear, onAnimationComplete }, ref) => {
   // Simulate animation completion
   React.useEffect(() => {
     if (formationYear && onAnimationComplete) {
@@ -74,9 +72,9 @@ MockCaliforniaMap.displayName = 'MockCaliforniaMap';
 function getRegionColor(countyId: string): string {
   const regionColorMap: Record<string, string> = {
     'san-francisco': '#3b82f6', // Bay Area - blue
-    'los-angeles': '#f59e0b',   // Los Angeles - amber
-    'san-diego': '#10b981',     // San Diego - green
-    'sacramento': '#8b5cf6',    // Sacramento - purple
+    'los-angeles': '#f59e0b', // Los Angeles - amber
+    'san-diego': '#10b981', // San Diego - green
+    sacramento: '#8b5cf6', // Sacramento - purple
   };
   return regionColorMap[countyId] || '#6b7280'; // default gray
 }
@@ -97,7 +95,7 @@ describe('Map Rendering Regression Tests', () => {
     it('counties are visible with default colors (not white)', () => {
       render(<MockCaliforniaMap counties={mockCounties} />);
 
-      mockCounties.forEach(county => {
+      mockCounties.forEach((county) => {
         const path = screen.getByTestId(`county-${county.id}`);
 
         // BUG FIX VALIDATION: County should NOT be white
@@ -113,17 +111,17 @@ describe('Map Rendering Regression Tests', () => {
     it('counties have visible stroke borders', () => {
       render(<MockCaliforniaMap counties={mockCounties} />);
 
-      mockCounties.forEach(county => {
+      mockCounties.forEach((county) => {
         const path = screen.getByTestId(`county-${county.id}`);
 
         // Counties should have visible borders
         expect(path.getAttribute('stroke')).toBe('#374151');
-        expect(path.getAttribute('strokeWidth')).toBe('1');
+        expect(path.getAttribute('stroke-width')).toBe('1');
       });
     });
 
     it('map is visible against white background', () => {
-      const { container } = render(
+      render(
         <div style={{ background: 'white' }}>
           <MockCaliforniaMap counties={mockCounties} />
         </div>
@@ -133,7 +131,7 @@ describe('Map Rendering Regression Tests', () => {
       expect(map).toBeInTheDocument();
 
       // All counties should be visible (not white on white)
-      mockCounties.forEach(county => {
+      mockCounties.forEach((county) => {
         const path = screen.getByTestId(`county-${county.id}`);
         const fillColor = path.getAttribute('fill');
         expect(fillColor).not.toBe('#ffffff');
@@ -148,7 +146,7 @@ describe('Map Rendering Regression Tests', () => {
       );
 
       // BEFORE clicking "Show Regions": all counties should be default gray
-      mockCounties.forEach(county => {
+      mockCounties.forEach((county) => {
         const path = screen.getByTestId(`county-${county.id}`);
         expect(path.getAttribute('fill')).toBe('#e5e7eb');
       });
@@ -170,7 +168,7 @@ describe('Map Rendering Regression Tests', () => {
       expect(map.getAttribute('data-show-regions')).toBe('false');
 
       // All counties should have default color
-      mockCounties.forEach(county => {
+      mockCounties.forEach((county) => {
         const path = screen.getByTestId(`county-${county.id}`);
         expect(path.getAttribute('fill')).toBe('#e5e7eb');
       });
@@ -217,9 +215,12 @@ describe('Map Rendering Regression Tests', () => {
       );
 
       // Wait for animation to complete
-      await vi.waitFor(() => {
-        expect(onAnimationComplete).toHaveBeenCalled();
-      }, { timeout: 200 });
+      await vi.waitFor(
+        () => {
+          expect(onAnimationComplete).toHaveBeenCalled();
+        },
+        { timeout: 200 }
+      );
     });
 
     it('formation animation does not revert to 1850 at statehood', async () => {
@@ -273,7 +274,7 @@ describe('Map Rendering Regression Tests', () => {
 
       const years = [1860, 1870, 1880, 1890, 1900];
 
-      years.forEach(year => {
+      years.forEach((year) => {
         rerender(<MockCaliforniaMap counties={mockCounties} formationYear={year} />);
         const map = screen.getByTestId('california-map');
         expect(map.getAttribute('data-formation-year')).toBe(String(year));
@@ -295,7 +296,7 @@ describe('Map Rendering Regression Tests', () => {
       );
 
       // Counties should have default color (not region colors)
-      mockCounties.forEach(county => {
+      mockCounties.forEach((county) => {
         const path = screen.getByTestId(`county-${county.id}`);
         expect(path.getAttribute('fill')).toBe('#e5e7eb');
       });
@@ -308,21 +309,13 @@ describe('Map Rendering Regression Tests', () => {
 
     it('toggling regions during animation does not crash', () => {
       const { rerender } = render(
-        <MockCaliforniaMap
-          counties={mockCounties}
-          showRegions={false}
-          formationYear={1900}
-        />
+        <MockCaliforniaMap counties={mockCounties} showRegions={false} formationYear={1900} />
       );
 
       // Toggle regions during animation
       expect(() => {
         rerender(
-          <MockCaliforniaMap
-            counties={mockCounties}
-            showRegions={true}
-            formationYear={1910}
-          />
+          <MockCaliforniaMap counties={mockCounties} showRegions={true} formationYear={1910} />
         );
       }).not.toThrow();
     });
@@ -354,7 +347,7 @@ describe('Map Rendering Regression Tests', () => {
         <MockCaliforniaMap counties={mockCounties} showRegions={false} />
       );
 
-      mockCounties.forEach(county => {
+      mockCounties.forEach((county) => {
         const path = screen.getByTestId(`county-${county.id}`);
         expect(path).toHaveAttribute('aria-label', `${county.name} County`);
       });
@@ -362,7 +355,7 @@ describe('Map Rendering Regression Tests', () => {
       // Accessibility should be maintained when regions are shown
       rerender(<MockCaliforniaMap counties={mockCounties} showRegions={true} />);
 
-      mockCounties.forEach(county => {
+      mockCounties.forEach((county) => {
         const path = screen.getByTestId(`county-${county.id}`);
         expect(path).toHaveAttribute('aria-label', `${county.name} County`);
       });
