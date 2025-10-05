@@ -63,7 +63,7 @@ export const useDragAndDrop = (
 
   // Utility function to apply constraints
   const applyConstraints = useCallback((position: Position): Position => {
-    let constrainedPosition = { ...position };
+    const constrainedPosition = { ...position };
 
     // Apply axis lock
     if (lockAxis === 'x') {

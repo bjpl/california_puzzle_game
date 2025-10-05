@@ -7,7 +7,7 @@ import React from 'react';
 export interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   withRouter?: boolean;
   withDndProvider?: boolean;
-  initialState?: any;
+  initialState?: Record<string, unknown>;
 }
 
 export const customRender = (
@@ -71,7 +71,7 @@ export const generateMockCounty = (overrides: Partial<any> = {}) => ({
   ...overrides,
 });
 
-export const generateMockCounties = (count: number): any[] => {
+export const generateMockCounties = (count: number): Record<string, unknown>[] => {
   return Array.from({ length: count }, (_, index) =>
     generateMockCounty({
       id: `county-${index}`,
@@ -236,7 +236,7 @@ export const createMockResizeObserver = () => {
 };
 
 // Data validation helpers
-export const validateCountyData = (county: any): string[] => {
+export const validateCountyData = (county: Record<string, unknown>): string[] => {
   const errors: string[] = [];
 
   if (!county.id || typeof county.id !== 'string') {
@@ -268,7 +268,7 @@ export const validateCountyData = (county: any): string[] => {
   return errors;
 };
 
-export const validateGameState = (state: any): string[] => {
+export const validateGameState = (state: Record<string, unknown>): string[] => {
   const errors: string[] = [];
 
   if (!['practice', 'timed', 'challenge', 'learn'].includes(state.mode)) {

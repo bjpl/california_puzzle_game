@@ -107,10 +107,8 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    // In dev mode, should have details element
-    const detailsElement = screen.queryByText(/error details/i);
-    // Note: This might not work as expected since import.meta.env is compiled
-    // Just check that error UI is shown
+    // Note: import.meta.env is compiled at build time, so mocking doesn't work
+    // Just verify error UI is shown
     expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
 
     vi.unstubAllEnvs();
@@ -143,8 +141,8 @@ describe('ErrorBoundary', () => {
 
   it('navigates home when "Go Home" button is clicked', () => {
     // Mock window.location.href
-    delete window.location;
-    window.location = { href: '' } as any;
+    delete (window as { location?: Location }).location;
+    (window as { location: { href: string } }).location = { href: '' };
 
     render(
       <ErrorBoundary>

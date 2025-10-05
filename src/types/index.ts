@@ -381,7 +381,7 @@ export type StruggleAnalyzer = (county: County, attempts: number, timeSpent: num
 export interface GameEvent {
   type: GameEventType;
   timestamp: number;
-  data: any;
+  data: Record<string, unknown>;
 }
 
 export enum GameEventType {

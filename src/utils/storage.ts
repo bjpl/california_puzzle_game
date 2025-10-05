@@ -58,7 +58,7 @@ export interface LeaderboardEntry {
 
 class StorageManager {
   private currentProfile: UserProfile | null = null;
-  private listeners: Map<string, Set<(data: any) => void>> = new Map();
+  private listeners: Map<string, Set<(data: Record<string, unknown>) => void>> = new Map();
 
   constructor() {
     this.initializeStorage();
@@ -124,7 +124,7 @@ class StorageManager {
     this.notifyListeners(key, null);
   }
 
-  private dateReplacer(key: string, value: any): any {
+  private dateReplacer(key: string, value: Record<string, unknown>): Record<string, unknown> {
     if (value instanceof Date) {
       return { __date: value.toISOString() };
     }
@@ -134,7 +134,7 @@ class StorageManager {
     return value;
   }
 
-  private deserializeDates(obj: any): any {
+  private deserializeDates(obj: Record<string, unknown>): Record<string, unknown> {
     if (obj === null || obj === undefined) return obj;
     
     if (typeof obj === 'object') {
@@ -149,7 +149,7 @@ class StorageManager {
         return obj.map(item => this.deserializeDates(item));
       }
       
-      const result: any = {};
+      const result: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(obj)) {
         result[key] = this.deserializeDates(value);
       }
@@ -389,21 +389,21 @@ class StorageManager {
   }
 
   // Event Listeners
-  public addListener(key: string, callback: (data: any) => void): void {
+  public addListener(key: string, callback: (data: Record<string, unknown>) => void): void {
     if (!this.listeners.has(key)) {
       this.listeners.set(key, new Set());
     }
     this.listeners.get(key)!.add(callback);
   }
 
-  public removeListener(key: string, callback: (data: any) => void): void {
+  public removeListener(key: string, callback: (data: Record<string, unknown>) => void): void {
     const listeners = this.listeners.get(key);
     if (listeners) {
       listeners.delete(callback);
     }
   }
 
-  private notifyListeners(key: string, data: any): void {
+  private notifyListeners(key: string, data: Record<string, unknown>): void {
     const listeners = this.listeners.get(key);
     if (listeners) {
       listeners.forEach(callback => callback(data));

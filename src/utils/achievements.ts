@@ -21,7 +21,7 @@ export enum AchievementRarity {
 
 export interface AchievementRequirement {
   type: RequirementType;
-  target: any;
+  target: Record<string, unknown>;
   current: number;
   threshold: number;
   description: string;
@@ -724,7 +724,7 @@ class AchievementSystem {
       }
       
       if (parsed.notifications) {
-        this.notifications = parsed.notifications.map((n: any) => ({
+        this.notifications = parsed.notifications.map((n: Record<string, unknown>) => ({
           ...n,
           timestamp: new Date(n.timestamp)
         }));

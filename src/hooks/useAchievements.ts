@@ -19,7 +19,7 @@ interface AchievementHookReturn {
   recentUnlocks: AchievementDefinition[];
   
   // Actions
-  checkAchievements: (stats: GameStats, placement?: PlacementResult, gameData?: any) => Promise<Achievement[]>;
+  checkAchievements: (stats: GameStats, placement?: PlacementResult, gameData?: Record<string, unknown>) => Promise<Achievement[]>;
   markNotificationAsRead: (index: number) => void;
   markAllNotificationsAsRead: () => void;
   getAchievementsByCategory: (category: string) => AchievementDefinition[];

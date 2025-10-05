@@ -17,13 +17,13 @@ interface CountyFeature {
   };
   geometry: {
     type: string;
-    coordinates: any;
+    coordinates: Record<string, unknown>;
   };
 }
 
 interface CountyDropZoneProps {
   county: CountyFeature;
-  projection: any;
+  projection: Record<string, unknown>;
 }
 
 function CountyDropZone({ county, projection }: CountyDropZoneProps) {
@@ -51,7 +51,7 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   const textColor = getSvgTextFill(fillColor);
 
   // Convert coordinates to path
-  const coordinatesToPath = (coords: any[], isHole = false): string => {
+  const coordinatesToPath = (coords: Record<string, unknown>[], isHole = false): string => {
     if (!coords || coords.length === 0) return '';
 
     const points = coords.map(coord => projection(coord));
@@ -105,7 +105,7 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
     const geom = county.geometry;
     let totalX = 0, totalY = 0, count = 0;
 
-    const processCoords = (coords: any[]) => {
+    const processCoords = (coords: Record<string, unknown>[]) => {
       coords.forEach(coord => {
         const point = projection(coord);
         if (point) {

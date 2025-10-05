@@ -7,7 +7,7 @@ import { MOCK_CALIFORNIA_COUNTIES, MOCK_PERFORMANCE_METRICS } from '../fixtures'
 class PerformanceMonitor {
   private metrics: {
     renderTime: number;
-    memoryUsage: any;
+    memoryUsage: Record<string, unknown>;
     fps: number;
     drawCalls: number;
     nodeCount: number;
@@ -59,7 +59,7 @@ class PerformanceMonitor {
     return end - start;
   }
 
-  measureMemoryUsage(): any {
+  measureMemoryUsage(): Record<string, unknown> {
     if ((performance as any).memory) {
       return {
         usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
@@ -95,7 +95,7 @@ class PerformanceMonitor {
 // Mock high-performance map component
 const MockHighPerformanceMap: React.FC<{
   counties: typeof MOCK_CALIFORNIA_COUNTIES;
-  onPerformanceData?: (metrics: any) => void;
+  onPerformanceData?: (metrics: Record<string, unknown>) => void;
   enableOptimizations?: boolean;
   stressTest?: boolean;
 }> = ({ counties, onPerformanceData, enableOptimizations = true, stressTest = false }) => {
@@ -228,7 +228,7 @@ const MockHighPerformanceMap: React.FC<{
 const MockGamePerformanceTest: React.FC<{
   countyCount?: number;
   enableAnimations?: boolean;
-  onPerformanceMetrics?: (metrics: any) => void;
+  onPerformanceMetrics?: (metrics: Record<string, unknown>) => void;
 }> = ({ countyCount = 10, enableAnimations = true, onPerformanceMetrics }) => {
   const [gameState, setGameState] = React.useState({
     selectedCounty: null as string | null,
@@ -351,14 +351,14 @@ const MockGamePerformanceTest: React.FC<{
 };
 
 describe('Rendering Performance Benchmarks', () => {
-  let performanceData: any[] = [];
+  let performanceData: Record<string, unknown>[] = [];
 
   beforeEach(() => {
     performanceData = [];
     vi.clearAllMocks();
   });
 
-  const collectPerformanceData = (data: any) => {
+  const collectPerformanceData = (data: Record<string, unknown>) => {
     performanceData.push(data);
   };
 
@@ -773,7 +773,7 @@ describe('Rendering Performance Benchmarks', () => {
     it('should show memoization benefits', async () => {
       let renderCount = 0;
 
-      const ExpensiveComponent: React.FC<{ data: any[] }> = React.memo(({ data }) => {
+      const ExpensiveComponent: React.FC<{ data: Record<string, unknown>[] }> = React.memo(({ data }) => {
         renderCount++;
 
         // Simulate expensive computation

@@ -448,7 +448,7 @@ describe('Memory Usage Tests', () => {
     it('should demonstrate React.memo benefits', async () => {
       let renderCount = 0;
 
-      const ExpensiveComponent = React.memo<{ data: any[] }>(({ data }) => {
+      const ExpensiveComponent = React.memo<{ data: Record<string, unknown>[] }>(({ data }) => {
         renderCount++;
 
         return (
@@ -490,7 +490,7 @@ describe('Memory Usage Tests', () => {
       let calculationCount = 0;
 
       const ComponentWithExpensiveCalculation: React.FC<{
-        items: any[];
+        items: Record<string, unknown>[];
         filter: string;
       }> = ({ items, filter }) => {
         const filteredItems = React.useMemo(() => {

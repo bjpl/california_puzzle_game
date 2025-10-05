@@ -136,7 +136,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   const sortedCounties = [...filteredCounties].sort((a, b) => a.name.localeCompare(b.name));
 
   // Helper function to merge county data from multiple sources
-  const getMergedCountyData = (county: any) => {
+  const getMergedCountyData = (county: Record<string, unknown>) => {
     // Try to find matching data from californiaCounties.ts by name matching
     const normalizedId = county.id.toLowerCase().replace(/-/g, '_');
     const comprehensiveData = californiaCounties.find(c => {
@@ -176,7 +176,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   };
 
   // Handle county selection
-  const handleCountySelect = (county: any) => {
+  const handleCountySelect = (county: Record<string, unknown>) => {
     // Check if county already has the data we need (from californiaCountiesComplete.ts)
     if (county.capital && county.population && county.area && county.founded) {
       setSelectedCounty(county);
@@ -195,7 +195,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
   // Generate quiz question using the comprehensive database
   const generateQuizQuestion = () => {
     // Apply region filter and ensure randomization
-    const filters: any = {
+    const filters: Record<string, unknown> = {
       region: selectedRegion !== 'all' ? selectedRegion : undefined,
       excludeIds: Array.from(usedQuestionIds)
     };
@@ -1402,7 +1402,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                 <div className="space-y-5">
                   {/* Group counties by decade */}
                   {(() => {
-                    const countiesByDecade = sortedCounties.reduce((acc: any, county) => {
+                    const countiesByDecade = sortedCounties.reduce((acc: Record<string, unknown>, county) => {
                       const year = county.founded || county.established;
                       if (year) {
                         const decade = Math.floor(year / 10) * 10;
@@ -1443,8 +1443,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
                         {/* Counties in this decade */}
                         <div className="flex flex-wrap gap-3 ml-6">
                           {countiesByDecade[decade]
-                            .sort((a: any, b: any) => (a.founded || a.established) - (b.founded || b.established))
-                            .map((county: any) => (
+                            .sort((a: Record<string, unknown>, b: Record<string, unknown>) => (a.founded || a.established) - (b.founded || b.established))
+                            .map((county: Record<string, unknown>) => (
                             <button
                               key={county.id}
                               onClick={() => handleCountySelect(county)}

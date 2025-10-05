@@ -27,7 +27,7 @@ export interface InteractiveElement {
   type: 'question' | 'comparison' | 'timeline' | 'infographic';
   content: string;
   answer?: string;
-  data?: any;
+  data?: Record<string, unknown>;
 }
 
 // County-specific educational content

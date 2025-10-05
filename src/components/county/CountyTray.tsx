@@ -4,7 +4,7 @@ import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { getRegionColor } from '../../config/regionColors';
 import { Badge, Heading, Text, Card } from '../ui';
 
-function DraggableCounty({ county }: { county: any }) {
+function DraggableCounty({ county }: { county: Record<string, unknown> }) {
   const { placedCounties, selectCounty, currentCounty } = useGame();
   const sound = useSoundEffect();
   const isPlaced = placedCounties.has(county.id);

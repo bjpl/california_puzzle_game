@@ -26,14 +26,14 @@ interface CountyFeature {
   };
   geometry: {
     type: string;
-    coordinates: any;
+    coordinates: Record<string, unknown>;
   };
 }
 
 function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCountyLeave, onLabelPosition }: {
   county: CountyFeature;
   isDragging: boolean;
-  onCountyClick?: (county: any) => void;
+  onCountyClick?: (county: Record<string, unknown>) => void;
   onCountyHover?: (countyId: string) => void;
   onCountyLeave?: () => void;
   onLabelPosition?: (countyId: string, position: [number, number]) => void;

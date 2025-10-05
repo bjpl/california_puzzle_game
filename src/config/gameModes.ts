@@ -387,7 +387,7 @@ export const getModesByCategory = (category: GameModeCategory): GameModeConfigur
   return GAME_MODES.filter(mode => mode.category === category);
 };
 
-export const getUnlockedModes = (playerStats: any): GameModeConfiguration[] => {
+export const getUnlockedModes = (playerStats: Record<string, unknown>): GameModeConfiguration[] => {
   return GAME_MODES.filter(mode => {
     if (!mode.isLocked) return true;
 

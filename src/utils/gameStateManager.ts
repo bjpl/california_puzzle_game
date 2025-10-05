@@ -20,7 +20,7 @@ export interface SavedGameState {
     showMultipliers: boolean;
     playerName: string;
   };
-  placementHistory: any[];
+  placementHistory: Record<string, unknown>[];
   currentCountyId?: string;
   timestamp: number;
 }

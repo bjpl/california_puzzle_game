@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useGame } from '../../context/GameContext';
 
-export default function StudyMode({ onClose, focusCounty }: { onClose: () => void; focusCounty?: any }) {
+export default function StudyMode({ onClose, focusCounty }: { onClose: () => void; focusCounty?: Record<string, unknown> }) {
   const { counties } = useGame();
   const [selectedRegion, setSelectedRegion] = useState<string>(focusCounty ? focusCounty.region : 'all');
   const [selectedCounty, setSelectedCounty] = useState<any>(focusCounty || null);

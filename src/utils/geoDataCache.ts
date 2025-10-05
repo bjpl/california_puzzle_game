@@ -6,7 +6,7 @@
 export interface CachedGeoData {
   geoData: {
     type: 'FeatureCollection';
-    features: any[];
+    features: Record<string, unknown>[];
     metadata?: {
       optimizationLevel: string;
       tolerance: number;

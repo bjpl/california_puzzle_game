@@ -28,7 +28,7 @@ export interface UseSoundReturn {
   toggleMute: () => void;
   startBackgroundMusic: () => void;
   stopBackgroundMusic: () => void;
-  soundSettings: any;
+  soundSettings: Record<string, unknown>;
   initializeSound: () => Promise<void>;
 }
 

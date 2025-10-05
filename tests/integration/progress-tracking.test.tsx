@@ -129,6 +129,13 @@ function useProgressTracking() {
     }));
   };
 
+  const addAchievement = (achievement: string) => {
+    setState(prev => ({
+      ...prev,
+      achievements: [...prev.achievements, achievement]
+    }));
+  };
+
   return {
     state,
     calculateCurrentStreak,
@@ -136,7 +143,8 @@ function useProgressTracking() {
     getMasteredCounties,
     calculateTotalPoints,
     recordAttempt,
-    addCounty
+    addCounty,
+    addAchievement
   };
 }
 
@@ -380,9 +388,10 @@ describe('Progress Tracking Integration Tests', () => {
 
       // Manually add achievements (in real implementation, these would be awarded automatically)
       act(() => {
-        result.current.state.achievements = ['first-county', 'ten-counties', 'streak-7'];
+        result.current.addAchievement('first-county');
+        result.current.addAchievement('ten-counties');
+        result.current.addAchievement('streak-7');
       });
-
       const points = result.current.calculateTotalPoints();
       expect(points).toBeGreaterThanOrEqual(150); // 3 achievements * 50 points
     });
@@ -409,9 +418,9 @@ describe('Progress Tracking Integration Tests', () => {
         });
 
         // Add achievements
-        result.current.state.achievements = ['first-county']; // 50 points
-      });
+        result.current.addAchievement('first-county'); // 50 points
 
+      });
       const totalPoints = result.current.calculateTotalPoints();
       expect(totalPoints).toBeGreaterThanOrEqual(90); // 40 base + 50 achievement
     });
@@ -448,15 +457,16 @@ describe('Progress Tracking Integration Tests', () => {
         result.current.addCounty({
           id: 'improving-county',
           name: 'Improving County',
-          attempts: 3,
-          correctAttempts: 1,
-          masteryLevel: 'struggling'
+          attempts: 1,
+          correctAttempts: 0,
+          masteryLevel: 'learning'
         });
       });
 
       // Record correct attempts
       act(() => {
         result.current.recordAttempt('improving-county', true);
+      // Now at 5 attempts, 4 correct = 80% - mastered!
         result.current.recordAttempt('improving-county', true);
         result.current.recordAttempt('improving-county', true);
         result.current.recordAttempt('improving-county', true);

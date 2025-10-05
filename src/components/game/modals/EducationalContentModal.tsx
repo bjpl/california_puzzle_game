@@ -5,9 +5,9 @@ import CountyShapeDisplay from '../../county/CountyShapeDisplay';
 interface EducationalContentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  county: any;
-  educationContent: any;
-  memoryAid?: any;
+  county: Record<string, unknown>;
+  educationContent: Record<string, unknown>;
+  memoryAid?: Record<string, unknown>;
 }
 
 export default function EducationalContentModal({

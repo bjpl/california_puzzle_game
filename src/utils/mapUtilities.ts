@@ -20,7 +20,7 @@ export interface CaliforniaBounds {
 
 export interface CountyCollisionResult {
   countyId: string;
-  county: any;
+  county: Record<string, unknown>;
   overlap: number;
   center: [number, number];
   snapPoint: [number, number];
@@ -28,7 +28,7 @@ export interface CountyCollisionResult {
 
 export interface NearestTargetResult {
   countyId: string;
-  county: any;
+  county: Record<string, unknown>;
   distance: number;
   center: [number, number];
 }
@@ -37,8 +37,8 @@ export class CaliforniaMapUtilities {
   private options: MapOptions;
   private currentProjection: d3.GeoProjection | null = null;
   private currentPath: d3.GeoPath | null = null;
-  private geoData: any = null;
-  private countyLookup: any = null;
+  private geoData: Record<string, unknown> = null;
+  private countyLookup: Record<string, unknown> = null;
   private currentZoomLevel = 1;
 
   // California geographic bounds
@@ -143,7 +143,7 @@ export class CaliforniaMapUtilities {
     }
 
     const county = this.geoData.features.find(
-      (f: any) => f.properties.GEOID === countyId
+      (f: Record<string, unknown>) => f.properties.GEOID === countyId
     );
 
     if (!county) {
@@ -182,7 +182,7 @@ export class CaliforniaMapUtilities {
   }
 
   // County boundary detection
-  getCountyAtPoint(point: [number, number], transform: d3.ZoomTransform | null = null): { county: any; id: string; name: string; properties: any } | null {
+  getCountyAtPoint(point: [number, number], transform: d3.ZoomTransform | null = null): { county: Record<string, unknown>; id: string; name: string; properties: Record<string, unknown> } | null {
     if (!this.geoData || !this.currentPath || !this.currentProjection) {
       return null;
     }
@@ -221,11 +221,11 @@ export class CaliforniaMapUtilities {
   }
 
   // Utility: Point-in-polygon test
-  private pointInPolygon(point: [number, number], geometry: any): boolean {
+  private pointInPolygon(point: [number, number], geometry: Record<string, unknown>): boolean {
     if (geometry.type === 'Polygon') {
       return this.pointInPolygonRing(point, geometry.coordinates[0]);
     } else if (geometry.type === 'MultiPolygon') {
-      return geometry.coordinates.some((polygon: any) =>
+      return geometry.coordinates.some((polygon: Record<string, unknown>) =>
         this.pointInPolygonRing(point, polygon[0])
       );
     }
@@ -291,7 +291,7 @@ export class CaliforniaMapUtilities {
     if (!this.currentPath) return null;
 
     const county = this.geoData.features.find(
-      (f: any) => f.properties.GEOID === countyId
+      (f: Record<string, unknown>) => f.properties.GEOID === countyId
     );
 
     if (!county) return null;
@@ -311,7 +311,7 @@ export class CaliforniaMapUtilities {
     if (!this.currentPath) return null;
 
     const county = this.geoData.features.find(
-      (f: any) => f.properties.GEOID === countyId
+      (f: Record<string, unknown>) => f.properties.GEOID === countyId
     );
 
     if (!county) return null;
@@ -328,7 +328,7 @@ export class CaliforniaMapUtilities {
 
   // Getters for internal state (for collision detector)
   get path(): d3.GeoPath | null { return this.currentPath; }
-  get data(): any { return this.geoData; }
+  get data(): Record<string, unknown> { return this.geoData; }
   get projection(): d3.GeoProjection | null { return this.currentProjection; }
 }
 
@@ -337,7 +337,7 @@ export class CountyCollisionDetector {
   private mapUtils: CaliforniaMapUtilities;
   private spatialIndex = new Map<string, {
     bounds: [[number, number], [number, number]];
-    feature: any;
+    feature: Record<string, unknown>;
     center: [number, number];
   }>();
 
@@ -351,7 +351,7 @@ export class CountyCollisionDetector {
 
     this.spatialIndex.clear();
 
-    this.mapUtils.data.features.forEach((feature: any) => {
+    this.mapUtils.data.features.forEach((feature: Record<string, unknown>) => {
       const bounds = this.mapUtils.path!.bounds(feature);
       const id = feature.properties.GEOID;
 

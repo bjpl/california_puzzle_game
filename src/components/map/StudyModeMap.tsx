@@ -7,8 +7,8 @@ import { mapLogger } from '../../utils/logger';
 
 interface StudyModeMapProps {
   onCountySelect?: (countyId: string) => void;
-  selectedCounty?: any;
-  filteredCounties?: any[];
+  selectedCounty?: Record<string, unknown>;
+  filteredCounties?: Record<string, unknown>[];
   showAllCounties?: boolean;
 }
 

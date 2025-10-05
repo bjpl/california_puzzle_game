@@ -182,7 +182,7 @@ export const withPageTransition = (
   Component: React.ComponentType<any>,
   transitionProps?: Partial<PageTransitionProps>
 ) => {
-  return (props: any) => (
+  return (props: Record<string, unknown>) => (
     <PageTransition {...transitionProps}>
       <Component {...props} />
     </PageTransition>

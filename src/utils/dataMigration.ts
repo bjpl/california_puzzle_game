@@ -9,8 +9,8 @@ import { storageLogger } from './logger';
 export interface MigrationScript {
   version: string;
   description: string;
-  migrate: (data: any) => any;
-  rollback?: (data: any) => any;
+  migrate: (data: Record<string, unknown>) => any;
+  rollback?: (data: Record<string, unknown>) => any;
 }
 
 export interface MigrationResult {
@@ -34,7 +34,7 @@ class DataMigrationManager {
     this.addMigration({
       version: '1.0.0',
       description: 'Initial data structure setup',
-      migrate: (data: any) => {
+      migrate: (data: Record<string, unknown>) => {
         // If no version exists, this is a fresh install
         if (!data || typeof data !== 'object') {
           return {
@@ -94,7 +94,7 @@ class DataMigrationManager {
     this.addMigration({
       version: '1.1.0',
       description: 'Add new achievement system and profile features',
-      migrate: (data: any) => {
+      migrate: (data: Record<string, unknown>) => {
         const migrated = { ...data };
         
         // Add new fields if they don't exist
@@ -109,7 +109,7 @@ class DataMigrationManager {
         
         // Add new achievement fields
         if (migrated.achievements && Array.isArray(migrated.achievements)) {
-          migrated.achievements = migrated.achievements.map((achievement: any) => ({
+          migrated.achievements = migrated.achievements.map((achievement: Record<string, unknown>) => ({
             ...achievement,
             rarity: achievement.rarity || 'common',
             points: achievement.points || 10,
@@ -118,7 +118,7 @@ class DataMigrationManager {
         }
         
         // Add profile preferences
-        migrated.profiles.forEach((profile: any) => {
+        migrated.profiles.forEach((profile: Record<string, unknown>) => {
           if (!profile.preferences) {
             profile.preferences = {
               theme: 'auto',
@@ -134,12 +134,12 @@ class DataMigrationManager {
         migrated.version = '1.1.0';
         return migrated;
       },
-      rollback: (data: any) => {
+      rollback: (data: Record<string, unknown>) => {
         const rolledBack = { ...data };
         
         // Remove new fields
         if (rolledBack.profiles) {
-          rolledBack.profiles.forEach((profile: any) => {
+          rolledBack.profiles.forEach((profile: Record<string, unknown>) => {
             delete profile.preferences;
           });
         }
@@ -158,12 +158,12 @@ class DataMigrationManager {
     this.addMigration({
       version: '1.2.0',
       description: 'Enhanced leaderboard and session tracking',
-      migrate: (data: any) => {
+      migrate: (data: Record<string, unknown>) => {
         const migrated = { ...data };
         
         // Add new leaderboard fields
         if (migrated.leaderboard && Array.isArray(migrated.leaderboard)) {
-          migrated.leaderboard = migrated.leaderboard.map((entry: any) => ({
+          migrated.leaderboard = migrated.leaderboard.map((entry: Record<string, unknown>) => ({
             ...entry,
             accuracy: entry.accuracy || 0.8,
             date: entry.date || new Date().toISOString()
@@ -172,7 +172,7 @@ class DataMigrationManager {
         
         // Add session metadata
         if (migrated.sessions && Array.isArray(migrated.sessions)) {
-          migrated.sessions = migrated.sessions.map((session: any) => ({
+          migrated.sessions = migrated.sessions.map((session: Record<string, unknown>) => ({
             ...session,
             achievementsUnlocked: session.achievementsUnlocked || [],
             endTime: session.endTime || session.startTime
@@ -323,9 +323,9 @@ class DataMigrationManager {
     return 0;
   }
 
-  private loadAllData(): any {
+  private loadAllData(): Record<string, unknown> {
     try {
-      const data: any = {};
+      const data: Record<string, unknown> = {};
       
       // Load all storage keys
       const prefix = 'california_puzzle_';
@@ -351,7 +351,7 @@ class DataMigrationManager {
     }
   }
 
-  private saveAllData(data: any): void {
+  private saveAllData(data: Record<string, unknown>): void {
     try {
       const prefix = 'california_puzzle_';
       
