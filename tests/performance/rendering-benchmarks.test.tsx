@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
@@ -110,10 +111,12 @@ const MockHighPerformanceMap: React.FC<{
 
     const expanded = [];
     for (let i = 0; i < multiplier; i++) {
-      expanded.push(...counties.map(county => ({
-        ...county,
-        id: `${county.id}-${i}`,
-      })));
+      expanded.push(
+        ...counties.map((county) => ({
+          ...county,
+          id: `${county.id}-${i}`,
+        }))
+      );
     }
     return expanded;
   }, [counties, multiplier, stressTest]);
@@ -200,7 +203,9 @@ const MockHighPerformanceMap: React.FC<{
       <div data-testid="performance-metrics">
         {renderMetrics && (
           <div>
-            <div data-testid="render-time">Render Time: {renderMetrics.renderTime.toFixed(2)}ms</div>
+            <div data-testid="render-time">
+              Render Time: {renderMetrics.renderTime.toFixed(2)}ms
+            </div>
             <div data-testid="memory-usage">
               Memory: {(renderMetrics.memoryUsage.usedJSHeapSize / 1024 / 1024).toFixed(2)}MB
             </div>
@@ -216,9 +221,7 @@ const MockHighPerformanceMap: React.FC<{
         viewBox="0 0 800 600"
         data-testid="performance-svg"
       >
-        <g data-testid="counties-group">
-          {renderCounties}
-        </g>
+        <g data-testid="counties-group">{renderCounties}</g>
       </svg>
     </div>
   );
@@ -242,13 +245,13 @@ const MockGamePerformanceTest: React.FC<{
   const handleCountySelect = (countyId: string) => {
     const start = performance.now();
 
-    setGameState(prev => ({ ...prev, selectedCounty: countyId }));
+    setGameState((prev) => ({ ...prev, selectedCounty: countyId }));
 
     const end = performance.now();
     onPerformanceMetrics?.({
       operation: 'county-select',
       duration: end - start,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   };
 
@@ -256,10 +259,10 @@ const MockGamePerformanceTest: React.FC<{
     const start = performance.now();
 
     if (enableAnimations) {
-      setGameState(prev => ({ ...prev, isAnimating: true }));
+      setGameState((prev) => ({ ...prev, isAnimating: true }));
 
       setTimeout(() => {
-        setGameState(prev => ({
+        setGameState((prev) => ({
           ...prev,
           placedCounties: [...prev.placedCounties, countyId],
           selectedCounty: null,
@@ -270,11 +273,11 @@ const MockGamePerformanceTest: React.FC<{
         onPerformanceMetrics?.({
           operation: 'county-place-animated',
           duration: end - start,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }, 300);
     } else {
-      setGameState(prev => ({
+      setGameState((prev) => ({
         ...prev,
         placedCounties: [...prev.placedCounties, countyId],
         selectedCounty: null,
@@ -284,7 +287,7 @@ const MockGamePerformanceTest: React.FC<{
       onPerformanceMetrics?.({
         operation: 'county-place-direct',
         duration: end - start,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
   };
@@ -305,7 +308,7 @@ const MockGamePerformanceTest: React.FC<{
       onPerformanceMetrics?.({
         operation: 'component-render',
         metrics,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     };
 
@@ -315,7 +318,7 @@ const MockGamePerformanceTest: React.FC<{
   return (
     <div data-testid="game-performance-test">
       <div data-testid="counties-panel">
-        {counties.map(county => (
+        {counties.map((county) => (
           <button
             key={county.id}
             data-testid={`county-button-${county.id}`}
@@ -328,7 +331,7 @@ const MockGamePerformanceTest: React.FC<{
       </div>
 
       <div data-testid="map-panel">
-        {counties.map(county => (
+        {counties.map((county) => (
           <div
             key={county.id}
             data-testid={`map-cell-${county.id}`}
@@ -500,10 +503,7 @@ describe('Rendering Performance Benchmarks', () => {
       };
 
       render(
-        <MockGamePerformanceTest
-          countyCount={5}
-          onPerformanceMetrics={collectPerformanceData}
-        />
+        <MockGamePerformanceTest countyCount={5} onPerformanceMetrics={collectPerformanceData} />
       );
 
       // Simulate rapid interactions
@@ -545,11 +545,15 @@ describe('Rendering Performance Benchmarks', () => {
       mapCell.click();
 
       await waitFor(() => {
-        const animatedOperations = performanceData.filter(d => d.operation === 'county-place-animated');
+        const animatedOperations = performanceData.filter(
+          (d) => d.operation === 'county-place-animated'
+        );
         expect(animatedOperations.length).toBeGreaterThan(0);
       });
 
-      const animatedOperation = performanceData.find(d => d.operation === 'county-place-animated');
+      const animatedOperation = performanceData.find(
+        (d) => d.operation === 'county-place-animated'
+      );
 
       // Animation should complete within reasonable time
       expect(animatedOperation.duration).toBeLessThan(400); // 300ms animation + overhead
@@ -572,11 +576,13 @@ describe('Rendering Performance Benchmarks', () => {
       mapCell1.click();
 
       await waitFor(() => {
-        const animatedOps = performanceData.filter(d => d.operation === 'county-place-animated');
+        const animatedOps = performanceData.filter((d) => d.operation === 'county-place-animated');
         expect(animatedOps.length).toBeGreaterThan(0);
       });
 
-      const animatedTime = performanceData.find(d => d.operation === 'county-place-animated')?.duration;
+      const animatedTime = performanceData.find(
+        (d) => d.operation === 'county-place-animated'
+      )?.duration;
 
       // Clear and test without animations
       performanceData = [];
@@ -596,11 +602,13 @@ describe('Rendering Performance Benchmarks', () => {
       mapCell2.click();
 
       await waitFor(() => {
-        const directOps = performanceData.filter(d => d.operation === 'county-place-direct');
+        const directOps = performanceData.filter((d) => d.operation === 'county-place-direct');
         expect(directOps.length).toBeGreaterThan(0);
       });
 
-      const directTime = performanceData.find(d => d.operation === 'county-place-direct')?.duration;
+      const directTime = performanceData.find(
+        (d) => d.operation === 'county-place-direct'
+      )?.duration;
 
       // Direct should be faster than animated
       expect(directTime).toBeLessThan(animatedTime);
@@ -650,7 +658,7 @@ describe('Rendering Performance Benchmarks', () => {
 
         React.useEffect(() => {
           const timer = setInterval(() => {
-            setCount(c => c + 1);
+            setCount((c) => c + 1);
           }, 50);
 
           return () => clearInterval(timer);
@@ -667,7 +675,7 @@ describe('Rendering Performance Benchmarks', () => {
       const { unmount } = render(<TestComponent />);
 
       // Let it update a few times
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
       unmount();
 
@@ -750,7 +758,7 @@ describe('Rendering Performance Benchmarks', () => {
 
         return (
           <div data-testid="virtualized-list">
-            {visibleItems.map(county => (
+            {visibleItems.map((county) => (
               <div key={county.id} data-testid={`item-${county.id}`}>
                 {county.name}
               </div>
@@ -773,33 +781,29 @@ describe('Rendering Performance Benchmarks', () => {
     it('should show memoization benefits', async () => {
       let renderCount = 0;
 
-      const ExpensiveComponent: React.FC<{ data: Record<string, unknown>[] }> = React.memo(({ data }) => {
-        renderCount++;
+      const ExpensiveComponent: React.FC<{ data: Record<string, unknown>[] }> = React.memo(
+        ({ data }) => {
+          renderCount++;
 
-        // Simulate expensive computation
-        const processedData = data.map(item => ({
-          ...item,
-          processed: true,
-        }));
+          // Simulate expensive computation
+          const processedData = data.map((item) => ({
+            ...item,
+            processed: true,
+          }));
 
-        return (
-          <div data-testid="expensive-component">
-            {processedData.length} items processed
-          </div>
-        );
-      });
+          return (
+            <div data-testid="expensive-component">{processedData.length} items processed</div>
+          );
+        }
+      );
 
       const ParentComponent: React.FC = () => {
         const [count, setCount] = React.useState(0);
-        const memoizedData = React.useMemo(() =>
-          MOCK_CALIFORNIA_COUNTIES.slice(0, 5), []
-        );
+        const memoizedData = React.useMemo(() => MOCK_CALIFORNIA_COUNTIES.slice(0, 5), []);
 
         return (
           <div>
-            <button onClick={() => setCount(c => c + 1)}>
-              Update count: {count}
-            </button>
+            <button onClick={() => setCount((c) => c + 1)}>Update count: {count}</button>
             <ExpensiveComponent data={memoizedData} />
           </div>
         );

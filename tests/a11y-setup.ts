@@ -8,7 +8,7 @@ export const axe = configureAxe({
     'color-contrast': { enabled: false },
     'landmark-one-main': { enabled: false },
     'page-has-heading-one': { enabled: false },
-    'region': { enabled: false },
+    region: { enabled: false },
     // Enable important accessibility rules
     'aria-allowed-attr': { enabled: true },
     'aria-hidden-focus': { enabled: true },
@@ -21,12 +21,11 @@ export const axe = configureAxe({
     'focus-order-semantics': { enabled: true },
     'form-field-multiple-labels': { enabled: true },
     'input-button-name': { enabled: true },
-    'keyboard-event-handlers': { enabled: true },
-    'label': { enabled: true },
+    label: { enabled: true },
     'link-name': { enabled: true },
-    'list': { enabled: true },
-    'listitem': { enabled: true },
-    'tabindex': { enabled: true },
+    list: { enabled: true },
+    listitem: { enabled: true },
+    tabindex: { enabled: true },
   },
 });
 
@@ -35,7 +34,7 @@ global.mockScreenReaderAnnounce = vi.fn();
 
 // Mock focus management
 const originalFocus = HTMLElement.prototype.focus;
-HTMLElement.prototype.focus = vi.fn().mockImplementation(function(this: HTMLElement) {
+HTMLElement.prototype.focus = vi.fn().mockImplementation(function (this: HTMLElement) {
   // Call original focus for real behavior
   originalFocus.call(this);
   // Track focus for testing
@@ -79,11 +78,10 @@ export const getFocusableElements = (container: Element): Element[] => {
     '[contenteditable="true"]',
   ];
 
-  return Array.from(container.querySelectorAll(focusableSelectors.join(', ')))
-    .filter((element) => {
-      const style = window.getComputedStyle(element);
-      return style.display !== 'none' && style.visibility !== 'hidden';
-    });
+  return Array.from(container.querySelectorAll(focusableSelectors.join(', '))).filter((element) => {
+    const style = window.getComputedStyle(element);
+    return style.display !== 'none' && style.visibility !== 'hidden';
+  });
 };
 
 // Helper for testing aria-live announcements

@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, no-console, react-hooks/exhaustive-deps */
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import React from 'react';
 import { MOCK_CALIFORNIA_COUNTIES } from '../fixtures';
@@ -45,7 +46,10 @@ class MemoryMonitor {
     this.samples = [];
   }
 
-  async measureMemoryGrowth(operation: () => void, iterations: number = 10): Promise<{
+  async measureMemoryGrowth(
+    operation: () => void,
+    iterations: number = 10
+  ): Promise<{
     initialMemory: number;
     finalMemory: number;
     growth: number;
@@ -55,7 +59,7 @@ class MemoryMonitor {
 
     for (let i = 0; i < iterations; i++) {
       operation();
-      await new Promise(resolve => setTimeout(resolve, 10)); // Small delay
+      await new Promise((resolve) => setTimeout(resolve, 10)); // Small delay
     }
 
     const final = this.getMemoryUsage();
@@ -80,7 +84,7 @@ const MockMemoryTestComponent: React.FC<{
   createLeak = false,
   countyCount = 10,
   createEventListeners = false,
-  createTimers = false
+  createTimers = false,
 }) => {
   const [data, setData] = React.useState<any[]>([]);
   const [listeners, setListeners] = React.useState<any[]>([]);
@@ -104,7 +108,7 @@ const MockMemoryTestComponent: React.FC<{
         item.circularRef = leakyData[(index + 1) % leakyData.length];
       });
 
-      setData(prev => [...prev, ...leakyData]);
+      setData((prev) => [...prev, ...leakyData]);
     }
 
     // Optionally create event listeners without cleanup
@@ -125,7 +129,7 @@ const MockMemoryTestComponent: React.FC<{
     if (createTimers) {
       const timer1 = setInterval(() => {
         // Keep adding data to state (memory leak)
-        setData(prev => [...prev, { timestamp: Date.now() }]);
+        setData((prev) => [...prev, { timestamp: Date.now() }]);
       }, 100);
 
       const timer2 = setTimeout(() => {
@@ -144,7 +148,7 @@ const MockMemoryTestComponent: React.FC<{
         });
 
         // Clean up timers properly
-        timersRef.current.forEach(timer => {
+        timersRef.current.forEach((timer) => {
           clearInterval(timer);
           clearTimeout(timer);
         });
@@ -191,7 +195,7 @@ const MockLargeDatasetComponent: React.FC<{
       <div data-testid="visible-items">Visible: {visibleItems.length}</div>
 
       <div data-testid="items-list">
-        {visibleItems.map(item => (
+        {visibleItems.map((item) => (
           <div key={item.id} data-testid={`item-${item.id}`}>
             {item.name} - {item.data.length} data points
           </div>
@@ -263,7 +267,7 @@ describe('Memory Usage Tests', () => {
         global.gc();
       }
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       const memoryAfterUnmount = memoryMonitor.getMemoryIncrease();
 
@@ -302,9 +306,7 @@ describe('Memory Usage Tests', () => {
       unmount1();
 
       // Component that doesn't clean up listeners
-      const { unmount: unmount2 } = render(
-        <MockMemoryTestComponent createEventListeners={true} />
-      );
+      const { unmount: unmount2 } = render(<MockMemoryTestComponent createEventListeners={true} />);
       unmount2();
 
       // In a real implementation, you would check if listeners are still attached
@@ -327,9 +329,7 @@ describe('Memory Usage Tests', () => {
         return originalClearInterval(...args);
       });
 
-      const { unmount } = render(
-        <MockMemoryTestComponent createTimers={true} />
-      );
+      const { unmount } = render(<MockMemoryTestComponent createTimers={true} />);
 
       expect(timerCount).toBeGreaterThan(0);
 
@@ -401,10 +401,10 @@ describe('Memory Usage Tests', () => {
 
         const loadMore = () => {
           // Remove old items while adding new ones (simulate infinite scroll)
-          setItems(current => {
+          setItems((current) => {
             const newItems = Array.from({ length: 50 }, (_, i) => ({
               id: current.length + i,
-              name: `Item ${current.length + i}`
+              name: `Item ${current.length + i}`,
             }));
 
             // Keep only last 150 items
@@ -421,7 +421,7 @@ describe('Memory Usage Tests', () => {
         return (
           <div data-testid="infinite-scroll">
             <div data-testid="item-count">{items.length}</div>
-            {items.map(item => (
+            {items.map((item) => (
               <div key={item.id}>{item.name}</div>
             ))}
           </div>
@@ -433,7 +433,7 @@ describe('Memory Usage Tests', () => {
       const { unmount } = render(<InfiniteScrollComponent />);
 
       // Let it run for a bit
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const memoryIncrease = memoryMonitor.getMemoryIncreaseInMB();
 
@@ -464,9 +464,7 @@ describe('Memory Usage Tests', () => {
 
         return (
           <div>
-            <button onClick={() => setCount(c => c + 1)}>
-              Count: {count}
-            </button>
+            <button onClick={() => setCount((c) => c + 1)}>Count: {count}</button>
             <ExpensiveComponent data={data} />
           </div>
         );
@@ -497,9 +495,7 @@ describe('Memory Usage Tests', () => {
           calculationCount++;
 
           // Simulate expensive filtering
-          return items.filter(item =>
-            item.name.toLowerCase().includes(filter.toLowerCase())
-          );
+          return items.filter((item) => item.name.toLowerCase().includes(filter.toLowerCase()));
         }, [items, filter]);
 
         return (
@@ -522,10 +518,7 @@ describe('Memory Usage Tests', () => {
               onChange={(e) => setFilter(e.target.value)}
               data-testid="filter-input"
             />
-            <button
-              onClick={() => setUnrelatedState(s => s + 1)}
-              data-testid="unrelated-button"
-            >
+            <button onClick={() => setUnrelatedState((s) => s + 1)} data-testid="unrelated-button">
               Unrelated: {unrelatedState}
             </button>
             <ComponentWithExpensiveCalculation items={items} filter={filter} />
@@ -563,16 +556,13 @@ describe('Memory Usage Tests', () => {
         const [otherState, setOtherState] = React.useState(0);
 
         const handleClick = React.useCallback(() => {
-          setCount(c => c + 1);
+          setCount((c) => c + 1);
         }, []);
 
         return (
           <div>
             <div>Count: {count}</div>
-            <button
-              onClick={() => setOtherState(s => s + 1)}
-              data-testid="other-button"
-            >
+            <button onClick={() => setOtherState((s) => s + 1)} data-testid="other-button">
               Other: {otherState}
             </button>
             <ChildComponent onClick={handleClick} />
@@ -620,7 +610,7 @@ describe('Memory Usage Tests', () => {
         memoryMonitor.takeSample();
         unmount();
 
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
       }
 
       const averageUsage = memoryMonitor.getAverageUsage();

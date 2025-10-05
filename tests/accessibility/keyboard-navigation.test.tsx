@@ -1,14 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { axe } from '../a11y-setup';
-import { simulateKeyDown, simulateKeyUp, getFocusableElements } from '../a11y-setup';
 
 // Mock keyboard-accessible game component
 const MockKeyboardAccessibleGame: React.FC = () => {
   const [selectedCounty, setSelectedCounty] = React.useState<string | null>(null);
-  const [focusedCounty, setFocusedCounty] = React.useState<string | null>(null);
+  const [_focusedCounty, setFocusedCounty] = React.useState<string | null>(null);
   const [placedCounties, setPlacedCounties] = React.useState<string[]>([]);
   const [isGameStarted, setIsGameStarted] = React.useState(false);
   const [announcements, setAnnouncements] = React.useState<string[]>([]);
@@ -16,11 +15,13 @@ const MockKeyboardAccessibleGame: React.FC = () => {
   const counties = ['los-angeles', 'san-diego', 'orange'];
 
   const announceToScreenReader = (message: string) => {
-    setAnnouncements(prev => [...prev, message]);
+    setAnnouncements((prev) => [...prev, message]);
     // Simulate screen reader announcement
-    document.dispatchEvent(new CustomEvent('aria-live-announcement', {
-      detail: { message }
-    }));
+    document.dispatchEvent(
+      new CustomEvent('aria-live-announcement', {
+        detail: { message },
+      })
+    );
   };
 
   const handleKeyDown = (event: React.KeyboardEvent, countyId: string) => {
@@ -33,7 +34,9 @@ const MockKeyboardAccessibleGame: React.FC = () => {
           announceToScreenReader(`Deselected ${countyId.replace('-', ' ')} county`);
         } else {
           setSelectedCounty(countyId);
-          announceToScreenReader(`Selected ${countyId.replace('-', ' ')} county. Press Enter to place or Arrow keys to navigate.`);
+          announceToScreenReader(
+            `Selected ${countyId.replace('-', ' ')} county. Press Enter to place or Arrow keys to navigate.`
+          );
         }
         break;
       case 'ArrowRight':
@@ -74,32 +77,25 @@ const MockKeyboardAccessibleGame: React.FC = () => {
     announceToScreenReader(`Focused on ${prevCounty.replace('-', ' ')} county`);
   };
 
-  const placeCounty = (countyId: string) => {
+  const placeCounty = (_countyId: string) => {
     if (selectedCounty) {
-      setPlacedCounties(prev => [...prev, selectedCounty]);
+      setPlacedCounties((prev) => [...prev, selectedCounty]);
       setSelectedCounty(null);
-      announceToScreenReader(`Placed ${selectedCounty.replace('-', ' ')} county on the map. ${counties.length - placedCounties.length - 1} counties remaining.`);
+      announceToScreenReader(
+        `Placed ${selectedCounty.replace('-', ' ')} county on the map. ${counties.length - placedCounties.length - 1} counties remaining.`
+      );
     }
   };
 
   return (
     <div data-testid="keyboard-accessible-game">
       {/* Screen reader announcements */}
-      <div
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-        data-testid="announcements"
-      >
+      <div aria-live="polite" aria-atomic="true" className="sr-only" data-testid="announcements">
         {announcements[announcements.length - 1]}
       </div>
 
       {/* Skip link */}
-      <a
-        href="#main-content"
-        className="skip-link"
-        data-testid="skip-link"
-      >
+      <a href="#main-content" className="skip-link" data-testid="skip-link">
         Skip to main content
       </a>
 
@@ -117,18 +113,11 @@ const MockKeyboardAccessibleGame: React.FC = () => {
           Start the California counties puzzle game
         </div>
 
-        <button
-          data-testid="instructions"
-          aria-expanded="false"
-          aria-controls="instructions-panel"
-        >
+        <button data-testid="instructions" aria-expanded="false" aria-controls="instructions-panel">
           Instructions
         </button>
 
-        <button
-          data-testid="settings"
-          aria-haspopup="dialog"
-        >
+        <button data-testid="settings" aria-haspopup="dialog">
           Settings
         </button>
       </div>
@@ -151,15 +140,11 @@ const MockKeyboardAccessibleGame: React.FC = () => {
         <h1>California Counties Puzzle</h1>
 
         {/* Game status */}
-        <div
-          data-testid="game-status"
-          role="status"
-          aria-label="Game progress"
-        >
-          <span>Counties placed: {placedCounties.length}/{counties.length}</span>
-          {selectedCounty && (
-            <span>Selected: {selectedCounty.replace('-', ' ')} county</span>
-          )}
+        <div data-testid="game-status" role="status" aria-label="Game progress">
+          <span>
+            Counties placed: {placedCounties.length}/{counties.length}
+          </span>
+          {selectedCounty && <span>Selected: {selectedCounty.replace('-', ' ')} county</span>}
         </div>
 
         {/* Counties list */}
@@ -170,26 +155,30 @@ const MockKeyboardAccessibleGame: React.FC = () => {
             aria-label="Select a county to place"
             aria-activedescendant={selectedCounty ? `county-${selectedCounty}` : undefined}
           >
-            {counties.filter(county => !placedCounties.includes(county)).map((county, index) => (
-              <div
-                key={county}
-                id={`county-${county}`}
-                role="option"
-                tabIndex={index === 0 ? 0 : -1}
-                aria-selected={selectedCounty === county}
-                className={`county-item ${selectedCounty === county ? 'selected' : ''}`}
-                onClick={() => setSelectedCounty(county)}
-                onKeyDown={(e) => handleKeyDown(e, county)}
-                onFocus={() => setFocusedCounty(county)}
-                data-testid={`county-item-${county}`}
-                aria-describedby={`county-${county}-description`}
-              >
-                <span className="county-name">{county.replace('-', ' ')} County</span>
-                <div id={`county-${county}-description`} className="sr-only">
-                  {selectedCounty === county ? 'Selected county. Press Enter to deselect or Arrow keys to navigate.' : 'Press Space or Enter to select this county.'}
+            {counties
+              .filter((county) => !placedCounties.includes(county))
+              .map((county, index) => (
+                <div
+                  key={county}
+                  id={`county-${county}`}
+                  role="option"
+                  tabIndex={index === 0 ? 0 : -1}
+                  aria-selected={selectedCounty === county}
+                  className={`county-item ${selectedCounty === county ? 'selected' : ''}`}
+                  onClick={() => setSelectedCounty(county)}
+                  onKeyDown={(e) => handleKeyDown(e, county)}
+                  onFocus={() => setFocusedCounty(county)}
+                  data-testid={`county-item-${county}`}
+                  aria-describedby={`county-${county}-description`}
+                >
+                  <span className="county-name">{county.replace('-', ' ')} County</span>
+                  <div id={`county-${county}-description`} className="sr-only">
+                    {selectedCounty === county
+                      ? 'Selected county. Press Enter to deselect or Arrow keys to navigate.'
+                      : 'Press Space or Enter to select this county.'}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
 
@@ -205,7 +194,7 @@ const MockKeyboardAccessibleGame: React.FC = () => {
           </div>
 
           <div className="map-grid" role="grid" aria-label="County placement grid">
-            {counties.map((county, index) => (
+            {counties.map((county) => (
               <div
                 key={county}
                 role="gridcell"
@@ -227,23 +216,16 @@ const MockKeyboardAccessibleGame: React.FC = () => {
                     ? `${county.replace('-', ' ')} county is placed here`
                     : selectedCounty
                       ? `Drop zone. Press Enter to place ${selectedCounty.replace('-', ' ')} county here`
-                      : 'Drop zone. Select a county first.'
-                  }
+                      : 'Drop zone. Select a county first.'}
                 </div>
-                {placedCounties.includes(county) && (
-                  <span aria-hidden="true">✓</span>
-                )}
+                {placedCounties.includes(county) && <span aria-hidden="true">✓</span>}
               </div>
             ))}
           </div>
         </div>
 
         {/* Help panel */}
-        <div
-          data-testid="help-panel"
-          role="complementary"
-          aria-labelledby="help-heading"
-        >
+        <div data-testid="help-panel" role="complementary" aria-labelledby="help-heading">
           <h2 id="help-heading">Keyboard Shortcuts</h2>
           <dl>
             <dt>Tab / Shift+Tab</dt>
@@ -271,6 +253,10 @@ describe('Keyboard Navigation Accessibility', () => {
   describe('Basic Navigation', () => {
     it('should support tab navigation', async () => {
       render(<MockKeyboardAccessibleGame />);
+
+      // Tab starts from skip link (first element)
+      await user.tab();
+      expect(screen.getByTestId('skip-link')).toHaveFocus();
 
       // Tab through main controls
       await user.tab();
@@ -309,8 +295,11 @@ describe('Keyboard Navigation Accessibility', () => {
 
       await user.keyboard('{Enter}');
 
-      // Should focus on main content
-      expect(document.activeElement?.closest('#main-content')).toBeTruthy();
+      // Should focus on main content or first element inside it
+      const mainContent = screen.getByTestId('main-content');
+      expect(
+        document.activeElement === mainContent || mainContent.contains(document.activeElement)
+      ).toBeTruthy();
     });
   });
 
@@ -427,8 +416,10 @@ describe('Keyboard Navigation Accessibility', () => {
       const mapCell = screen.getByTestId('map-cell-los-angeles');
       mapCell.focus();
 
-      const statusElement = screen.getByText(/Drop zone. Select a county first./);
-      expect(statusElement).toBeInTheDocument();
+      // Use getAllByText since there are multiple map cells with the same message
+      const statusElements = screen.getAllByText(/Drop zone. Select a county first./);
+      expect(statusElements.length).toBeGreaterThan(0);
+      expect(statusElements[0]).toBeInTheDocument();
     });
   });
 
@@ -503,10 +494,10 @@ describe('Keyboard Navigation Accessibility', () => {
         'start-game',
         'instructions',
         'settings',
-        'county-item-los-angeles'
+        'county-item-los-angeles',
       ];
 
-      expectedOrder.forEach((testId, index) => {
+      expectedOrder.forEach((testId) => {
         const element = screen.getByTestId(testId);
         expect(focusableElements).toContain(element);
       });
@@ -641,12 +632,25 @@ describe('Keyboard Navigation Accessibility', () => {
       render(<MockKeyboardAccessibleGame />);
 
       // All interactive elements should be keyboard accessible
-      const interactiveElements = screen.getAllByRole('button')
-        .concat(screen.getAllByRole('option'))
-        .concat(screen.getAllByRole('gridcell'));
+      const buttons = screen.getAllByRole('button');
+      const options = screen.getAllByRole('option');
+      const gridcells = screen.getAllByRole('gridcell');
 
-      interactiveElements.forEach(element => {
-        expect(element).toHaveAttribute('tabIndex');
+      // Buttons should be focusable (they have tabIndex by default or explicitly)
+      buttons.forEach((element) => {
+        const tabIndex = element.getAttribute('tabindex');
+        const isNaturallyFocusable = element.tagName === 'BUTTON' || element.tagName === 'A';
+        expect(tabIndex !== null || isNaturallyFocusable).toBeTruthy();
+      });
+
+      // Options should have tabIndex
+      options.forEach((element) => {
+        expect(element.getAttribute('tabindex')).toBeTruthy();
+      });
+
+      // Gridcells should have tabIndex
+      gridcells.forEach((element) => {
+        expect(element.getAttribute('tabindex')).toBeTruthy();
       });
     });
   });

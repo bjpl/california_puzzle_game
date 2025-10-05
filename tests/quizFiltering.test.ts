@@ -1,11 +1,12 @@
-import { getQuestionsByRegion, getQuestionsByCounty, getQuestionsByType, getRandomQuestions } from '../src/data/californiaQuizQuestions';
+import { describe, it, expect } from 'vitest';
+import {
+  getQuestionsByRegion,
+  getQuestionsByCounty,
+  getQuestionsByType,
+  getRandomQuestions,
+} from '../src/data/californiaQuizQuestions';
 
-// Test region filtering
-function testRegionFiltering() {
-  console.log('🧪 Testing Quiz Region Filtering\n');
-  console.log('=' .repeat(50));
-
-  // Test filtering for each region
+describe('Quiz Filtering', () => {
   const regions = [
     'Bay Area',
     'Southern California',
@@ -13,54 +14,92 @@ function testRegionFiltering() {
     'Central Coast',
     'Northern California',
     'North Coast',
-    'Sierra Nevada'
+    'Sierra Nevada',
   ];
 
-  regions.forEach(region => {
-    const questions = getQuestionsByRegion(region);
-    console.log(`\n📍 ${region}:`);
-    console.log(`   Questions found: ${questions.length}`);
+  describe('Region Filtering', () => {
+    it('should return questions for each region', () => {
+      regions.forEach((region) => {
+        const questions = getQuestionsByRegion(region);
+        expect(questions.length).toBeGreaterThan(0);
+        questions.forEach((q) => {
+          expect(q.region).toBe(region);
+        });
+      });
+    });
 
-    // Show sample questions from this region
-    const sample = questions.slice(0, 2);
-    sample.forEach(q => {
-      console.log(`   - ${q.countyName}: ${q.question.substring(0, 50)}...`);
+    it('should return all questions when region is "all"', () => {
+      const allQuestions = getQuestionsByRegion('all');
+      expect(allQuestions.length).toBeGreaterThan(0);
     });
   });
 
-  // Test 'all' region filter
-  console.log('\n📍 All Regions:');
-  const allQuestions = getQuestionsByRegion('all');
-  console.log(`   Total questions: ${allQuestions.length}`);
+  describe('County Filtering', () => {
+    it('should filter questions by county name', () => {
+      const losAngelesQuestions = getQuestionsByCounty('Los Angeles');
+      // Should return array (may be empty if no questions for this county)
+      expect(Array.isArray(losAngelesQuestions)).toBe(true);
+      // If questions exist, they should all be for Los Angeles
+      losAngelesQuestions.forEach((q) => {
+        expect(q.countyName).toBe('Los Angeles');
+      });
+    });
 
-  // Test county filtering
-  console.log('\n🏛️ Testing County Filtering:');
-  const losAngelesQuestions = getQuestionsByCounty('Los Angeles');
-  console.log(`   Los Angeles County: ${losAngelesQuestions.length} questions`);
-
-  const alamedaQuestions = getQuestionsByCounty('Alameda');
-  console.log(`   Alameda County: ${alamedaQuestions.length} questions`);
-
-  // Test question type filtering
-  console.log('\n📚 Testing Question Type Filtering:');
-  const questionTypes = ['capital', 'landmark', 'geography', 'history', 'economy', 'demographics', 'nature', 'culture'];
-
-  questionTypes.forEach(type => {
-    const questions = getQuestionsByType(type as any);
-    console.log(`   ${type}: ${questions.length} questions`);
+    it('should filter questions correctly for different counties', () => {
+      const alamedaQuestions = getQuestionsByCounty('Alameda');
+      // Should return array (may be empty if no questions for this county)
+      expect(Array.isArray(alamedaQuestions)).toBe(true);
+      // If questions exist, they should all be for Alameda
+      alamedaQuestions.forEach((q) => {
+        expect(q.countyName).toBe('Alameda');
+      });
+    });
   });
 
-  // Test random question selection
-  console.log('\n🎲 Testing Random Question Selection:');
-  const randomQuestions = getRandomQuestions(5, { region: 'Bay Area' });
-  console.log(`   Got ${randomQuestions.length} random questions from Bay Area`);
-  randomQuestions.forEach(q => {
-    console.log(`   - ${q.countyName} (${q.region}): ${q.type}`);
+  describe('Question Type Filtering', () => {
+    const questionTypes = [
+      'capital',
+      'landmark',
+      'geography',
+      'history',
+      'economy',
+      'demographics',
+      'nature',
+      'culture',
+    ];
+
+    it('should return questions for each type', () => {
+      questionTypes.forEach((type) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const questions = getQuestionsByType(type as any);
+        expect(questions.length).toBeGreaterThan(0);
+        questions.forEach((q) => {
+          expect(q.type).toBe(type);
+        });
+      });
+    });
   });
 
-  console.log('\n' + '=' .repeat(50));
-  console.log('✅ Quiz filtering tests complete!\n');
-}
+  describe('Random Question Selection', () => {
+    it('should return requested number of random questions', () => {
+      const randomQuestions = getRandomQuestions(5, { region: 'Bay Area' });
+      expect(randomQuestions.length).toBe(5);
+      randomQuestions.forEach((q) => {
+        expect(q.region).toBe('Bay Area');
+      });
+    });
 
-// Run the test
-testRegionFiltering();
+    it('should return different questions on multiple calls', () => {
+      const first = getRandomQuestions(3, { region: 'Bay Area' });
+      const second = getRandomQuestions(3, { region: 'Bay Area' });
+
+      // At least one should be different (statistically very likely with randomization)
+      const firstIds = first.map((q) => q.countyName + q.question);
+      const secondIds = second.map((q) => q.countyName + q.question);
+      const allSame = firstIds.every((id, i) => id === secondIds[i]);
+
+      // This might occasionally fail due to randomness, but very unlikely
+      expect(allSame).toBe(false);
+    });
+  });
+});
