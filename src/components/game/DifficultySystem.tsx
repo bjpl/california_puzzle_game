@@ -39,10 +39,10 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
     const { timeElapsed, mistakes, streak, placedCounties, totalCounties } = gameState;
 
     // Calculate performance metrics
-    const progressRatio = totalCounties > 0 ? placedCounties / totalCounties : 0;
+    const _progressRatio = totalCounties > 0 ? placedCounties / totalCounties : 0;
     const averageTimePerCounty = placedCounties > 0 ? timeElapsed / placedCounties : 0;
     const errorRate = placedCounties > 0 ? mistakes / (placedCounties + mistakes) : 0;
-    const streakRatio = placedCounties > 0 ? streak / placedCounties : 0;
+    const _streakRatio = placedCounties > 0 ? streak / placedCounties : 0;
 
     // Determine adaptation level based on performance
     let adaptationLevel = 0;

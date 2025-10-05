@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, PanInfo } from 'framer-motion';
 
 interface DragDropPhysicsProps {
@@ -108,7 +108,7 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
     onDragStart?.();
   };
 
-  const handleDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDrag = (__event: MouseEvent | TouchEvent | PointerEvent, _info: PanInfo) => {
     const currentX = x.get();
     const currentY = y.get();
 
@@ -116,7 +116,7 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
     checkMagneticTargets(currentX, currentY);
   };
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, _info: PanInfo) => {
     setIsDragging(false);
 
     const currentX = x.get();

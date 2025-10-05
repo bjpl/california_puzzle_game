@@ -1,0 +1,381 @@
+
+> california-counties-puzzle@1.0.0 lint
+> eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0
+
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\CaliforniaGameContainer.tsx
+  115:6  warning  React Hook useCallback has an unnecessary dependency: 'settings.enableTimer'. Either exclude it or remove the dependency array. Outer scope values like 'settings.enableTimer' aren't valid dependencies because mutating them doesn't re-render the component  react-hooks/exhaustive-deps
+  190:6  warning  React Hook useCallback has unnecessary dependencies: 'score' and 'stats'. Either exclude them or remove the dependency array. Outer scope values like 'score' aren't valid dependencies because mutating them doesn't re-render the component                   react-hooks/exhaustive-deps
+  207:6  warning  React Hook useCallback has an unnecessary dependency: 'isGameActive'. Either exclude it or remove the dependency array. Outer scope values like 'isGameActive' aren't valid dependencies because mutating them doesn't re-render the component                  react-hooks/exhaustive-deps
+  225:6  warning  React Hook useCallback has an unnecessary dependency: 'isGameActive'. Either exclude it or remove the dependency array. Outer scope values like 'isGameActive' aren't valid dependencies because mutating them doesn't re-render the component                  react-hooks/exhaustive-deps
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\DifficultySystem.tsx
+   42:11  error    'progressRatio' is assigned a value but never used. Allowed unused vars must match /^_/u                                        @typescript-eslint/no-unused-vars
+   45:11  error    'streakRatio' is assigned a value but never used. Allowed unused vars must match /^_/u                                          @typescript-eslint/no-unused-vars
+  236:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\DragDropPhysics.tsx
+    1:25  error  'useEffect' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   64:16  error  'latestY' is defined but never used. Allowed unused args must match /^_/u    @typescript-eslint/no-unused-vars
+  111:23  error  'event' is defined but never used. Allowed unused args must match /^_/u      @typescript-eslint/no-unused-vars
+  111:70  error  'info' is defined but never used. Allowed unused args must match /^_/u       @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\EnhancedGameContainer.tsx
+    9:3   error    'DifficultyLevel' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+   21:10  error    'GAME_MODES' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   21:22  error    'getDifficultySettings' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   22:10  error    'getCountiesByRegion' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   28:3   error    'initialSettings' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+   35:5   error    'isGameActive' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   38:5   error    'remainingCounties' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   44:5   error    'settings' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  145:6   warning  React Hook useEffect has missing dependencies: 'endGame', 'onGameComplete', 'stats', and 'updateModeProgress'. Either include them or remove the dependency array. If 'onGameComplete' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+  165:13  error    'targetId' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\GameComplete.tsx
+  14:6  warning  React Hook useEffect has a missing dependency: 'sound'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\ModeCard.tsx
+  2:10  error  'GameModeConfiguration' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\ProgressionSystem.tsx
+    8:3   error  'CaliforniaRegion' is defined but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+   10:28  error  'calculateModeStars' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  320:7   error  Unexpected lexical declaration in case block                                          no-case-declarations
+  339:7   error  Unexpected lexical declaration in case block                                          no-case-declarations
+  340:25  error  'county' is defined but never used. Allowed unused args must match /^_/u              @typescript-eslint/no-unused-vars
+  345:7   error  Unexpected lexical declaration in case block                                          no-case-declarations
+  352:7   error  Unexpected lexical declaration in case block                                          no-case-declarations
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\achievements\AchievementGallery.tsx
+  21:60  error  'rarityStats' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\hints\HintVisualIndicators.tsx
+  109:9  error  'distance' is assigned a value but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+  110:9  error  'angle' is assigned a value but never used. Allowed unused vars must match /^_/u             @typescript-eslint/no-unused-vars
+  220:7  error  'HeatMapIndicator' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\game\modals\EducationalContentModal.tsx
+   93:53  error  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+  414:7   error  'animationStyles' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\map\CaliforniaMapCanvas.tsx
+    2:10  error    'mapLogger' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                @typescript-eslint/no-unused-vars
+   75:11  error    'drag' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                            @typescript-eslint/no-unused-vars
+   76:29  error    'event' is defined but never used. Allowed unused args must match /^_/u                                                                                                                    @typescript-eslint/no-unused-vars
+   76:36  error    'd' is defined but never used. Allowed unused args must match /^_/u                                                                                                                        @typescript-eslint/no-unused-vars
+   79:35  error    'd' is defined but never used. Allowed unused args must match /^_/u                                                                                                                        @typescript-eslint/no-unused-vars
+  116:6   warning  React Hook useCallback has a missing dependency: 'findDropZone'. Either include it or remove the dependency array                                                                          react-hooks/exhaustive-deps
+  171:6   warning  React Hook useCallback has missing dependencies: 'getOutlineColor', 'getOutlineDashArray', 'getOutlineOpacity', and 'getOutlineWidth'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  297:6   warning  React Hook useCallback has missing dependencies: 'calculatePlacementAccuracy' and 'getPlacedCountyFill'. Either include them or remove the dependency array                                react-hooks/exhaustive-deps
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\map\CaliforniaMapFixed.tsx
+  163:42  error  Unexpected any. Specify a different type                                                     @typescript-eslint/no-explicit-any
+  164:48  error  Unexpected any. Specify a different type                                                     @typescript-eslint/no-explicit-any
+  166:11  error  'counties' is assigned a value but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+  205:9   error  'filteredFeatures' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\map\CaliforniaMapSimple.tsx
+   13:10  error  'saveGameState' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+   13:25  error  'generateStudyModeUrl' is defined but never used. Allowed unused vars must match /^_/u       @typescript-eslint/no-unused-vars
+   41:27  error  'currentCounty' is assigned a value but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+   80:9   error  'textColor' is assigned a value but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+  251:50  error  'score' is assigned a value but never used. Allowed unused vars must match /^_/u             @typescript-eslint/no-unused-vars
+  251:57  error  'timerState' is assigned a value but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+  251:69  error  'mistakes' is assigned a value but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+  251:79  error  'gameSettings' is assigned a value but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+  251:93  error  'placementHistory' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  253:56  error  Unexpected any. Specify a different type                                                     @typescript-eslint/no-explicit-any
+  257:42  error  Unexpected any. Specify a different type                                                     @typescript-eslint/no-explicit-any
+  258:40  error  Unexpected any. Specify a different type                                                     @typescript-eslint/no-explicit-any
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\map\StudyModeMap.tsx
+    2:10  error  'mapLogger' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  235:27  error  'e' is defined but never used. Allowed unused args must match /^_/u          @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\shared\ErrorBoundary.tsx
+  74:10  warning  Fast refresh only works when a file only exports components. Move your component(s) to a separate file  react-refresh/only-export-components
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\shared\effects\PageTransition.tsx
+  181:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  182:34  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\shared\settings\Statistics.tsx
+   4:27  error  'useMemo' is defined but never used. Allowed unused vars must match /^_/u                        @typescript-eslint/no-unused-vars
+  25:38  error  'completionPercentage' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\study\EnhancedStudyMode.tsx
+    5:30  error    'getMemoryAid' is defined but never used. Allowed unused vars must match /^_/u                                                                                         @typescript-eslint/no-unused-vars
+    5:64  error    'historicalConnections' is defined but never used. Allowed unused vars must match /^_/u                                                                                @typescript-eslint/no-unused-vars
+    5:87  error    'interCountyConnections' is defined but never used. Allowed unused vars must match /^_/u                                                                               @typescript-eslint/no-unused-vars
+    9:44  error    'memoryPatterns' is defined but never used. Allowed unused vars must match /^_/u                                                                                       @typescript-eslint/no-unused-vars
+    9:60  error    'spatialRelationships' is defined but never used. Allowed unused vars must match /^_/u                                                                                 @typescript-eslint/no-unused-vars
+    9:82  error    'learningStrategies' is defined but never used. Allowed unused vars must match /^_/u                                                                                   @typescript-eslint/no-unused-vars
+   13:30  error    'CaliforniaCounty' is defined but never used. Allowed unused vars must match /^_/u                                                                                     @typescript-eslint/no-unused-vars
+   15:10  error    'getQuestionsByRegion' is defined but never used. Allowed unused vars must match /^_/u                                                                                 @typescript-eslint/no-unused-vars
+   55:54  error    'onStartGame' is defined but never used. Allowed unused args must match /^_/u                                                                                          @typescript-eslint/no-unused-vars
+   61:56  error    Unexpected any. Specify a different type                                                                                                                               @typescript-eslint/no-explicit-any
+   86:29  error    Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access                                                                            no-restricted-globals
+  108:7   error    Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access                                                                            no-restricted-globals
+  379:6   warning  React Hook useEffect has missing dependencies: 'goToNextQuestion', 'goToPreviousQuestion', and 'handleQuizAnswer'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\study\StudyErrorBoundary.tsx
+  25:35  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\study\StudyMode.tsx
+  7:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\components\ui\ProgressIndicator.tsx
+  10:3  error  'Star' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\config\gameModes.ts
+    2:3   error  'GameMode' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  397:11  error  Unexpected lexical declaration in case block                                no-case-declarations
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\context\EnhancedGameContext.tsx
+   18:10  error    'GameSettings' is defined but never used. Allowed unused vars must match /^_/u                                                  @typescript-eslint/no-unused-vars
+   18:24  error    'GameStats' is defined but never used. Allowed unused vars must match /^_/u                                                     @typescript-eslint/no-unused-vars
+   18:35  error    'Achievement' is defined but never used. Allowed unused vars must match /^_/u                                                   @typescript-eslint/no-unused-vars
+   18:48  error    'PlacementResult' is defined but never used. Allowed unused vars must match /^_/u                                               @typescript-eslint/no-unused-vars
+   20:10  error    'AchievementDefinition' is defined but never used. Allowed unused vars must match /^_/u                                         @typescript-eslint/no-unused-vars
+  129:6   warning  React Hook useEffect has a missing dependency: 'gameState'. Either include it or remove the dependency array                    react-hooks/exhaustive-deps
+  318:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  327:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\context\GameContext.tsx
+    2:10  error    'californiaCounties' is defined but never used. Allowed unused vars must match /^_/u                                            @typescript-eslint/no-unused-vars
+    3:43  error    'CompleteCounty' is defined but never used. Allowed unused vars must match /^_/u                                                @typescript-eslint/no-unused-vars
+  156:14  error    'elapsed' is defined but never used. Allowed unused args must match /^_/u                                                       @typescript-eslint/no-unused-vars
+  156:23  error    'remaining' is defined but never used. Allowed unused args must match /^_/u                                                     @typescript-eslint/no-unused-vars
+  485:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\data\californiaCountyBoundaries.ts
+  16:7  error  'countyRegions' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\data\memoryAids.ts
+  406:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\hooks\useAchievements.ts
+  33:10  error  'lastUpdate' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\hooks\useAutoSave.ts
+   12:10  error  'GameStats' is defined but never used. Allowed unused vars must match /^_/u                    @typescript-eslint/no-unused-vars
+   12:38  error  'DifficultyLevel' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+   12:55  error  'CaliforniaRegion' is defined but never used. Allowed unused vars must match /^_/u             @typescript-eslint/no-unused-vars
+  287:13  error  'mergedAchievements' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\hooks\useCaliforniaMap.ts
+  166:6  warning  React Hook useEffect has missing dependencies: 'loadDetailLevel', 'margin', and 'preloadLevels'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\hooks\useProgress.ts
+    5:10  error  'GameStats' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  419:39  error  'placement' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  419:67  error  'gameData' is defined but never used. Allowed unused args must match /^_/u   @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\hooks\useSound.ts
+  12:32  error  'soundManager' is defined but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+  54:5   error  'updateSoundSettings' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\hooks\useTimer.ts
+   60:5  error    'isCountdown' is assigned a value but never used. Allowed unused vars must match /^_/u                             @typescript-eslint/no-unused-vars
+   61:5  error    'precision' is assigned a value but never used. Allowed unused vars must match /^_/u                               @typescript-eslint/no-unused-vars
+  248:6  warning  React Hook useEffect has a missing dependency: 'updateBestTime'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\stores\gameStore.ts
+   20:3   error  'HintConfiguration' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   24:22  error  'getModeById' is defined but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+  724:27  error  'region' is defined but never used. Allowed unused args must match /^_/u             @typescript-eslint/no-unused-vars
+  724:53  error  'difficulty' is defined but never used. Allowed unused args must match /^_/u         @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\stores\studyStore.ts
+  259:32  error  'mode' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  518:88  error  Unexpected any. Specify a different type                                @typescript-eslint/no-explicit-any
+  519:90  error  Unexpected any. Specify a different type                                @typescript-eslint/no-explicit-any
+  520:58  error  Unexpected any. Specify a different type                                @typescript-eslint/no-explicit-any
+  521:72  error  Unexpected any. Specify a different type                                @typescript-eslint/no-explicit-any
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\achievements.ts
+  607:13  error  Unexpected lexical declaration in case block  no-case-declarations
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\colorContrast.ts
+  108:9  error  'bgLuminance' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\dataMigration.ts
+    4:10  error  'storageManager' is defined but never used. Allowed unused vars must match /^_/u             @typescript-eslint/no-unused-vars
+    6:10  error  'GameSettings' is defined but never used. Allowed unused vars must match /^_/u               @typescript-eslint/no-unused-vars
+    6:24  error  'GameStats' is defined but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+    6:35  error  'Achievement' is defined but never used. Allowed unused vars must match /^_/u                @typescript-eslint/no-unused-vars
+   12:47  error  Unexpected any. Specify a different type                                                     @typescript-eslint/no-explicit-any
+   13:49  error  Unexpected any. Specify a different type                                                     @typescript-eslint/no-explicit-any
+  293:23  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  332:27  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  333:21  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  336:25  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  363:11  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  370:7   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  445:25  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  446:19  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  452:33  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\educationalContent.ts
+  1:18  error  'HintType' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\gameHelpers.ts
+    1:18  error  'CountyPiece' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  248:76  error  Unexpected any. Specify a different type                                       @typescript-eslint/no-explicit-any
+  263:76  error  Unexpected any. Specify a different type                                       @typescript-eslint/no-explicit-any
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\gameStateManager.ts
+  38:5   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  48:24  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  73:5   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\hintEngine.ts
+    7:3   error  'Position' is defined but never used. Allowed unused vars must match /^_/u             @typescript-eslint/no-unused-vars
+    9:3   error  'CaliforniaRegion' is defined but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+   11:25  error  'californiaCounties' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  111:9   error  'countyData' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  259:43  error  'progress' is defined but never used. Allowed unused args must match /^_/u             @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\initializeSound.ts
+  113:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\leaderboard.ts
+   97:5   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  113:20  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  224:30  error  Unexpected any. Specify a different type                                                     @typescript-eslint/no-explicit-any
+  255:5   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  256:5   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  267:17  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  285:7   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  288:9   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  377:20  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  401:5   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\mapUtilities.ts
+  123:39   error  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  123:44   error  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  123:49   error  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  123:54   error  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  123:125  error  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  123:130  error  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  126:34   error  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  126:39   error  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  140:34   error  'duration' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\simpleSoundManager.ts
+   27:27  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+   50:66  error  Unexpected any. Specify a different type                                                     @typescript-eslint/no-explicit-any
+  297:5   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\soundManager.ts
+  181:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\storage.ts
+   97:20  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  113:7   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  123:5   error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  384:30  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  387:25  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  480:30  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+  484:29  error  Unexpected use of 'localStorage'. Use Zustand persist instead of direct localStorage access  no-restricted-globals
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\src\utils\webVitals.ts
+   39:3   error  Unexpected console statement              no-console
+   58:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   59:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  119:7   error  Unexpected console statement              no-console
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\accessibility\keyboard-navigation.test.tsx
+    2:26  error  'fireEvent' is defined but never used. Allowed unused vars must match /^_/u               @typescript-eslint/no-unused-vars
+    6:10  error  'simulateKeyDown' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+    6:27  error  'simulateKeyUp' is defined but never used. Allowed unused vars must match /^_/u           @typescript-eslint/no-unused-vars
+   11:10  error  'focusedCounty' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   77:24  error  'countyId' is defined but never used. Allowed unused args must match /^_/u                @typescript-eslint/no-unused-vars
+  208:36  error  'index' is defined but never used. Allowed unused args must match /^_/u                   @typescript-eslint/no-unused-vars
+  509:38  error  'index' is defined but never used. Allowed unused args must match /^_/u                   @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\accessibility\screen-reader-compatibility.test.tsx
+    2:26   error  'fireEvent' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+    6:10   error  'waitForAnnouncement' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  230:102  error  'index' is defined but never used. Allowed unused args must match /^_/u                @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\performance\memory-usage.test.ts
+  157:9  error  Parsing error: '>' expected
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\performance\rendering-benchmarks.test.ts
+  148:11  error  Parsing error: '>' expected
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\quizFiltering.test.ts
+   5:3   error  Unexpected console statement              no-console
+   6:3   error  Unexpected console statement              no-console
+  21:5   error  Unexpected console statement              no-console
+  22:5   error  Unexpected console statement              no-console
+  27:7   error  Unexpected console statement              no-console
+  32:3   error  Unexpected console statement              no-console
+  34:3   error  Unexpected console statement              no-console
+  37:3   error  Unexpected console statement              no-console
+  39:3   error  Unexpected console statement              no-console
+  42:3   error  Unexpected console statement              no-console
+  45:3   error  Unexpected console statement              no-console
+  49:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  50:5   error  Unexpected console statement              no-console
+  54:3   error  Unexpected console statement              no-console
+  56:3   error  Unexpected console statement              no-console
+  58:5   error  Unexpected console statement              no-console
+  61:3   error  Unexpected console statement              no-console
+  62:3   error  Unexpected console statement              no-console
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\unit\components\map-rendering.test.tsx
+  2:26  error  'waitFor' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\unit\data\county-data-integrity.test.ts
+  1:32  error  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\unit\game\scoring-algorithms.test.ts
+  1:44  error  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\unit\hooks\useProgress.test.ts
+   83:44  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+   84:38  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+   85:36  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+   86:43  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  128:44  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  129:38  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  130:36  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  131:43  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  165:44  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  166:38  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  167:36  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  168:43  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  207:44  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  208:38  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  209:36  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  210:43  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  226:13  error  'sevenDaysAgo' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  249:44  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  250:38  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  251:36  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  252:43  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  330:44  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  331:38  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  332:36  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  333:43  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  393:44  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  394:38  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  395:36  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+  396:43  error  Unexpected any. Specify a different type                                                 @typescript-eslint/no-explicit-any
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\unit\state\game-state-management.test.ts
+    2:15  error  'renderHook' is defined but never used. Allowed unused vars must match /^_/u             @typescript-eslint/no-unused-vars
+    3:36  error  'MOCK_GAME_STATE' is defined but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+  302:7   error  'useGameStore' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\unit\utils\leaderboard.test.ts
+  145:32  error  'i' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\brand\Development\Project_Workspace\active-development\california_puzzle_game\tests\utils\test-helpers.ts
+  25:5  error  Parsing error: Type expected
+
+✖ 254 problems (235 errors, 19 warnings)
+
