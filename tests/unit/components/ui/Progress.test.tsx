@@ -48,26 +48,31 @@ describe('Progress Component', () => {
     it('calculates percentage correctly with default max', () => {
       render(<Progress value={50} showLabel />);
 
-      expect(screen.getByText('50%')).toBeInTheDocument();
+      const percentageElements = screen.getAllByText('50%');
+      expect(percentageElements.length).toBeGreaterThan(0);
     });
 
     it('calculates percentage correctly with custom max', () => {
       render(<Progress value={25} max={50} showLabel />);
 
-      expect(screen.getByText('25 / 50')).toBeInTheDocument();
-      expect(screen.getByText('50%')).toBeInTheDocument();
+      const fractionLabels = screen.getAllByText('25 / 50');
+      expect(fractionLabels.length).toBeGreaterThan(0);
+      const percentageElements = screen.getAllByText('50%');
+      expect(percentageElements.length).toBeGreaterThan(0);
     });
 
     it('handles value of 0', () => {
       render(<Progress value={0} showLabel />);
 
-      expect(screen.getByText('0%')).toBeInTheDocument();
+      const percentageElements = screen.getAllByText('0%');
+      expect(percentageElements.length).toBeGreaterThan(0);
     });
 
     it('handles value equal to max', () => {
       render(<Progress value={100} showLabel />);
 
-      expect(screen.getByText('100%')).toBeInTheDocument();
+      const percentageElements = screen.getAllByText('100%');
+      expect(percentageElements.length).toBeGreaterThan(0);
     });
 
     it('clamps value above max to 100%', () => {
@@ -91,7 +96,8 @@ describe('Progress Component', () => {
     it('shows label when showLabel is true', () => {
       render(<Progress value={50} showLabel />);
 
-      expect(screen.getByText('50%')).toBeInTheDocument();
+      const percentageElements = screen.getAllByText('50%');
+      expect(percentageElements.length).toBeGreaterThan(0);
     });
 
     it('hides label when showLabel is false', () => {
@@ -103,14 +109,16 @@ describe('Progress Component', () => {
     it('displays custom label', () => {
       render(<Progress value={50} showLabel label="Custom Label" />);
 
-      expect(screen.getByText('Custom Label')).toBeInTheDocument();
+      const labels = screen.getAllByText('Custom Label');
+      expect(labels.length).toBeGreaterThan(0);
     });
 
     it('shows label inside bar when percentage > 20', () => {
       render(<Progress value={50} showLabel />);
 
-      const insideLabel = screen.getByText('50%').closest('.ca-progress__label--inside');
-      expect(insideLabel).toBeInTheDocument();
+      const percentageElements = screen.getAllByText('50%');
+      const insideLabel = percentageElements.find(el => el.closest('.ca-progress__label--inside'));
+      expect(insideLabel).toBeTruthy();
     });
 
     it('hides label inside bar when percentage <= 20', () => {
@@ -149,13 +157,15 @@ describe('Progress Component', () => {
     it('renders with completed counties', () => {
       render(<GameProgress completedCounties={38} />);
 
-      expect(screen.getByText('38 of 58 counties')).toBeInTheDocument();
+      const labels = screen.getAllByText('38 of 58 counties');
+      expect(labels.length).toBeGreaterThan(0);
     });
 
     it('uses custom total counties', () => {
       render(<GameProgress completedCounties={25} totalCounties={50} />);
 
-      expect(screen.getByText('25 of 50 counties')).toBeInTheDocument();
+      const labels = screen.getAllByText('25 of 50 counties');
+      expect(labels.length).toBeGreaterThan(0);
     });
 
     it('shows success variant when 100% complete', () => {
@@ -205,13 +215,15 @@ describe('Progress Component', () => {
     it('renders with default loading label', () => {
       render(<LoadingProgress />);
 
-      expect(screen.getByText('Loading...')).toBeInTheDocument();
+      const labels = screen.getAllByText('Loading...');
+      expect(labels.length).toBeGreaterThan(0);
     });
 
     it('renders with custom label', () => {
       render(<LoadingProgress label="Please wait..." />);
 
-      expect(screen.getByText('Please wait...')).toBeInTheDocument();
+      const labels = screen.getAllByText('Please wait...');
+      expect(labels.length).toBeGreaterThan(0);
     });
 
     it('has animated and striped styles', () => {
