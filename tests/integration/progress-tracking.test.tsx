@@ -43,7 +43,7 @@ function useProgressTracking() {
   const calculateCurrentStreak = () => {
     const today = new Date();
     let streak = 0;
-    let checkDate = new Date(today);
+    const checkDate = new Date(today);
 
     // Count consecutive days with correct attempts
     for (let i = 0; i < 30; i++) {

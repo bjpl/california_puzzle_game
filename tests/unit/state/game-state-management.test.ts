@@ -606,6 +606,8 @@ describe('Game State Management', () => {
 
       act(() => {
         state.startGame();
+        // Place a correct county to get some score first
+        state.placeCounty('los-angeles', 'los-angeles');
       });
 
       const initialScore = gameStore.getState().score;

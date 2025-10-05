@@ -15,8 +15,8 @@ export default function CountyDetailsModal({
   isOpen,
   onClose,
   county,
-  educationContent,
-  memoryAid,
+  educationContent: _educationContent,
+  memoryAid: _memoryAid,
   onViewEducationalContent
 }: CountyDetailsModalProps) {
   // Handle ESC key to close modal

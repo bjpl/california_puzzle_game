@@ -40,7 +40,7 @@ export default function CountyFormationAnimation() {
   const [showContinueButton, setShowContinueButton] = useState(true);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [, forceUpdate] = useState({});
+  const [, _forceUpdate] = useState({});
 
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
@@ -73,7 +73,7 @@ export default function CountyFormationAnimation() {
     return allCaliforniaCounties.find(c => c.id === countyId);
   };
 
-  const getCountyPath = (countyId: string) => {
+  const _getCountyPath = (countyId: string) => {
     return realCaliforniaCountyShapes.find(
       c => c.id === countyId || c.id === countyId.replace(/_/g, '-') || c.id === countyId.replace(/-/g, '_')
     );
@@ -212,7 +212,7 @@ export default function CountyFormationAnimation() {
     }
   };
 
-  const handleMouseUp = (e: React.MouseEvent<SVGSVGElement>) => {
+  const handleMouseUp = (_e: React.MouseEvent<SVGSVGElement>) => {
     isPanning.current = false;
     if (svgRef.current) {
       svgRef.current.style.cursor = 'grab';
@@ -301,6 +301,7 @@ export default function CountyFormationAnimation() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, playbackSpeed]);
 
   // Keyboard shortcuts
@@ -355,6 +356,7 @@ export default function CountyFormationAnimation() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, hasStarted]);
 
   const handleScrubberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -725,7 +727,7 @@ export default function CountyFormationAnimation() {
               onClick={() => {
                 const newYear = Math.max(GAME_CONFIG.FORMATION_START_YEAR, currentYear - UI_CONFIG.YEAR_SKIP_AMOUNT);
                 setCurrentYear(newYear);
-                handleScrubberChange({ target: { value: newYear.toString() } } as any);
+                handleScrubberChange({ target: { value: newYear.toString() } } as React.ChangeEvent<HTMLInputElement>);
               }}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               title="Back 5 years"
@@ -755,7 +757,7 @@ export default function CountyFormationAnimation() {
               onClick={() => {
                 const newYear = Math.min(GAME_CONFIG.FORMATION_END_YEAR, currentYear + UI_CONFIG.YEAR_SKIP_AMOUNT);
                 setCurrentYear(newYear);
-                handleScrubberChange({ target: { value: newYear.toString() } } as any);
+                handleScrubberChange({ target: { value: newYear.toString() } } as React.ChangeEvent<HTMLInputElement>);
               }}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               title="Forward 5 years"

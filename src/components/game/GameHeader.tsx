@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useGame } from '../../context/GameContext';
 import { soundManager } from '../../utils/simpleSoundManager';
@@ -9,7 +9,7 @@ import EnhancedStudyMode from '../study/EnhancedStudyMode';
 import { UI_CONFIG, GAME_CONFIG } from '@/constants';
 
 export default function GameHeader() {
-  const { score, mistakes, placedCounties, counties, resetGame, timerState, timerStarted, pauseGame, resumeGame, isGameStarted, isPaused, hints, useHint, currentCounty } = useGame();
+  const { score, mistakes, placedCounties, counties, resetGame, timerState, timerStarted: _timerStarted, pauseGame, resumeGame, isGameStarted: _isGameStarted, isPaused, hints, useHint: requestHint, currentCounty } = useGame();
   const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
   const [showHintModal, setShowHintModal] = useState(false);
   const [showStudyMode, setShowStudyMode] = useState(false);
@@ -42,7 +42,6 @@ export default function GameHeader() {
   };
 
   const handleUseHint = () => {
-
     if (hints > 0 && currentCounty) {
       // Track attempts per county for progressive hints
       const countyName = currentCounty.name;
@@ -61,7 +60,7 @@ export default function GameHeader() {
 
       setHintLevel(level);
 
-      if (useHint()) {
+      if (requestHint()) {
         try {
           soundManager.play('hover', UI_CONFIG.SOUND_VOLUME_PICKUP);
         } catch (error) {

@@ -5,7 +5,6 @@ import CountyTray from '../county/CountyTray';
 import RegionSelector from '../game/RegionSelector';
 import {
   GameContainerProps,
-  County,
   CountyPiece,
   Position,
   CaliforniaRegion,
@@ -29,19 +28,19 @@ interface GameContainerState {
 }
 
 const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
-  initialSettings,
+  initialSettings: _initialSettings,
   onGameComplete
 }) => {
   const {
     // Game state
-    isGameActive,
+    isGameActive: _isGameActive,
     isPaused,
-    score,
-    timeElapsed,
-    streak,
-    placedCounties,
+    score: _score,
+    timeElapsed: _timeElapsed,
+    streak: _streak,
+    placedCounties: _placedCounties,
     remainingCounties,
-    currentHint,
+    currentHint: _currentHint,
 
     // Actions
     startGame,
@@ -50,25 +49,25 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
     endGame,
     resetGame,
     placeCounty,
-    removeCounty,
-    moveCounty,
+    removeCounty: _removeCounty,
+    moveCounty: _moveCounty,
     updateTimer,
-    useHint,
+    useHint: requestHint,
 
     // Settings
-    settings,
+    settings: _settings,
     updateSettings,
 
     // Stats and achievements
-    stats,
-    achievements,
+    stats: _stats,
+    achievements: _achievements,
     checkAchievements
   } = useGameStore();
 
   const [containerState, setContainerState] = useState<GameContainerState>({
     gameStarted: false,
-    currentRegion: initialSettings?.region || CaliforniaRegion.BAY_AREA,
-    currentDifficulty: initialSettings?.difficulty || DifficultyLevel.EASY,
+    currentRegion: _initialSettings?.region || CaliforniaRegion.BAY_AREA,
+    currentDifficulty: _initialSettings?.difficulty || DifficultyLevel.EASY,
     gameMode: GameMode.PRACTICE,
     showSettings: false,
     showAchievements: false,
@@ -96,7 +95,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
 
   // Start new game
   const handleStartGame = useCallback(() => {
-    const countyPieces = initializeCountyPieces();
+    const _countyPieces = initializeCountyPieces();
 
     startGame(containerState.currentRegion, containerState.currentDifficulty);
 
@@ -131,12 +130,13 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
   }, [isPaused, resumeGame, pauseGame, updateTimer]);
 
   // Handle county drag start
-  const handleCountyDrag = useCallback((county: CountyPiece) => {
+  const handleCountyDrag = useCallback((_county: CountyPiece) => {
     // Could add visual feedback here
   }, []);
 
   // Handle county drop
   const handleCountyDrop = useCallback((county: CountyPiece, position: Position) => {
+    const isGameActive = _isGameActive;
     if (!isGameActive || isPaused) return;
 
     const placement = placeCounty(county, position);
@@ -161,10 +161,11 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
         handleGameComplete();
       }, 500);
     }
-  }, [isGameActive, isPaused, placeCounty, checkAchievements, remainingCounties.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [_isGameActive, isPaused, placeCounty, checkAchievements, remainingCounties.length]);
 
   // Handle county drag end (including failed drops)
-  const handleCountyDragEnd = useCallback((county: CountyPiece, position: Position) => {
+  const handleCountyDragEnd = useCallback((_county: CountyPiece, _position: Position) => {
     // For now, this will be handled by handleCountyDrop if successful
     // Could add logic here for failed drop attempts
   }, []);
@@ -226,9 +227,9 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
   // Handle hint request
   const handleUseHint = useCallback(() => {
     if (remainingCounties.length > 0) {
-      useHint();
+      requestHint();
     }
-  }, [remainingCounties.length, useHint]);
+  }, [remainingCounties.length, requestHint]);
 
   // Format time display
   const formatTime = (milliseconds: number): string => {

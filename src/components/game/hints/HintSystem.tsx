@@ -3,9 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   HintSystemProps,
   HintType,
-  Hint,
-  DifficultyLevel,
-  StruggleData
+  Hint
 } from '@/types';
 import { useGameStore } from '@/stores/gameStore';
 import { generateHint, analyzeStruggle } from '@/utils/hintEngine';
@@ -22,7 +20,7 @@ interface HintButtonProps {
 }
 
 const HintButton: React.FC<HintButtonProps> = ({
-  type,
+  type: _type,
   icon,
   label,
   description,
@@ -214,7 +212,7 @@ const HintSystem: React.FC<HintSystemProps> = ({
   const [showHintMenu, setShowHintMenu] = useState(false);
   const [cooldownProgress, setCooldownProgress] = useState(0);
 
-  const { hintSystem, settings, updateHintSystem, useHint, analyzePlayerStruggle } = useGameStore();
+  const { hintSystem, settings, updateHintSystem, useHint: requestHint, analyzePlayerStruggle: _analyzePlayerStruggle } = useGameStore();
 
   // Cooldown timer effect
   useEffect(() => {
@@ -249,6 +247,7 @@ const HintSystem: React.FC<HintSystemProps> = ({
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hintSystem.strugglingCounties, currentHint, settings.hintSettings.autoSuggestThreshold]);
 
   const handleHintRequest = useCallback((type: HintType, isAutoSuggested = false) => {
@@ -262,9 +261,9 @@ const HintSystem: React.FC<HintSystemProps> = ({
     setShowHintMenu(false);
 
     // Update hint system state
-    useHint(type, targetCounty.id, isAutoSuggested);
+    requestHint(type, targetCounty.id, isAutoSuggested);
     onHintRequested(type);
-  }, [gameState.remainingCounties, useHint, onHintRequested]);
+  }, [gameState.remainingCounties, requestHint, onHintRequested]);
 
   const handleHintProgression = useCallback(() => {
     if (!currentHint) return;

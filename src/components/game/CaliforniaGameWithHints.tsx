@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import HintSystem from '../hints/HintSystem';
 import HintVisualIndicators from '../hints/HintVisualIndicators';
 import {
-  GameState,
   HintType,
   County,
   Position,
-  Hint,
-  HintVisualData
+  Hint
 } from '@/types';
 import { useGameStore } from '@/stores/gameStore';
 import { generateHint } from '@/utils/hintEngine';
@@ -30,7 +28,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
     hintSystem,
     remainingCounties,
     placedCounties,
-    useHint,
+    useHint: requestHint,
     updateHintSystem,
     analyzePlayerStruggle,
     startGame,
@@ -53,8 +51,8 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
     setShowVisualIndicators(settings.hintSettings.enableVisualIndicators);
 
     // Use the hint through the game store
-    useHint(type, targetCounty.id, false);
-  }, [remainingCounties, settings.hintSettings.enableVisualIndicators, useHint]);
+    requestHint(type, targetCounty.id, false);
+  }, [remainingCounties, settings.hintSettings.enableVisualIndicators, requestHint]);
 
   // Handle hint dismissal
   const handleHintDismissed = useCallback(() => {
@@ -91,7 +89,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
     const isCorrect = distance < 100; // Within 100 pixels of target
 
     // Place the county
-    const result = placeCounty(draggedCounty as any, position);
+    const _result = placeCounty(draggedCounty as County, position);
 
     // Analyze struggle for hint system
     analyzePlayerStruggle(draggedCounty.id, position, isCorrect);
@@ -111,28 +109,28 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
       id: 'los_angeles',
       name: 'Los Angeles County',
       fips: '06037',
-      region: 'southern' as any,
+      region: 'southern',
       centroid: [width * 0.3, height * 0.7],
-      difficulty: 'easy' as any,
-      geometry: {} as any // Simplified for demo
+      difficulty: 'easy',
+      geometry: {} // Simplified for demo
     },
     {
       id: 'san_francisco',
       name: 'San Francisco County',
       fips: '06075',
-      region: 'northern' as any,
+      region: 'northern',
       centroid: [width * 0.2, height * 0.3],
-      difficulty: 'medium' as any,
-      geometry: {} as any
+      difficulty: 'medium',
+      geometry: {}
     },
     {
       id: 'orange',
       name: 'Orange County',
       fips: '06059',
-      region: 'southern' as any,
+      region: 'southern',
       centroid: [width * 0.35, height * 0.75],
-      difficulty: 'easy' as any,
-      geometry: {} as any
+      difficulty: 'easy',
+      geometry: {}
     }
   ];
 

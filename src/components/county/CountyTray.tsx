@@ -10,7 +10,7 @@ function DraggableCounty({ county }: { county: Record<string, unknown> }) {
   const isPlaced = placedCounties.has(county.id);
   const isSelected = currentCounty?.id === county.id;
 
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+  const { attributes, listeners, setNodeRef, transform: _transform, isDragging } = useDraggable({
     id: county.id,
     disabled: isPlaced,
   });
@@ -25,7 +25,7 @@ function DraggableCounty({ county }: { county: Record<string, unknown> }) {
 
   // Use centralized color configuration
   const regionColor = getRegionColor(county.region);
-  const colorClass = `${regionColor.tailwindLight} ${regionColor.tailwindLightBorder}`;
+  const _colorClass = `${regionColor.tailwindLight} ${regionColor.tailwindLightBorder}`;
 
   if (isPlaced) {
     return (

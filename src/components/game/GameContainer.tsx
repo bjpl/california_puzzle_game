@@ -2,10 +2,9 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
 import { DndContext, DragEndEvent, DragStartEvent, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
-import { useSoundEffect, SoundType } from '../../utils/simpleSoundManager';
+import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { Button, Card, Heading, Text } from '../ui';
 import CountyTray from '../county/CountyTray';
-import CaliforniaMapFixed from '../map/CaliforniaMapFixed';
 import CaliforniaMapSimple from '../map/CaliforniaMapSimple';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
@@ -24,17 +23,17 @@ export default function GameContainer() {
     isGameStarted,
     isGameComplete,
     startGame,
-    resetGame,
+    resetGame: _resetGame,
     selectCounty,
     placeCounty,
     clearCurrentCounty,
-    currentCounty,
+    currentCounty: _currentCounty,
     counties,
     placedCounties
   } = useGame();
 
   const [isDragging, setIsDragging] = useState(false);
-  const [activeCounty, setActiveCounty] = useState<any>(null);
+  const [activeCounty, setActiveCounty] = useState<Record<string, unknown> | null>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
   const sound = useSoundEffect();
 
@@ -61,6 +60,7 @@ export default function GameContainer() {
       document.removeEventListener('click', initSoundOnInteraction);
       document.removeEventListener('touchstart', initSoundOnInteraction);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const sensors = useSensors(
