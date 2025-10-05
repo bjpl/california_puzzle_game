@@ -25,7 +25,8 @@
     "build-css": "tailwindcss -i ./src/styles/globals.css -o ./dist/styles.css",
     "watch-css": "tailwindcss -i ./src/styles/globals.css -o ./dist/styles.css --watch",
     "tailwind:build": "npm run build-css",
-    "tailwind:watch": "npm run watch-css"
+    "tailwind:watch": "npm run watch-css",
+    "prepare": "husky"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
