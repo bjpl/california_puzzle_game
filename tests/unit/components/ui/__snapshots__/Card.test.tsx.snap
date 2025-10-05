@@ -1,0 +1,120 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Card Component > Snapshot Testing > matches snapshot for basic card 1`] = `
+<div
+  class="ca-card ca-card--default"
+>
+  <div
+    class="ca-card__header"
+  >
+    <div
+      class="ca-card__header-content"
+    >
+      <h3
+        class="ca-card__title"
+      >
+        Test Card
+      </h3>
+    </div>
+  </div>
+  <div
+    class="ca-card__body"
+  >
+    <p
+      class="ca-card__description"
+    >
+      Test description
+    </p>
+    Content
+  </div>
+</div>
+`;
+
+exports[`Card Component > Snapshot Testing > matches snapshot for county card 1`] = `
+<div
+  class="ca-card ca-card--default ca-card--region-bay-area ca-county-card"
+>
+  <div
+    class="ca-card__header"
+  >
+    <div
+      class="ca-card__header-content"
+    >
+      <h3
+        class="ca-card__title"
+      >
+        San Francisco
+      </h3>
+    </div>
+    <span
+      class="ca-badge ca-badge--region-bay-area ca-badge--small ca-badge--rounded"
+    >
+      Bay Area
+    </span>
+  </div>
+  <div
+    class="ca-card__body"
+  >
+    <dl
+      class="ca-card__metadata"
+    >
+      <div
+        class="ca-card__metadata-item"
+      >
+        <dt
+          class="ca-card__metadata-label"
+        >
+          Population
+        </dt>
+        <dd
+          class="ca-card__metadata-value"
+        >
+          873,965
+        </dd>
+      </div>
+      <div
+        class="ca-card__metadata-item"
+      >
+        <dt
+          class="ca-card__metadata-label"
+        >
+          Founded
+        </dt>
+        <dd
+          class="ca-card__metadata-value"
+        >
+          1850
+        </dd>
+      </div>
+      <div
+        class="ca-card__metadata-item"
+      >
+        <dt
+          class="ca-card__metadata-label"
+        >
+          Area
+        </dt>
+        <dd
+          class="ca-card__metadata-value"
+        >
+          231 sq mi
+        </dd>
+      </div>
+      <div
+        class="ca-card__metadata-item"
+      >
+        <dt
+          class="ca-card__metadata-label"
+        >
+          County Seat
+        </dt>
+        <dd
+          class="ca-card__metadata-value"
+        >
+          San Francisco
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div>
+`;

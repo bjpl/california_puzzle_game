@@ -1,0 +1,41 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Button Component > Snapshot Testing > matches snapshot for loading state 1`] = `
+<button
+  aria-busy="true"
+  class="ca-button ca-button--primary ca-button--medium ca-button--loading"
+  disabled=""
+>
+  <span
+    aria-label="Loading..."
+    class="ca-button__loader"
+  >
+    <svg
+      class="ca-button__spinner"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        class="ca-button__spinner-path"
+        cx="12"
+        cy="12"
+        fill="none"
+        r="10"
+        stroke-width="3"
+      />
+    </svg>
+  </span>
+</button>
+`;
+
+exports[`Button Component > Snapshot Testing > matches snapshot for primary variant 1`] = `
+<button
+  aria-busy="false"
+  class="ca-button ca-button--primary ca-button--medium"
+>
+  <span
+    class="ca-button__content"
+  >
+    Primary Button
+  </span>
+</button>
+`;

@@ -1,0 +1,43 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Typography Components > Snapshot Testing > matches snapshot for code block 1`] = `
+<pre
+  class="ca-code-pre"
+>
+  <code
+    class="ca-code--block language-typescript"
+  >
+    const test: string = 'hello';
+  </code>
+</pre>
+`;
+
+exports[`Typography Components > Snapshot Testing > matches snapshot for heading 1`] = `
+<h1
+  class="ca-heading ca-heading--display ca-text--primary ca-text--left ca-text--weight-bold"
+>
+  Main Heading
+</h1>
+`;
+
+exports[`Typography Components > Snapshot Testing > matches snapshot for label 1`] = `
+<label
+  class="ca-text ca-text--sm ca-text--primary ca-text--left ca-text--weight-medium ca-text--leading-normal"
+>
+  Required Label
+  <span
+    aria-label="required"
+    class="ca-label__required"
+  >
+    *
+  </span>
+</label>
+`;
+
+exports[`Typography Components > Snapshot Testing > matches snapshot for text 1`] = `
+<p
+  class="ca-text ca-text--lg ca-text--primary ca-text--left ca-text--weight-medium ca-text--leading-normal"
+>
+  Body text
+</p>
+`;

@@ -1,0 +1,134 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Progress Component > Snapshot Testing > matches snapshot for basic progress 1`] = `
+<div
+  class="ca-progress ca-progress--medium"
+>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="50"
+    class="ca-progress__track"
+    role="progressbar"
+  >
+    <div
+      class="ca-progress__bar ca-progress__bar--default"
+      style="width: 50%;"
+    >
+      <span
+        class="ca-progress__label ca-progress__label--inside"
+      >
+        50%
+      </span>
+    </div>
+  </div>
+  <div
+    class="ca-progress__info"
+  >
+    <span
+      class="ca-progress__label"
+    >
+      50%
+    </span>
+    <span
+      class="ca-progress__percentage"
+    >
+      50
+      %
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Progress Component > Snapshot Testing > matches snapshot for game progress 1`] = `
+<div
+  class="ca-game-progress"
+>
+  <div
+    class="ca-progress ca-progress--medium"
+  >
+    <div
+      aria-valuemax="58"
+      aria-valuemin="0"
+      aria-valuenow="38"
+      class="ca-progress__track"
+      role="progressbar"
+    >
+      <div
+        class="ca-progress__bar ca-progress__bar--gradient ca-progress__bar--animated"
+        style="width: 65.51724137931035%;"
+      >
+        <span
+          class="ca-progress__label ca-progress__label--inside"
+        >
+          38 of 58 counties
+        </span>
+      </div>
+    </div>
+    <div
+      class="ca-progress__info"
+    >
+      <span
+        class="ca-progress__label"
+      >
+        38 of 58 counties
+      </span>
+      <span
+        class="ca-progress__percentage"
+      >
+        66
+        %
+      </span>
+    </div>
+  </div>
+  <div
+    class="ca-game-progress__milestone"
+  >
+    <span
+      class="ca-game-progress__milestone-badge"
+    >
+      Adventurer
+    </span>
+  </div>
+  <div
+    class="ca-game-progress__milestones"
+  >
+    <div
+      class="ca-game-progress__milestone-marker ca-game-progress__milestone-marker--achieved"
+      style="left: 25%;"
+      title="Explorer"
+    >
+      <span
+        class="ca-game-progress__milestone-dot"
+      />
+    </div>
+    <div
+      class="ca-game-progress__milestone-marker ca-game-progress__milestone-marker--achieved"
+      style="left: 50%;"
+      title="Adventurer"
+    >
+      <span
+        class="ca-game-progress__milestone-dot"
+      />
+    </div>
+    <div
+      class="ca-game-progress__milestone-marker "
+      style="left: 75%;"
+      title="Expert"
+    >
+      <span
+        class="ca-game-progress__milestone-dot"
+      />
+    </div>
+    <div
+      class="ca-game-progress__milestone-marker "
+      style="left: 100%;"
+      title="Master"
+    >
+      <span
+        class="ca-game-progress__milestone-dot"
+      />
+    </div>
+  </div>
+</div>
+`;

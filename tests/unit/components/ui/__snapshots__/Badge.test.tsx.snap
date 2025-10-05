@@ -1,0 +1,20 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Badge Component > Snapshot Testing > matches snapshot for default badge 1`] = `
+<span
+  class="ca-badge ca-badge--default ca-badge--medium ca-badge--rounded"
+>
+  Default Badge
+</span>
+`;
+
+exports[`Badge Component > Snapshot Testing > matches snapshot for region badge 1`] = `
+<span
+  class="ca-badge ca-badge--region-bay-area ca-badge--medium ca-badge--rounded"
+>
+  <span
+    class="ca-badge__dot"
+  />
+  Bay Area
+</span>
+`;
