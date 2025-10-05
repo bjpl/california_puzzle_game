@@ -8,7 +8,7 @@ import {
   CaliforniaRegion
 } from '@/types';
 import { getUnlockedModes, calculateModeStars, getModeById } from '@/config/gameModes';
-import { CaliforniaButton } from './CaliforniaButton';
+import { CaliforniaButton } from '../ui/CaliforniaButton';
 
 interface ProgressionSystemProps {
   availableModes: GameModeConfiguration[];

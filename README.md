@@ -1,5 +1,10 @@
 # California Counties Puzzle Game
 
+![CI/CD Pipeline](https://github.com/bjpl/california_puzzle_game/workflows/CI%2FCD%20Pipeline/badge.svg)
+![GitHub Pages](https://github.com/bjpl/california_puzzle_game/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)
+![Dependency Check](https://github.com/bjpl/california_puzzle_game/workflows/Dependency%20Check/badge.svg)
+![Performance Check](https://github.com/bjpl/california_puzzle_game/workflows/Performance%20Check/badge.svg)
+
 An interactive educational puzzle game for learning California geography. Players drag and drop county pieces to their correct locations on a California map using D3.js visualizations and React.
 
 ## ✨ Recent Improvements
@@ -269,6 +274,20 @@ import { Button, Card, Badge, Progress, Heading, Text } from '@/components/ui';
 
 ## 🌐 Deployment
 
+### CI/CD Pipeline
+
+The project uses GitHub Actions for automated continuous integration and deployment:
+
+- **Automated Testing**: Runs on every push and pull request
+- **Lint & Type Check**: Enforces code quality standards
+- **Build Verification**: Ensures production builds succeed
+- **Preview Deployments**: Automatic preview URLs for pull requests
+- **Production Deployment**: Automatic deployment to Netlify on main branch
+- **Performance Monitoring**: Lighthouse CI and bundle size tracking
+- **Security Audits**: Weekly dependency vulnerability scans
+
+See [CI/CD Documentation](docs/CI_CD.md) for setup and configuration details.
+
 ### Build Process
 ```bash
 npm run build          # Create production build
@@ -283,10 +302,18 @@ VITE_API_BASE_URL=your_api_url
 ```
 
 ### Deployment Platforms
-- **Vercel**: Optimized for React/Vite applications
-- **Netlify**: Easy continuous deployment from Git
+- **Netlify**: Primary deployment platform with CI/CD integration
+- **Vercel**: Alternative optimized for React/Vite applications
 - **GitHub Pages**: Free hosting for open source projects
 - **Custom Server**: Standard static file hosting
+
+### Required GitHub Secrets
+
+For automated deployment, configure these secrets in repository settings:
+
+- `NETLIFY_AUTH_TOKEN` - Netlify authentication token
+- `NETLIFY_SITE_ID` - Netlify site ID
+- `CODECOV_TOKEN` - Codecov upload token (optional)
 
 ## 🤝 Contributing
 

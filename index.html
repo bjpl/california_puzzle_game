@@ -28,7 +28,10 @@
     <link rel="manifest" href="/manifest.json" />
 
     <!-- Preload critical resources -->
-    <!-- GeoJSON files are loaded dynamically, no preload needed -->
+    <!-- GeoJSON files are loaded dynamically via code splitting -->
+    <!-- Prefetch likely next routes/components -->
+    <link rel="prefetch" href="/src/components/study/EnhancedStudyMode.tsx" as="script" />
+    <link rel="prefetch" href="/src/components/game/achievements/AchievementGallery.tsx" as="script" />
 
     <title>California Counties Puzzle Game</title>
 

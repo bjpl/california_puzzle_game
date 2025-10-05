@@ -2,7 +2,7 @@
 // Displays achievement unlock notifications with animations
 
 import React, { useEffect, useState } from 'react';
-import { AchievementDefinition, AchievementRarity } from '../../utils/achievements';
+import { AchievementDefinition, AchievementRarity } from '../../../utils/achievements';
 
 interface AchievementNotificationProps {
   achievement: AchievementDefinition;

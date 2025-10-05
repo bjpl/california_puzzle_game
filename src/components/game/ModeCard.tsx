@@ -1,6 +1,6 @@
 import React from 'react';
 import { GameModeConfiguration, DifficultyLevel, ModeCardProps } from '@/types';
-import { CaliforniaButton } from './CaliforniaButton';
+import { CaliforniaButton } from '../ui/CaliforniaButton';
 
 const difficultyColors = {
   [DifficultyLevel.EASY]: 'text-green-600 bg-green-100',

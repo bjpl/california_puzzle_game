@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
+import { reportWebVitals } from './utils/webVitals'
+import { preloadCaliforniaGeoData } from './utils/geoDataCache'
 
 // Global styles
 const globalStyles = `
@@ -255,8 +257,27 @@ const styleSheet = document.createElement('style');
 styleSheet.textContent = globalStyles;
 document.head.appendChild(styleSheet);
 
+// Render app
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
 )
+
+// Start Web Vitals monitoring in production
+if (import.meta.env.PROD) {
+  reportWebVitals({ debug: false });
+} else if (import.meta.env.DEV) {
+  // Enable debug logging in development
+  reportWebVitals({ debug: true });
+}
+
+// Preload GeoJSON data during idle time
+if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+  requestIdleCallback(() => {
+    preloadCaliforniaGeoData();
+  });
+} else {
+  // Fallback for browsers without requestIdleCallback
+  setTimeout(preloadCaliforniaGeoData, 1000);
+}

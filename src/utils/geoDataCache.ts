@@ -246,3 +246,21 @@ export class GeoDataCache {
 }
 
 export default GeoDataCache;
+
+// Create a global cache instance
+const globalGeoCache = new GeoDataCache();
+
+/**
+ * Preload California GeoJSON data
+ * Compatible with code splitting preload strategy
+ */
+export function preloadCaliforniaGeoData(): Promise<void> {
+  return globalGeoCache.preloadEssentials();
+}
+
+/**
+ * Get the global geo cache instance
+ */
+export function getGeoCache(): GeoDataCache {
+  return globalGeoCache;
+}

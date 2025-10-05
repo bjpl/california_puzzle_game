@@ -2,8 +2,8 @@
 // Displays all achievements with filtering and detailed views
 
 import React, { useState, useMemo } from 'react';
-import { useAchievements } from '../hooks/useAchievements';
-import { AchievementDefinition, AchievementRarity } from '../../utils/achievements';
+import { useAchievements } from '../../../hooks/useAchievements';
+import { AchievementDefinition, AchievementRarity } from '../../../utils/achievements';
 import { AchievementCategory } from '../types';
 
 interface AchievementGalleryProps {

@@ -3,7 +3,7 @@
  *
  * Purpose: Main build configuration for production and development
  * Used by: Vite build tool and Vitest test runner
- * Documentation: docs/CONFIGURATION_GUIDE.md
+ * Documentation: docs/CONFIGURATION_GUIDE.md, docs/CODE_SPLITTING.md
  *
  * Last updated: 2025-10-04
  */
@@ -11,10 +11,20 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    visualizer({
+      filename: './dist/stats.html',
+      open: false,
+      gzipSize: true,
+      brotliSize: true,
+      template: 'treemap', // 'sunburst', 'treemap', 'network'
+    }),
+  ],
   base: '/california_puzzle_game/',
   resolve: {
     alias: {
@@ -28,14 +38,40 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    chunkSizeWarningLimit: 500, // Set to 500kb
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'ui-vendor': ['lucide-react']
-        }
-      }
-    }
+          // Vendor chunks - Core libraries
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-ui': ['@dnd-kit/core', 'lucide-react', 'framer-motion'],
+          'vendor-geo': ['d3', 'd3-geo', 'd3-selection', 'd3-zoom', 'd3-drag'],
+          'vendor-storage': ['zustand'],
+
+          // Feature chunks - Large components
+          'map-components': [
+            './src/components/map/CaliforniaMapFixed.tsx',
+            './src/components/map/CaliforniaMapCanvas.tsx',
+            './src/components/map/CaliforniaMapSimple.tsx',
+            './src/components/map/StudyModeMap.tsx',
+          ],
+          'study-mode': [
+            './src/components/study/StudyMode.tsx',
+            './src/components/study/EnhancedStudyMode.tsx',
+            './src/components/study/StudyModeCard.tsx',
+          ],
+          'achievements': [
+            './src/components/game/achievements/AchievementGallery.tsx',
+            './src/components/game/achievements/AchievementNotification.tsx',
+          ],
+          'game-features': [
+            './src/components/game/GameModeSelector.tsx',
+            './src/components/game/DifficultySystem.tsx',
+            './src/components/game/ProgressionSystem.tsx',
+          ],
+        },
+      },
+    },
   },
   test: {
     globals: true,

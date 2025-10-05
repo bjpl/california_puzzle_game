@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
 import { DndContext, DragEndEvent, DragStartEvent, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
@@ -9,10 +9,15 @@ import CaliforniaMapFixed from '../map/CaliforniaMapFixed';
 import CaliforniaMapSimple from '../map/CaliforniaMapSimple';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
-import StudyMode from '../study/StudyMode';
-import EnhancedStudyMode from '../study/EnhancedStudyMode';
 import RegionsPanel from '../shared/RegionsPanel';
+import { MapErrorBoundary } from '../map/MapErrorBoundary';
+import { StudyErrorBoundary } from '../study/StudyErrorBoundary';
 import { GAME_CONFIG } from '@/constants';
+import LoadingSpinner from '../shared/LoadingSpinner';
+import { prefetchStudyMode, prefetchGameFeatures } from '../../utils/prefetch';
+
+// Lazy load heavy components
+const EnhancedStudyMode = lazy(() => import('../study/EnhancedStudyMode'));
 
 export default function GameContainer() {
   const {
@@ -32,6 +37,13 @@ export default function GameContainer() {
   const [activeCounty, setActiveCounty] = useState<any>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
   const sound = useSoundEffect();
+
+  // Prefetch game features when game starts
+  useEffect(() => {
+    if (isGameStarted) {
+      prefetchGameFeatures();
+    }
+  }, [isGameStarted]);
 
   // Initialize sound system on first user interaction
   useEffect(() => {
@@ -98,7 +110,13 @@ export default function GameContainer() {
   if (!isGameStarted) {
     return (
       <>
-        {showStudyMode && <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />}
+        {showStudyMode && (
+          <StudyErrorBoundary>
+            <Suspense fallback={<LoadingSpinner message="Loading Study Mode..." />}>
+              <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />
+            </Suspense>
+          </StudyErrorBoundary>
+        )}
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <Card variant="elevated" className="max-w-2xl w-full text-center">
           <div className="p-8">
@@ -143,6 +161,8 @@ export default function GameContainer() {
                 variant="primary"
                 size="large"
                 onClick={() => setShowStudyMode(true)}
+                onMouseEnter={prefetchStudyMode}
+                onFocus={prefetchStudyMode}
                 icon={<span>📚</span>}
                 className="bg-purple-600 hover:bg-purple-700"
               >
@@ -181,7 +201,9 @@ export default function GameContainer() {
           {/* Map - Using simplified version for better rendering */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-lg shadow-lg p-4" style={{ height: `${GAME_CONFIG.GAME_CONTAINER_HEIGHT}px` }}>
-              <CaliforniaMapSimple isDragging={isDragging} />
+              <MapErrorBoundary>
+                <CaliforniaMapSimple isDragging={isDragging} />
+              </MapErrorBoundary>
             </div>
           </div>
         </div>
@@ -197,7 +219,11 @@ export default function GameContainer() {
       </DndContext>
       {/* Render Study Mode with Portal to ensure it appears above everything */}
       {showStudyMode && createPortal(
-        <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />,
+        <StudyErrorBoundary>
+          <Suspense fallback={<LoadingSpinner message="Loading Study Mode..." />}>
+            <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />
+          </Suspense>
+        </StudyErrorBoundary>,
         document.body
       )}
     </div>
