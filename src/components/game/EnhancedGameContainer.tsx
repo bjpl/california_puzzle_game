@@ -10,9 +10,9 @@ import {
 } from '@/types';
 import { useGameStore } from '@/stores/gameStore';
 import { GameModeSelector } from './GameModeSelector';
-import { DifficultySystem, useDifficultySettings } from '../gameplay/DifficultySystem';
-import { ProgressionSystem } from '../gameplay/ProgressionSystem';
-import { StudyMode } from '../study-new/StudyMode';
+import { DifficultySystem, useDifficultySettings } from '../game/DifficultySystem';
+import { ProgressionSystem } from '../game/ProgressionSystem';
+import { StudyMode } from '../study/StudyMode';
 import { CaliforniaButton } from '../ui/CaliforniaButton';
 import CountyTray from '../county/CountyTray';
 import CaliforniaMapFixed from '../map/CaliforniaMapFixed';

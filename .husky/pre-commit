@@ -1,1 +1,17 @@
-npm test
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run lint-staged for formatting and linting
+npx lint-staged
+
+# Prevent commits with TODO comments (except in tests and docs)
+if git diff --cached --name-only | grep -E '\.(tsx?|jsx?)$' | xargs grep -l 'TODO:' 2>/dev/null | grep -v -E 'test|spec|\.md$'; then
+  echo "Error: TODO comments found in staged files. Create GitHub issues instead."
+  exit 1
+fi
+
+# Prevent commits with console.log (except in specific files)
+if git diff --cached --name-only | grep -E '\.(tsx?|jsx?)$' | xargs grep -l 'console\.log' 2>/dev/null | grep -v -E 'logger\.ts|test|spec'; then
+  echo "Error: console.log found. Use logger utility or console.warn/error instead."
+  exit 1
+fi

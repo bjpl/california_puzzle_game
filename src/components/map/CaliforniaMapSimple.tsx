@@ -3,7 +3,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { getSvgTextFill } from '../../utils/colorContrast';
 import CountyDetailsModal from '../county/CountyDetailsModal';
-import EnhancedStudyMode from '../study-new/EnhancedStudyMode';
+import EnhancedStudyMode from '../study/EnhancedStudyMode';
 import { saveGameState, generateStudyModeUrl } from '../../utils/gameStateManager';
 import { CALIFORNIA_COUNTIES } from '../../utils/californiaData';
 import { getRegionHexColor } from '../../config/regionColors';

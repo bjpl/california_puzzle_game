@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build outputs
+dist
+build
+.next
+.vite
+
+# Coverage
+coverage
+.nyc_output
+
+# Generated files
+*.gen.ts
+*.generated.ts
+
+# Config files that shouldn't be formatted
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Public assets
+public

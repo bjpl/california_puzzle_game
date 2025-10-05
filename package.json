@@ -11,11 +11,14 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
+    "test:unit": "vitest --workspace unit",
+    "test:a11y": "vitest --workspace a11y",
+    "test:accessibility": "vitest --workspace a11y",
+    "test:integration": "vitest --workspace integration",
+    "test:performance": "vitest --workspace performance",
+    "test:all": "vitest run --workspace",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest --watch",
-    "test:accessibility": "vitest --config vitest.a11y.config.ts",
-    "test:integration": "vitest --config vitest.integration.config.ts",
-    "test:performance": "vitest --config vitest.performance.config.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "typecheck": "tsc --noEmit",
@@ -97,5 +100,14 @@
     "educational"
   ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,md,json}": [
+      "prettier --write"
+    ]
+  }
 }

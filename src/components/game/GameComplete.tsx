@@ -3,6 +3,46 @@ import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { Card, Heading, Text, Button, Badge } from '../ui';
 
+/**
+ * GameComplete - Victory screen displayed when all counties are correctly placed
+ *
+ * Shows final game statistics with performance-based grading and options to
+ * replay or return to the main menu. Automatically plays a victory sound on mount.
+ *
+ * **Performance Grading:**
+ * - Perfect (🏆): 0 mistakes
+ * - Excellent (⭐): 1-3 mistakes
+ * - Good Job (👍): 4-6 mistakes
+ * - Complete (✅): 7+ mistakes
+ *
+ * **Displayed Statistics:**
+ * - Final score
+ * - Total mistakes made
+ * - Performance grade with emoji
+ *
+ * **Actions:**
+ * - Play Again: Resets game and starts new session
+ * - Main Menu: Reloads application to welcome screen
+ * - Share Achievement: Placeholder for social sharing (future feature)
+ *
+ * @component
+ * @example
+ * ```tsx
+ * import GameComplete from '@/components/game/GameComplete';
+ *
+ * function GameContainer() {
+ *   const { isGameComplete } = useGame();
+ *
+ *   if (isGameComplete) {
+ *     return <GameComplete />;
+ *   }
+ *
+ *   return <Game />;
+ * }
+ * ```
+ *
+ * @returns {JSX.Element} The game completion screen with statistics and options
+ */
 export default function GameComplete() {
   const { score, mistakes, resetGame } = useGame();
   const sound = useSoundEffect();

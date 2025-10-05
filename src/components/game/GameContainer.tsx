@@ -9,11 +9,48 @@ import CaliforniaMapFixed from '../map/CaliforniaMapFixed';
 import CaliforniaMapSimple from '../map/CaliforniaMapSimple';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
-import StudyMode from '../study-new/StudyMode';
-import EnhancedStudyMode from '../study-new/EnhancedStudyMode';
-import RegionsPanel from '../regions/RegionsPanel';
+import StudyMode from '../study/StudyMode';
+import EnhancedStudyMode from '../study/EnhancedStudyMode';
+import RegionsPanel from '../shared/RegionsPanel';
 import SimpleMapTest from '../_deprecated/SimpleMapTest';
 
+/**
+ * GameContainer - Main game orchestration component
+ *
+ * Manages the complete game lifecycle including drag-and-drop interactions,
+ * county placement, scoring, sound effects, and transitions between game states
+ * (welcome screen, gameplay, and completion).
+ *
+ * **Features:**
+ * - DndKit integration for drag-and-drop county placement
+ * - Sound effect management with user interaction initialization
+ * - Study mode integration with portal rendering
+ * - Game state transitions (pre-game -> playing -> complete)
+ * - Regions panel for filtering and coloring
+ *
+ * **Architecture:**
+ * - Uses GameContext (Zustand) for shared state
+ * - PointerSensor with 8px activation distance for drag operations
+ * - Portal pattern for modal overlays (study mode)
+ * - Sound system initialized on first user interaction
+ *
+ * @component
+ * @example
+ * ```tsx
+ * import GameContainer from '@/components/game/GameContainer';
+ * import { GameProvider } from '@/context/GameContext';
+ *
+ * function App() {
+ *   return (
+ *     <GameProvider>
+ *       <GameContainer />
+ *     </GameProvider>
+ *   );
+ * }
+ * ```
+ *
+ * @returns {JSX.Element} The game container with welcome screen, game UI, or completion screen
+ */
 export default function GameContainer() {
   const {
     isGameStarted,

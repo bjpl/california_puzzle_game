@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CaliforniaMapCanvas from '../map/CaliforniaMapCanvas';
 import CountyTray from '../county/CountyTray';
-import RegionSelector from '../gameplay/RegionSelector';
+import RegionSelector from '../game/RegionSelector';
 import {
   GameContainerProps,
   County,

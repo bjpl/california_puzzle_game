@@ -1,3 +1,13 @@
+/**
+ * Vite Configuration
+ *
+ * Purpose: Main build configuration for production and development
+ * Used by: Vite build tool and Vitest test runner
+ * Documentation: docs/CONFIGURATION_GUIDE.md
+ *
+ * Last updated: 2025-10-04
+ */
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'

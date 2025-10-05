@@ -5,7 +5,7 @@ import {
   GameModeSelectorProps,
   DifficultyLevel
 } from '@/types';
-import { ModeCard } from '../gameplay/ModeCard';
+import { ModeCard } from '../game/ModeCard';
 import { CaliforniaButton } from '../ui/CaliforniaButton';
 import { MODE_CATEGORIES, getUnlockedModes, getModesByCategory } from '@/config/gameModes';
 

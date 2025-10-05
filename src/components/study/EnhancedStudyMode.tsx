@@ -8,7 +8,7 @@ import { californiaCounties, CaliforniaCounty } from '../../data/californiaCount
 import { getQuestionsByRegion, QuizQuestion, getRandomQuestions } from '../../data/californiaQuizQuestions';
 import StudyModeMap from '../map/StudyModeMap';
 import CountyShapeDisplay from '../county/CountyShapeDisplay';
-import EducationalContentModal from '../modals/EducationalContentModal';
+import EducationalContentModal from '../game/modals/EducationalContentModal';
 import CountyDetailsModal from '../county/CountyDetailsModal';
 import CountyFormationAnimation from '../county/CountyFormationAnimation';
 import { getRegionColor } from '../../config/regionColors';
