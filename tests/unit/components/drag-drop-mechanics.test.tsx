@@ -1,13 +1,55 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { MOCK_CALIFORNIA_COUNTIES, MOCK_DRAG_EVENTS } from '../../fixtures';
+import { MOCK_CALIFORNIA_COUNTIES } from '../../fixtures';
 import '../../mocks/react-dnd-mocks';
+
+// Mock DataTransfer for jsdom
+class MockDataTransfer {
+  data: Record<string, string> = {};
+  dropEffect: string = 'none';
+  effectAllowed: string = 'all';
+  files: FileList = [] as unknown as FileList;
+  items: DataTransferItemList = [] as unknown as DataTransferItemList;
+  types: string[] = [];
+
+  setData(format: string, data: string): void {
+    this.data[format] = data;
+    if (!this.types.includes(format)) {
+      this.types.push(format);
+    }
+  }
+
+  getData(format: string): string {
+    return this.data[format] || '';
+  }
+
+  clearData(format?: string): void {
+    if (format) {
+      delete this.data[format];
+      this.types = this.types.filter((t) => t !== format);
+    } else {
+      this.data = {};
+      this.types = [];
+    }
+  }
+}
+
+// Patch fireEvent to include dataTransfer
+const createDragEvent = (type: string, element: HTMLElement, dataTransfer?: MockDataTransfer) => {
+  const event = new Event(type, { bubbles: true, cancelable: true });
+  Object.defineProperty(event, 'dataTransfer', {
+    value: dataTransfer || new MockDataTransfer(),
+    writable: false,
+  });
+  element.dispatchEvent(event);
+  return event;
+};
 
 // Mock Draggable County Component
 const MockDraggableCounty: React.FC<{
-  county: typeof MOCK_CALIFORNIA_COUNTIES[0];
+  county: (typeof MOCK_CALIFORNIA_COUNTIES)[0];
   isDragging?: boolean;
   onDragStart?: (countyId: string) => void;
   onDragEnd?: (countyId: string) => void;
@@ -37,7 +79,7 @@ const MockDraggableCounty: React.FC<{
         margin: '4px',
         border: '1px solid #ccc',
         borderRadius: '4px',
-        backgroundColor: disabled ? '#f5f5f5' : '#fff'
+        backgroundColor: disabled ? '#f5f5f5' : '#fff',
       }}
       role="button"
       tabIndex={disabled ? -1 : 0}
@@ -74,7 +116,7 @@ const MockDropTarget: React.FC<{
     onDragEnter?.(countyId);
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = (_e: React.DragEvent) => {
     onDragLeave?.(countyId);
   };
 
@@ -101,7 +143,7 @@ const MockDropTarget: React.FC<{
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: isOver ? '#e7f3ff' : canDrop ? '#f8f9fa' : '#f5f5f5',
-        cursor: canDrop ? 'pointer' : 'not-allowed'
+        cursor: canDrop ? 'pointer' : 'not-allowed',
       }}
       role="region"
       aria-label={`Drop zone for ${countyId} county`}
@@ -144,16 +186,16 @@ const MockDragDropContainer: React.FC<{
     setDragOverTarget(targetCountyId);
   };
 
-  const handleDragLeave = (targetCountyId: string) => {
+  const handleDragLeave = (_targetCountyId: string) => {
     setDragOverTarget(null);
   };
 
-  const availableCounties = counties.filter(county => !placedCounties.includes(county.id));
+  const availableCounties = counties.filter((county) => !placedCounties.includes(county.id));
 
   return (
     <div data-testid="drag-drop-container">
       <div data-testid="available-counties" style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {availableCounties.map(county => (
+        {availableCounties.map((county) => (
           <MockDraggableCounty
             key={county.id}
             county={county}
@@ -164,8 +206,11 @@ const MockDragDropContainer: React.FC<{
         ))}
       </div>
 
-      <div data-testid="drop-targets" style={{ display: 'flex', flexWrap: 'wrap', marginTop: '20px' }}>
-        {counties.map(county => (
+      <div
+        data-testid="drop-targets"
+        style={{ display: 'flex', flexWrap: 'wrap', marginTop: '20px' }}
+      >
+        {counties.map((county) => (
           <MockDropTarget
             key={county.id}
             countyId={county.id}
@@ -213,7 +258,7 @@ describe('Drag and Drop Mechanics', () => {
       render(<MockDraggableCounty county={mockCounty} onDragStart={onDragStart} />);
 
       const draggableElement = screen.getByTestId(`draggable-county-${mockCounty.id}`);
-      fireEvent.dragStart(draggableElement);
+      createDragEvent('dragstart', draggableElement);
 
       expect(onDragStart).toHaveBeenCalledWith(mockCounty.id);
     });
@@ -223,7 +268,7 @@ describe('Drag and Drop Mechanics', () => {
       render(<MockDraggableCounty county={mockCounty} onDragEnd={onDragEnd} />);
 
       const draggableElement = screen.getByTestId(`draggable-county-${mockCounty.id}`);
-      fireEvent.dragEnd(draggableElement);
+      createDragEvent('dragend', draggableElement);
 
       expect(onDragEnd).toHaveBeenCalledWith(mockCounty.id);
     });
@@ -252,7 +297,10 @@ describe('Drag and Drop Mechanics', () => {
 
       const draggableElement = screen.getByTestId(`draggable-county-${mockCounty.id}`);
       expect(draggableElement).toHaveAttribute('role', 'button');
-      expect(draggableElement).toHaveAttribute('aria-label', `Drag ${mockCounty.name} County to place on map`);
+      expect(draggableElement).toHaveAttribute(
+        'aria-label',
+        `Drag ${mockCounty.name} County to place on map`
+      );
       expect(draggableElement).toHaveAttribute('aria-grabbed', 'false');
     });
 
@@ -279,7 +327,7 @@ describe('Drag and Drop Mechanics', () => {
       render(<MockDropTarget countyId={targetCountyId} />);
 
       const dropTarget = screen.getByTestId(`drop-target-${targetCountyId}`);
-      fireEvent.dragOver(dropTarget);
+      createDragEvent('dragover', dropTarget);
 
       // Should prevent default to allow drop
       expect(dropTarget).toBeInTheDocument();
@@ -292,14 +340,10 @@ describe('Drag and Drop Mechanics', () => {
       const dropTarget = screen.getByTestId(`drop-target-${targetCountyId}`);
 
       // Mock drag data
-      const dropEvent = new Event('drop', { bubbles: true });
-      Object.defineProperty(dropEvent, 'dataTransfer', {
-        value: {
-          getData: vi.fn().mockReturnValue('san-diego'),
-        },
-      });
+      const dataTransfer = new MockDataTransfer();
+      dataTransfer.setData('text/plain', 'san-diego');
+      createDragEvent('drop', dropTarget, dataTransfer);
 
-      fireEvent(dropTarget, dropEvent);
       expect(onDrop).toHaveBeenCalledWith('san-diego', targetCountyId);
     });
 
@@ -352,38 +396,29 @@ describe('Drag and Drop Mechanics', () => {
       const dropTarget = screen.getByTestId('drop-target-los-angeles');
 
       // Start drag
-      fireEvent.dragStart(draggableCounty);
+      const dataTransfer = new MockDataTransfer();
+      createDragEvent('dragstart', draggableCounty, dataTransfer);
       expect(onDragStart).toHaveBeenCalledWith('los-angeles');
 
       // Drag over target
-      fireEvent.dragEnter(dropTarget);
-      fireEvent.dragOver(dropTarget);
+      createDragEvent('dragenter', dropTarget, dataTransfer);
+      createDragEvent('dragover', dropTarget, dataTransfer);
 
       // Drop
-      const dropEvent = new Event('drop', { bubbles: true });
-      Object.defineProperty(dropEvent, 'dataTransfer', {
-        value: {
-          getData: vi.fn().mockReturnValue('los-angeles'),
-        },
-      });
-      fireEvent(dropTarget, dropEvent);
+      dataTransfer.setData('text/plain', 'los-angeles');
+      createDragEvent('drop', dropTarget, dataTransfer);
 
       expect(onCountyPlace).toHaveBeenCalledWith('los-angeles', 'los-angeles');
 
       // End drag
-      fireEvent.dragEnd(draggableCounty);
+      createDragEvent('dragend', draggableCounty, dataTransfer);
       expect(onDragEnd).toHaveBeenCalledWith('los-angeles');
     });
 
     it('should remove placed counties from available list', () => {
       const placedCounties = ['los-angeles'];
 
-      render(
-        <MockDragDropContainer
-          counties={mockCounties}
-          placedCounties={placedCounties}
-        />
-      );
+      render(<MockDragDropContainer counties={mockCounties} placedCounties={placedCounties} />);
 
       // Los Angeles should not be in available counties
       expect(screen.queryByTestId('draggable-county-los-angeles')).not.toBeInTheDocument();
@@ -396,12 +431,7 @@ describe('Drag and Drop Mechanics', () => {
     it('should disable drop targets for placed counties', () => {
       const placedCounties = ['los-angeles'];
 
-      render(
-        <MockDragDropContainer
-          counties={mockCounties}
-          placedCounties={placedCounties}
-        />
-      );
+      render(<MockDragDropContainer counties={mockCounties} placedCounties={placedCounties} />);
 
       const dropTarget = screen.getByTestId('drop-target-los-angeles');
       expect(dropTarget).toHaveClass('cannot-drop');
@@ -414,7 +444,8 @@ describe('Drag and Drop Mechanics', () => {
       const dropTarget = screen.getByTestId('drop-target-san-diego');
 
       // Start drag
-      fireEvent.dragStart(draggableCounty);
+      const dataTransfer = new MockDataTransfer();
+      createDragEvent('dragstart', draggableCounty, dataTransfer);
 
       // Should show dragging state
       await waitFor(() => {
@@ -422,7 +453,7 @@ describe('Drag and Drop Mechanics', () => {
       });
 
       // Enter drop target
-      fireEvent.dragEnter(dropTarget);
+      createDragEvent('dragenter', dropTarget, dataTransfer);
 
       // Should show hover state
       await waitFor(() => {
@@ -430,7 +461,7 @@ describe('Drag and Drop Mechanics', () => {
       });
 
       // Leave drop target
-      fireEvent.dragLeave(dropTarget);
+      createDragEvent('dragleave', dropTarget, dataTransfer);
 
       // Should remove hover state
       await waitFor(() => {
@@ -459,12 +490,7 @@ describe('Drag and Drop Mechanics', () => {
 
     it('should handle space/enter key for activation', async () => {
       const onDragStart = vi.fn();
-      render(
-        <MockDragDropContainer
-          counties={mockCounties}
-          onDragStart={onDragStart}
-        />
-      );
+      render(<MockDragDropContainer counties={mockCounties} onDragStart={onDragStart} />);
 
       const draggableCounty = screen.getByTestId('draggable-county-los-angeles');
       draggableCounty.focus();
@@ -483,15 +509,11 @@ describe('Drag and Drop Mechanics', () => {
       const dropTarget = screen.getByTestId('drop-target-los-angeles');
 
       // Drop with no data
-      const dropEvent = new Event('drop', { bubbles: true });
-      Object.defineProperty(dropEvent, 'dataTransfer', {
-        value: {
-          getData: vi.fn().mockReturnValue(''),
-        },
-      });
+      const dataTransfer = new MockDataTransfer();
+      // Don't set any data - getData will return empty string
 
       expect(() => {
-        fireEvent(dropTarget, dropEvent);
+        createDragEvent('drop', dropTarget, dataTransfer);
       }).not.toThrow();
 
       expect(onDrop).toHaveBeenCalledWith('', 'los-angeles');
@@ -503,8 +525,8 @@ describe('Drag and Drop Mechanics', () => {
       const draggableCounty = screen.getByTestId('draggable-county-los-angeles');
 
       expect(() => {
-        fireEvent.dragStart(draggableCounty);
-        fireEvent.dragEnd(draggableCounty);
+        createDragEvent('dragstart', draggableCounty);
+        createDragEvent('dragend', draggableCounty);
       }).not.toThrow();
     });
   });
