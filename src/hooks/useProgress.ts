@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { storageManager, GameSession } from '../utils/storage';
 import { GameStats, CaliforniaRegion, DifficultyLevel, PlacementResult } from '../types';
+import { logger } from '../utils/logger';
 
 interface ProgressData {
   // Overall progress
@@ -175,6 +176,77 @@ export function useProgress() {
         ? Math.min(...completionTimes) 
         : 0;
       
+      // Calculate struggling counties (< 50% accuracy with at least 3 attempts)
+      const countyAttempts = new Map<string, { correct: number; total: number }>();
+      sessions.forEach(session => {
+        // Assuming session has placement data - we'll track by county
+        const sessionAccuracy = session.placementsTotal > 0 ? session.placementsCorrect / session.placementsTotal : 0;
+        stats.countiesLearned.forEach(countyId => {
+          const existing = countyAttempts.get(countyId) || { correct: 0, total: 0 };
+          existing.total++;
+          if (sessionAccuracy > 0.5) existing.correct++;
+          countyAttempts.set(countyId, existing);
+        });
+      });
+
+      const strugglingCounties = Array.from(countyAttempts.entries())
+        .filter(([_, stats]) => stats.total >= 3 && (stats.correct / stats.total) < 0.5)
+        .map(([countyId, stats]) => ({
+          countyId,
+          attempts: stats.total,
+          accuracy: stats.correct / stats.total
+        }));
+
+      // Calculate mastered counties (> 90% accuracy with at least 5 attempts)
+      const masteredCounties = Array.from(countyAttempts.entries())
+        .filter(([_, stats]) => stats.total >= 5 && (stats.correct / stats.total) > 0.9)
+        .map(([countyId]) => countyId);
+
+      // Calculate total points from achievements
+      const achievements = storageManager.loadAchievements();
+      const totalPoints = achievements.reduce((sum, achievement) => {
+        // Award points: 100 for unlocked achievements
+        return sum + (achievement.isUnlocked ? 100 : 0);
+      }, 0);
+
+      // Calculate achievement progress
+      const TOTAL_AVAILABLE_ACHIEVEMENTS = 50; // Define total possible achievements
+      const unlockedCount = achievements.filter(a => a.isUnlocked).length;
+      const achievementProgress = (unlockedCount / TOTAL_AVAILABLE_ACHIEVEMENTS) * 100;
+
+      // Get recent achievements (last 7 days)
+      const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+      const recentAchievements = achievements
+        .filter(a => a.isUnlocked && a.unlockedAt && a.unlockedAt.getTime() > sevenDaysAgo)
+        .sort((a, b) => (b.unlockedAt?.getTime() || 0) - (a.unlockedAt?.getTime() || 0))
+        .slice(0, 5)
+        .map(a => a.id);
+
+      // Calculate current streak
+      let currentStreak = 0;
+      if (sessions.length > 0) {
+        const sortedSessions = [...sessions].sort((a, b) =>
+          new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+        );
+
+        let streak = 0;
+        let lastDate = new Date().setHours(0, 0, 0, 0);
+
+        for (const session of sortedSessions) {
+          const sessionDate = new Date(session.startTime).setHours(0, 0, 0, 0);
+          const daysDiff = Math.floor((lastDate - sessionDate) / (24 * 60 * 60 * 1000));
+
+          if (daysDiff === 0 || daysDiff === 1) {
+            streak++;
+            lastDate = sessionDate;
+          } else {
+            break;
+          }
+        }
+
+        currentStreak = streak;
+      }
+
       return {
         totalGamesPlayed,
         totalPlayTime,
@@ -188,17 +260,17 @@ export function useProgress() {
         speedByDifficulty,
         countiesLearned: stats.countiesLearned,
         learningCurve,
-        strugglingCounties: [], // TODO: Implement based on detailed placement data
-        masteredCounties: [], // TODO: Implement based on consistent high accuracy
-        totalPoints: 0, // TODO: Calculate from achievements
-        achievementProgress: 0, // TODO: Calculate from achievements
-        recentAchievements: [], // TODO: Get from recent unlocks
-        currentStreak: 0, // TODO: Calculate current streak
+        strugglingCounties,
+        masteredCounties,
+        totalPoints,
+        achievementProgress,
+        recentAchievements,
+        currentStreak,
         longestStreak: stats.longestStreak,
         playingPatterns
       };
     } catch (error) {
-      console.error('Error calculating progress:', error);
+      logger.error('Error calculating progress:', error);
       throw error;
     }
   }, []);
@@ -403,13 +475,26 @@ export function useDailyProgress() {
     const averageAccuracy = totalPlacements > 0 ? correctPlacements / totalPlacements : 0;
     
     const achievementsUnlocked = todaySessions.reduce((sum, s) => sum + s.achievementsUnlocked.length, 0);
-    
+
+    // Track counties learned today
+    const countiesLearnedToday = new Set<string>();
+    todaySessions.forEach(session => {
+      // Add counties that were learned in this session
+      // A county is considered "learned" if it was placed correctly
+      if (session.placementsCorrect > 0) {
+        const stats = storageManager.loadStats();
+        stats.countiesLearned.forEach(countyId => {
+          countiesLearnedToday.add(countyId);
+        });
+      }
+    });
+
     setDailyStats({
       gamesPlayed,
       totalScore,
       timeSpent,
       averageAccuracy,
-      countiesLearned: 0, // TODO: Track counties learned today
+      countiesLearned: countiesLearnedToday.size,
       achievementsUnlocked
     });
   }, []);

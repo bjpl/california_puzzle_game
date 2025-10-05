@@ -1,7 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
+import { mapLogger } from '../../utils/logger';
 import { useDroppable } from '@dnd-kit/core';
+import { mapLogger } from '../../utils/logger';
 import { useGame } from '../../context/GameContext';
+import { mapLogger } from '../../utils/logger';
 import { getSvgTextFill } from '../../utils/colorContrast';
+import { mapLogger } from '../../utils/logger';
+import { UI_CONFIG, COUNTY_FILL_COLORS, STROKE_COLORS, GAME_CONFIG } from '@/constants';
+import { mapLogger } from '../../utils/logger';
 
 interface CountyFeature {
   type: string;
@@ -35,11 +41,11 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   const isCorrectHover = isOver && currentCounty?.id === countyId;
   const isWrongHover = isOver && currentCounty?.id !== countyId;
 
-  let fillColor = '#e5e7eb'; // Default gray
-  if (isPlaced) fillColor = '#10b981'; // Green when placed
-  else if (isCorrectHover) fillColor = '#86efac'; // Light green on correct hover
-  else if (isWrongHover) fillColor = '#fca5a5'; // Light red on wrong hover
-  else if (isActive) fillColor = '#fef3c7'; // Yellow when active
+  let fillColor = COUNTY_FILL_COLORS.DEFAULT; // Default gray
+  if (isPlaced) fillColor = COUNTY_FILL_COLORS.PLACED; // Green when placed
+  else if (isCorrectHover) fillColor = COUNTY_FILL_COLORS.CORRECT_HOVER; // Light green on correct hover
+  else if (isWrongHover) fillColor = COUNTY_FILL_COLORS.WRONG_HOVER; // Light red on wrong hover
+  else if (isActive) fillColor = COUNTY_FILL_COLORS.ACTIVE; // Yellow when active
 
   // Calculate optimal text color based on background
   const textColor = getSvgTextFill(fillColor);
@@ -91,7 +97,7 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
 
   // Debug: Log if path is empty for troubleshooting
   if (!path && county.properties.NAME) {
-    console.warn(`Empty path for county: ${county.properties.NAME}`);
+    mapLogger.warn(`Empty path for county: ${county.properties.NAME}`);
   }
 
   // Calculate centroid for label
@@ -128,8 +134,8 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
       <path
         d={path}
         fill={fillColor}
-        stroke="#374151"
-        strokeWidth="0.5"
+        stroke={STROKE_COLORS.DEFAULT}
+        strokeWidth={GAME_CONFIG.STROKE_WIDTH_DEFAULT}
         className="transition-all duration-200"
         style={{ cursor: isPlaced ? 'default' : 'pointer' }}
       />
@@ -138,7 +144,7 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
           x={centroid[0]}
           y={centroid[1]}
           textAnchor="middle"
-          fontSize="10"
+          fontSize={UI_CONFIG.FONT_SIZE_SMALL}
           fill={textColor}
           fontWeight="bold"
           pointerEvents="none"
@@ -172,19 +178,17 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
         setGeoData(data);
 
         // Create California-optimized projection
-        const width = 800;
-        const height = 600;
+        const width = GAME_CONFIG.MAP_WIDTH;
+        const height = GAME_CONFIG.MAP_HEIGHT;
 
         // Manual projection function for California
         const californiaProjection = (coord: [number, number]): [number, number] => {
-          // California bounds approximately:
-          // Longitude: -124.5 to -114
-          // Latitude: 32.5 to 42
+          // California bounds from constants
           const [lon, lat] = coord;
 
           // Simple linear transformation
-          const x = ((lon + 124.5) / 10.5) * width * 0.8 + width * 0.1;
-          const y = ((42 - lat) / 9.5) * height * 0.8 + height * 0.1;
+          const x = ((lon - UI_CONFIG.CA_LON_MIN) / UI_CONFIG.CA_LON_RANGE) * width * UI_CONFIG.CA_MAP_PADDING + width * UI_CONFIG.CA_MAP_OFFSET;
+          const y = ((UI_CONFIG.CA_LAT_MAX - lat) / UI_CONFIG.CA_LAT_RANGE) * height * UI_CONFIG.CA_MAP_PADDING + height * UI_CONFIG.CA_MAP_OFFSET;
 
           return [x, y];
         };
@@ -192,7 +196,7 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
         setProjection(() => californiaProjection);
       })
       .catch(error => {
-        console.error('Error loading GeoJSON:', error);
+        mapLogger.error('Error loading GeoJSON:', error);
       });
   }, []);
 
@@ -213,7 +217,7 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
       <svg
         ref={svgRef}
-        viewBox="0 0 800 600"
+        viewBox={GAME_CONFIG.MAP_VIEW_BOX}
         className="w-full h-full"
         style={{ maxHeight: '100%', maxWidth: '100%' }}
       >
@@ -228,10 +232,10 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
 
         {/* Title */}
         <text
-          x="400"
+          x={GAME_CONFIG.MAP_WIDTH / 2}
           y="30"
           textAnchor="middle"
-          fontSize="24"
+          fontSize={UI_CONFIG.FONT_SIZE_LARGE}
           fontWeight="bold"
           fill="#1e3a8a"
           fontFamily="system-ui, -apple-system, sans-serif"
@@ -242,10 +246,10 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
         {/* Instructions */}
         {isDragging && (
           <text
-            x="400"
+            x={GAME_CONFIG.MAP_WIDTH / 2}
             y="55"
             textAnchor="middle"
-            fontSize="14"
+            fontSize={UI_CONFIG.FONT_SIZE_MEDIUM}
             fill="#6b7280"
             className="animate-pulse"
           >

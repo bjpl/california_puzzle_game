@@ -6,9 +6,13 @@
  */
 
 import { useEffect, useCallback, useRef } from 'react';
+import { logger } from '../utils/logger';
 import { useGameStore } from '../stores/gameStore';
+import { logger } from '../utils/logger';
 import { playSound, SoundType, soundManager } from '../utils/soundManager';
+import { logger } from '../utils/logger';
 import { initializeSoundSystem, setupAudioContextResume, cleanupSoundSystem } from '../utils/initializeSound';
+import { logger } from '../utils/logger';
 
 export interface UseSoundOptions {
   enableClickSounds?: boolean;
@@ -61,7 +65,7 @@ export const useSound = (options: UseSoundOptions = {}): UseSoundReturn => {
       setupAudioContextResume();
       isInitializedRef.current = true;
     } catch (error) {
-      console.warn('Sound initialization failed:', error);
+      logger.warn('Sound initialization failed:', error);
     }
   }, []);
 

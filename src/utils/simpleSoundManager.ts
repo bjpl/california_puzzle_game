@@ -54,9 +54,9 @@ class SimpleSoundManager {
 
       // Preload essential sounds
       await this.preloadSounds();
-      console.log('🔊 Simple sound system initialized');
+      logger.debug('🔊 Simple sound system initialized');
     } catch (error) {
-      console.warn('Audio initialization failed:', error);
+      logger.warn('Audio initialization failed:', error);
       this.enabled = false;
     }
   }
@@ -86,7 +86,7 @@ class SimpleSoundManager {
         const buffer = generator();
         this.sounds.set(type as SoundType, buffer);
       } catch (error) {
-        console.warn(`Failed to generate sound: ${type}`, error);
+        logger.warn(`Failed to generate sound: ${type}`, error);
       }
     }
   }
@@ -222,7 +222,7 @@ class SimpleSoundManager {
 
     const buffer = this.sounds.get(type);
     if (!buffer) {
-      console.warn(`Sound not loaded: ${type}`);
+      logger.warn(`Sound not loaded: ${type}`);
       return;
     }
 
@@ -243,7 +243,7 @@ class SimpleSoundManager {
         gainNode.disconnect();
       };
     } catch (error) {
-      console.warn(`Failed to play sound: ${type}`, error);
+      logger.warn(`Failed to play sound: ${type}`, error);
     }
   }
 

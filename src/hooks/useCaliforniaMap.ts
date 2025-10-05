@@ -4,9 +4,13 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { logger } from '../utils/logger';
 import * as d3 from 'd3-geo';
+import { logger } from '../utils/logger';
 import { GeoDataCache } from '../utils/geoDataCache';
+import { logger } from '../utils/logger';
 import { CaliforniaMapUtilities, CountyCollisionDetector } from '../utils/mapUtilities';
+import { logger } from '../utils/logger';
 
 export interface CountyData {
   id: string;
@@ -144,7 +148,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
         // Preload other levels in background
         preloadLevels.forEach(level => {
           if (level !== 'low') {
-            loadDetailLevel(level).catch(console.warn);
+            loadDetailLevel(level).catch(err => logger.warn(err));
           }
         });
 
@@ -215,7 +219,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
     try {
       return mapUtilsRef.current.zoomToCounty(countyId, duration);
     } catch (error) {
-      console.error('Failed to zoom to county:', error);
+      logger.error('Failed to zoom to county:', error);
       return null;
     }
   }, []);
@@ -227,7 +231,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
     try {
       return mapUtilsRef.current.zoomToFitAll(padding);
     } catch (error) {
-      console.error('Failed to zoom to fit all:', error);
+      logger.error('Failed to zoom to fit all:', error);
       return null;
     }
   }, []);

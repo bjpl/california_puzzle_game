@@ -2,14 +2,23 @@
 // Provides centralized state management with persistent storage
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { logger } from '../utils/logger';
 import { useGameStore } from '../stores/gameStore';
+import { logger } from '../utils/logger';
 import { useAutoSave } from '../hooks/useAutoSave';
+import { logger } from '../utils/logger';
 import { useProgress } from '../hooks/useProgress';
+import { logger } from '../utils/logger';
 import { useAchievements, useAchievementNotifications } from '../hooks/useAchievements';
+import { logger } from '../utils/logger';
 import { storageManager, UserProfile } from '../utils/storage';
+import { logger } from '../utils/logger';
 import { runStartupMigrations } from '../utils/dataMigration';
+import { logger } from '../utils/logger';
 import { GameSettings, GameStats, Achievement, PlacementResult } from '../types';
+import { logger } from '../utils/logger';
 import { AchievementDefinition } from '../utils/achievements';
+import { logger } from '../utils/logger';
 
 interface EnhancedGameContextValue {
   // Game State
@@ -110,7 +119,7 @@ export const EnhancedGameProvider: React.FC<EnhancedGameProviderProps> = ({ chil
         setIsInitialized(true);
         
       } catch (err) {
-        console.error('Failed to initialize Enhanced Game Context:', err);
+        logger.error('Failed to initialize Enhanced Game Context:', err);
         setError(err instanceof Error ? err.message : 'Initialization failed');
         setMigrationStatus('failed');
       }

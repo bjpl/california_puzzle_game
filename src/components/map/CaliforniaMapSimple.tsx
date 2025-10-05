@@ -1,12 +1,21 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { mapLogger } from '../../utils/logger';
 import { useDroppable } from '@dnd-kit/core';
+import { mapLogger } from '../../utils/logger';
 import { useGame } from '../../context/GameContext';
+import { mapLogger } from '../../utils/logger';
 import { getSvgTextFill } from '../../utils/colorContrast';
+import { mapLogger } from '../../utils/logger';
 import CountyDetailsModal from '../county/CountyDetailsModal';
+import { mapLogger } from '../../utils/logger';
 import EnhancedStudyMode from '../study/EnhancedStudyMode';
+import { mapLogger } from '../../utils/logger';
 import { saveGameState, generateStudyModeUrl } from '../../utils/gameStateManager';
+import { mapLogger } from '../../utils/logger';
 import { CALIFORNIA_COUNTIES } from '../../utils/californiaData';
+import { mapLogger } from '../../utils/logger';
 import { getRegionHexColor } from '../../config/regionColors';
+import { mapLogger } from '../../utils/logger';
 import '../../styles/educational-design.css';
 
 interface CountyFeature {
@@ -172,7 +181,7 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
         }
       }
     } catch (error) {
-      console.warn(`Error calculating centroid for ${countyName}:`, error);
+      mapLogger.warn(`Error calculating centroid for ${countyName}:`, error);
     }
 
     // Return average position (approximate centroid) if we have valid data
@@ -183,7 +192,7 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
     }
 
     // Fallback: return map center
-    console.warn(`No valid coordinates found for ${countyName}, using map center`);
+    mapLogger.warn(`No valid coordinates found for ${countyName}, using map center`);
     return [400, 300];
   };
 
@@ -237,10 +246,10 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
 }
 
 export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolean }) {
-  console.log('🗺️ CaliforniaMapSimple component rendering');
+  mapLogger.debug('🗺️ CaliforniaMapSimple component rendering');
   const gameContext = useGame();
   const { showRegions, placedCounties, counties, score, timerState, mistakes, gameSettings, placementHistory } = gameContext;
-  console.log('🎨 showRegions value:', showRegions);
+  mapLogger.debug('🎨 showRegions value:', showRegions);
   const [selectedCounty, setSelectedCounty] = useState<any>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
@@ -259,30 +268,30 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       ? '/data/geo/ca-counties-medium.geojson'
       : '/california_puzzle_game/data/geo/ca-counties-medium.geojson';
 
-    console.log('Attempting to fetch GeoJSON from:', basePath);
+    mapLogger.debug('Attempting to fetch GeoJSON from:', basePath);
     fetch(basePath)
       .then(response => {
-        console.log('Fetch response:', response.status, response.statusText);
+        mapLogger.debug('Fetch response:', response.status, response.statusText);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
       })
       .then(data => {
-        console.log('GeoJSON loaded successfully, features:', data.features?.length);
+        mapLogger.debug('GeoJSON loaded successfully, features:', data.features?.length);
         setGeoData(data);
         // We use fixed California bounds in the projection function,
         // so we don't need to calculate them from the data
         setBounds({ loaded: true });
       })
       .catch(error => {
-        console.error('Error loading GeoJSON:', error);
-        console.error('Failed path was:', basePath);
+        mapLogger.error('Error loading GeoJSON:', error);
+        mapLogger.error('Failed path was:', basePath);
       });
   }, []);
 
   if (!geoData || !bounds) {
-    console.log('⏳ Map loading state - geoData:', !!geoData, 'bounds:', !!bounds);
+    mapLogger.debug('⏳ Map loading state - geoData:', !!geoData, 'bounds:', !!bounds);
     return (
       <div className="w-full h-full flex items-center justify-center bg-blue-50">
         <div className="text-gray-700 animate-pulse text-lg font-semibold">Loading California map...</div>
@@ -290,7 +299,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
     );
   }
 
-  console.log('✅ Map data loaded, rendering', geoData.features?.length, 'counties');
+  mapLogger.debug('✅ Map data loaded, rendering', geoData.features?.length, 'counties');
 
   // Handle mouse wheel for zoom
   const handleWheel = (e: React.WheelEvent) => {

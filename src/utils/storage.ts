@@ -2,6 +2,7 @@
 // Handles profile management, settings persistence, and game data
 
 import { GameSettings, GameStats, Achievement, DifficultyLevel, CaliforniaRegion } from '../types';
+import { storageLogger } from './logger';
 
 // Version for data migration
 const STORAGE_VERSION = '1.0.0';
@@ -73,7 +74,7 @@ class StorageManager {
   }
 
   private migrate(fromVersion: string | null): void {
-    console.log(`Migrating storage from ${fromVersion || 'initial'} to ${STORAGE_VERSION}`);
+    storageLogger.debug(`Migrating storage from ${fromVersion || 'initial'} to ${STORAGE_VERSION}`);
     
     // Handle migration logic here
     if (!fromVersion) {
@@ -101,7 +102,7 @@ class StorageManager {
       // Handle Date objects
       return this.deserializeDates(parsed);
     } catch (error) {
-      console.warn(`Failed to get item ${key}:`, error);
+      storageLogger.warn(`Failed to get item ${key}:`, error);
       return null;
     }
   }
@@ -114,7 +115,7 @@ class StorageManager {
       // Notify listeners
       this.notifyListeners(key, value);
     } catch (error) {
-      console.warn(`Failed to set item ${key}:`, error);
+      storageLogger.warn(`Failed to set item ${key}:`, error);
     }
   }
 
@@ -374,7 +375,7 @@ class StorageManager {
       
       return true;
     } catch (error) {
-      console.error('Failed to import data:', error);
+      storageLogger.error('Failed to import data:', error);
       return false;
     }
   }

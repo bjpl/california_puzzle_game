@@ -2,6 +2,7 @@
 // Handles achievement definitions, progress tracking, and unlock logic
 
 import { Achievement, AchievementCategory, DifficultyLevel, CaliforniaRegion, GameStats, PlacementResult } from '../types';
+import { achievementLogger } from './logger';
 
 export interface AchievementDefinition extends Achievement {
   rarity: AchievementRarity;
@@ -731,7 +732,7 @@ class AchievementSystem {
       
       return true;
     } catch (error) {
-      console.error('Failed to import achievement progress:', error);
+      achievementLogger.error('Failed to import achievement progress:', error);
       return false;
     }
   }

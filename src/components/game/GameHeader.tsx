@@ -2,59 +2,12 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useGame } from '../../context/GameContext';
 import { soundManager } from '../../utils/simpleSoundManager';
-import { Heading, Text, Badge, Progress, Button } from '../ui';
+import { gameLogger } from '../../utils/logger';
+import { Heading, Text, Badge, Progress } from '../ui';
 import HintModal from '../game/modals/HintModal';
 import EnhancedStudyMode from '../study/EnhancedStudyMode';
+import { UI_CONFIG, GAME_CONFIG } from '@/constants';
 
-/**
- * GameHeader - Top navigation and game statistics bar
- *
- * Displays real-time game progress, statistics, and provides controls for
- * game management including study mode, hints, sound, pause/resume, and reset.
- *
- * **Displayed Information:**
- * - Current score and mistake count
- * - Timer (starts on first county placement, shows "Ready" initially)
- * - Progress bar showing counties placed (with percentage)
- * - Current county being placed (if any)
- *
- * **Controls:**
- * - Study Mode button: Opens learning interface (pauses game timer)
- * - Hint button: Shows progressive hints for current county (3 levels)
- * - Sound toggle: Mute/unmute audio feedback
- * - Pause/Play: Pause and resume game timer
- * - Reset: Restart game from beginning
- *
- * **Progressive Hints:**
- * - Level 1 (1st use): Basic directional hint
- * - Level 2 (2nd use): Region and neighboring counties
- * - Level 3 (3rd+ use): Precise location description
- *
- * **Timer Behavior:**
- * - Displays "Ready" state before first county placement
- * - Automatically starts on first county placement
- * - Pauses when study mode opens
- * - Resumes when study mode closes or play button clicked
- *
- * @component
- * @example
- * ```tsx
- * import GameHeader from '@/components/game/GameHeader';
- *
- * // Used within GameContainer
- * function Game() {
- *   return (
- *     <>
- *       <GameHeader />
- *       <RegionsPanel />
- *       {/* Game content */}
- *     </>
- *   );
- * }
- * ```
- *
- * @returns {JSX.Element} The game header with statistics and controls
- */
 export default function GameHeader() {
   const { score, mistakes, placedCounties, counties, resetGame, timerState, timerStarted, pauseGame, resumeGame, isGameStarted, isPaused, hints, useHint, currentCounty } = useGame();
   const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
@@ -76,7 +29,7 @@ export default function GameHeader() {
     setSoundEnabled(newState);
     soundManager.setMuted(!newState);
     if (newState) {
-      soundManager.play('pickup', 0.3);
+      soundManager.play('pickup', UI_CONFIG.SOUND_VOLUME_PICKUP);
     }
   };
 
@@ -103,16 +56,16 @@ export default function GameHeader() {
 
       // Determine hint level based on attempts
       let level = 1;
-      if (newAttempts >= 2) level = 2;
-      if (newAttempts >= 3) level = 3;
+      if (newAttempts >= GAME_CONFIG.HINT_LEVEL_2_ATTEMPTS) level = 2;
+      if (newAttempts >= GAME_CONFIG.HINT_LEVEL_3_ATTEMPTS) level = 3;
 
       setHintLevel(level);
 
       if (useHint()) {
         try {
-          soundManager.play('hover', 0.3);
+          soundManager.play('hover', UI_CONFIG.SOUND_VOLUME_PICKUP);
         } catch (error) {
-          console.warn('Sound play failed:', error);
+          gameLogger.warn('Sound play failed:', error);
         }
         setShowHintModal(true);
       }

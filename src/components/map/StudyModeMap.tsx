@@ -1,6 +1,9 @@
 import React, { useState, useRef } from 'react';
+import { mapLogger } from '../../utils/logger';
 import { realCaliforniaCountyShapes } from '../../data/californiaCountyBoundaries';
+import { mapLogger } from '../../utils/logger';
 import { getRegionHexColor, REGION_COLORS } from '../../config/regionColors';
+import { mapLogger } from '../../utils/logger';
 
 interface StudyModeMapProps {
   onCountySelect?: (countyId: string) => void;

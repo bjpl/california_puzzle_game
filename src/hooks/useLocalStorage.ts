@@ -1,7 +1,9 @@
 // Custom hook for localStorage with automatic serialization and error handling
 
 import { useState, useEffect, useCallback } from 'react';
+import { logger } from '../utils/logger';
 import { storageManager } from '../utils/storage';
+import { logger } from '../utils/logger';
 
 type SetValue<T> = T | ((val: T) => T);
 
@@ -14,7 +16,7 @@ export function useLocalStorage<T>(
       const item = storageManager['getItem']<T>(key);
       return item !== null ? item : initialValue;
     } catch (error) {
-      console.warn(`Error reading localStorage key "${key}":`, error);
+      logger.warn(`Error reading localStorage key "${key}":`, error);
       return initialValue;
     }
   });
@@ -29,7 +31,7 @@ export function useLocalStorage<T>(
         setStoredValue(valueToStore);
         storageManager['setItem'](key, valueToStore);
       } catch (error) {
-        console.warn(`Error setting localStorage key "${key}":`, error);
+        logger.warn(`Error setting localStorage key "${key}":`, error);
       } finally {
         setIsLoading(false);
       }

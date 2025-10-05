@@ -2,10 +2,15 @@
 // Automatically saves game state and progress at regular intervals
 
 import { useEffect, useCallback, useRef } from 'react';
+import { logger } from '../utils/logger';
 import { storageManager, GameSession } from '../utils/storage';
+import { logger } from '../utils/logger';
 import { achievementSystem } from '../utils/achievements';
+import { logger } from '../utils/logger';
 import { useGameStore } from '../stores/gameStore';
+import { logger } from '../utils/logger';
 import { GameStats, PlacementResult, DifficultyLevel, CaliforniaRegion } from '../types';
+import { logger } from '../utils/logger';
 
 interface AutoSaveOptions {
   enabled?: boolean;
@@ -40,7 +45,7 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
     try {
       const profile = storageManager.getCurrentProfile();
       if (!profile) {
-        console.warn('No current profile for auto-save');
+        logger.warn('No current profile for auto-save');
         return false;
       }
 
@@ -71,7 +76,7 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
       onSave?.(true);
       return true;
     } catch (error) {
-      console.error('Auto-save failed:', error);
+      logger.error('Auto-save failed:', error);
       onError?.(error as Error);
       onSave?.(false);
       return false;
@@ -176,7 +181,7 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
             }
           }
         } catch (error) {
-          console.error('Failed to save on page unload:', error);
+          logger.error('Failed to save on page unload:', error);
         }
       }
     };
@@ -245,13 +250,13 @@ export function usePlacementTracking() {
         
         // Trigger achievement notifications (if using notification system)
         newAchievements.forEach(achievement => {
-          console.log(`Achievement unlocked: ${achievement.name}`);
+          logger.debug(`Achievement unlocked: ${achievement.name}`);
         });
       }
       
       return newAchievements;
     } catch (error) {
-      console.error('Failed to track placement:', error);
+      logger.error('Failed to track placement:', error);
       return [];
     }
   }, [gameState]);
@@ -267,7 +272,7 @@ export function useDataLoader() {
     try {
       const profile = storageManager.getCurrentProfile();
       if (!profile) {
-        console.log('No current profile, using default data');
+        logger.debug('No current profile, using default data');
         return;
       }
       
@@ -287,9 +292,9 @@ export function useDataLoader() {
       // Note: This would require a method to set achievements in the store
       // For now, we'll assume the store handles this through persistence
       
-      console.log('Saved data loaded successfully');
+      logger.debug('Saved data loaded successfully');
     } catch (error) {
-      console.error('Failed to load saved data:', error);
+      logger.error('Failed to load saved data:', error);
     }
   }, [gameStore]);
   

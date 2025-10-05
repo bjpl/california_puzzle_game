@@ -1,0 +1,37 @@
+/**
+ * California Region Constants
+ *
+ * Region definitions, colors, and county mappings
+ */
+
+export const CALIFORNIA_REGIONS = {
+  NORTHERN: 'Northern California',
+  BAY_AREA: 'San Francisco Bay Area',
+  CENTRAL_COAST: 'Central Coast',
+  CENTRAL_VALLEY: 'Central Valley',
+  SOUTHERN: 'Southern California',
+  SIERRA_NEVADA: 'Sierra Nevada',
+  DESERT: 'Desert Region',
+} as const;
+
+export const REGION_COLORS = {
+  [CALIFORNIA_REGIONS.NORTHERN]: '#4A90E2',
+  [CALIFORNIA_REGIONS.BAY_AREA]: '#7B68EE',
+  [CALIFORNIA_REGIONS.CENTRAL_COAST]: '#50C878',
+  [CALIFORNIA_REGIONS.CENTRAL_VALLEY]: '#F5A623',
+  [CALIFORNIA_REGIONS.SOUTHERN]: '#E94B3C',
+  [CALIFORNIA_REGIONS.SIERRA_NEVADA]: '#9B59B6',
+  [CALIFORNIA_REGIONS.DESERT]: '#E67E22',
+} as const;
+
+export const REGION_COUNTY_COUNTS = {
+  [CALIFORNIA_REGIONS.NORTHERN]: 10,
+  [CALIFORNIA_REGIONS.BAY_AREA]: 9,
+  [CALIFORNIA_REGIONS.CENTRAL_COAST]: 8,
+  [CALIFORNIA_REGIONS.CENTRAL_VALLEY]: 15,
+  [CALIFORNIA_REGIONS.SOUTHERN]: 10,
+  [CALIFORNIA_REGIONS.SIERRA_NEVADA]: 4,
+  [CALIFORNIA_REGIONS.DESERT]: 2,
+} as const;
+
+export const TOTAL_REGIONS = 5;

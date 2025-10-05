@@ -129,7 +129,7 @@ export class GeoDataCache {
       return { geoData, lookup };
 
     } catch (error) {
-      console.error(`Failed to fetch geo data for ${detailLevel}:`, error);
+      logger.error(`Failed to fetch geo data for ${detailLevel}:`, error);
       throw error;
     }
   }
@@ -181,19 +181,19 @@ export class GeoDataCache {
 
   // Preload commonly used data
   async preloadEssentials(): Promise<void> {
-    console.log('Preloading essential geo data...');
+    logger.debug('Preloading essential geo data...');
 
     const preloadPromises = this.options.preload.map(async (level) => {
       try {
         await this.loadOptimizedData(level);
-        console.log(`✓ Preloaded ${level} detail level`);
+        logger.debug(`✓ Preloaded ${level} detail level`);
       } catch (error) {
-        console.warn(`Failed to preload ${level}:`, error);
+        logger.warn(`Failed to preload ${level}:`, error);
       }
     });
 
     await Promise.all(preloadPromises);
-    console.log('Preloading completed');
+    logger.debug('Preloading completed');
   }
 
   // Get cache statistics
@@ -216,7 +216,7 @@ export class GeoDataCache {
   clearCache(): void {
     this.cache.clear();
     this.loadingPromises.clear();
-    console.log('Cache cleared');
+    logger.debug('Cache cleared');
   }
 
   // Check if data is cached

@@ -12,45 +12,8 @@ import GameComplete from './GameComplete';
 import StudyMode from '../study/StudyMode';
 import EnhancedStudyMode from '../study/EnhancedStudyMode';
 import RegionsPanel from '../shared/RegionsPanel';
-import SimpleMapTest from '../_deprecated/SimpleMapTest';
+import { GAME_CONFIG } from '@/constants';
 
-/**
- * GameContainer - Main game orchestration component
- *
- * Manages the complete game lifecycle including drag-and-drop interactions,
- * county placement, scoring, sound effects, and transitions between game states
- * (welcome screen, gameplay, and completion).
- *
- * **Features:**
- * - DndKit integration for drag-and-drop county placement
- * - Sound effect management with user interaction initialization
- * - Study mode integration with portal rendering
- * - Game state transitions (pre-game -> playing -> complete)
- * - Regions panel for filtering and coloring
- *
- * **Architecture:**
- * - Uses GameContext (Zustand) for shared state
- * - PointerSensor with 8px activation distance for drag operations
- * - Portal pattern for modal overlays (study mode)
- * - Sound system initialized on first user interaction
- *
- * @component
- * @example
- * ```tsx
- * import GameContainer from '@/components/game/GameContainer';
- * import { GameProvider } from '@/context/GameContext';
- *
- * function App() {
- *   return (
- *     <GameProvider>
- *       <GameContainer />
- *     </GameProvider>
- *   );
- * }
- * ```
- *
- * @returns {JSX.Element} The game container with welcome screen, game UI, or completion screen
- */
 export default function GameContainer() {
   const {
     isGameStarted,
@@ -91,7 +54,7 @@ export default function GameContainer() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: GAME_CONFIG.DRAG_ACTIVATION_DISTANCE,
       },
     })
   );
@@ -217,7 +180,7 @@ export default function GameContainer() {
 
           {/* Map - Using simplified version for better rendering */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-lg p-4 h-[520px]">
+            <div className="bg-white rounded-lg shadow-lg p-4" style={{ height: `${GAME_CONFIG.GAME_CONTAINER_HEIGHT}px` }}>
               <CaliforniaMapSimple isDragging={isDragging} />
             </div>
           </div>

@@ -2,7 +2,9 @@
 // Handles version updates and data structure changes
 
 import { storageManager } from './storage';
+import { storageLogger } from './logger';
 import { GameSettings, GameStats, Achievement } from '../types';
+import { storageLogger } from './logger';
 
 export interface MigrationScript {
   version: string;
@@ -246,22 +248,22 @@ class DataMigrationManager {
       // Apply migrations in order
       for (const migration of migrationsToApply) {
         try {
-          console.log(`Applying migration: ${migration.version} - ${migration.description}`);
+          storageLogger.debug(`Applying migration: ${migration.version} - ${migration.description}`);
           data = migration.migrate(data);
           result.migrationsApplied.push(migration.version);
         } catch (error) {
           const errorMsg = `Failed to apply migration ${migration.version}: ${error}`;
-          console.error(errorMsg);
+          storageLogger.error(errorMsg);
           result.errors.push(errorMsg);
           
           // Attempt rollback
           if (migration.rollback && result.migrationsApplied.length > 0) {
             try {
               data = migration.rollback(data);
-              console.log(`Rolled back migration ${migration.version}`);
+              storageLogger.debug(`Rolled back migration ${migration.version}`);
             } catch (rollbackError) {
               const rollbackMsg = `Failed to rollback migration ${migration.version}: ${rollbackError}`;
-              console.error(rollbackMsg);
+              storageLogger.error(rollbackMsg);
               result.errors.push(rollbackMsg);
             }
           }
@@ -274,11 +276,11 @@ class DataMigrationManager {
       this.saveAllData(data);
       
       result.success = true;
-      console.log(`Migration completed successfully from ${result.fromVersion} to ${result.toVersion}`);
+      storageLogger.debug(`Migration completed successfully from ${result.fromVersion} to ${result.toVersion}`);
       
     } catch (error) {
       const errorMsg = `Migration failed: ${error}`;
-      console.error(errorMsg);
+      storageLogger.error(errorMsg);
       result.errors.push(errorMsg);
     }
 
@@ -291,7 +293,7 @@ class DataMigrationManager {
       const version = localStorage.getItem(versionKey);
       return version || '0.0.0';
     } catch (error) {
-      console.warn('Failed to get stored version:', error);
+      storageLogger.warn('Failed to get stored version:', error);
       return '0.0.0';
     }
   }
@@ -344,7 +346,7 @@ class DataMigrationManager {
       
       return data;
     } catch (error) {
-      console.error('Failed to load data for migration:', error);
+      storageLogger.error('Failed to load data for migration:', error);
       return {};
     }
   }
@@ -360,7 +362,7 @@ class DataMigrationManager {
           const serialized = typeof value === 'string' ? value : JSON.stringify(value);
           localStorage.setItem(fullKey, serialized);
         } catch (error) {
-          console.error(`Failed to save key ${key}:`, error);
+          storageLogger.error(`Failed to save key ${key}:`, error);
         }
       });
       
@@ -368,7 +370,7 @@ class DataMigrationManager {
       localStorage.setItem(prefix + 'version', this.currentVersion);
       
     } catch (error) {
-      console.error('Failed to save migrated data:', error);
+      storageLogger.error('Failed to save migrated data:', error);
       throw error;
     }
   }
@@ -384,7 +386,7 @@ class DataMigrationManager {
       
       return JSON.stringify(backup, null, 2);
     } catch (error) {
-      console.error('Failed to create backup:', error);
+      storageLogger.error('Failed to create backup:', error);
       throw error;
     }
   }
@@ -405,7 +407,7 @@ class DataMigrationManager {
       
       return migrationResult.success;
     } catch (error) {
-      console.error('Failed to restore from backup:', error);
+      storageLogger.error('Failed to restore from backup:', error);
       return false;
     }
   }
@@ -456,16 +458,16 @@ export const dataMigrationManager = new DataMigrationManager();
 
 // Helper function to run migrations on app startup
 export async function runStartupMigrations(): Promise<MigrationResult> {
-  console.log('Running startup data migrations...');
+  storageLogger.debug('Running startup data migrations...');
   const result = await dataMigrationManager.migrateData();
   
   if (result.success) {
-    console.log('Data migrations completed successfully');
+    storageLogger.debug('Data migrations completed successfully');
     if (result.migrationsApplied.length > 0) {
-      console.log('Applied migrations:', result.migrationsApplied);
+      storageLogger.debug('Applied migrations:', result.migrationsApplied);
     }
   } else {
-    console.error('Data migration failed:', result.errors);
+    storageLogger.error('Data migration failed:', result.errors);
   }
   
   return result;

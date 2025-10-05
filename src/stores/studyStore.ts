@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import { logger } from '../utils/logger';
 import {
   StudyStore,
   StudyProgress,
@@ -327,12 +328,23 @@ export const useStudyStore = create<StudyStore>()(
           const lastStudied = lastStudiedDates.length > 0 ?
             new Date(Math.max(...lastStudiedDates.map(d => d.getTime()))) : null;
 
+          // Calculate average time from actual session data
+          const regionSessions = regionCounties
+            .map(countyName => {
+              const county = allCaliforniaCounties.find(c => c.name === countyName);
+              return county ? state.studyInfo.get(county.id) : null;
+            })
+            .filter(Boolean) as CountyStudyInfo[];
+
+          const totalTime = regionSessions.reduce((sum, info) => sum + (info.averageTime || 0), 0);
+          const averageTime = regionSessions.length > 0 ? totalTime / regionSessions.length : 30;
+
           return {
             regionName,
             total: regionCounties.length,
             studied,
             mastered,
-            averageTime: 30, // TODO: Calculate from actual data
+            averageTime: Math.round(averageTime),
             lastStudied
           };
         },
@@ -403,7 +415,7 @@ export const useStudyStore = create<StudyStore>()(
               stats: parsed.stats
             });
           } catch (error) {
-            console.error('Failed to import progress:', error);
+            logger.error('Failed to import progress:', error);
           }
         },
 
@@ -415,7 +427,45 @@ export const useStudyStore = create<StudyStore>()(
         },
 
         checkGoalProgress: () => {
-          // TODO: Implement goal checking logic
+          const state = get();
+          const updatedGoals = state.goals.map(goal => {
+            let currentProgress = goal.current;
+
+            if (goal.category) {
+              switch (goal.category) {
+                case 'counties_studied':
+                  currentProgress = state.progress.totalStudied;
+                  break;
+                case 'counties_mastered':
+                  currentProgress = state.progress.masteredCounties.size;
+                  break;
+                case 'daily_streak':
+                  currentProgress = state.progress.currentStreak;
+                  break;
+                case 'session_count':
+                  currentProgress = state.stats.totalSessions;
+                  break;
+                case 'total_time':
+                  currentProgress = state.stats.totalTimeSpent;
+                  break;
+                case 'weekly_progress':
+                  currentProgress = Math.round((state.stats.weeklyProgress / 100) * state.stats.weeklyGoal);
+                  break;
+                default:
+                  currentProgress = goal.current;
+              }
+            }
+
+            const isComplete = currentProgress >= goal.target;
+
+            return {
+              ...goal,
+              current: currentProgress,
+              completed: isComplete || goal.completed
+            };
+          });
+
+          set({ goals: updatedGoals });
         },
 
         completeGoal: (goalId: string) => {

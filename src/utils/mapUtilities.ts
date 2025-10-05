@@ -4,6 +4,7 @@
  */
 
 import * as d3 from 'd3-geo';
+import { logger } from './logger';
 
 export interface MapOptions {
   width: number;
@@ -110,10 +111,10 @@ export class CaliforniaMapUtilities {
       this.geoData = await geoResponse.json();
       this.countyLookup = await lookupResponse.json();
 
-      console.log(`Loaded ${this.geoData.features.length} counties`);
+      logger.debug(`Loaded ${this.geoData.features.length} counties`);
       return this;
     } catch (error) {
-      console.error('Failed to load geo data:', error);
+      logger.error('Failed to load geo data:', error);
       throw error;
     }
   }

@@ -1,48 +1,9 @@
 import { useEffect } from 'react';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
-import { Card, Heading, Text, Button, Badge } from '../ui';
+import { Card, Heading, Text, Button } from '../ui';
+import { GAME_GRADES } from '@/constants';
 
-/**
- * GameComplete - Victory screen displayed when all counties are correctly placed
- *
- * Shows final game statistics with performance-based grading and options to
- * replay or return to the main menu. Automatically plays a victory sound on mount.
- *
- * **Performance Grading:**
- * - Perfect (🏆): 0 mistakes
- * - Excellent (⭐): 1-3 mistakes
- * - Good Job (👍): 4-6 mistakes
- * - Complete (✅): 7+ mistakes
- *
- * **Displayed Statistics:**
- * - Final score
- * - Total mistakes made
- * - Performance grade with emoji
- *
- * **Actions:**
- * - Play Again: Resets game and starts new session
- * - Main Menu: Reloads application to welcome screen
- * - Share Achievement: Placeholder for social sharing (future feature)
- *
- * @component
- * @example
- * ```tsx
- * import GameComplete from '@/components/game/GameComplete';
- *
- * function GameContainer() {
- *   const { isGameComplete } = useGame();
- *
- *   if (isGameComplete) {
- *     return <GameComplete />;
- *   }
- *
- *   return <Game />;
- * }
- * ```
- *
- * @returns {JSX.Element} The game completion screen with statistics and options
- */
 export default function GameComplete() {
   const { score, mistakes, resetGame } = useGame();
   const sound = useSoundEffect();
@@ -53,10 +14,16 @@ export default function GameComplete() {
   }, []);
 
   const getGrade = () => {
-    if (mistakes === 0) return { grade: 'Perfect!', emoji: '🏆', color: 'text-yellow-500' };
-    if (mistakes <= 3) return { grade: 'Excellent!', emoji: '⭐', color: 'text-blue-500' };
-    if (mistakes <= 6) return { grade: 'Good Job!', emoji: '👍', color: 'text-green-500' };
-    return { grade: 'Complete!', emoji: '✅', color: 'text-gray-500' };
+    if (mistakes === GAME_GRADES.PERFECT.mistakeThreshold) {
+      return { grade: GAME_GRADES.PERFECT.label, emoji: GAME_GRADES.PERFECT.emoji, color: GAME_GRADES.PERFECT.color };
+    }
+    if (mistakes <= GAME_GRADES.EXCELLENT.mistakeThreshold) {
+      return { grade: GAME_GRADES.EXCELLENT.label, emoji: GAME_GRADES.EXCELLENT.emoji, color: GAME_GRADES.EXCELLENT.color };
+    }
+    if (mistakes <= GAME_GRADES.GOOD.mistakeThreshold) {
+      return { grade: GAME_GRADES.GOOD.label, emoji: GAME_GRADES.GOOD.emoji, color: GAME_GRADES.GOOD.color };
+    }
+    return { grade: GAME_GRADES.COMPLETE.label, emoji: GAME_GRADES.COMPLETE.emoji, color: GAME_GRADES.COMPLETE.color };
   };
 
   const { grade, emoji, color } = getGrade();

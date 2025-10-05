@@ -4,6 +4,7 @@
  */
 
 import { calculateLeaderboardScore, getScoreTier, GameMetrics } from './scoring';
+import { logger } from './logger';
 
 export interface LeaderboardEntry {
   id: string;
@@ -95,7 +96,7 @@ export function saveLeaderboardEntry(
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(topEntries));
   } catch (error) {
-    console.warn('Failed to save leaderboard entry:', error);
+    logger.warn('Failed to save leaderboard entry:', error);
   }
 
   // Update stats
@@ -124,7 +125,7 @@ export function getLeaderboardEntries(filters?: LeaderboardFilters): Leaderboard
 
     return entries;
   } catch (error) {
-    console.warn('Failed to load leaderboard entries:', error);
+    logger.warn('Failed to load leaderboard entries:', error);
     return [];
   }
 }
@@ -212,8 +213,27 @@ export function getPlayerStats(playerName: string): LeaderboardStats {
   const bestStreak = Math.max(...playerEntries.map(entry => entry.maxStreak));
   const totalPlayTime = playerEntries.reduce((sum, entry) => sum + entry.totalTime, 0);
 
-  // TODO: Implement favorite region tracking when region data is available
-  const favoriteRegion = 'N/A';
+  // Calculate favorite region based on most played region
+  const regionCounts = new Map<string, number>();
+
+  // Note: This assumes entries have a region field. If not, we'd need to track this separately
+  // For now, we'll return 'N/A' but the infrastructure is here for when region data is available
+  playerEntries.forEach(entry => {
+    // Check if entry has difficulty field which might encode region information
+    // Or we could add a region field to LeaderboardEntry in the future
+    const region = (entry as any).region || 'unknown';
+    regionCounts.set(region, (regionCounts.get(region) || 0) + 1);
+  });
+
+  let favoriteRegion = 'N/A';
+  let maxCount = 0;
+
+  regionCounts.forEach((count, region) => {
+    if (count > maxCount && region !== 'unknown') {
+      maxCount = count;
+      favoriteRegion = region;
+    }
+  });
 
   return {
     totalGames,
@@ -235,7 +255,7 @@ export function clearLeaderboard(): void {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(STATS_KEY);
   } catch (error) {
-    console.warn('Failed to clear leaderboard:', error);
+    logger.warn('Failed to clear leaderboard:', error);
   }
 }
 
@@ -273,7 +293,7 @@ export function importLeaderboardData(data: string): boolean {
 
     return false;
   } catch (error) {
-    console.warn('Failed to import leaderboard data:', error);
+    logger.warn('Failed to import leaderboard data:', error);
     return false;
   }
 }
@@ -380,6 +400,6 @@ function updatePlayerStats(entry: LeaderboardEntry, gameMetrics: GameMetrics): v
 
     localStorage.setItem(STATS_KEY, JSON.stringify(stats));
   } catch (error) {
-    console.warn('Failed to update player stats:', error);
+    logger.warn('Failed to update player stats:', error);
   }
 }

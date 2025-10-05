@@ -180,9 +180,9 @@ class SoundManager {
     try {
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       this.isInitialized = true;
-      console.log('🔊 Audio context initialized successfully');
+      soundLogger.debug('🔊 Audio context initialized successfully');
     } catch (error) {
-      console.warn('Audio context initialization failed:', error);
+      soundLogger.warn('Audio context initialization failed:', error);
       this.isInitialized = false;
     }
   }
@@ -221,7 +221,7 @@ class SoundManager {
         new Promise((_, reject) => setTimeout(() => reject(new Error('Load timeout')), 2000))
       ]);
 
-      console.log(`Loaded sound file: ${soundPath}`);
+      soundLogger.debug(`Loaded sound file: ${soundPath}`);
       return audio;
 
     } catch (error) {
@@ -298,7 +298,7 @@ class SoundManager {
       return audio;
 
     } catch (error) {
-      console.error('Failed to create placeholder audio:', error);
+      soundLogger.error('Failed to create placeholder audio:', error);
       return null;
     }
   }
@@ -340,7 +340,7 @@ class SoundManager {
       }
 
       if (!audio) {
-        console.warn(`No audio available for sound type: ${soundType}`);
+        soundLogger.warn(`No audio available for sound type: ${soundType}`);
         return;
       }
 
@@ -357,7 +357,7 @@ class SoundManager {
       }
 
     } catch (error) {
-      console.error(`Failed to play sound ${soundType}:`, error);
+      soundLogger.error(`Failed to play sound ${soundType}:`, error);
     }
   }
 
@@ -375,7 +375,7 @@ class SoundManager {
       }
 
       if (!this.backgroundMusic) {
-        console.warn('No background music available');
+        soundLogger.warn('No background music available');
         return;
       }
 
@@ -394,7 +394,7 @@ class SoundManager {
       ), this.soundConfigs[SoundType.BACKGROUND_MUSIC].fadeDuration || 2000);
 
     } catch (error) {
-      console.error('Failed to start background music:', error);
+      soundLogger.error('Failed to start background music:', error);
     }
   }
 
@@ -507,12 +507,12 @@ class SoundManager {
           this.soundCache.set(soundType, audio);
         }
       } catch (error) {
-        console.warn(`Failed to preload sound ${soundType}:`, error);
+        soundLogger.warn(`Failed to preload sound ${soundType}:`, error);
       }
     });
 
     await Promise.allSettled(loadPromises);
-    console.log('Sound preloading completed');
+    soundLogger.debug('Sound preloading completed');
   }
 
   /**

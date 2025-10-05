@@ -1,9 +1,13 @@
 // Achievement tracking and notification hook
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { achievementLogger } from '../utils/logger';
 import { achievementSystem, AchievementDefinition, AchievementNotification, AchievementRarity } from '../utils/achievements';
+import { achievementLogger } from '../utils/logger';
 import { storageManager } from '../utils/storage';
+import { achievementLogger } from '../utils/logger';
 import { Achievement, GameStats, PlacementResult, DifficultyLevel, CaliforniaRegion } from '../types';
+import { achievementLogger } from '../utils/logger';
 
 interface AchievementHookReturn {
   achievements: AchievementDefinition[];
@@ -80,13 +84,13 @@ export function useAchievements(): AchievementHookReturn {
         
         // Show notifications (this could trigger UI notifications)
         newlyUnlocked.forEach(achievement => {
-          console.log(`🏆 Achievement Unlocked: ${achievement.name}`);
+          achievementLogger.debug(`🏆 Achievement Unlocked: ${achievement.name}`);
         });
       }
       
       return newlyUnlocked;
     } catch (error) {
-      console.error('Error checking achievements:', error);
+      achievementLogger.error('Error checking achievements:', error);
       return [];
     }
   }, []);

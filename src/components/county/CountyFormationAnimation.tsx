@@ -3,6 +3,7 @@ import { realCaliforniaCountyShapes } from '../../data/californiaCountyBoundarie
 import { allCaliforniaCounties } from '../../data/californiaCountiesComplete';
 import { getRegionHexColor } from '../../config/regionColors';
 import { countyEducationData } from '../../data/countyEducationComplete';
+import { GAME_CONFIG, UI_CONFIG, STROKE_COLORS, OPACITY_VALUES, COUNTY_FILL_COLORS } from '@/constants';
 
 interface HistoricalEvent {
   year: number;
@@ -23,7 +24,7 @@ const HISTORICAL_EVENTS: HistoricalEvent[] = [
 type PlaybackSpeed = 0.5 | 1 | 2 | 5;
 
 export default function CountyFormationAnimation() {
-  const [currentYear, setCurrentYear] = useState(1850);
+  const [currentYear, setCurrentYear] = useState(GAME_CONFIG.FORMATION_START_YEAR);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<PlaybackSpeed>(1);
   const [visibleCounties, setVisibleCounties] = useState<Set<string>>(new Set());
@@ -116,7 +117,7 @@ export default function CountyFormationAnimation() {
       setHighlightedCounty(newCounties[0]);
 
       // Auto-pause when counties are founded (if enabled)
-      const isInitialYear = year === 1850 && !hasShownInitialYear;
+      const isInitialYear = year === GAME_CONFIG.FORMATION_START_YEAR && !hasShownInitialYear;
 
       if (autoPauseEnabled) {
         if (isInitialYear) {
@@ -127,7 +128,7 @@ export default function CountyFormationAnimation() {
           setShowContinueButton(false);
           setTimeout(() => {
             setShowContinueButton(true);
-          }, 2500);
+          }, UI_CONFIG.FORMATION_CONTINUE_BUTTON_DELAY);
           setHasShownInitialYear(true);
         } else {
           // For all other years, pause immediately with button
@@ -142,7 +143,7 @@ export default function CountyFormationAnimation() {
 
       setTimeout(() => {
         setHighlightedCounty(null);
-      }, 2000);
+      }, UI_CONFIG.FORMATION_HIGHLIGHT_DURATION);
     }
   };
 
@@ -154,7 +155,7 @@ export default function CountyFormationAnimation() {
   };
 
   const resetAnimation = () => {
-    setCurrentYear(1850);
+    setCurrentYear(GAME_CONFIG.FORMATION_START_YEAR);
     setVisibleCounties(new Set());
     setRecentlyAdded([]);
     setHighlightedCounty(null);
@@ -174,8 +175,8 @@ export default function CountyFormationAnimation() {
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const delta = e.deltaY * -0.001;
-    const newZoom = Math.min(Math.max(0.5, zoom + delta), 3);
+    const delta = e.deltaY * -UI_CONFIG.ZOOM_WHEEL_SENSITIVITY;
+    const newZoom = Math.min(Math.max(UI_CONFIG.ZOOM_MIN, zoom + delta), UI_CONFIG.ZOOM_MAX);
     setZoom(newZoom);
   };
 
@@ -195,7 +196,7 @@ export default function CountyFormationAnimation() {
     const dx = (e.clientX - startMouse.current.x) / zoom;
     const dy = (e.clientY - startMouse.current.y) / zoom;
 
-    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+    if (Math.abs(dx) > UI_CONFIG.PAN_MIN_MOVEMENT || Math.abs(dy) > UI_CONFIG.PAN_MIN_MOVEMENT) {
       hasPanned.current = true;
     }
 
@@ -222,12 +223,12 @@ export default function CountyFormationAnimation() {
 
     setTimeout(() => {
       hasPanned.current = false;
-    }, 100);
+    }, UI_CONFIG.PAN_RESET_DELAY);
   };
 
   const startAnimation = () => {
     // If already at the end, restart from beginning
-    if (currentYear >= 1907) {
+    if (currentYear >= GAME_CONFIG.FORMATION_END_YEAR) {
       resetAnimation();
       setTimeout(() => {
         setHasStarted(true);
@@ -236,7 +237,7 @@ export default function CountyFormationAnimation() {
     } else {
       // Starting fresh or resuming
       setHasStarted(true);
-      if (currentYear === 1850 && visibleCounties.size === 0) {
+      if (currentYear === GAME_CONFIG.FORMATION_START_YEAR && visibleCounties.size === 0) {
         // Fresh start
         setVisibleCounties(new Set());
         setRecentlyAdded([]);
@@ -262,11 +263,11 @@ export default function CountyFormationAnimation() {
       if (deltaTime >= yearDuration) {
         setCurrentYear(prev => {
           const nextYear = prev + 1;
-          if (nextYear > 1907) {
+          if (nextYear > GAME_CONFIG.FORMATION_END_YEAR) {
             setIsPlaying(false);
             setShowCompletion(true);
-            setTimeout(() => setShowCompletion(false), 5000);
-            return 1907;
+            setTimeout(() => setShowCompletion(false), UI_CONFIG.FORMATION_COMPLETION_DISPLAY);
+            return GAME_CONFIG.FORMATION_END_YEAR;
           }
 
           addCountiesForYear(nextYear);
@@ -318,11 +319,11 @@ export default function CountyFormationAnimation() {
           break;
         case 'ArrowLeft':
           e.preventDefault();
-          setCurrentYear(prev => Math.max(1850, prev - 1));
+          setCurrentYear(prev => Math.max(GAME_CONFIG.FORMATION_START_YEAR, prev - 1));
           break;
         case 'ArrowRight':
           e.preventDefault();
-          setCurrentYear(prev => Math.min(1907, prev + 1));
+          setCurrentYear(prev => Math.min(GAME_CONFIG.FORMATION_END_YEAR, prev + 1));
           break;
         case 'ArrowUp':
           e.preventDefault();
@@ -361,7 +362,7 @@ export default function CountyFormationAnimation() {
     setCurrentYear(year);
 
     const newVisible = new Set<string>();
-    for (let y = 1850; y <= year; y++) {
+    for (let y = GAME_CONFIG.FORMATION_START_YEAR; y <= year; y++) {
       const counties = countiesByYear.get(y) || [];
       counties.forEach(id => newVisible.add(id));
     }
@@ -372,12 +373,12 @@ export default function CountyFormationAnimation() {
   };
 
   const getCountyOpacity = (countyId: string, baseYear: number): number => {
-    if (highlightedCounty === countyId) return 0.98;
-    if (recentlyAdded.includes(countyId)) return 0.85;
+    if (highlightedCounty === countyId) return OPACITY_VALUES.HIGHLIGHTED;
+    if (recentlyAdded.includes(countyId)) return OPACITY_VALUES.RECENT;
 
     const yearsSince = currentYear - baseYear;
-    if (yearsSince < 5) return 0.75;
-    return 0.65;
+    if (yearsSince < 5) return OPACITY_VALUES.YOUNG;
+    return OPACITY_VALUES.DEFAULT;
   };
 
   const currentEvent = HISTORICAL_EVENTS
@@ -392,7 +393,7 @@ export default function CountyFormationAnimation() {
         {/* Compact Header */}
         <div className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-between">
           <h1 className="text-xl font-bold">
-            California Through Time <span className="text-sm font-normal text-blue-100 ml-2">1850-1907</span>
+            California Through Time <span className="text-sm font-normal text-blue-100 ml-2">{GAME_CONFIG.FORMATION_START_YEAR}-{GAME_CONFIG.FORMATION_END_YEAR}</span>
           </h1>
         </div>
 
@@ -448,22 +449,22 @@ export default function CountyFormationAnimation() {
                       </div>
                     );
                   })()
-                ) : currentYear === 1850 && countiesAddedThisYear.length === 27 ? (
+                ) : currentYear === GAME_CONFIG.FORMATION_START_YEAR && countiesAddedThisYear.length === GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES ? (
                   /* Special 1850 "Big Bang" Display */
                   <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-l-4 border-purple-500 rounded-r-lg px-3 py-2">
                     <div className="flex items-start gap-2 mb-2">
                       <span className="text-2xl">🌟</span>
                       <div>
                         <h3 className="font-bold text-purple-900 text-sm">
-                          California Statehood: The Original 27
+                          California Statehood: The Original {GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES}
                         </h3>
                         <p className="text-xs text-purple-700 italic mt-0.5">
-                          September 9, 1850 — California becomes the 31st state with 27 founding counties
+                          September 9, 1850 — California becomes the 31st state with {GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES} founding counties
                         </p>
                       </div>
                     </div>
                     <div className="grid grid-cols-3 gap-x-3 gap-y-0.5 text-xs text-purple-800 ml-9">
-                      {countiesAddedThisYear.slice(0, 27).map(id => {
+                      {countiesAddedThisYear.slice(0, GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES).map(id => {
                         const county = getCountyInfo(id);
                         return county ? <span key={id} className="font-medium">{county.name}</span> : null;
                       })}
@@ -681,17 +682,17 @@ export default function CountyFormationAnimation() {
                   <g key={countyShape.id}>
                     <path
                       d={countyShape.path}
-                      fill={isVisible ? getRegionHexColor(countyInfo.region) : '#E5E7EB'}
-                      fillOpacity={isVisible ? getCountyOpacity(countyInfo.id, countyInfo.founded) : 0.2}
+                      fill={isVisible ? getRegionHexColor(countyInfo.region) : COUNTY_FILL_COLORS.FORMATION_UNFORMED}
+                      fillOpacity={isVisible ? getCountyOpacity(countyInfo.id, countyInfo.founded) : OPACITY_VALUES.UNFORMED}
                       stroke={
-                        isHighlighted ? '#FFD700' :
-                        isRecent ? '#FFFFFF' :
-                        isVisible ? '#D1D5DB' : '#E5E7EB'
+                        isHighlighted ? STROKE_COLORS.HIGHLIGHTED :
+                        isRecent ? STROKE_COLORS.RECENT :
+                        isVisible ? STROKE_COLORS.VISIBLE : STROKE_COLORS.UNFORMED
                       }
                       strokeWidth={
-                        isHighlighted ? 3 :
-                        isRecent ? 2 :
-                        isVisible ? 1 : 0.5
+                        isHighlighted ? GAME_CONFIG.STROKE_WIDTH_HIGHLIGHTED :
+                        isRecent ? GAME_CONFIG.STROKE_WIDTH_RECENT :
+                        isVisible ? GAME_CONFIG.STROKE_WIDTH_VISIBLE : GAME_CONFIG.STROKE_WIDTH_DEFAULT
                       }
                       strokeLinejoin="round"
                       style={{
@@ -722,7 +723,7 @@ export default function CountyFormationAnimation() {
           <div className="flex items-center gap-3 mb-2">
             <button
               onClick={() => {
-                const newYear = Math.max(1850, currentYear - 5);
+                const newYear = Math.max(GAME_CONFIG.FORMATION_START_YEAR, currentYear - UI_CONFIG.YEAR_SKIP_AMOUNT);
                 setCurrentYear(newYear);
                 handleScrubberChange({ target: { value: newYear.toString() } } as any);
               }}
@@ -752,7 +753,7 @@ export default function CountyFormationAnimation() {
 
             <button
               onClick={() => {
-                const newYear = Math.min(1907, currentYear + 5);
+                const newYear = Math.min(GAME_CONFIG.FORMATION_END_YEAR, currentYear + UI_CONFIG.YEAR_SKIP_AMOUNT);
                 setCurrentYear(newYear);
                 handleScrubberChange({ target: { value: newYear.toString() } } as any);
               }}
@@ -810,7 +811,7 @@ export default function CountyFormationAnimation() {
             {/* Timeline markers showing years with formations */}
             <div className="relative w-full h-1 mb-1">
               {Array.from(countiesByYear.keys()).map(year => {
-                const position = ((year - 1850) / 57) * 100;
+                const position = ((year - GAME_CONFIG.FORMATION_START_YEAR) / GAME_CONFIG.FORMATION_YEARS_SPAN) * 100;
                 const count = countiesByYear.get(year)?.length || 0;
                 return (
                   <div
@@ -818,7 +819,7 @@ export default function CountyFormationAnimation() {
                     className="absolute w-0.5 bg-blue-400 rounded-full"
                     style={{
                       left: `${position}%`,
-                      height: year === 1850 ? '12px' : count > 2 ? '8px' : '6px',
+                      height: year === GAME_CONFIG.FORMATION_START_YEAR ? '12px' : count > 2 ? '8px' : '6px',
                       bottom: 0,
                       transform: 'translateX(-50%)'
                     }}
@@ -829,19 +830,19 @@ export default function CountyFormationAnimation() {
             </div>
             <input
               type="range"
-              min="1850"
-              max="1907"
+              min={GAME_CONFIG.FORMATION_START_YEAR}
+              max={GAME_CONFIG.FORMATION_END_YEAR}
               value={currentYear}
               onChange={handleScrubberChange}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((currentYear - 1850) / 57) * 100}%, #E5E7EB ${((currentYear - 1850) / 57) * 100}%, #E5E7EB 100%)`
+                background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((currentYear - GAME_CONFIG.FORMATION_START_YEAR) / GAME_CONFIG.FORMATION_YEARS_SPAN) * 100}%, #E5E7EB ${((currentYear - GAME_CONFIG.FORMATION_START_YEAR) / GAME_CONFIG.FORMATION_YEARS_SPAN) * 100}%, #E5E7EB 100%)`
               }}
             />
             <div className="flex justify-between mt-1 text-xs text-gray-500">
-              <span>1850</span>
+              <span>{GAME_CONFIG.FORMATION_START_YEAR}</span>
               <span className="text-blue-600 font-semibold">{currentYear}</span>
-              <span>1907</span>
+              <span>{GAME_CONFIG.FORMATION_END_YEAR}</span>
             </div>
           </div>
 

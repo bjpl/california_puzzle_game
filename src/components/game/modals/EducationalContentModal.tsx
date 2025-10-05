@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import CountyShapeDisplay from '../county/CountyShapeDisplay';
+import CountyShapeDisplay from '../../county/CountyShapeDisplay';
 
 interface EducationalContentModalProps {
   isOpen: boolean;

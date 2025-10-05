@@ -70,6 +70,7 @@ export interface StudyStats {
 export interface StudyGoal {
   id: string;
   type: 'daily' | 'weekly' | 'monthly';
+  category?: 'counties_studied' | 'counties_mastered' | 'daily_streak' | 'session_count' | 'total_time' | 'weekly_progress';
   target: number;
   current: number;
   description: string;

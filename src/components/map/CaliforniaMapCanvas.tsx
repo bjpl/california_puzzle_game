@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { mapLogger } from '../../utils/logger';
 import * as d3 from 'd3';
+import { mapLogger } from '../../utils/logger';
 import {
   County,
   CountyPiece,
@@ -9,7 +11,9 @@ import {
   DropZone
 } from '@/types';
 import { CALIFORNIA_CENTER, CALIFORNIA_PROJECTION_CONFIG } from '@/utils/californiaData';
+import { mapLogger } from '../../utils/logger';
 import { getSvgTextFill } from '@/utils/colorContrast';
+import { mapLogger } from '../../utils/logger';
 
 interface MapCanvasState {
   projection: d3.GeoProjection | null;

@@ -6,14 +6,16 @@
  */
 
 import { soundManager, preloadSounds } from './soundManager';
+import { soundLogger } from './logger';
 import { useGameStore } from '../stores/gameStore';
+import { soundLogger } from './logger';
 
 /**
  * Initialize the sound system with the current game settings
  */
 export const initializeSoundSystem = async (): Promise<void> => {
   try {
-    console.log('🔊 Initializing sound system...');
+    soundLogger.debug('🔊 Initializing sound system...');
 
     // Get current sound settings from the store
     const gameStore = useGameStore.getState();
@@ -35,11 +37,11 @@ export const initializeSoundSystem = async (): Promise<void> => {
       await soundManager.startBackgroundMusic();
     }
 
-    console.log('✅ Sound system initialized successfully');
+    soundLogger.debug('✅ Sound system initialized successfully');
 
   } catch (error) {
-    console.warn('⚠️ Sound system initialization failed:', error);
-    console.log('🔇 Continuing with silent mode (Web Audio API fallbacks will still work)');
+    soundLogger.warn('⚠️ Sound system initialization failed:', error);
+    soundLogger.debug('🔇 Continuing with silent mode (Web Audio API fallbacks will still work)');
   }
 };
 
@@ -56,7 +58,7 @@ export const setupAudioContextResume = (): void => {
       // Resume audio context if needed
       if (soundManager['audioContext']?.state === 'suspended') {
         await soundManager['audioContext'].resume();
-        console.log('🔊 Audio context resumed after user interaction');
+        soundLogger.debug('🔊 Audio context resumed after user interaction');
       }
 
       // Start background music if it's enabled and we're not muted
@@ -70,7 +72,7 @@ export const setupAudioContextResume = (): void => {
       document.removeEventListener('touchstart', resumeAudioContext);
 
     } catch (error) {
-      console.warn('Failed to resume audio context:', error);
+      soundLogger.warn('Failed to resume audio context:', error);
     }
   };
 
@@ -86,9 +88,9 @@ export const setupAudioContextResume = (): void => {
 export const cleanupSoundSystem = (): void => {
   try {
     soundManager.dispose();
-    console.log('🔇 Sound system cleaned up');
+    soundLogger.debug('🔇 Sound system cleaned up');
   } catch (error) {
-    console.warn('Error during sound system cleanup:', error);
+    soundLogger.warn('Error during sound system cleanup:', error);
   }
 };
 
@@ -156,7 +158,7 @@ export const getAudioInfo = (): {
       outputLatency: audioContext.outputLatency
     };
   } catch (error) {
-    console.warn('Failed to get audio context info:', error);
+    soundLogger.warn('Failed to get audio context info:', error);
     return null;
   }
 };
@@ -167,7 +169,7 @@ export const getAudioInfo = (): {
 export const testAllSounds = async (): Promise<void> => {
   const { playSound, SoundType } = await import('./soundManager');
 
-  console.log('🎵 Testing all sounds...');
+  soundLogger.debug('🎵 Testing all sounds...');
 
   const soundTypes = Object.values(SoundType);
 
@@ -178,14 +180,14 @@ export const testAllSounds = async (): Promise<void> => {
       continue; // Skip background music in test
     }
 
-    console.log(`Playing: ${soundType}`);
+    soundLogger.debug(`Playing: ${soundType}`);
     await playSound(soundType);
 
     // Wait between sounds
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
 
-  console.log('✅ Sound test complete');
+  soundLogger.debug('✅ Sound test complete');
 };
 
 /**

@@ -1,17 +1,31 @@
 import { useState, useEffect } from 'react';
+import { studyLogger } from '../../utils/logger';
 import { useGame } from '../../context/GameContext';
+import { studyLogger } from '../../utils/logger';
 import { getCountyEducation, getMemoryAid, getRelatedCounties, historicalConnections, interCountyConnections } from '../../data/countyEducation';
+import { studyLogger } from '../../utils/logger';
 import { getCountyEducationComplete } from '../../data/countyEducationComplete';
+import { studyLogger } from '../../utils/logger';
 import { getMemoryAid as getMemoryAidData, memoryPatterns, spatialRelationships, learningStrategies } from '../../data/memoryAids';
+import { studyLogger } from '../../utils/logger';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
+import { studyLogger } from '../../utils/logger';
 import { californiaCounties, CaliforniaCounty } from '../../data/californiaCounties';
+import { studyLogger } from '../../utils/logger';
 import { getQuestionsByRegion, QuizQuestion, getRandomQuestions } from '../../data/californiaQuizQuestions';
+import { studyLogger } from '../../utils/logger';
 import StudyModeMap from '../map/StudyModeMap';
+import { studyLogger } from '../../utils/logger';
 import CountyShapeDisplay from '../county/CountyShapeDisplay';
+import { studyLogger } from '../../utils/logger';
 import EducationalContentModal from '../game/modals/EducationalContentModal';
+import { studyLogger } from '../../utils/logger';
 import CountyDetailsModal from '../county/CountyDetailsModal';
+import { studyLogger } from '../../utils/logger';
 import CountyFormationAnimation from '../county/CountyFormationAnimation';
+import { studyLogger } from '../../utils/logger';
 import { getRegionColor } from '../../config/regionColors';
+import { studyLogger } from '../../utils/logger';
 
 interface StudyModeProps {
   onClose: () => void;
@@ -199,7 +213,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame }: StudyModePro
       });
 
       if (freshQuestions.length === 0) {
-        console.warn('No questions available with current filters');
+        studyLogger.warn('No questions available with current filters');
         return;
       }
 
