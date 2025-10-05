@@ -2,6 +2,13 @@
 
 An interactive educational puzzle game for learning California geography. Players drag and drop county pieces to their correct locations on a California map using D3.js visualizations and React.
 
+## ✨ Recent Improvements
+
+- **Component Library** - New UI component system with Button, Badge, Card, Progress, and Typography components
+- **Design System** - Comprehensive style guide with region-specific theming
+- **Bug Fixes** - Fixed formation animation crashes, invisible map rendering, and region color display issues
+- **Tailwind CSS Integration** - Modern utility-first CSS framework for consistent styling
+
 ## 🎮 Features
 
 ### Core Gameplay
@@ -25,6 +32,8 @@ An interactive educational puzzle game for learning California geography. Player
 - **Smooth Animations**: Framer Motion powered transitions
 - **Loading States**: Professional loading screens and progress indicators
 - **Error Handling**: Graceful error recovery and user feedback
+- **Design System**: Comprehensive component library with consistent theming
+- **Regional Theming**: Color-coded UI based on California's 7 geographic regions
 
 ## 🛠️ Technology Stack
 
@@ -35,12 +44,17 @@ An interactive educational puzzle game for learning California geography. Player
 - **D3.js** - Map visualization and geographic projections
 - **Zustand** - State management
 - **Framer Motion** - Animations and transitions
+- **Tailwind CSS** - Utility-first CSS framework
+
+### UI Components
+- **Custom Component Library** - Button, Badge, Card, Progress, Typography
+- **Design System** - Comprehensive style guide with region-specific theming
+- **React DnD** - Drag and drop functionality
 
 ### Development Tools
 - **Vitest** - Testing framework
 - **ESLint** - Code linting
 - **TypeScript** - Static type checking
-- **React DnD** - Drag and drop functionality
 
 ## 🚀 Quick Start
 
@@ -68,17 +82,33 @@ npm run dev
 # Development
 npm run dev              # Start dev server
 npm run build            # Build for production
+npm run build:check      # TypeScript check + build
 npm run preview          # Preview production build
 
 # Testing
 npm run test             # Run tests
 npm run test:ui          # Run tests with UI
 npm run test:coverage    # Generate coverage report
+npm run test:watch       # Run tests in watch mode
+npm run test:accessibility    # Run accessibility tests
+npm run test:integration      # Run integration tests
+npm run test:performance      # Run performance tests
 
 # Code Quality
 npm run lint             # Lint code
 npm run lint:fix         # Fix linting issues
 npm run typecheck        # Type checking
+
+# Styling
+npm run build-css        # Build Tailwind CSS
+npm run watch-css        # Watch Tailwind CSS changes
+npm run tailwind:build   # Build Tailwind CSS (alias)
+npm run tailwind:watch   # Watch Tailwind CSS (alias)
+
+# Geographic Data
+npm run process-geodata  # Process geographic data
+npm run geodata:build    # Build geographic data
+npm run geodata:serve    # Serve geographic data on port 8080
 ```
 
 ## 🗺️ Game Regions
@@ -125,11 +155,22 @@ npm run typecheck        # Type checking
 ### Project Structure
 ```
 src/
-├── components/          # React components
+├── components/
+│   ├── ui/                        # Component Library
+│   │   ├── Badge.tsx              # Status & region badges
+│   │   ├── Button.tsx             # Button components
+│   │   ├── Card.tsx               # Card containers
+│   │   ├── Progress.tsx           # Progress indicators
+│   │   ├── Typography.tsx         # Text components
+│   │   └── README.md              # Component documentation
+│   ├── game/                      # Game components
+│   │   ├── GameContainer.tsx      # Main game container
+│   │   ├── GameHeader.tsx         # Game header with progress
+│   │   └── GameComplete.tsx       # Victory screen
+│   ├── county/                    # County components
+│   │   └── CountyTray.tsx         # Draggable county pieces
 │   ├── CaliforniaMapCanvas.tsx    # D3 map visualization
-│   ├── CountyTray.tsx             # Draggable county pieces
-│   ├── RegionSelector.tsx         # Region selection UI
-│   └── CaliforniaGameContainer.tsx # Main game logic
+│   └── RegionSelector.tsx         # Region selection UI
 ├── stores/              # Zustand state management
 │   └── gameStore.ts     # Game state and actions
 ├── types/               # TypeScript type definitions
@@ -140,7 +181,14 @@ src/
 ├── hooks/               # Custom React hooks
 │   ├── useTimer.ts       # Timer functionality
 │   └── useDragAndDrop.ts # Drag and drop logic
+├── styles/              # Global styles
+│   └── globals.css       # Tailwind CSS base
 └── assets/              # Static assets
+
+docs/
+├── STYLE_GUIDE.html            # Complete design system
+├── DESIGN_SYSTEM_REFERENCE.md  # Design system overview
+└── INTEGRATION_SUMMARY.md      # Component integration guide
 ```
 
 ### State Management
@@ -186,6 +234,38 @@ npm run test:accessibility     # A11y tests only
 npm run test:integration       # Integration tests only
 npm run test:performance       # Performance tests only
 ```
+
+## 🎨 Design System
+
+### Component Library
+
+The game features a comprehensive component library with consistent theming and accessibility:
+
+```tsx
+import { Button, Card, Badge, Progress, Heading, Text } from '@/components/ui';
+```
+
+**Available Components:**
+- **Button** - 7 variants (Primary, Secondary, Success, Danger, Warning, Ghost, Outline)
+- **Badge** - Region-specific badges with auto-coloring for California regions
+- **Card** - Flexible card containers with county-specific styling
+- **Progress** - Game progress bars with animation and labels
+- **Typography** - Heading, Text, Code, and Label components
+
+### Documentation
+
+- **[Complete Style Guide](docs/STYLE_GUIDE.html)** - Interactive design system with all variants
+- **[Component Documentation](src/components/ui/README.md)** - Detailed API reference and examples
+- **[Integration Summary](docs/INTEGRATION_SUMMARY.md)** - Component integration guide
+- **[Design System Reference](docs/DESIGN_SYSTEM_REFERENCE.md)** - Quick reference overview
+
+### Design Principles
+
+- **Regional Identity**: Color-coded by California's 7 geographic regions
+- **Educational Focus**: Clear visual hierarchy for learning
+- **Responsive Feedback**: Immediate visual and audio responses
+- **Progressive Difficulty**: Adaptive hint system
+- **Accessibility**: ARIA labels, keyboard navigation, screen reader support
 
 ## 🌐 Deployment
 

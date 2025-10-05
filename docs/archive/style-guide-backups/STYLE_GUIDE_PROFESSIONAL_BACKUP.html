@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>California Counties Design System | v2.0.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           PROFESSIONAL DESIGN SYSTEM FOUNDATION
+           ============================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Professional Color System */
+            --ds-background-primary: #ffffff;
+            --ds-background-secondary: #f8fafc;
+            --ds-background-tertiary: #f1f5f9;
+            --ds-background-elevated: #ffffff;
+            --ds-background-overlay: rgba(0, 0, 0, 0.5);
+            --ds-background-code: #1e293b;
+
+            --ds-text-primary: #0f172a;
+            --ds-text-secondary: #64748b;
+            --ds-text-tertiary: #94a3b8;
+            --ds-text-inverse: #ffffff;
+            --ds-text-link: #2563eb;
+            --ds-text-code: #e2e8f0;
+
+            --ds-border-default: #e2e8f0;
+            --ds-border-subtle: #f1f5f9;
+            --ds-border-strong: #cbd5e1;
+            --ds-border-interactive: #2563eb;
+
+            --ds-surface-hover: rgba(0, 0, 0, 0.03);
+            --ds-surface-active: rgba(0, 0, 0, 0.05);
+
+            /* Status Colors */
+            --ds-status-success: #10b981;
+            --ds-status-warning: #f59e0b;
+            --ds-status-error: #ef4444;
+            --ds-status-info: #3b82f6;
+
+            /* Component Status Badges */
+            --ds-badge-stable: #10b981;
+            --ds-badge-beta: #f59e0b;
+            --ds-badge-experimental: #8b5cf6;
+            --ds-badge-deprecated: #6b7280;
+
+            /* Professional Shadows */
+            --ds-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --ds-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --ds-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --ds-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --ds-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+            /* Layout */
+            --ds-sidebar-width: 280px;
+            --ds-header-height: 64px;
+            --ds-max-content-width: 1200px;
+
+            /* Animation */
+            --ds-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --ds-transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --ds-transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Z-index Scale */
+            --ds-z-dropdown: 100;
+            --ds-z-sticky: 200;
+            --ds-z-overlay: 300;
+            --ds-z-modal: 400;
+            --ds-z-toast: 500;
+        }
+
+        /* Dark Theme Variables */
+        [data-theme="dark"] {
+            --ds-background-primary: #0f172a;
+            --ds-background-secondary: #1e293b;
+            --ds-background-tertiary: #334155;
+            --ds-background-elevated: #1e293b;
+            --ds-background-code: #0f172a;
+
+            --ds-text-primary: #f1f5f9;
+            --ds-text-secondary: #cbd5e1;
+            --ds-text-tertiary: #94a3b8;
+            --ds-text-inverse: #0f172a;
+            --ds-text-link: #60a5fa;
+            --ds-text-code: #cbd5e1;
+
+            --ds-border-default: #334155;
+            --ds-border-subtle: #1e293b;
+            --ds-border-strong: #475569;
+
+            --ds-surface-hover: rgba(255, 255, 255, 0.05);
+            --ds-surface-active: rgba(255, 255, 255, 0.1);
+
+            --ds-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+            --ds-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+            --ds-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --ds-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Base Styles */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--ds-background-secondary);
+            color: var(--ds-text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* Professional Header */
+        .ds-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--ds-header-height);
+            background: var(--ds-background-primary);
+            border-bottom: 1px solid var(--ds-border-default);
+            z-index: var(--ds-z-sticky);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            backdrop-filter: blur(8px);
+            background: rgba(var(--ds-background-primary), 0.95);
+        }
+
+        .ds-header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .ds-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            text-decoration: none;
+            color: var(--ds-text-primary);
+        }
+
+        .ds-version-badge {
+            background: var(--ds-background-tertiary);
+            color: var(--ds-text-secondary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .ds-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Search Bar */
+        .ds-search {
+            position: relative;
+            width: 320px;
+        }
+
+        .ds-search-input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            background: var(--ds-background-secondary);
+            border: 1px solid var(--ds-border-default);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all var(--ds-transition-fast);
+            color: var(--ds-text-primary);
+        }
+
+        .ds-search-input:focus {
+            outline: none;
+            border-color: var(--ds-border-interactive);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: var(--ds-background-primary);
+        }
+
+        .ds-search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ds-text-tertiary);
+            pointer-events: none;
+        }
+
+        /* Theme Toggle */
+        .ds-theme-toggle {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--ds-border-default);
+            border-radius: 6px;
+            background: var(--ds-background-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--ds-transition-fast);
+            color: var(--ds-text-primary);
+        }
+
+        .ds-theme-toggle:hover {
+            background: var(--ds-surface-hover);
+            border-color: var(--ds-border-strong);
+        }
+
+        /* Sidebar Navigation */
+        .ds-sidebar {
+            position: fixed;
+            top: var(--ds-header-height);
+            left: 0;
+            width: var(--ds-sidebar-width);
+            height: calc(100vh - var(--ds-header-height));
+            background: var(--ds-background-primary);
+            border-right: 1px solid var(--ds-border-default);
+            overflow-y: auto;
+            padding: 24px 16px;
+            z-index: var(--ds-z-sticky);
+        }
+
+        .ds-nav-section {
+            margin-bottom: 32px;
+        }
+
+        .ds-nav-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--ds-text-tertiary);
+            margin-bottom: 8px;
+            padding-left: 12px;
+        }
+
+        .ds-nav-item {
+            display: block;
+            padding: 8px 12px;
+            color: var(--ds-text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all var(--ds-transition-fast);
+            position: relative;
+            margin-bottom: 2px;
+        }
+
+        .ds-nav-item:hover {
+            background: var(--ds-surface-hover);
+            color: var(--ds-text-primary);
+        }
+
+        .ds-nav-item.active {
+            background: var(--ds-background-tertiary);
+            color: var(--ds-text-primary);
+            font-weight: 500;
+        }
+
+        .ds-nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 16px;
+            background: var(--ds-border-interactive);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .ds-nav-badge {
+            float: right;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-stable { background: rgba(16, 185, 129, 0.1); color: var(--ds-badge-stable); }
+        .badge-beta { background: rgba(245, 158, 11, 0.1); color: var(--ds-badge-beta); }
+        .badge-new { background: rgba(59, 130, 246, 0.1); color: var(--ds-status-info); }
+        .badge-deprecated { background: rgba(107, 114, 128, 0.1); color: var(--ds-badge-deprecated); }
+
+        /* Main Content Area */
+        .ds-main {
+            margin-left: var(--ds-sidebar-width);
+            padding-top: var(--ds-header-height);
+            min-height: 100vh;
+        }
+
+        .ds-content {
+            max-width: var(--ds-max-content-width);
+            margin: 0 auto;
+            padding: 48px 48px 96px;
+        }
+
+        /* Page Header */
+        .ds-page-header {
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--ds-border-default);
+        }
+
+        .ds-page-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+
+        .ds-page-description {
+            font-size: 18px;
+            color: var(--ds-text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .ds-page-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .ds-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: var(--ds-text-tertiary);
+        }
+
+        /* Section Styles */
+        .ds-section {
+            margin-bottom: 64px;
+        }
+
+        .ds-section-header {
+            margin-bottom: 24px;
+        }
+
+        .ds-section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ds-section-description {
+            font-size: 16px;
+            color: var(--ds-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Component Cards */
+        .ds-component-card {
+            background: var(--ds-background-primary);
+            border: 1px solid var(--ds-border-default);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .ds-component-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--ds-border-default);
+            background: var(--ds-background-secondary);
+        }
+
+        .ds-component-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ds-component-description {
+            font-size: 14px;
+            color: var(--ds-text-secondary);
+        }
+
+        .ds-component-preview {
+            padding: 32px;
+            background: var(--ds-background-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            position: relative;
+        }
+
+        .ds-component-controls {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .ds-control-btn {
+            padding: 6px 10px;
+            background: var(--ds-background-primary);
+            border: 1px solid var(--ds-border-default);
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all var(--ds-transition-fast);
+            color: var(--ds-text-secondary);
+        }
+
+        .ds-control-btn:hover {
+            background: var(--ds-surface-hover);
+            color: var(--ds-text-primary);
+            border-color: var(--ds-border-strong);
+        }
+
+        .ds-control-btn.active {
+            background: var(--ds-background-tertiary);
+            color: var(--ds-text-primary);
+            border-color: var(--ds-border-strong);
+        }
+
+        /* Code Blocks */
+        .ds-code-block {
+            position: relative;
+            margin: 24px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--ds-background-code);
+        }
+
+        .ds-code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ds-code-language {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--ds-text-code);
+            opacity: 0.7;
+        }
+
+        .ds-code-copy {
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: var(--ds-text-code);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all var(--ds-transition-fast);
+        }
+
+        .ds-code-copy:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .ds-code-copy.copied {
+            background: var(--ds-status-success);
+            color: white;
+            border-color: var(--ds-status-success);
+        }
+
+        .ds-code-content {
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--ds-text-code);
+        }
+
+        /* Color Swatches */
+        .ds-color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .ds-color-swatch {
+            border: 1px solid var(--ds-border-default);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--ds-background-primary);
+            transition: all var(--ds-transition-fast);
+        }
+
+        .ds-color-swatch:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--ds-shadow-md);
+        }
+
+        .ds-color-display {
+            height: 80px;
+            position: relative;
+        }
+
+        .ds-color-info {
+            padding: 12px;
+        }
+
+        .ds-color-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .ds-color-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--ds-text-secondary);
+        }
+
+        .ds-color-contrast {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .ds-contrast-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .contrast-aa { background: rgba(16, 185, 129, 0.1); color: var(--ds-status-success); }
+        .contrast-aaa { background: rgba(16, 185, 129, 0.2); color: var(--ds-status-success); }
+        .contrast-fail { background: rgba(239, 68, 68, 0.1); color: var(--ds-status-error); }
+
+        /* Typography Specimens */
+        .ds-type-specimen {
+            padding: 24px;
+            background: var(--ds-background-secondary);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .ds-type-example {
+            margin-bottom: 8px;
+        }
+
+        .ds-type-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--ds-text-tertiary);
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Component Status Table */
+        .ds-status-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ds-status-table th {
+            text-align: left;
+            padding: 12px;
+            background: var(--ds-background-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--ds-text-tertiary);
+            border-bottom: 1px solid var(--ds-border-default);
+        }
+
+        .ds-status-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--ds-border-subtle);
+            font-size: 14px;
+        }
+
+        /* Responsive Preview */
+        .ds-device-preview {
+            display: flex;
+            gap: 24px;
+            padding: 24px;
+            background: var(--ds-background-secondary);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .ds-device-frame {
+            flex-shrink: 0;
+            border: 2px solid var(--ds-border-strong);
+            border-radius: 8px;
+            background: white;
+            position: relative;
+        }
+
+        .ds-device-label {
+            position: absolute;
+            top: -28px;
+            left: 0;
+            font-size: 12px;
+            color: var(--ds-text-secondary);
+            font-weight: 500;
+        }
+
+        .device-mobile { width: 375px; height: 667px; margin-top: 32px; }
+        .device-tablet { width: 768px; height: 1024px; margin-top: 32px; }
+        .device-desktop { width: 1440px; height: 900px; margin-top: 32px; }
+
+        /* Tabs */
+        .ds-tabs {
+            border-bottom: 1px solid var(--ds-border-default);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 24px;
+        }
+
+        .ds-tab {
+            padding: 12px 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ds-text-secondary);
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: all var(--ds-transition-fast);
+            cursor: pointer;
+        }
+
+        .ds-tab:hover {
+            color: var(--ds-text-primary);
+        }
+
+        .ds-tab.active {
+            color: var(--ds-text-primary);
+            border-bottom-color: var(--ds-border-interactive);
+        }
+
+        /* Interactive Playground */
+        .ds-playground {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding: 24px;
+            background: var(--ds-background-secondary);
+            border-radius: 8px;
+        }
+
+        .ds-playground-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .ds-control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ds-control-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--ds-text-tertiary);
+        }
+
+        .ds-control-input {
+            padding: 8px 12px;
+            border: 1px solid var(--ds-border-default);
+            border-radius: 6px;
+            font-size: 14px;
+            background: var(--ds-background-primary);
+            color: var(--ds-text-primary);
+        }
+
+        .ds-playground-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: var(--ds-background-primary);
+            border: 1px solid var(--ds-border-default);
+            border-radius: 8px;
+        }
+
+        /* Utility Classes */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+        .flex { display: flex; }
+        .flex-wrap { flex-wrap: wrap; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-8 { gap: 8px; }
+        .gap-16 { gap: 16px; }
+        .gap-24 { gap: 24px; }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .ds-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .ds-main {
+                margin-left: 0;
+            }
+
+            .ds-content {
+                padding: 32px 24px;
+            }
+
+            .ds-search {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ds-header {
+                padding: 0 16px;
+            }
+
+            .ds-content {
+                padding: 24px 16px;
+            }
+
+            .ds-playground {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Professional Header Bar -->
+    <header class="ds-header">
+        <div class="ds-header-content">
+            <div class="flex items-center gap-16">
+                <a href="#" class="ds-logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect width="32" height="32" rx="8" fill="#2563eb"/>
+                        <path d="M8 12L16 8L24 12V20L16 24L8 20V12Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    California Design System
+                    <span class="ds-version-badge">v2.0.0</span>
+                </a>
+            </div>
+
+            <div class="ds-header-actions">
+                <div class="ds-search">
+                    <svg class="ds-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <input type="search" class="ds-search-input" placeholder="Search components, patterns, guidelines..." />
+                </div>
+
+                <button class="ds-theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                </button>
+
+                <button class="ds-control-btn" onclick="exportTokens()">
+                    Export Tokens
+                </button>
+
+                <a href="https://github.com/yourusername/california-design-system" class="ds-control-btn">
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav class="ds-sidebar">
+        <div class="ds-nav-section">
+            <div class="ds-nav-title">Getting Started</div>
+            <a href="#overview" class="ds-nav-item active">
+                Overview
+                <span class="ds-nav-badge badge-stable">Stable</span>
+            </a>
+            <a href="#principles" class="ds-nav-item">Design Principles</a>
+            <a href="#changelog" class="ds-nav-item">
+                Changelog
+                <span class="ds-nav-badge badge-new">New</span>
+            </a>
+        </div>
+
+        <div class="ds-nav-section">
+            <div class="ds-nav-title">Foundations</div>
+            <a href="#colors" class="ds-nav-item">
+                Color System
+                <span class="ds-nav-badge badge-stable">Stable</span>
+            </a>
+            <a href="#typography" class="ds-nav-item">Typography</a>
+            <a href="#spacing" class="ds-nav-item">Spacing & Grid</a>
+            <a href="#shadows" class="ds-nav-item">Shadows & Elevation</a>
+            <a href="#motion" class="ds-nav-item">Motion & Animation</a>
+            <a href="#accessibility" class="ds-nav-item">Accessibility</a>
+        </div>
+
+        <div class="ds-nav-section">
+            <div class="ds-nav-title">Components</div>
+            <a href="#buttons" class="ds-nav-item">
+                Buttons
+                <span class="ds-nav-badge badge-stable">Stable</span>
+            </a>
+            <a href="#cards" class="ds-nav-item">Cards</a>
+            <a href="#badges" class="ds-nav-item">Badges & Pills</a>
+            <a href="#inputs" class="ds-nav-item">
+                Form Inputs
+                <span class="ds-nav-badge badge-beta">Beta</span>
+            </a>
+            <a href="#navigation" class="ds-nav-item">Navigation</a>
+            <a href="#maps" class="ds-nav-item">
+                Map Components
+                <span class="ds-nav-badge badge-stable">Stable</span>
+            </a>
+        </div>
+
+        <div class="ds-nav-section">
+            <div class="ds-nav-title">Patterns</div>
+            <a href="#layouts" class="ds-nav-item">Page Layouts</a>
+            <a href="#forms" class="ds-nav-item">Form Patterns</a>
+            <a href="#data-viz" class="ds-nav-item">Data Visualization</a>
+            <a href="#empty-states" class="ds-nav-item">Empty States</a>
+        </div>
+
+        <div class="ds-nav-section">
+            <div class="ds-nav-title">Resources</div>
+            <a href="#figma" class="ds-nav-item">Figma Library</a>
+            <a href="#icons" class="ds-nav-item">Icons</a>
+            <a href="#tokens" class="ds-nav-item">Design Tokens</a>
+            <a href="#contributing" class="ds-nav-item">Contributing</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="ds-main">
+        <div class="ds-content">
+            <!-- Overview Section -->
+            <section id="overview" class="ds-section">
+                <div class="ds-page-header">
+                    <h1 class="ds-page-title">California Counties Design System</h1>
+                    <p class="ds-page-description">
+                        A comprehensive design system for building educational, accessible, and delightful experiences
+                        for the California Counties Puzzle Game. Built with modern web standards and best practices.
+                    </p>
+                    <div class="ds-page-meta">
+                        <div class="ds-meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                            Last updated: January 29, 2025
+                        </div>
+                        <div class="ds-meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                            12 Contributors
+                        </div>
+                        <div class="ds-meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <path d="M3 9h18"/>
+                                <path d="M9 21V9"/>
+                            </svg>
+                            48 Components
+                        </div>
+                        <div class="ds-meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                            </svg>
+                            99.2% Uptime
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Start Cards -->
+                <div class="grid-3">
+                    <div class="ds-component-card">
+                        <div class="ds-component-preview" style="min-height: 120px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 32px; margin-bottom: 12px;">🎨</div>
+                                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">For Designers</h3>
+                                <p style="font-size: 14px; color: var(--ds-text-secondary);">
+                                    Figma components, design tokens, and guidelines
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ds-component-card">
+                        <div class="ds-component-preview" style="min-height: 120px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 32px; margin-bottom: 12px;">⚛️</div>
+                                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">For Developers</h3>
+                                <p style="font-size: 14px; color: var(--ds-text-secondary);">
+                                    React components, CSS utilities, and API docs
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ds-component-card">
+                        <div class="ds-component-preview" style="min-height: 120px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 32px; margin-bottom: 12px;">📚</div>
+                                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">For Product</h3>
+                                <p style="font-size: 14px; color: var(--ds-text-secondary);">
+                                    Patterns, best practices, and usage guidelines
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Component Status Overview -->
+                <div class="ds-component-card">
+                    <div class="ds-component-header">
+                        <h3 class="ds-component-title">Component Status</h3>
+                        <p class="ds-component-description">Current development status of all components</p>
+                    </div>
+                    <div style="padding: 24px;">
+                        <table class="ds-status-table">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Status</th>
+                                    <th>Version</th>
+                                    <th>Last Updated</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Button</strong></td>
+                                    <td><span class="ds-nav-badge badge-stable">Stable</span></td>
+                                    <td>2.0.0</td>
+                                    <td>Jan 15, 2025</td>
+                                    <td>Full accessibility support</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Card</strong></td>
+                                    <td><span class="ds-nav-badge badge-stable">Stable</span></td>
+                                    <td>2.0.0</td>
+                                    <td>Jan 10, 2025</td>
+                                    <td>Region color variants added</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Map Component</strong></td>
+                                    <td><span class="ds-nav-badge badge-beta">Beta</span></td>
+                                    <td>1.8.0</td>
+                                    <td>Jan 28, 2025</td>
+                                    <td>Performance optimizations in progress</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Form Inputs</strong></td>
+                                    <td><span class="ds-nav-badge badge-beta">Beta</span></td>
+                                    <td>1.5.0</td>
+                                    <td>Jan 20, 2025</td>
+                                    <td>Validation patterns being refined</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Data Tables</strong></td>
+                                    <td><span class="ds-nav-badge badge-new">New</span></td>
+                                    <td>0.9.0</td>
+                                    <td>Jan 29, 2025</td>
+                                    <td>Initial implementation</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Color System Section -->
+            <section id="colors" class="ds-section">
+                <div class="ds-section-header">
+                    <h2 class="ds-section-title">
+                        Color System
+                        <span class="ds-nav-badge badge-stable">Stable</span>
+                    </h2>
+                    <p class="ds-section-description">
+                        A carefully crafted color palette that reflects California's diverse regions while maintaining
+                        WCAG AA accessibility standards for all text and interactive elements.
+                    </p>
+                </div>
+
+                <!-- Interactive Color Playground -->
+                <div class="ds-component-card">
+                    <div class="ds-component-header">
+                        <h3 class="ds-component-title">Interactive Color Explorer</h3>
+                        <p class="ds-component-description">Click any color to copy its value. Hover to see contrast ratios.</p>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div class="ds-tabs">
+                            <div class="ds-tab active" onclick="showColorTab('regions')">Region Colors</div>
+                            <div class="ds-tab" onclick="showColorTab('semantic')">Semantic Colors</div>
+                            <div class="ds-tab" onclick="showColorTab('neutrals')">Neutrals</div>
+                        </div>
+
+                        <div id="regions-colors" class="ds-color-grid">
+                            <div class="ds-color-swatch">
+                                <div class="ds-color-display" style="background: #3b82f6;" onclick="copyColor('#3b82f6')"></div>
+                                <div class="ds-color-info">
+                                    <div class="ds-color-name">Bay Area</div>
+                                    <div class="ds-color-value">#3b82f6</div>
+                                    <div class="ds-color-contrast">
+                                        <span class="ds-contrast-badge contrast-aa">AA</span>
+                                        <span class="ds-contrast-badge contrast-aaa">AAA</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ds-color-swatch">
+                                <div class="ds-color-display" style="background: #22c55e;" onclick="copyColor('#22c55e')"></div>
+                                <div class="ds-color-info">
+                                    <div class="ds-color-name">Central Valley</div>
+                                    <div class="ds-color-value">#22c55e</div>
+                                    <div class="ds-color-contrast">
+                                        <span class="ds-contrast-badge contrast-aa">AA</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ds-color-swatch">
+                                <div class="ds-color-display" style="background: #f59e0b;" onclick="copyColor('#f59e0b')"></div>
+                                <div class="ds-color-info">
+                                    <div class="ds-color-name">Gold Country</div>
+                                    <div class="ds-color-value">#f59e0b</div>
+                                    <div class="ds-color-contrast">
+                                        <span class="ds-contrast-badge contrast-aa">AA</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ds-color-swatch">
+                                <div class="ds-color-display" style="background: #ef4444;" onclick="copyColor('#ef4444')"></div>
+                                <div class="ds-color-info">
+                                    <div class="ds-color-name">Los Angeles</div>
+                                    <div class="ds-color-value">#ef4444</div>
+                                    <div class="ds-color-contrast">
+                                        <span class="ds-contrast-badge contrast-aa">AA</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="semantic-colors" class="ds-color-grid" style="display: none;">
+                            <div class="ds-color-swatch">
+                                <div class="ds-color-display" style="background: #10b981;" onclick="copyColor('#10b981')"></div>
+                                <div class="ds-color-info">
+                                    <div class="ds-color-name">Success</div>
+                                    <div class="ds-color-value">#10b981</div>
+                                    <div class="ds-color-contrast">
+                                        <span class="ds-contrast-badge contrast-aa">AA</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ds-color-swatch">
+                                <div class="ds-color-display" style="background: #f59e0b;" onclick="copyColor('#f59e0b')"></div>
+                                <div class="ds-color-info">
+                                    <div class="ds-color-name">Warning</div>
+                                    <div class="ds-color-value">#f59e0b</div>
+                                    <div class="ds-color-contrast">
+                                        <span class="ds-contrast-badge contrast-aa">AA</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ds-color-swatch">
+                                <div class="ds-color-display" style="background: #ef4444;" onclick="copyColor('#ef4444')"></div>
+                                <div class="ds-color-info">
+                                    <div class="ds-color-name">Error</div>
+                                    <div class="ds-color-value">#ef4444</div>
+                                    <div class="ds-color-contrast">
+                                        <span class="ds-contrast-badge contrast-aa">AA</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ds-color-swatch">
+                                <div class="ds-color-display" style="background: #3b82f6;" onclick="copyColor('#3b82f6')"></div>
+                                <div class="ds-color-info">
+                                    <div class="ds-color-name">Information</div>
+                                    <div class="ds-color-value">#3b82f6</div>
+                                    <div class="ds-color-contrast">
+                                        <span class="ds-contrast-badge contrast-aa">AA</span>
+                                        <span class="ds-contrast-badge contrast-aaa">AAA</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Typography Section -->
+            <section id="typography" class="ds-section">
+                <div class="ds-section-header">
+                    <h2 class="ds-section-title">Typography</h2>
+                    <p class="ds-section-description">
+                        A clear typographic hierarchy optimized for educational content, using system fonts for
+                        performance and native feel across all platforms.
+                    </p>
+                </div>
+
+                <div class="ds-component-card">
+                    <div class="ds-component-header">
+                        <h3 class="ds-component-title">Type Scale</h3>
+                        <p class="ds-component-description">Interactive type specimens with live editing</p>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div class="ds-type-specimen">
+                            <h1 class="ds-type-example" contenteditable="true" style="font-size: 48px; font-weight: 700; line-height: 1.1;">
+                                Display Heading
+                            </h1>
+                            <div class="ds-type-meta">
+                                <span>48px / 3rem</span>
+                                <span>Font-weight: 700</span>
+                                <span>Line-height: 1.1</span>
+                                <span>Letter-spacing: -0.025em</span>
+                            </div>
+                        </div>
+
+                        <div class="ds-type-specimen">
+                            <h2 class="ds-type-example" contenteditable="true" style="font-size: 36px; font-weight: 700; line-height: 1.2;">
+                                Page Title
+                            </h2>
+                            <div class="ds-type-meta">
+                                <span>36px / 2.25rem</span>
+                                <span>Font-weight: 700</span>
+                                <span>Line-height: 1.2</span>
+                                <span>Letter-spacing: -0.02em</span>
+                            </div>
+                        </div>
+
+                        <div class="ds-type-specimen">
+                            <h3 class="ds-type-example" contenteditable="true" style="font-size: 24px; font-weight: 600; line-height: 1.3;">
+                                Section Heading
+                            </h3>
+                            <div class="ds-type-meta">
+                                <span>24px / 1.5rem</span>
+                                <span>Font-weight: 600</span>
+                                <span>Line-height: 1.3</span>
+                            </div>
+                        </div>
+
+                        <div class="ds-type-specimen">
+                            <p class="ds-type-example" contenteditable="true" style="font-size: 16px; line-height: 1.6;">
+                                Body text forms the foundation of our content. It should be clear, readable, and
+                                comfortable for extended reading. We use a line height of 1.6 for optimal readability.
+                            </p>
+                            <div class="ds-type-meta">
+                                <span>16px / 1rem</span>
+                                <span>Font-weight: 400</span>
+                                <span>Line-height: 1.6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Buttons Section -->
+            <section id="buttons" class="ds-section">
+                <div class="ds-section-header">
+                    <h2 class="ds-section-title">
+                        Buttons
+                        <span class="ds-nav-badge badge-stable">Stable</span>
+                    </h2>
+                    <p class="ds-section-description">
+                        Interactive button components with multiple variants, states, and sizes. All buttons meet
+                        WCAG accessibility standards and include keyboard navigation support.
+                    </p>
+                </div>
+
+                <!-- Interactive Button Playground -->
+                <div class="ds-component-card">
+                    <div class="ds-component-header">
+                        <h3 class="ds-component-title">Button Playground</h3>
+                        <p class="ds-component-description">Customize button properties in real-time</p>
+                    </div>
+                    <div class="ds-playground">
+                        <div class="ds-playground-controls">
+                            <div class="ds-control-group">
+                                <label class="ds-control-label">Variant</label>
+                                <select class="ds-control-input" id="btn-variant" onchange="updateButton()">
+                                    <option value="primary">Primary</option>
+                                    <option value="secondary">Secondary</option>
+                                    <option value="success">Success</option>
+                                    <option value="danger">Danger</option>
+                                    <option value="ghost">Ghost</option>
+                                </select>
+                            </div>
+                            <div class="ds-control-group">
+                                <label class="ds-control-label">Size</label>
+                                <select class="ds-control-input" id="btn-size" onchange="updateButton()">
+                                    <option value="small">Small</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+                            <div class="ds-control-group">
+                                <label class="ds-control-label">Text</label>
+                                <input type="text" class="ds-control-input" id="btn-text" value="Click Me" onkeyup="updateButton()">
+                            </div>
+                            <div class="ds-control-group">
+                                <label class="ds-control-label">Icon</label>
+                                <select class="ds-control-input" id="btn-icon" onchange="updateButton()">
+                                    <option value="none">None</option>
+                                    <option value="arrow">Arrow →</option>
+                                    <option value="check">Check ✓</option>
+                                    <option value="download">Download ↓</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="ds-playground-preview">
+                            <button id="playground-button" style="
+                                padding: 12px 24px;
+                                background: #2563eb;
+                                color: white;
+                                border: none;
+                                border-radius: 6px;
+                                font-size: 16px;
+                                font-weight: 600;
+                                cursor: pointer;
+                                transition: all 200ms ease;
+                            ">
+                                Click Me
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code Example with Copy -->
+                <div class="ds-code-block">
+                    <div class="ds-code-header">
+                        <span class="ds-code-language">JSX</span>
+                        <button class="ds-code-copy" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre class="ds-code-content"><code>// Button Component Usage
+import { Button } from '@california/design-system';
+
+function MyComponent() {
+  return (
+    <Button
+      variant="primary"
+      size="medium"
+      onClick={handleClick}
+      icon="arrow-right"
+    >
+      Start Game
+    </Button>
+  );
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Responsive Preview Section -->
+            <section id="responsive" class="ds-section">
+                <div class="ds-section-header">
+                    <h2 class="ds-section-title">Responsive Design</h2>
+                    <p class="ds-section-description">
+                        Preview components across different device sizes and orientations
+                    </p>
+                </div>
+
+                <div class="ds-component-card">
+                    <div class="ds-component-header">
+                        <h3 class="ds-component-title">Device Preview</h3>
+                        <div class="ds-component-controls" style="position: static;">
+                            <button class="ds-control-btn active" onclick="setDevice('mobile')">Mobile</button>
+                            <button class="ds-control-btn" onclick="setDevice('tablet')">Tablet</button>
+                            <button class="ds-control-btn" onclick="setDevice('desktop')">Desktop</button>
+                        </div>
+                    </div>
+                    <div style="padding: 24px; background: var(--ds-background-secondary);">
+                        <div id="device-frame" class="ds-device-frame device-mobile" style="margin: 0 auto;">
+                            <span class="ds-device-label">iPhone 12 Pro (375×812)</span>
+                            <iframe src="#" style="width: 100%; height: 100%; border: none;" title="Device preview"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Changelog Section -->
+            <section id="changelog" class="ds-section">
+                <div class="ds-section-header">
+                    <h2 class="ds-section-title">
+                        Changelog
+                        <span class="ds-nav-badge badge-new">New</span>
+                    </h2>
+                    <p class="ds-section-description">
+                        Track all changes, updates, and improvements to the design system
+                    </p>
+                </div>
+
+                <div class="ds-component-card">
+                    <div style="padding: 24px;">
+                        <div style="border-left: 3px solid var(--ds-border-interactive); padding-left: 24px; margin-bottom: 32px;">
+                            <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Version 2.0.0</h4>
+                            <p style="font-size: 14px; color: var(--ds-text-tertiary); margin-bottom: 12px;">January 29, 2025</p>
+                            <ul style="font-size: 14px; line-height: 1.8; color: var(--ds-text-secondary);">
+                                <li>✨ Complete redesign with professional conventions</li>
+                                <li>🎨 Dark mode support with system preference detection</li>
+                                <li>📱 Enhanced responsive design system</li>
+                                <li>♿ WCAG 2.1 AAA compliance for critical paths</li>
+                                <li>⚡ Performance optimizations (60fps animations)</li>
+                                <li>📚 Interactive component playground</li>
+                                <li>🔧 Design token export functionality</li>
+                            </ul>
+                        </div>
+
+                        <div style="border-left: 3px solid var(--ds-border-default); padding-left: 24px; margin-bottom: 32px;">
+                            <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Version 1.8.0</h4>
+                            <p style="font-size: 14px; color: var(--ds-text-tertiary); margin-bottom: 12px;">January 15, 2025</p>
+                            <ul style="font-size: 14px; line-height: 1.8; color: var(--ds-text-secondary);">
+                                <li>🗺️ Map component performance improvements</li>
+                                <li>🎯 Enhanced focus states for accessibility</li>
+                                <li>📊 New data visualization patterns</li>
+                                <li>🐛 Fixed contrast issues in light mode</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme or use system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        // Smooth scroll and active nav
+        document.querySelectorAll('.ds-nav-item').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Update active state
+                    document.querySelectorAll('.ds-nav-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Copy to clipboard functions
+        function copyColor(color) {
+            navigator.clipboard.writeText(color);
+            showToast(`Copied ${color} to clipboard`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.ds-code-block');
+            const code = codeBlock.querySelector('.ds-code-content').textContent;
+            navigator.clipboard.writeText(code);
+
+            button.textContent = 'Copied!';
+            button.classList.add('copied');
+
+            setTimeout(() => {
+                button.textContent = 'Copy';
+                button.classList.remove('copied');
+            }, 2000);
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 24px;
+                right: 24px;
+                background: var(--ds-background-elevated);
+                color: var(--ds-text-primary);
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: var(--ds-shadow-lg);
+                z-index: var(--ds-z-toast);
+                animation: slideIn 0.3s ease-out;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        // Color tab switching
+        function showColorTab(tab) {
+            document.querySelectorAll('.ds-color-grid').forEach(grid => {
+                grid.style.display = 'none';
+            });
+            document.getElementById(tab + '-colors').style.display = 'grid';
+
+            document.querySelectorAll('.ds-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Button playground
+        function updateButton() {
+            const button = document.getElementById('playground-button');
+            const variant = document.getElementById('btn-variant').value;
+            const size = document.getElementById('btn-size').value;
+            const text = document.getElementById('btn-text').value;
+            const icon = document.getElementById('btn-icon').value;
+
+            // Update text
+            let content = text;
+            if (icon !== 'none') {
+                const icons = {
+                    'arrow': ' →',
+                    'check': ' ✓',
+                    'download': ' ↓'
+                };
+                content += icons[icon];
+            }
+            button.textContent = content;
+
+            // Update styles based on variant
+            const variants = {
+                primary: { bg: '#2563eb', color: 'white', border: 'none' },
+                secondary: { bg: 'white', color: '#2563eb', border: '2px solid #2563eb' },
+                success: { bg: '#10b981', color: 'white', border: 'none' },
+                danger: { bg: '#ef4444', color: 'white', border: 'none' },
+                ghost: { bg: 'transparent', color: '#2563eb', border: '1px solid transparent' }
+            };
+
+            const sizes = {
+                small: { padding: '8px 16px', fontSize: '14px' },
+                medium: { padding: '12px 24px', fontSize: '16px' },
+                large: { padding: '16px 32px', fontSize: '18px' }
+            };
+
+            Object.assign(button.style, variants[variant], sizes[size]);
+        }
+
+        // Device preview switching
+        function setDevice(device) {
+            const frame = document.getElementById('device-frame');
+            frame.className = 'ds-device-frame device-' + device;
+
+            const labels = {
+                mobile: 'iPhone 12 Pro (375×812)',
+                tablet: 'iPad Pro (768×1024)',
+                desktop: 'Desktop (1440×900)'
+            };
+
+            frame.querySelector('.ds-device-label').textContent = labels[device];
+
+            document.querySelectorAll('.ds-control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Export design tokens
+        function exportTokens() {
+            const tokens = {
+                colors: {
+                    regions: {
+                        bayArea: '#3b82f6',
+                        centralValley: '#22c55e',
+                        goldCountry: '#f59e0b',
+                        losAngeles: '#ef4444',
+                        northCoast: '#06b6d4',
+                        northern: '#8b5cf6',
+                        orangeCounty: '#f97316',
+                        sacramento: '#84cc16',
+                        sanDiego: '#ec4899',
+                        sierra: '#6366f1',
+                        southernCalifornia: '#f43f5e'
+                    },
+                    semantic: {
+                        primary: '#2563eb',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        error: '#ef4444',
+                        info: '#3b82f6'
+                    }
+                },
+                typography: {
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                    sizes: {
+                        xs: '12px',
+                        sm: '14px',
+                        base: '16px',
+                        lg: '18px',
+                        xl: '20px',
+                        '2xl': '24px',
+                        '3xl': '30px',
+                        '4xl': '36px',
+                        '5xl': '48px'
+                    }
+                },
+                spacing: {
+                    xs: '4px',
+                    sm: '8px',
+                    md: '16px',
+                    lg: '24px',
+                    xl: '32px',
+                    '2xl': '48px'
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(tokens, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'california-design-tokens.json';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showToast('Design tokens exported successfully');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+
+            // Add scroll spy
+            const observerOptions = {
+                root: null,
+                rootMargin: '-100px 0px -70% 0px',
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        const navItem = document.querySelector(`.ds-nav-item[href="#${id}"]`);
+                        if (navItem) {
+                            document.querySelectorAll('.ds-nav-item').forEach(item => {
+                                item.classList.remove('active');
+                            });
+                            navItem.classList.add('active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.ds-section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+
+        // Add slide out animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                to {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

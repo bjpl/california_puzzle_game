@@ -2,6 +2,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { getRegionColor } from '../../config/regionColors';
+import { Badge, Heading, Text, Card } from '../ui';
 
 function DraggableCounty({ county }: { county: any }) {
   const { placedCounties, selectCounty, currentCounty } = useGame();
@@ -28,16 +29,20 @@ function DraggableCounty({ county }: { county: any }) {
 
   if (isPlaced) {
     return (
-      <div className="px-1 py-0 bg-gray-100 border border-gray-300 rounded opacity-50 cursor-not-allowed" style={{ fontSize: '10px' }}>
-        <span className="text-gray-500 line-through">{county.name}</span>
-      </div>
+      <Badge
+        variant="default"
+        size="small"
+        className="opacity-50 cursor-not-allowed line-through"
+      >
+        {county.name}
+      </Badge>
     );
   }
 
   return (
     <div
       ref={setNodeRef}
-      style={{ ...style, fontSize: '10px' }}
+      style={style}
       {...listeners}
       {...attributes}
       onClick={(e) => {
@@ -47,17 +52,20 @@ function DraggableCounty({ county }: { county: any }) {
           selectCounty(county);
         }
       }}
-      className={`px-1 py-0 border rounded cursor-move hover:shadow-sm transition-all ${colorClass} ${
-        isDragging ? 'opacity-50 cursor-grabbing' : ''
-      } ${
-        isSelected ? 'ring-2 ring-blue-500 shadow-md transform scale-105' : ''
-      }`}
       title={`${county.name} - ${county.region}${isSelected ? ' (Selected - Use hint or drag to map)' : ' (Click to select)'}`}
     >
-      <span className="text-gray-700 font-medium">
+      <Badge
+        region={county.region}
+        size="small"
+        className={`cursor-move hover:shadow-sm transition-all ${
+          isDragging ? 'opacity-50 cursor-grabbing' : ''
+        } ${
+          isSelected ? 'ring-2 ring-blue-500 shadow-md transform scale-105' : ''
+        }`}
+      >
         {isSelected && '▶ '}
         {county.name}
-      </span>
+      </Badge>
     </div>
   );
 }
@@ -73,12 +81,16 @@ export default function CountyTray() {
   }, {} as Record<string, typeof counties>);
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-2 h-[520px] overflow-hidden">
-      <h2 className="text-xs font-bold text-gray-800 mb-1">Counties ({counties.length})</h2>
+    <Card variant="elevated" className="h-[520px] overflow-hidden p-2">
+      <Heading level={2} size="label" className="text-gray-800 mb-1">
+        Counties ({counties.length})
+      </Heading>
       <div className="space-y-0.5 max-h-[490px] overflow-y-auto overflow-x-hidden pr-1">
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
           <div key={region}>
-            <p className="text-xs font-semibold text-gray-600 mt-1 mb-0.5">{region}</p>
+            <Text size="xs" weight="semibold" color="secondary" className="mt-1 mb-0.5">
+              {region}
+            </Text>
             <div className="grid grid-cols-2 gap-0.5">
               {regionCounties.map(county => (
                 <DraggableCounty key={county.id} county={county} />
@@ -87,6 +99,6 @@ export default function CountyTray() {
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { DndContext, DragEndEvent, DragStartEvent, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect, SoundType } from '../../utils/simpleSoundManager';
+import { Button, Card, Heading, Text } from '../ui';
 import CountyTray from '../county/CountyTray';
 import CaliforniaMapFixed from '../map/CaliforniaMapFixed';
 import CaliforniaMapSimple from '../map/CaliforniaMapSimple';
@@ -99,51 +100,57 @@ export default function GameContainer() {
       <>
         {showStudyMode && <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />}
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <div className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full text-center">
-          <h1 className="text-4xl font-bold text-blue-900 mb-4">
-            🗺️ California Counties Explorer
-          </h1>
-          <p className="text-lg text-gray-700 mb-8">
-            Discover California's geography through interactive exploration and learning
-          </p>
-          <div className="space-y-4 text-left mb-8">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">📍</span>
-              <div>
-                <h3 className="font-semibold">Interactive Learning</h3>
-                <p className="text-gray-600">Explore each county's unique location by placing them on the map</p>
+        <Card variant="elevated" className="max-w-2xl w-full text-center">
+          <div className="p-8">
+            <Heading level={1} size="display" align="center" className="text-blue-900 mb-4">
+              🗺️ California Counties Explorer
+            </Heading>
+            <Text size="lg" color="secondary" align="center" className="mb-8">
+              Discover California's geography through interactive exploration and learning
+            </Text>
+            <div className="space-y-4 text-left mb-8">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">📍</span>
+                <div>
+                  <Heading level={3} size="label" weight="semibold">Interactive Learning</Heading>
+                  <Text color="secondary">Explore each county's unique location by placing them on the map</Text>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🌟</span>
+                <div>
+                  <Heading level={3} size="label" weight="semibold">Build Knowledge</Heading>
+                  <Text color="secondary">Learn about California's diverse regions and county boundaries</Text>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🎓</span>
+                <div>
+                  <Heading level={3} size="label" weight="semibold">Master Geography</Heading>
+                  <Text color="secondary">Develop a deep understanding of California's 58 counties</Text>
+                </div>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">🌟</span>
-              <div>
-                <h3 className="font-semibold">Build Knowledge</h3>
-                <p className="text-gray-600">Learn about California's diverse regions and county boundaries</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">🎓</span>
-              <div>
-                <h3 className="font-semibold">Master Geography</h3>
-                <p className="text-gray-600">Develop a deep understanding of California's 58 counties</p>
-              </div>
+            <div className="flex gap-4 justify-center">
+              <Button
+                variant="primary"
+                size="large"
+                onClick={startGame}
+              >
+                Begin Exploration
+              </Button>
+              <Button
+                variant="primary"
+                size="large"
+                onClick={() => setShowStudyMode(true)}
+                icon={<span>📚</span>}
+                className="bg-purple-600 hover:bg-purple-700"
+              >
+                Study Mode
+              </Button>
             </div>
           </div>
-          <div className="flex gap-4 justify-center">
-            <button
-              onClick={startGame}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
-            >
-              Begin Exploration
-            </button>
-            <button
-              onClick={() => setShowStudyMode(true)}
-              className="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-purple-700 transition-colors"
-            >
-              📚 Study Mode
-            </button>
-          </div>
-        </div>
+        </Card>
       </div>
       </>
     );

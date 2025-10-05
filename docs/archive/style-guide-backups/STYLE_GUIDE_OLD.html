@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>California Counties Puzzle - Design System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Region Colors - Primary Palette */
+            --region-bay-area: #3B82F6;
+            --region-central-valley: #10B981;
+            --region-gold-country: #F59E0B;
+            --region-los-angeles: #EF4444;
+            --region-north-coast: #06B6D4;
+            --region-northern: #8B5CF6;
+            --region-orange-county: #F97316;
+            --region-sacramento: #84CC16;
+            --region-san-diego: #EC4899;
+            --region-sierra: #6366F1;
+            --region-southern-california: #F43F5E;
+
+            /* UI Colors */
+            --primary-blue: #2563EB;
+            --success-green: #059669;
+            --warning-amber: #F59E0B;
+            --danger-red: #EF4444;
+            --info-cyan: #0891B2;
+
+            /* Backgrounds */
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F9FAFB;
+            --bg-tertiary: #F3F4F6;
+            --bg-dark: #1F2937;
+
+            /* Text */
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --text-tertiary: #9CA3AF;
+            --text-inverse: #FFFFFF;
+
+            /* Borders */
+            --border-light: #E5E7EB;
+            --border-default: #D1D5DB;
+            --border-dark: #9CA3AF;
+
+            /* Shadows */
+            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+            /* Spacing Scale */
+            --space-1: 0.25rem;  /* 4px */
+            --space-2: 0.5rem;   /* 8px */
+            --space-3: 0.75rem;  /* 12px */
+            --space-4: 1rem;     /* 16px */
+            --space-5: 1.25rem;  /* 20px */
+            --space-6: 1.5rem;   /* 24px */
+            --space-8: 2rem;     /* 32px */
+            --space-10: 2.5rem;  /* 40px */
+            --space-12: 3rem;    /* 48px */
+
+            /* Border Radius */
+            --radius-sm: 0.25rem;  /* 4px */
+            --radius-md: 0.375rem; /* 6px */
+            --radius-lg: 0.5rem;   /* 8px */
+            --radius-xl: 0.75rem;  /* 12px */
+            --radius-2xl: 1rem;    /* 16px */
+            --radius-full: 9999px;
+
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 200ms ease;
+            --transition-slow: 300ms ease;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3B82F6 100%);
+            color: white;
+            padding: var(--space-8) var(--space-12);
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.025em;
+        }
+
+        .header-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: var(--space-4);
+            margin-top: var(--space-4);
+            flex-wrap: wrap;
+        }
+
+        .meta-badge {
+            background: rgba(255,255,255,0.2);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .search-container {
+            max-width: 1600px;
+            margin: var(--space-6) auto;
+            padding: 0 var(--space-12);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--space-4) var(--space-6);
+            border: 2px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            font-size: 1rem;
+            transition: all var(--transition-base);
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--space-12);
+        }
+
+        .section {
+            margin-bottom: var(--space-12);
+        }
+
+        .section-header {
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-6);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-3);
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .component-card {
+            background: white;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            margin-bottom: var(--space-6);
+            transition: all var(--transition-base);
+        }
+
+        .component-card:hover {
+            border-color: var(--border-default);
+            box-shadow: var(--shadow-md);
+        }
+
+        .component-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-4);
+            color: var(--text-primary);
+        }
+
+        .component-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-6);
+            line-height: 1.6;
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-6);
+            margin-top: var(--space-6);
+        }
+
+        .color-swatch {
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            color: white;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-fast);
+        }
+
+        .color-swatch:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .color-name {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .color-value {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .color-usage {
+            font-size: 0.8125rem;
+            opacity: 0.85;
+            margin-top: var(--space-2);
+        }
+
+        .typography-sample {
+            margin-bottom: var(--space-6);
+            padding: var(--space-6);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+        }
+
+        .font-display {
+            margin-bottom: var(--space-3);
+        }
+
+        .font-meta {
+            display: flex;
+            gap: var(--space-4);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: var(--space-2);
+        }
+
+        .button-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-4);
+            margin: var(--space-6) 0;
+        }
+
+        .btn {
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9375rem;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1D4ED8;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border-default);
+            color: var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            margin: var(--space-6) 0;
+        }
+
+        .badge {
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .badge-blue { background: #DBEAFE; color: #1E40AF; }
+        .badge-green { background: #D1FAE5; color: #065F46; }
+        .badge-amber { background: #FEF3C7; color: #92400E; }
+        .badge-red { background: #FEE2E2; color: #991B1B; }
+        .badge-purple { background: #EDE9FE; color: #5B21B6; }
+
+        .card-sample {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-base);
+        }
+
+        .card-sample:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-3);
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .spacing-sample {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+
+        .spacing-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .spacing-box {
+            background: var(--primary-blue);
+            opacity: 0.2;
+            height: 40px;
+        }
+
+        .spacing-label {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            min-width: 120px;
+        }
+
+        .map-preview {
+            background: white;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-tertiary);
+            font-size: 3rem;
+        }
+
+        .interaction-example {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin: var(--space-6) 0;
+        }
+
+        .code-block {
+            background: var(--bg-dark);
+            color: #E5E7EB;
+            padding: var(--space-6);
+            border-radius: var(--radius-lg);
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: var(--space-6) 0;
+        }
+
+        .code-comment {
+            color: #9CA3AF;
+        }
+
+        .code-property {
+            color: #60A5FA;
+        }
+
+        .code-value {
+            color: #34D399;
+        }
+
+        .animation-demo {
+            background: white;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .animated-element {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-blue);
+            border-radius: var(--radius-lg);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .grid-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: var(--space-4);
+            margin: var(--space-6) 0;
+        }
+
+        .grid-item {
+            background: var(--bg-tertiary);
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .toc {
+            position: sticky;
+            top: 100px;
+            background: white;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+        }
+
+        .toc-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--space-4);
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-item {
+            padding: var(--space-2) 0;
+        }
+
+        .toc-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .toc-link:hover {
+            color: var(--primary-blue);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--space-6);
+            }
+
+            .header {
+                padding: var(--space-6);
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .showcase-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>🗺️ California Counties Puzzle</h1>
+            <p class="header-subtitle">Design System & Style Guide</p>
+            <div class="header-meta">
+                <span class="meta-badge">v1.0.0</span>
+                <span class="meta-badge">Educational Design</span>
+                <span class="meta-badge">58 Counties</span>
+                <span class="meta-badge">React + TypeScript</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search design system (colors, typography, components...)">
+    </div>
+
+    <div class="container">
+        <div class="section" id="introduction">
+            <div class="section-header">
+                <h2>📘 Introduction</h2>
+                <p class="section-description">
+                    This design system defines the visual language and interaction patterns for the California Counties Puzzle Game.
+                    Built with educational clarity, accessibility, and delightful user experience in mind.
+                </p>
+            </div>
+            <div class="component-card">
+                <h3 class="component-title">Design Principles</h3>
+                <div class="showcase-grid">
+                    <div class="card-sample">
+                        <div class="card-title">🎯 Educational First</div>
+                        <p class="card-content">Every design choice serves learning. Clear information hierarchy, readable typography, and obvious interactions.</p>
+                    </div>
+                    <div class="card-sample">
+                        <div class="card-title">♿ Accessible by Default</div>
+                        <p class="card-content">WCAG 2.1 AA compliant. Keyboard navigation, screen reader support, and sufficient color contrast.</p>
+                    </div>
+                    <div class="card-sample">
+                        <div class="card-title">⚡ Performance Optimized</div>
+                        <p class="card-content">Smooth 60fps animations, efficient React patterns, and responsive across all devices.</p>
+                    </div>
+                    <div class="card-sample">
+                        <div class="card-title">🎨 Regionally Color-Coded</div>
+                        <p class="card-content">11 distinct regions with carefully chosen colors for cognitive mapping and visual differentiation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="colors">
+            <div class="section-header">
+                <h2>🎨 Color System</h2>
+                <p class="section-description">
+                    Our color palette is built around California's 11 geographic regions, with each region having a distinct, accessible color.
+                    UI colors complement the region palette for actions, feedback, and navigation.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Region Colors</h3>
+                <p class="component-description">Each of California's 11 regions has a signature color used consistently across maps, badges, and county identifiers.</p>
+                <div class="showcase-grid">
+                    <div class="color-swatch" style="background: #3B82F6;">
+                        <div>
+                            <div class="color-name">Bay Area</div>
+                            <div class="color-value">#3B82F6</div>
+                        </div>
+                        <div class="color-usage">9 counties: SF, Oakland, San Jose...</div>
+                    </div>
+                    <div class="color-swatch" style="background: #10B981;">
+                        <div>
+                            <div class="color-name">Central Valley</div>
+                            <div class="color-value">#10B981</div>
+                        </div>
+                        <div class="color-usage">8 counties: Fresno, Kern, Stanislaus...</div>
+                    </div>
+                    <div class="color-swatch" style="background: #F59E0B;">
+                        <div>
+                            <div class="color-name">Gold Country</div>
+                            <div class="color-value">#F59E0B</div>
+                        </div>
+                        <div class="color-usage">10 counties: Nevada, Placer, Amador...</div>
+                    </div>
+                    <div class="color-swatch" style="background: #EF4444;">
+                        <div>
+                            <div class="color-name">Los Angeles</div>
+                            <div class="color-value">#EF4444</div>
+                        </div>
+                        <div class="color-usage">1 county: Los Angeles (10M+ population)</div>
+                    </div>
+                    <div class="color-swatch" style="background: #06B6D4;">
+                        <div>
+                            <div class="color-name">North Coast</div>
+                            <div class="color-value">#06B6D4</div>
+                        </div>
+                        <div class="color-usage">6 counties: Humboldt, Mendocino, Del Norte...</div>
+                    </div>
+                    <div class="color-swatch" style="background: #8B5CF6;">
+                        <div>
+                            <div class="color-name">Northern</div>
+                            <div class="color-value">#8B5CF6</div>
+                        </div>
+                        <div class="color-usage">7 counties: Shasta, Modoc, Siskiyou...</div>
+                    </div>
+                    <div class="color-swatch" style="background: #F97316;">
+                        <div>
+                            <div class="color-name">Orange County</div>
+                            <div class="color-value">#F97316</div>
+                        </div>
+                        <div class="color-usage">1 county: Orange (3.2M population)</div>
+                    </div>
+                    <div class="color-swatch" style="background: #84CC16;">
+                        <div>
+                            <div class="color-name">Sacramento</div>
+                            <div class="color-value">#84CC16</div>
+                        </div>
+                        <div class="color-usage">4 counties: Sacramento, Yolo, Placer...</div>
+                    </div>
+                    <div class="color-swatch" style="background: #EC4899;">
+                        <div>
+                            <div class="color-name">San Diego</div>
+                            <div class="color-value">#EC4899</div>
+                        </div>
+                        <div class="color-usage">1 county: San Diego (3.3M population)</div>
+                    </div>
+                    <div class="color-swatch" style="background: #6366F1;">
+                        <div>
+                            <div class="color-name">Sierra</div>
+                            <div class="color-value">#6366F1</div>
+                        </div>
+                        <div class="color-usage">6 counties: Alpine, Mono, Inyo...</div>
+                    </div>
+                    <div class="color-swatch" style="background: #F43F5E;">
+                        <div>
+                            <div class="color-name">Southern California</div>
+                            <div class="color-value">#F43F5E</div>
+                        </div>
+                        <div class="color-usage">5 counties: Riverside, San Bernardino...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">UI Colors</h3>
+                <p class="component-description">Functional colors for interface elements, feedback, and actions.</p>
+                <div class="showcase-grid">
+                    <div class="color-swatch" style="background: #2563EB;">
+                        <div>
+                            <div class="color-name">Primary Blue</div>
+                            <div class="color-value">#2563EB</div>
+                        </div>
+                        <div class="color-usage">Primary actions, links, focus states</div>
+                    </div>
+                    <div class="color-swatch" style="background: #059669;">
+                        <div>
+                            <div class="color-name">Success Green</div>
+                            <div class="color-value">#059669</div>
+                        </div>
+                        <div class="color-usage">Correct answers, completion states</div>
+                    </div>
+                    <div class="color-swatch" style="background: #F59E0B;">
+                        <div>
+                            <div class="color-name">Warning Amber</div>
+                            <div class="color-value">#F59E0B</div>
+                        </div>
+                        <div class="color-usage">Caution, hints, unsaved changes</div>
+                    </div>
+                    <div class="color-swatch" style="background: #EF4444;">
+                        <div>
+                            <div class="color-name">Danger Red</div>
+                            <div class="color-value">#EF4444</div>
+                        </div>
+                        <div class="color-usage">Errors, incorrect answers, delete</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="typography">
+            <div class="section-header">
+                <h2>📝 Typography</h2>
+                <p class="section-description">
+                    Clear, readable typography optimized for educational content. Using system font stack for native OS feel and performance.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Font Family</h3>
+                <p class="component-description">System font stack for optimal rendering across platforms:</p>
+                <div class="code-block">
+                    <span class="code-property">font-family:</span> <span class="code-value">-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif</span>;
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Type Scale</h3>
+                <div class="typography-sample">
+                    <h1 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 1rem;">Heading 1 - Display</h1>
+                    <div class="font-meta">
+                        <span>36px / 2.25rem</span>
+                        <span>•</span>
+                        <span>Weight: 700</span>
+                        <span>•</span>
+                        <span>Line height: 1.2</span>
+                    </div>
+                </div>
+
+                <div class="typography-sample">
+                    <h2 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.75rem;">Heading 2 - Section</h2>
+                    <div class="font-meta">
+                        <span>30px / 1.875rem</span>
+                        <span>•</span>
+                        <span>Weight: 700</span>
+                        <span>•</span>
+                        <span>Line height: 1.3</span>
+                    </div>
+                </div>
+
+                <div class="typography-sample">
+                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Heading 3 - Subsection</h3>
+                    <div class="font-meta">
+                        <span>24px / 1.5rem</span>
+                        <span>•</span>
+                        <span>Weight: 600</span>
+                        <span>•</span>
+                        <span>Line height: 1.4</span>
+                    </div>
+                </div>
+
+                <div class="typography-sample">
+                    <h4 style="font-size: 1.25rem; font-weight: 600;">Heading 4 - Card Title</h4>
+                    <div class="font-meta">
+                        <span>20px / 1.25rem</span>
+                        <span>•</span>
+                        <span>Weight: 600</span>
+                        <span>•</span>
+                        <span>Line height: 1.5</span>
+                    </div>
+                </div>
+
+                <div class="typography-sample">
+                    <p style="font-size: 1rem; line-height: 1.6;">
+                        Body text - California's diverse geography includes beaches, mountains, deserts, and valleys.
+                        The state is home to 58 counties, each with unique history and character.
+                    </p>
+                    <div class="font-meta">
+                        <span>16px / 1rem</span>
+                        <span>•</span>
+                        <span>Weight: 400</span>
+                        <span>•</span>
+                        <span>Line height: 1.6</span>
+                    </div>
+                </div>
+
+                <div class="typography-sample">
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">
+                        Small text - Used for captions, meta information, and secondary details that support primary content.
+                    </p>
+                    <div class="font-meta">
+                        <span>14px / 0.875rem</span>
+                        <span>•</span>
+                        <span>Weight: 400</span>
+                        <span>•</span>
+                        <span>Line height: 1.5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="buttons">
+            <div class="section-header">
+                <h2>🔘 Buttons</h2>
+                <p class="section-description">
+                    Buttons are the primary interactive elements. Clear visual hierarchy with distinct styles for different actions.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Button Variants</h3>
+                <div class="button-showcase">
+                    <button class="btn btn-primary">Primary Action</button>
+                    <button class="btn btn-success">Correct / Complete</button>
+                    <button class="btn btn-outline">Secondary Action</button>
+                    <button class="btn btn-ghost">Tertiary / Ghost</button>
+                </div>
+                <div class="code-block">
+<span class="code-comment">// Primary - Main actions (Start, Submit, Continue)</span>
+<span class="code-property">background:</span> <span class="code-value">#2563EB</span>;
+<span class="code-property">color:</span> <span class="code-value">white</span>;
+<span class="code-property">padding:</span> <span class="code-value">0.75rem 1.5rem</span>;
+<span class="code-property">border-radius:</span> <span class="code-value">0.375rem</span>;
+
+<span class="code-comment">// Hover state</span>
+<span class="code-property">transform:</span> <span class="code-value">translateY(-1px)</span>;
+<span class="code-property">box-shadow:</span> <span class="code-value">0 4px 6px rgba(0,0,0,0.1)</span>;
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Icon Buttons</h3>
+                <div class="button-showcase">
+                    <button class="btn btn-primary">▶ Play</button>
+                    <button class="btn btn-outline">⏸ Pause</button>
+                    <button class="btn btn-ghost">🔄 Reset</button>
+                    <button class="btn btn-success">✓ Correct</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="badges">
+            <div class="section-header">
+                <h2>🏷️ Badges & Pills</h2>
+                <p class="section-description">
+                    Small, colorful indicators for status, categories, and metadata.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Badge Styles</h3>
+                <div class="badge-group">
+                    <span class="badge badge-blue">Bay Area</span>
+                    <span class="badge badge-green">Central Valley</span>
+                    <span class="badge badge-amber">Gold Country</span>
+                    <span class="badge badge-red">Los Angeles</span>
+                    <span class="badge badge-purple">Northern</span>
+                </div>
+                <div class="badge-group">
+                    <span class="badge badge-blue">Founded: 1850</span>
+                    <span class="badge badge-green">Population: 1.5M</span>
+                    <span class="badge badge-amber">58 / 58 Counties</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="spacing">
+            <div class="section-header">
+                <h2>📏 Spacing System</h2>
+                <p class="section-description">
+                    Consistent spacing scale based on 4px base unit. Creates rhythm and visual hierarchy.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Spacing Scale</h3>
+                <div class="spacing-sample">
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="width: 16px;"></div>
+                        <span class="spacing-label">--space-1: 4px</span>
+                        <span style="color: var(--text-tertiary);">Tiny gaps, icon spacing</span>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="width: 32px;"></div>
+                        <span class="spacing-label">--space-2: 8px</span>
+                        <span style="color: var(--text-tertiary);">Small gaps, compact layouts</span>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="width: 64px;"></div>
+                        <span class="spacing-label">--space-4: 16px</span>
+                        <span style="color: var(--text-tertiary);">Default gap, element spacing</span>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="width: 96px;"></div>
+                        <span class="spacing-label">--space-6: 24px</span>
+                        <span style="color: var(--text-tertiary);">Card padding, section gaps</span>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="width: 128px;"></div>
+                        <span class="spacing-label">--space-8: 32px</span>
+                        <span style="color: var(--text-tertiary);">Large gaps, major sections</span>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="width: 192px;"></div>
+                        <span class="spacing-label">--space-12: 48px</span>
+                        <span style="color: var(--text-tertiary);">Page padding, major spacing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="components">
+            <div class="section-header">
+                <h2>🧩 Components</h2>
+                <p class="section-description">
+                    Reusable UI components that form the building blocks of the application.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">County Cards</h3>
+                <p class="component-description">Display county information with region color-coding</p>
+                <div class="showcase-grid">
+                    <div class="card-sample" style="border-left: 4px solid #3B82F6;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                            <h4 style="font-weight: 600; font-size: 1.125rem;">San Francisco</h4>
+                            <span class="badge badge-blue">Bay Area</span>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                            Population: 873,965
+                        </p>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                            Founded: 1850 (Original)
+                        </p>
+                    </div>
+
+                    <div class="card-sample" style="border-left: 4px solid #10B981;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                            <h4 style="font-weight: 600; font-size: 1.125rem;">Fresno</h4>
+                            <span class="badge badge-green">Central Valley</span>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                            Population: 1,008,654
+                        </p>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                            Founded: 1856
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Filter Buttons</h3>
+                <p class="component-description">Regional filters with active/inactive states</p>
+                <div class="button-showcase">
+                    <button class="btn" style="background: #DBEAFE; color: #1E40AF; border: 2px solid #3B82F6;">
+                        Bay Area (9)
+                    </button>
+                    <button class="btn" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB;">
+                        Central Valley (8)
+                    </button>
+                    <button class="btn" style="background: #DBEAFE; color: #1E40AF; border: 2px solid #3B82F6;">
+                        Gold Country (10)
+                    </button>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Progress Indicators</h3>
+                <p class="component-description">Show completion status and progress</p>
+                <div style="margin-top: 1.5rem;">
+                    <div style="background: #E5E7EB; height: 8px; border-radius: 9999px; overflow: hidden;">
+                        <div style="background: linear-gradient(90deg, #3B82F6, #2563EB); height: 100%; width: 65%; transition: width 0.3s;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+                        <span>38 of 58 counties</span>
+                        <span>65%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="maps">
+            <div class="section-header">
+                <h2>🗺️ Map Styles</h2>
+                <p class="section-description">
+                    Interactive SVG maps with zoom, pan, and region color-coding.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Map Interaction Patterns</h3>
+                <div class="map-preview">
+                    <div class="map-placeholder">🗺️</div>
+                    <p style="margin-top: 1rem; color: var(--text-secondary); text-align: center;">
+                        Interactive California county map with zoom (0.5x - 3x) and pan controls
+                    </p>
+                </div>
+                <div class="code-block" style="margin-top: 1.5rem;">
+<span class="code-comment">// County hover states</span>
+<span class="code-property">opacity:</span> <span class="code-value">0.85</span>;
+<span class="code-property">stroke:</span> <span class="code-value">#FFFFFF</span>;
+<span class="code-property">stroke-width:</span> <span class="code-value">2px</span>;
+<span class="code-property">cursor:</span> <span class="code-value">pointer</span>;
+
+<span class="code-comment">// Selected/highlighted state</span>
+<span class="code-property">opacity:</span> <span class="code-value">1</span>;
+<span class="code-property">stroke:</span> <span class="code-value">#FFD700</span>;
+<span class="code-property">stroke-width:</span> <span class="code-value">3px</span>;
+<span class="code-property">filter:</span> <span class="code-value">drop-shadow(0 0 8px rgba(255,215,0,0.6))</span>;
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="animations">
+            <div class="section-header">
+                <h2>✨ Animations</h2>
+                <p class="section-description">
+                    Subtle, purposeful animations that enhance UX without distracting from educational content.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Transition Speeds</h3>
+                <div class="code-block">
+<span class="code-property">--transition-fast:</span> <span class="code-value">150ms ease</span>; <span class="code-comment">// Micro-interactions, hovers</span>
+<span class="code-property">--transition-base:</span> <span class="code-value">200ms ease</span>; <span class="code-comment">// Standard transitions</span>
+<span class="code-property">--transition-slow:</span> <span class="code-value">300ms ease</span>; <span class="code-comment">// Modal overlays, major changes</span>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Animation Example</h3>
+                <div class="animation-demo">
+                    <div class="animated-element"></div>
+                </div>
+                <p style="color: var(--text-secondary); text-align: center; margin-top: 1rem; font-size: 0.875rem;">
+                    Counties fade in smoothly when appearing during timeline animation
+                </p>
+            </div>
+        </div>
+
+        <div class="section" id="accessibility">
+            <div class="section-header">
+                <h2>♿ Accessibility</h2>
+                <p class="section-description">
+                    Built with WCAG 2.1 AA compliance. Keyboard navigation, screen readers, and color contrast standards.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Keyboard Navigation</h3>
+                <div class="showcase-grid">
+                    <div class="card-sample">
+                        <div class="card-title">Space</div>
+                        <p class="card-content">Play/Pause animations and timeline</p>
+                    </div>
+                    <div class="card-sample">
+                        <div class="card-title">Arrow Keys</div>
+                        <p class="card-content">Navigate timeline, adjust zoom speed</p>
+                    </div>
+                    <div class="card-sample">
+                        <div class="card-title">Tab</div>
+                        <p class="card-content">Focus navigation through interactive elements</p>
+                    </div>
+                    <div class="card-sample">
+                        <div class="card-title">Enter</div>
+                        <p class="card-content">Activate buttons and select counties</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Color Contrast</h3>
+                <p class="component-description">All text meets WCAG AA standards (4.5:1 ratio for normal text, 3:1 for large text)</p>
+                <div class="showcase-grid">
+                    <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; border: 2px solid var(--border-light);">
+                        <p style="color: #111827;">Primary text on white: 16.34:1</p>
+                        <p style="color: #6B7280;">Secondary text on white: 7.52:1</p>
+                        <p style="color: #9CA3AF;">Tertiary text on white: 4.76:1</p>
+                    </div>
+                    <div style="background: #2563EB; padding: 1.5rem; border-radius: 0.5rem;">
+                        <p style="color: white; font-weight: 600;">White on primary blue: 8.13:1</p>
+                        <p style="color: #DBEAFE;">Light text on blue: 5.91:1</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="usage">
+            <div class="section-header">
+                <h2>💻 Usage Guidelines</h2>
+                <p class="section-description">
+                    Best practices for implementing this design system in code.
+                </p>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">CSS Custom Properties</h3>
+                <p class="component-description">Use CSS variables for consistency and theme flexibility</p>
+                <div class="code-block">
+<span class="code-comment">/* Import region colors */</span>
+<span class="code-property">import</span> { getRegionHexColor } <span class="code-property">from</span> <span class="code-value">'./config/regionColors'</span>;
+
+<span class="code-comment">/* Use spacing scale */</span>
+<span class="code-property">padding:</span> <span class="code-value">var(--space-6)</span>;
+<span class="code-property">gap:</span> <span class="code-value">var(--space-4)</span>;
+
+<span class="code-comment">/* Apply transitions */</span>
+<span class="code-property">transition:</span> <span class="code-value">all var(--transition-base)</span>;
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h3 class="component-title">Component Patterns</h3>
+                <p class="component-description">Follow React/TypeScript patterns for maintainability</p>
+                <div class="code-block">
+<span class="code-comment">// Always type props</span>
+<span class="code-property">interface</span> CountyCardProps {
+  county: CountyData;
+  region: RegionName;
+  onClick?: (countyId: string) => void;
+}
+
+<span class="code-comment">// Use semantic color mapping</span>
+<span class="code-property">const</span> regionColor = getRegionHexColor(county.region);
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const allCards = document.querySelectorAll('.component-card');
+        const allSections = document.querySelectorAll('.section');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+
+            if (searchTerm === '') {
+                // Reset: show everything
+                allCards.forEach(card => card.style.display = '');
+                allSections.forEach(section => section.style.display = '');
+                return;
+            }
+
+            // Search through cards
+            allCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.style.display = '';
+                    card.style.border = '2px solid var(--primary-blue)';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Hide sections with no visible cards
+            allSections.forEach(section => {
+                const visibleCards = section.querySelectorAll('.component-card[style*="display: \"\""], .component-card:not([style])');
+                if (visibleCards.length === 0) {
+                    section.style.display = 'none';
+                } else {
+                    section.style.display = '';
+                }
+            });
+        });
+
+        // Reset border on search clear
+        searchInput.addEventListener('input', (e) => {
+            if (e.target.value === '') {
+                allCards.forEach(card => card.style.border = '');
+            }
+        });
+    </script>
+</body>
+</html>

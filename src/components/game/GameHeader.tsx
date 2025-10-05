@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useGame } from '../../context/GameContext';
 import { soundManager } from '../../utils/simpleSoundManager';
+import { Heading, Text, Badge, Progress, Button } from '../ui';
 import HintModal from '../modals/HintModal';
 import EnhancedStudyMode from '../study-new/EnhancedStudyMode';
 
@@ -78,16 +79,16 @@ export default function GameHeader() {
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
               <span className="text-white text-sm">CA</span>
             </div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <Heading level={1} size="section" className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               California Counties Puzzle
-            </h1>
+            </Heading>
           </div>
           {currentCounty && (
             <div className="flex items-center gap-2 ml-10">
-              <span className="text-xs text-gray-500">Now placing:</span>
-              <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+              <Text size="xs" color="secondary">Now placing:</Text>
+              <Badge variant="info" size="medium">
                 {currentCounty.name}
-              </span>
+              </Badge>
             </div>
           )}
         </div>
@@ -204,18 +205,17 @@ export default function GameHeader() {
 
         {/* Progress */}
         <div className="flex items-center gap-2 flex-1">
-          <span className="text-xs text-gray-500">Progress</span>
-          <div className="flex-1 bg-gray-200 rounded-full h-2 relative overflow-hidden">
-            <div
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${progress}%` }}
-            />
-            <div
-              className="absolute inset-y-0 left-0 bg-white/30 rounded-full animate-pulse"
-              style={{ width: `${progress}%` }}
+          <Text size="xs" color="secondary">Progress</Text>
+          <div className="flex-1">
+            <Progress
+              value={placedCounties.size}
+              max={counties.length}
+              variant="gradient"
+              size="small"
+              animated
             />
           </div>
-          <span className="text-xs font-bold text-gray-700">{progress}%</span>
+          <Text size="xs" weight="bold" className="text-gray-700">{progress}%</Text>
         </div>
 
         {/* Mistakes */}

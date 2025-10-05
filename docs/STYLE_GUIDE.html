@@ -1,1204 +1,1254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>California Counties Puzzle - Design System</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            /* Region Colors - Primary Palette */
-            --region-bay-area: #3B82F6;
-            --region-central-valley: #10B981;
-            --region-gold-country: #F59E0B;
-            --region-los-angeles: #EF4444;
-            --region-north-coast: #06B6D4;
-            --region-northern: #8B5CF6;
-            --region-orange-county: #F97316;
-            --region-sacramento: #84CC16;
-            --region-san-diego: #EC4899;
-            --region-sierra: #6366F1;
-            --region-southern-california: #F43F5E;
-
-            /* UI Colors */
-            --primary-blue: #2563EB;
-            --success-green: #059669;
-            --warning-amber: #F59E0B;
-            --danger-red: #EF4444;
-            --info-cyan: #0891B2;
-
-            /* Backgrounds */
-            --bg-primary: #FFFFFF;
-            --bg-secondary: #F9FAFB;
-            --bg-tertiary: #F3F4F6;
-            --bg-dark: #1F2937;
-
-            /* Text */
-            --text-primary: #111827;
-            --text-secondary: #6B7280;
-            --text-tertiary: #9CA3AF;
-            --text-inverse: #FFFFFF;
-
-            /* Borders */
-            --border-light: #E5E7EB;
-            --border-default: #D1D5DB;
-            --border-dark: #9CA3AF;
-
-            /* Shadows */
-            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-
-            /* Spacing Scale */
-            --space-1: 0.25rem;  /* 4px */
-            --space-2: 0.5rem;   /* 8px */
-            --space-3: 0.75rem;  /* 12px */
-            --space-4: 1rem;     /* 16px */
-            --space-5: 1.25rem;  /* 20px */
-            --space-6: 1.5rem;   /* 24px */
-            --space-8: 2rem;     /* 32px */
-            --space-10: 2.5rem;  /* 40px */
-            --space-12: 3rem;    /* 48px */
-
-            /* Border Radius */
-            --radius-sm: 0.25rem;  /* 4px */
-            --radius-md: 0.375rem; /* 6px */
-            --radius-lg: 0.5rem;   /* 8px */
-            --radius-xl: 0.75rem;  /* 12px */
-            --radius-2xl: 1rem;    /* 16px */
-            --radius-full: 9999px;
-
-            /* Transitions */
-            --transition-fast: 150ms ease;
-            --transition-base: 200ms ease;
-            --transition-slow: 300ms ease;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, #3B82F6 100%);
-            color: white;
-            padding: var(--space-8) var(--space-12);
-            box-shadow: var(--shadow-lg);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        .header h1 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: var(--space-2);
-            letter-spacing: -0.025em;
-        }
-
-        .header-subtitle {
-            font-size: 1.125rem;
-            opacity: 0.9;
-            font-weight: 400;
-        }
-
-        .header-meta {
-            display: flex;
-            gap: var(--space-4);
-            margin-top: var(--space-4);
-            flex-wrap: wrap;
-        }
-
-        .meta-badge {
-            background: rgba(255,255,255,0.2);
-            padding: var(--space-2) var(--space-3);
-            border-radius: var(--radius-md);
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .search-container {
-            max-width: 1600px;
-            margin: var(--space-6) auto;
-            padding: 0 var(--space-12);
-        }
-
-        .search-input {
-            width: 100%;
-            padding: var(--space-4) var(--space-6);
-            border: 2px solid var(--border-default);
-            border-radius: var(--radius-xl);
-            font-size: 1rem;
-            transition: all var(--transition-base);
-            background: white;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: var(--space-12);
-        }
-
-        .section {
-            margin-bottom: var(--space-12);
-        }
-
-        .section-header {
-            margin-bottom: var(--space-8);
-            padding-bottom: var(--space-6);
-            border-bottom: 2px solid var(--border-light);
-        }
-
-        .section-header h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: var(--space-3);
-        }
-
-        .section-description {
-            font-size: 1.125rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        .component-card {
-            background: white;
-            border: 2px solid var(--border-light);
-            border-radius: var(--radius-2xl);
-            padding: var(--space-8);
-            margin-bottom: var(--space-6);
-            transition: all var(--transition-base);
-        }
-
-        .component-card:hover {
-            border-color: var(--border-default);
-            box-shadow: var(--shadow-md);
-        }
-
-        .component-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: var(--space-4);
-            color: var(--text-primary);
-        }
-
-        .component-description {
-            color: var(--text-secondary);
-            margin-bottom: var(--space-6);
-            line-height: 1.6;
-        }
-
-        .showcase-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--space-6);
-            margin-top: var(--space-6);
-        }
-
-        .color-swatch {
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            color: white;
-            min-height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: var(--shadow-sm);
-            transition: transform var(--transition-fast);
-        }
-
-        .color-swatch:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .color-name {
-            font-weight: 600;
-            font-size: 1.125rem;
-        }
-
-        .color-value {
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .color-usage {
-            font-size: 0.8125rem;
-            opacity: 0.85;
-            margin-top: var(--space-2);
-        }
-
-        .typography-sample {
-            margin-bottom: var(--space-6);
-            padding: var(--space-6);
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-lg);
-        }
-
-        .font-display {
-            margin-bottom: var(--space-3);
-        }
-
-        .font-meta {
-            display: flex;
-            gap: var(--space-4);
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            margin-top: var(--space-2);
-        }
-
-        .button-showcase {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--space-4);
-            margin: var(--space-6) 0;
-        }
-
-        .btn {
-            padding: var(--space-3) var(--space-6);
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 0.9375rem;
-            border: none;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-
-        .btn-primary {
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1D4ED8;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-success {
-            background: var(--success-green);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #047857;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--border-default);
-            color: var(--text-primary);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--primary-blue);
-            color: var(--primary-blue);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-secondary);
-        }
-
-        .btn-ghost:hover {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .badge-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--space-3);
-            margin: var(--space-6) 0;
-        }
-
-        .badge {
-            padding: var(--space-2) var(--space-3);
-            border-radius: var(--radius-full);
-            font-size: 0.8125rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-
-        .badge-blue { background: #DBEAFE; color: #1E40AF; }
-        .badge-green { background: #D1FAE5; color: #065F46; }
-        .badge-amber { background: #FEF3C7; color: #92400E; }
-        .badge-red { background: #FEE2E2; color: #991B1B; }
-        .badge-purple { background: #EDE9FE; color: #5B21B6; }
-
-        .card-sample {
-            background: white;
-            border-radius: var(--radius-xl);
-            padding: var(--space-6);
-            box-shadow: var(--shadow-sm);
-            transition: all var(--transition-base);
-        }
-
-        .card-sample:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: var(--space-3);
-        }
-
-        .card-content {
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .spacing-sample {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-4);
-        }
-
-        .spacing-item {
-            display: flex;
-            align-items: center;
-            gap: var(--space-4);
-        }
-
-        .spacing-box {
-            background: var(--primary-blue);
-            opacity: 0.2;
-            height: 40px;
-        }
-
-        .spacing-label {
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            min-width: 120px;
-        }
-
-        .map-preview {
-            background: white;
-            border: 2px solid var(--border-light);
-            border-radius: var(--radius-xl);
-            padding: var(--space-6);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 200px;
-        }
-
-        .map-placeholder {
-            width: 100%;
-            max-width: 400px;
-            height: 300px;
-            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-tertiary);
-            font-size: 3rem;
-        }
-
-        .interaction-example {
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            margin: var(--space-6) 0;
-        }
-
-        .code-block {
-            background: var(--bg-dark);
-            color: #E5E7EB;
-            padding: var(--space-6);
-            border-radius: var(--radius-lg);
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.875rem;
-            line-height: 1.7;
-            overflow-x: auto;
-            margin: var(--space-6) 0;
-        }
-
-        .code-comment {
-            color: #9CA3AF;
-        }
-
-        .code-property {
-            color: #60A5FA;
-        }
-
-        .code-value {
-            color: #34D399;
-        }
-
-        .animation-demo {
-            background: white;
-            border: 2px solid var(--border-light);
-            border-radius: var(--radius-xl);
-            padding: var(--space-8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 200px;
-        }
-
-        .animated-element {
-            width: 80px;
-            height: 80px;
-            background: var(--primary-blue);
-            border-radius: var(--radius-lg);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .grid-demo {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: var(--space-4);
-            margin: var(--space-6) 0;
-        }
-
-        .grid-item {
-            background: var(--bg-tertiary);
-            padding: var(--space-4);
-            border-radius: var(--radius-md);
-            text-align: center;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .toc {
-            position: sticky;
-            top: 100px;
-            background: white;
-            border: 2px solid var(--border-light);
-            border-radius: var(--radius-xl);
-            padding: var(--space-6);
-            margin-bottom: var(--space-6);
-        }
-
-        .toc-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: var(--space-4);
-        }
-
-        .toc-list {
-            list-style: none;
-        }
-
-        .toc-item {
-            padding: var(--space-2) 0;
-        }
-
-        .toc-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color var(--transition-fast);
-        }
-
-        .toc-link:hover {
-            color: var(--primary-blue);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: var(--space-6);
-            }
-
-            .header {
-                padding: var(--space-6);
-            }
-
-            .header h1 {
-                font-size: 1.75rem;
-            }
-
-            .showcase-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>California Counties Game - Design System</title>
+  <style>
+    /* CSS Custom Properties for Theming */
+    :root {
+      /* Brand Colors */
+      --primary-blue: #3b82f6;
+      --primary-purple: #7c3aed;
+      --primary-gradient: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+
+      /* Region Colors */
+      --southern-california: #ef4444;
+      --bay-area: #3b82f6;
+      --central-valley: #22c55e;
+      --central-coast: #a855f7;
+      --northern-california: #f97316;
+      --sierra-nevada: #eab308;
+      --north-coast: #14b8a6;
+
+      /* UI Colors */
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --info: #7c3aed;
+
+      /* Neutral Colors */
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+
+      /* Spacing */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+
+      /* Typography */
+      --font-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+
+      /* Transitions */
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+      /* Border Radius */
+      --radius-sm: 0.375rem;
+      --radius: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.5rem;
+      --radius-full: 9999px;
+    }
+
+    /* Dark Mode Variables */
+    [data-theme="dark"] {
+      --gray-50: #111827;
+      --gray-100: #1f2937;
+      --gray-200: #374151;
+      --gray-300: #4b5563;
+      --gray-400: #6b7280;
+      --gray-500: #9ca3af;
+      --gray-600: #d1d5db;
+      --gray-700: #e5e7eb;
+      --gray-800: #f3f4f6;
+      --gray-900: #f9fafb;
+    }
+
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-system);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Main Layout */
+    .app-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+      background: white;
+      max-width: 1920px;
+      margin: 0 auto;
+      box-shadow: var(--shadow-2xl);
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      background: var(--gray-50);
+      border-right: 1px solid var(--gray-200);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      transition: transform var(--transition-base);
+    }
+
+    .sidebar-header {
+      padding: var(--space-xl);
+      border-bottom: 1px solid var(--gray-200);
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary-gradient);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.125rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1.2;
+    }
+
+    .logo-subtitle {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    /* Search Box */
+    .search-box {
+      position: relative;
+      margin-top: var(--space-md);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: var(--space-sm) var(--space-md) var(--space-sm) 2.5rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      transition: all var(--transition-base);
+      background: white;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: var(--space-md);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Navigation Menu */
+    .nav-menu {
+      padding: var(--space-lg);
+    }
+
+    .nav-section {
+      margin-bottom: var(--space-xl);
+    }
+
+    .nav-section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gray-500);
+      margin-bottom: var(--space-sm);
+      padding-left: var(--space-sm);
+    }
+
+    .nav-item {
+      display: block;
+      padding: var(--space-sm) var(--space-md);
+      color: var(--gray-700);
+      text-decoration: none;
+      border-radius: var(--radius);
+      transition: all var(--transition-base);
+      font-size: 0.875rem;
+      margin-bottom: var(--space-xs);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-item:hover {
+      background: white;
+      color: var(--primary-blue);
+      transform: translateX(4px);
+    }
+
+    .nav-item.active {
+      background: white;
+      color: var(--primary-blue);
+      font-weight: 500;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--primary-gradient);
+    }
+
+    .nav-badge {
+      display: inline-block;
+      padding: 0.125rem 0.375rem;
+      background: var(--primary-gradient);
+      color: white;
+      border-radius: var(--radius-full);
+      font-size: 0.625rem;
+      font-weight: 600;
+      margin-left: auto;
+      float: right;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      overflow-y: auto;
+      background: white;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: var(--space-2xl) var(--space-xl);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: var(--space-md);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      opacity: 0.95;
+      margin-bottom: var(--space-xl);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: var(--space-xl);
+      margin-top: var(--space-2xl);
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    .hero-stat-label {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Content Sections */
+    .content-section {
+      padding: var(--space-2xl);
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+      animation: fadeIn var(--transition-slow);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-header {
+      margin-bottom: var(--space-2xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 2px solid var(--gray-100);
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: var(--space-sm);
+    }
+
+    .section-description {
+      font-size: 1.125rem;
+      color: var(--gray-600);
+    }
+
+    /* Component Cards */
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-xl);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .component-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all var(--transition-base);
+      position: relative;
+    }
+
+    .component-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+      border-color: var(--primary-blue);
+    }
+
+    .component-card-header {
+      padding: var(--space-lg);
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .component-card-title {
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: var(--space-xs);
+    }
+
+    .component-card-description {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    .component-card-body {
+      padding: var(--space-lg);
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+    }
+
+    .component-card-footer {
+      padding: var(--space-md) var(--space-lg);
+      background: var(--gray-50);
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Interactive Playground */
+    .playground {
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .playground-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .playground-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .playground-controls {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .playground-preview {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-2xl);
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .playground-code {
+      background: var(--gray-900);
+      color: var(--gray-100);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      position: relative;
+      overflow-x: auto;
+    }
+
+    /* Code Block with Copy Button */
+    .code-block {
+      position: relative;
+      background: var(--gray-900);
+      border-radius: var(--radius-md);
+      margin: var(--space-lg) 0;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--gray-800);
+      border-bottom: 1px solid var(--gray-700);
+    }
+
+    .code-language {
+      font-size: 0.75rem;
+      color: var(--gray-400);
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .copy-button {
+      background: var(--gray-700);
+      color: var(--gray-300);
+      border: none;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .copy-button:hover {
+      background: var(--gray-600);
+      color: white;
+    }
+
+    .copy-button.copied {
+      background: var(--success);
+      color: white;
+    }
+
+    .code-content {
+      padding: var(--space-lg);
+      overflow-x: auto;
+      color: var(--gray-100);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    /* Button Variants Display */
+    .button-showcase {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      padding: var(--space-xl);
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    /* Elegant Button Styles */
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      font-size: 0.875rem;
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:active::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    /* Color Palette Display */
+    .color-palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .color-swatch {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: all var(--transition-base);
+      cursor: pointer;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .color-display {
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .color-info {
+      background: white;
+      padding: var(--space-md);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .color-name {
+      font-weight: 600;
+      color: var(--gray-900);
+      font-size: 0.875rem;
+    }
+
+    .color-hex {
+      font-family: var(--font-mono);
+      color: var(--gray-500);
+      font-size: 0.75rem;
+      margin-top: var(--space-xs);
+    }
+
+    /* Floating Action Buttons */
+    .fab-container {
+      position: fixed;
+      bottom: var(--space-xl);
+      right: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      z-index: 1000;
+    }
+
+    .fab {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-full);
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-base);
+    }
+
+    .fab:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-xl);
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      background: white;
+      border: 2px solid var(--gray-200);
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--primary-blue);
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gray-900);
+      color: white;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all var(--transition-base);
+      margin-bottom: var(--space-xs);
+    }
+
+    .tooltip:hover::after {
+      opacity: 1;
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid var(--gray-200);
+      border-radius: 50%;
+      border-top-color: var(--primary-blue);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: var(--space-md);
+      left: var(--space-md);
+      z-index: 1001;
+      background: white;
+      border: 1px solid var(--gray-200);
+      padding: var(--space-sm);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 280px;
+        transform: translateX(-100%);
+        z-index: 1000;
+        box-shadow: var(--shadow-xl);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .mobile-menu-toggle {
+        display: block;
+      }
+
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .content-section {
+        padding: var(--space-lg);
+      }
+    }
+
+    /* Print Styles */
+    @media print {
+      .sidebar,
+      .fab-container,
+      .mobile-menu-toggle {
+        display: none;
+      }
+
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+
+      .main-content {
+        overflow: visible;
+      }
+    }
+  </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <h1>🗺️ California Counties Puzzle</h1>
-            <p class="header-subtitle">Design System & Style Guide</p>
-            <div class="header-meta">
-                <span class="meta-badge">v1.0.0</span>
-                <span class="meta-badge">Educational Design</span>
-                <span class="meta-badge">58 Counties</span>
-                <span class="meta-badge">React + TypeScript</span>
-            </div>
+  <div class="app-container">
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">CA</div>
+          <div class="logo-text">
+            <div class="logo-title">Design System</div>
+            <div class="logo-subtitle">California Counties Game</div>
+          </div>
         </div>
-    </header>
+        <div class="search-box">
+          <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <input type="text" class="search-input" placeholder="Search components..." id="searchInput" onkeyup="searchComponents()">
+        </div>
+      </div>
 
-    <div class="search-container">
-        <input type="text" class="search-input" id="searchInput" placeholder="Search design system (colors, typography, components...)">
-    </div>
-
-    <div class="container">
-        <div class="section" id="introduction">
-            <div class="section-header">
-                <h2>📘 Introduction</h2>
-                <p class="section-description">
-                    This design system defines the visual language and interaction patterns for the California Counties Puzzle Game.
-                    Built with educational clarity, accessibility, and delightful user experience in mind.
-                </p>
-            </div>
-            <div class="component-card">
-                <h3 class="component-title">Design Principles</h3>
-                <div class="showcase-grid">
-                    <div class="card-sample">
-                        <div class="card-title">🎯 Educational First</div>
-                        <p class="card-content">Every design choice serves learning. Clear information hierarchy, readable typography, and obvious interactions.</p>
-                    </div>
-                    <div class="card-sample">
-                        <div class="card-title">♿ Accessible by Default</div>
-                        <p class="card-content">WCAG 2.1 AA compliant. Keyboard navigation, screen reader support, and sufficient color contrast.</p>
-                    </div>
-                    <div class="card-sample">
-                        <div class="card-title">⚡ Performance Optimized</div>
-                        <p class="card-content">Smooth 60fps animations, efficient React patterns, and responsive across all devices.</p>
-                    </div>
-                    <div class="card-sample">
-                        <div class="card-title">🎨 Regionally Color-Coded</div>
-                        <p class="card-content">11 distinct regions with carefully chosen colors for cognitive mapping and visual differentiation.</p>
-                    </div>
-                </div>
-            </div>
+      <nav class="nav-menu">
+        <div class="nav-section">
+          <div class="nav-section-title">Getting Started</div>
+          <a href="#overview" class="nav-item active" onclick="showSection('overview', this)">
+            Overview
+            <span class="nav-badge">New</span>
+          </a>
+          <a href="#installation" class="nav-item" onclick="showSection('installation', this)">Installation</a>
+          <a href="#principles" class="nav-item" onclick="showSection('principles', this)">Design Principles</a>
         </div>
 
-        <div class="section" id="colors">
-            <div class="section-header">
-                <h2>🎨 Color System</h2>
-                <p class="section-description">
-                    Our color palette is built around California's 11 geographic regions, with each region having a distinct, accessible color.
-                    UI colors complement the region palette for actions, feedback, and navigation.
-                </p>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Region Colors</h3>
-                <p class="component-description">Each of California's 11 regions has a signature color used consistently across maps, badges, and county identifiers.</p>
-                <div class="showcase-grid">
-                    <div class="color-swatch" style="background: #3B82F6;">
-                        <div>
-                            <div class="color-name">Bay Area</div>
-                            <div class="color-value">#3B82F6</div>
-                        </div>
-                        <div class="color-usage">9 counties: SF, Oakland, San Jose...</div>
-                    </div>
-                    <div class="color-swatch" style="background: #10B981;">
-                        <div>
-                            <div class="color-name">Central Valley</div>
-                            <div class="color-value">#10B981</div>
-                        </div>
-                        <div class="color-usage">8 counties: Fresno, Kern, Stanislaus...</div>
-                    </div>
-                    <div class="color-swatch" style="background: #F59E0B;">
-                        <div>
-                            <div class="color-name">Gold Country</div>
-                            <div class="color-value">#F59E0B</div>
-                        </div>
-                        <div class="color-usage">10 counties: Nevada, Placer, Amador...</div>
-                    </div>
-                    <div class="color-swatch" style="background: #EF4444;">
-                        <div>
-                            <div class="color-name">Los Angeles</div>
-                            <div class="color-value">#EF4444</div>
-                        </div>
-                        <div class="color-usage">1 county: Los Angeles (10M+ population)</div>
-                    </div>
-                    <div class="color-swatch" style="background: #06B6D4;">
-                        <div>
-                            <div class="color-name">North Coast</div>
-                            <div class="color-value">#06B6D4</div>
-                        </div>
-                        <div class="color-usage">6 counties: Humboldt, Mendocino, Del Norte...</div>
-                    </div>
-                    <div class="color-swatch" style="background: #8B5CF6;">
-                        <div>
-                            <div class="color-name">Northern</div>
-                            <div class="color-value">#8B5CF6</div>
-                        </div>
-                        <div class="color-usage">7 counties: Shasta, Modoc, Siskiyou...</div>
-                    </div>
-                    <div class="color-swatch" style="background: #F97316;">
-                        <div>
-                            <div class="color-name">Orange County</div>
-                            <div class="color-value">#F97316</div>
-                        </div>
-                        <div class="color-usage">1 county: Orange (3.2M population)</div>
-                    </div>
-                    <div class="color-swatch" style="background: #84CC16;">
-                        <div>
-                            <div class="color-name">Sacramento</div>
-                            <div class="color-value">#84CC16</div>
-                        </div>
-                        <div class="color-usage">4 counties: Sacramento, Yolo, Placer...</div>
-                    </div>
-                    <div class="color-swatch" style="background: #EC4899;">
-                        <div>
-                            <div class="color-name">San Diego</div>
-                            <div class="color-value">#EC4899</div>
-                        </div>
-                        <div class="color-usage">1 county: San Diego (3.3M population)</div>
-                    </div>
-                    <div class="color-swatch" style="background: #6366F1;">
-                        <div>
-                            <div class="color-name">Sierra</div>
-                            <div class="color-value">#6366F1</div>
-                        </div>
-                        <div class="color-usage">6 counties: Alpine, Mono, Inyo...</div>
-                    </div>
-                    <div class="color-swatch" style="background: #F43F5E;">
-                        <div>
-                            <div class="color-name">Southern California</div>
-                            <div class="color-value">#F43F5E</div>
-                        </div>
-                        <div class="color-usage">5 counties: Riverside, San Bernardino...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">UI Colors</h3>
-                <p class="component-description">Functional colors for interface elements, feedback, and actions.</p>
-                <div class="showcase-grid">
-                    <div class="color-swatch" style="background: #2563EB;">
-                        <div>
-                            <div class="color-name">Primary Blue</div>
-                            <div class="color-value">#2563EB</div>
-                        </div>
-                        <div class="color-usage">Primary actions, links, focus states</div>
-                    </div>
-                    <div class="color-swatch" style="background: #059669;">
-                        <div>
-                            <div class="color-name">Success Green</div>
-                            <div class="color-value">#059669</div>
-                        </div>
-                        <div class="color-usage">Correct answers, completion states</div>
-                    </div>
-                    <div class="color-swatch" style="background: #F59E0B;">
-                        <div>
-                            <div class="color-name">Warning Amber</div>
-                            <div class="color-value">#F59E0B</div>
-                        </div>
-                        <div class="color-usage">Caution, hints, unsaved changes</div>
-                    </div>
-                    <div class="color-swatch" style="background: #EF4444;">
-                        <div>
-                            <div class="color-name">Danger Red</div>
-                            <div class="color-value">#EF4444</div>
-                        </div>
-                        <div class="color-usage">Errors, incorrect answers, delete</div>
-                    </div>
-                </div>
-            </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="#buttons" class="nav-item" onclick="showSection('buttons', this)">Buttons</a>
+          <a href="#badges" class="nav-item" onclick="showSection('badges', this)">Badges</a>
+          <a href="#cards" class="nav-item" onclick="showSection('cards', this)">Cards</a>
+          <a href="#progress" class="nav-item" onclick="showSection('progress', this)">Progress</a>
+          <a href="#typography" class="nav-item" onclick="showSection('typography', this)">Typography</a>
+          <a href="#modals" class="nav-item" onclick="showSection('modals', this)">Modals</a>
         </div>
 
-        <div class="section" id="typography">
-            <div class="section-header">
-                <h2>📝 Typography</h2>
-                <p class="section-description">
-                    Clear, readable typography optimized for educational content. Using system font stack for native OS feel and performance.
-                </p>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Font Family</h3>
-                <p class="component-description">System font stack for optimal rendering across platforms:</p>
-                <div class="code-block">
-                    <span class="code-property">font-family:</span> <span class="code-value">-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif</span>;
-                </div>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Type Scale</h3>
-                <div class="typography-sample">
-                    <h1 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 1rem;">Heading 1 - Display</h1>
-                    <div class="font-meta">
-                        <span>36px / 2.25rem</span>
-                        <span>•</span>
-                        <span>Weight: 700</span>
-                        <span>•</span>
-                        <span>Line height: 1.2</span>
-                    </div>
-                </div>
-
-                <div class="typography-sample">
-                    <h2 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.75rem;">Heading 2 - Section</h2>
-                    <div class="font-meta">
-                        <span>30px / 1.875rem</span>
-                        <span>•</span>
-                        <span>Weight: 700</span>
-                        <span>•</span>
-                        <span>Line height: 1.3</span>
-                    </div>
-                </div>
-
-                <div class="typography-sample">
-                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Heading 3 - Subsection</h3>
-                    <div class="font-meta">
-                        <span>24px / 1.5rem</span>
-                        <span>•</span>
-                        <span>Weight: 600</span>
-                        <span>•</span>
-                        <span>Line height: 1.4</span>
-                    </div>
-                </div>
-
-                <div class="typography-sample">
-                    <h4 style="font-size: 1.25rem; font-weight: 600;">Heading 4 - Card Title</h4>
-                    <div class="font-meta">
-                        <span>20px / 1.25rem</span>
-                        <span>•</span>
-                        <span>Weight: 600</span>
-                        <span>•</span>
-                        <span>Line height: 1.5</span>
-                    </div>
-                </div>
-
-                <div class="typography-sample">
-                    <p style="font-size: 1rem; line-height: 1.6;">
-                        Body text - California's diverse geography includes beaches, mountains, deserts, and valleys.
-                        The state is home to 58 counties, each with unique history and character.
-                    </p>
-                    <div class="font-meta">
-                        <span>16px / 1rem</span>
-                        <span>•</span>
-                        <span>Weight: 400</span>
-                        <span>•</span>
-                        <span>Line height: 1.6</span>
-                    </div>
-                </div>
-
-                <div class="typography-sample">
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">
-                        Small text - Used for captions, meta information, and secondary details that support primary content.
-                    </p>
-                    <div class="font-meta">
-                        <span>14px / 0.875rem</span>
-                        <span>•</span>
-                        <span>Weight: 400</span>
-                        <span>•</span>
-                        <span>Line height: 1.5</span>
-                    </div>
-                </div>
-            </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="#colors" class="nav-item" onclick="showSection('colors', this)">Colors</a>
+          <a href="#animations" class="nav-item" onclick="showSection('animations', this)">Animations</a>
+          <a href="#layouts" class="nav-item" onclick="showSection('layouts', this)">Layouts</a>
+          <a href="#responsive" class="nav-item" onclick="showSection('responsive', this)">Responsive</a>
         </div>
 
-        <div class="section" id="buttons">
-            <div class="section-header">
-                <h2>🔘 Buttons</h2>
-                <p class="section-description">
-                    Buttons are the primary interactive elements. Clear visual hierarchy with distinct styles for different actions.
-                </p>
-            </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Resources</div>
+          <a href="#api" class="nav-item" onclick="showSection('api', this)">API Reference</a>
+          <a href="#examples" class="nav-item" onclick="showSection('examples', this)">Examples</a>
+          <a href="#changelog" class="nav-item" onclick="showSection('changelog', this)">Changelog</a>
+        </div>
+      </nav>
+    </aside>
 
-            <div class="component-card">
-                <h3 class="component-title">Button Variants</h3>
-                <div class="button-showcase">
-                    <button class="btn btn-primary">Primary Action</button>
-                    <button class="btn btn-success">Correct / Complete</button>
-                    <button class="btn btn-outline">Secondary Action</button>
-                    <button class="btn btn-ghost">Tertiary / Ghost</button>
-                </div>
-                <div class="code-block">
-<span class="code-comment">// Primary - Main actions (Start, Submit, Continue)</span>
-<span class="code-property">background:</span> <span class="code-value">#2563EB</span>;
-<span class="code-property">color:</span> <span class="code-value">white</span>;
-<span class="code-property">padding:</span> <span class="code-value">0.75rem 1.5rem</span>;
-<span class="code-property">border-radius:</span> <span class="code-value">0.375rem</span>;
-
-<span class="code-comment">// Hover state</span>
-<span class="code-property">transform:</span> <span class="code-value">translateY(-1px)</span>;
-<span class="code-property">box-shadow:</span> <span class="code-value">0 4px 6px rgba(0,0,0,0.1)</span>;
-                </div>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Section -->
+      <div class="hero">
+        <div class="hero-content">
+          <h1 class="hero-title">California Counties Game Design System</h1>
+          <p class="hero-subtitle">A comprehensive design system for building educational geography games with consistent, accessible, and delightful user experiences.</p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span class="hero-stat-value">58</span>
+              <span class="hero-stat-label">Counties</span>
             </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Icon Buttons</h3>
-                <div class="button-showcase">
-                    <button class="btn btn-primary">▶ Play</button>
-                    <button class="btn btn-outline">⏸ Pause</button>
-                    <button class="btn btn-ghost">🔄 Reset</button>
-                    <button class="btn btn-success">✓ Correct</button>
-                </div>
+            <div class="hero-stat">
+              <span class="hero-stat-value">7</span>
+              <span class="hero-stat-label">Regions</span>
             </div>
+            <div class="hero-stat">
+              <span class="hero-stat-value">15+</span>
+              <span class="hero-stat-label">Components</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-value">100%</span>
+              <span class="hero-stat-label">Accessible</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overview Section -->
+      <section id="overview" class="content-section active">
+        <div class="section-header">
+          <h2 class="section-title">Welcome to the Design System</h2>
+          <p class="section-description">Everything you need to build consistent and beautiful interfaces for the California Counties game.</p>
         </div>
 
-        <div class="section" id="badges">
-            <div class="section-header">
-                <h2>🏷️ Badges & Pills</h2>
-                <p class="section-description">
-                    Small, colorful indicators for status, categories, and metadata.
-                </p>
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-card-header">
+              <h3 class="component-card-title">🎨 Beautiful Design</h3>
+              <p class="component-card-description">Thoughtfully crafted components with attention to detail</p>
             </div>
+            <div class="component-card-body">
+              <div class="button-showcase">
+                <button class="btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                  Explore Components
+                </button>
+              </div>
+            </div>
+            <div class="component-card-footer">
+              <span style="font-size: 0.875rem; color: var(--gray-600);">15+ components</span>
+              <a href="#buttons" style="color: var(--primary-blue); text-decoration: none; font-size: 0.875rem;">View all →</a>
+            </div>
+          </div>
 
-            <div class="component-card">
-                <h3 class="component-title">Badge Styles</h3>
-                <div class="badge-group">
-                    <span class="badge badge-blue">Bay Area</span>
-                    <span class="badge badge-green">Central Valley</span>
-                    <span class="badge badge-amber">Gold Country</span>
-                    <span class="badge badge-red">Los Angeles</span>
-                    <span class="badge badge-purple">Northern</span>
-                </div>
-                <div class="badge-group">
-                    <span class="badge badge-blue">Founded: 1850</span>
-                    <span class="badge badge-green">Population: 1.5M</span>
-                    <span class="badge badge-amber">58 / 58 Counties</span>
-                </div>
+          <div class="component-card">
+            <div class="component-card-header">
+              <h3 class="component-card-title">🚀 Production Ready</h3>
+              <p class="component-card-description">Battle-tested components used in production</p>
             </div>
+            <div class="component-card-body">
+              <div style="display: flex; gap: 0.5rem;">
+                <span class="loading"></span>
+                <span style="color: var(--gray-600);">99.9% uptime</span>
+              </div>
+            </div>
+            <div class="component-card-footer">
+              <span style="font-size: 0.875rem; color: var(--gray-600);">TypeScript ready</span>
+              <a href="#api" style="color: var(--primary-blue); text-decoration: none; font-size: 0.875rem;">API docs →</a>
+            </div>
+          </div>
+
+          <div class="component-card">
+            <div class="component-card-header">
+              <h3 class="component-card-title">♿ Accessible</h3>
+              <p class="component-card-description">WCAG 2.1 AA compliant with ARIA support</p>
+            </div>
+            <div class="component-card-body">
+              <div style="text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">♿</div>
+                <span style="color: var(--success); font-weight: 600;">100% Accessible</span>
+              </div>
+            </div>
+            <div class="component-card-footer">
+              <span style="font-size: 0.875rem; color: var(--gray-600);">Keyboard nav</span>
+              <a href="#principles" style="color: var(--primary-blue); text-decoration: none; font-size: 0.875rem;">Learn more →</a>
+            </div>
+          </div>
         </div>
 
-        <div class="section" id="spacing">
-            <div class="section-header">
-                <h2>📏 Spacing System</h2>
-                <p class="section-description">
-                    Consistent spacing scale based on 4px base unit. Creates rhythm and visual hierarchy.
-                </p>
+        <!-- Interactive Playground -->
+        <div class="playground">
+          <div class="playground-header">
+            <h3 class="playground-title">Interactive Playground</h3>
+            <div class="playground-controls">
+              <button class="btn" style="background: var(--gray-100); color: var(--gray-700); padding: 0.5rem 1rem;" onclick="resetPlayground()">Reset</button>
+              <button class="btn" style="background: var(--primary-gradient); color: white; padding: 0.5rem 1rem;" onclick="randomizePlayground()">Randomize</button>
             </div>
+          </div>
+          <div class="playground-preview" id="playgroundPreview">
+            <button class="btn" id="playgroundButton" style="background: linear-gradient(135deg, #3b82f6, #7c3aed); color: white;">
+              Click to Play
+            </button>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-language">JSX</span>
+              <button class="copy-button" onclick="copyCode(this)">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div class="code-content" id="playgroundCode">
+&lt;Button
+  variant="primary"
+  size="medium"
+  onClick={handleClick}
+&gt;
+  Click to Play
+&lt;/Button&gt;
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <div class="component-card">
-                <h3 class="component-title">Spacing Scale</h3>
-                <div class="spacing-sample">
-                    <div class="spacing-item">
-                        <div class="spacing-box" style="width: 16px;"></div>
-                        <span class="spacing-label">--space-1: 4px</span>
-                        <span style="color: var(--text-tertiary);">Tiny gaps, icon spacing</span>
-                    </div>
-                    <div class="spacing-item">
-                        <div class="spacing-box" style="width: 32px;"></div>
-                        <span class="spacing-label">--space-2: 8px</span>
-                        <span style="color: var(--text-tertiary);">Small gaps, compact layouts</span>
-                    </div>
-                    <div class="spacing-item">
-                        <div class="spacing-box" style="width: 64px;"></div>
-                        <span class="spacing-label">--space-4: 16px</span>
-                        <span style="color: var(--text-tertiary);">Default gap, element spacing</span>
-                    </div>
-                    <div class="spacing-item">
-                        <div class="spacing-box" style="width: 96px;"></div>
-                        <span class="spacing-label">--space-6: 24px</span>
-                        <span style="color: var(--text-tertiary);">Card padding, section gaps</span>
-                    </div>
-                    <div class="spacing-item">
-                        <div class="spacing-box" style="width: 128px;"></div>
-                        <span class="spacing-label">--space-8: 32px</span>
-                        <span style="color: var(--text-tertiary);">Large gaps, major sections</span>
-                    </div>
-                    <div class="spacing-item">
-                        <div class="spacing-box" style="width: 192px;"></div>
-                        <span class="spacing-label">--space-12: 48px</span>
-                        <span style="color: var(--text-tertiary);">Page padding, major spacing</span>
-                    </div>
-                </div>
-            </div>
+      <!-- Buttons Section -->
+      <section id="buttons" class="content-section">
+        <div class="section-header">
+          <h2 class="section-title">Buttons</h2>
+          <p class="section-description">Interactive elements that trigger actions throughout the game.</p>
         </div>
 
-        <div class="section" id="components">
-            <div class="section-header">
-                <h2>🧩 Components</h2>
-                <p class="section-description">
-                    Reusable UI components that form the building blocks of the application.
-                </p>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">County Cards</h3>
-                <p class="component-description">Display county information with region color-coding</p>
-                <div class="showcase-grid">
-                    <div class="card-sample" style="border-left: 4px solid #3B82F6;">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
-                            <h4 style="font-weight: 600; font-size: 1.125rem;">San Francisco</h4>
-                            <span class="badge badge-blue">Bay Area</span>
-                        </div>
-                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
-                            Population: 873,965
-                        </p>
-                        <p style="color: var(--text-secondary); font-size: 0.875rem;">
-                            Founded: 1850 (Original)
-                        </p>
-                    </div>
-
-                    <div class="card-sample" style="border-left: 4px solid #10B981;">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
-                            <h4 style="font-weight: 600; font-size: 1.125rem;">Fresno</h4>
-                            <span class="badge badge-green">Central Valley</span>
-                        </div>
-                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
-                            Population: 1,008,654
-                        </p>
-                        <p style="color: var(--text-secondary); font-size: 0.875rem;">
-                            Founded: 1856
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Filter Buttons</h3>
-                <p class="component-description">Regional filters with active/inactive states</p>
-                <div class="button-showcase">
-                    <button class="btn" style="background: #DBEAFE; color: #1E40AF; border: 2px solid #3B82F6;">
-                        Bay Area (9)
-                    </button>
-                    <button class="btn" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB;">
-                        Central Valley (8)
-                    </button>
-                    <button class="btn" style="background: #DBEAFE; color: #1E40AF; border: 2px solid #3B82F6;">
-                        Gold Country (10)
-                    </button>
-                </div>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Progress Indicators</h3>
-                <p class="component-description">Show completion status and progress</p>
-                <div style="margin-top: 1.5rem;">
-                    <div style="background: #E5E7EB; height: 8px; border-radius: 9999px; overflow: hidden;">
-                        <div style="background: linear-gradient(90deg, #3B82F6, #2563EB); height: 100%; width: 65%; transition: width 0.3s;"></div>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
-                        <span>38 of 58 counties</span>
-                        <span>65%</span>
-                    </div>
-                </div>
-            </div>
+        <div class="playground">
+          <div class="playground-header">
+            <h3 class="playground-title">All Variants</h3>
+          </div>
+          <div class="playground-preview" style="flex-wrap: wrap; gap: 1rem;">
+            <button class="btn" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">Primary</button>
+            <button class="btn" style="background: #6b7280; color: white;">Secondary</button>
+            <button class="btn" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white;">Success</button>
+            <button class="btn" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white;">Danger</button>
+            <button class="btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">Warning</button>
+            <button class="btn" style="background: transparent; color: #3b82f6; box-shadow: none;">Ghost</button>
+            <button class="btn" style="background: transparent; color: #3b82f6; border: 2px solid #3b82f6; box-shadow: none;">Outline</button>
+          </div>
         </div>
 
-        <div class="section" id="maps">
-            <div class="section-header">
-                <h2>🗺️ Map Styles</h2>
-                <p class="section-description">
-                    Interactive SVG maps with zoom, pan, and region color-coding.
-                </p>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Map Interaction Patterns</h3>
-                <div class="map-preview">
-                    <div class="map-placeholder">🗺️</div>
-                    <p style="margin-top: 1rem; color: var(--text-secondary); text-align: center;">
-                        Interactive California county map with zoom (0.5x - 3x) and pan controls
-                    </p>
-                </div>
-                <div class="code-block" style="margin-top: 1.5rem;">
-<span class="code-comment">// County hover states</span>
-<span class="code-property">opacity:</span> <span class="code-value">0.85</span>;
-<span class="code-property">stroke:</span> <span class="code-value">#FFFFFF</span>;
-<span class="code-property">stroke-width:</span> <span class="code-value">2px</span>;
-<span class="code-property">cursor:</span> <span class="code-value">pointer</span>;
-
-<span class="code-comment">// Selected/highlighted state</span>
-<span class="code-property">opacity:</span> <span class="code-value">1</span>;
-<span class="code-property">stroke:</span> <span class="code-value">#FFD700</span>;
-<span class="code-property">stroke-width:</span> <span class="code-value">3px</span>;
-<span class="code-property">filter:</span> <span class="code-value">drop-shadow(0 0 8px rgba(255,215,0,0.6))</span>;
-                </div>
-            </div>
-        </div>
-
-        <div class="section" id="animations">
-            <div class="section-header">
-                <h2>✨ Animations</h2>
-                <p class="section-description">
-                    Subtle, purposeful animations that enhance UX without distracting from educational content.
-                </p>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Transition Speeds</h3>
-                <div class="code-block">
-<span class="code-property">--transition-fast:</span> <span class="code-value">150ms ease</span>; <span class="code-comment">// Micro-interactions, hovers</span>
-<span class="code-property">--transition-base:</span> <span class="code-value">200ms ease</span>; <span class="code-comment">// Standard transitions</span>
-<span class="code-property">--transition-slow:</span> <span class="code-value">300ms ease</span>; <span class="code-comment">// Modal overlays, major changes</span>
-                </div>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Animation Example</h3>
-                <div class="animation-demo">
-                    <div class="animated-element"></div>
-                </div>
-                <p style="color: var(--text-secondary); text-align: center; margin-top: 1rem; font-size: 0.875rem;">
-                    Counties fade in smoothly when appearing during timeline animation
-                </p>
-            </div>
-        </div>
-
-        <div class="section" id="accessibility">
-            <div class="section-header">
-                <h2>♿ Accessibility</h2>
-                <p class="section-description">
-                    Built with WCAG 2.1 AA compliance. Keyboard navigation, screen readers, and color contrast standards.
-                </p>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Keyboard Navigation</h3>
-                <div class="showcase-grid">
-                    <div class="card-sample">
-                        <div class="card-title">Space</div>
-                        <p class="card-content">Play/Pause animations and timeline</p>
-                    </div>
-                    <div class="card-sample">
-                        <div class="card-title">Arrow Keys</div>
-                        <p class="card-content">Navigate timeline, adjust zoom speed</p>
-                    </div>
-                    <div class="card-sample">
-                        <div class="card-title">Tab</div>
-                        <p class="card-content">Focus navigation through interactive elements</p>
-                    </div>
-                    <div class="card-sample">
-                        <div class="card-title">Enter</div>
-                        <p class="card-content">Activate buttons and select counties</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Color Contrast</h3>
-                <p class="component-description">All text meets WCAG AA standards (4.5:1 ratio for normal text, 3:1 for large text)</p>
-                <div class="showcase-grid">
-                    <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; border: 2px solid var(--border-light);">
-                        <p style="color: #111827;">Primary text on white: 16.34:1</p>
-                        <p style="color: #6B7280;">Secondary text on white: 7.52:1</p>
-                        <p style="color: #9CA3AF;">Tertiary text on white: 4.76:1</p>
-                    </div>
-                    <div style="background: #2563EB; padding: 1.5rem; border-radius: 0.5rem;">
-                        <p style="color: white; font-weight: 600;">White on primary blue: 8.13:1</p>
-                        <p style="color: #DBEAFE;">Light text on blue: 5.91:1</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section" id="usage">
-            <div class="section-header">
-                <h2>💻 Usage Guidelines</h2>
-                <p class="section-description">
-                    Best practices for implementing this design system in code.
-                </p>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">CSS Custom Properties</h3>
-                <p class="component-description">Use CSS variables for consistency and theme flexibility</p>
-                <div class="code-block">
-<span class="code-comment">/* Import region colors */</span>
-<span class="code-property">import</span> { getRegionHexColor } <span class="code-property">from</span> <span class="code-value">'./config/regionColors'</span>;
-
-<span class="code-comment">/* Use spacing scale */</span>
-<span class="code-property">padding:</span> <span class="code-value">var(--space-6)</span>;
-<span class="code-property">gap:</span> <span class="code-value">var(--space-4)</span>;
-
-<span class="code-comment">/* Apply transitions */</span>
-<span class="code-property">transition:</span> <span class="code-value">all var(--transition-base)</span>;
-                </div>
-            </div>
-
-            <div class="component-card">
-                <h3 class="component-title">Component Patterns</h3>
-                <p class="component-description">Follow React/TypeScript patterns for maintainability</p>
-                <div class="code-block">
-<span class="code-comment">// Always type props</span>
-<span class="code-property">interface</span> CountyCardProps {
-  county: CountyData;
-  region: RegionName;
-  onClick?: (countyId: string) => void;
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-language">TypeScript</span>
+            <button class="copy-button" onclick="copyCode(this)">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Copy</span>
+            </button>
+          </div>
+          <div class="code-content">
+interface ButtonProps {
+  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'ghost' | 'outline';
+  size?: 'small' | 'medium' | 'large';
+  loading?: boolean;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  icon?: ReactNode;
+  iconRight?: ReactNode;
+  children: ReactNode;
+  onClick?: () => void;
 }
-
-<span class="code-comment">// Use semantic color mapping</span>
-<span class="code-property">const</span> regionColor = getRegionHexColor(county.region);
-                </div>
-            </div>
+          </div>
         </div>
-    </div>
+      </section>
 
-    <script>
-        // Search functionality
-        const searchInput = document.getElementById('searchInput');
-        const allCards = document.querySelectorAll('.component-card');
-        const allSections = document.querySelectorAll('.section');
+      <!-- Colors Section -->
+      <section id="colors" class="content-section">
+        <div class="section-header">
+          <h2 class="section-title">Color System</h2>
+          <p class="section-description">Regional colors and UI states that bring the game to life.</p>
+        </div>
 
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
+        <h3 style="margin-bottom: 1rem;">California Regions</h3>
+        <div class="color-palette">
+          <div class="color-swatch">
+            <div class="color-display" style="background: #ef4444;">Southern CA</div>
+            <div class="color-info">
+              <div class="color-name">Red</div>
+              <div class="color-hex">#ef4444</div>
+            </div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-display" style="background: #3b82f6;">Bay Area</div>
+            <div class="color-info">
+              <div class="color-name">Blue</div>
+              <div class="color-hex">#3b82f6</div>
+            </div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-display" style="background: #22c55e;">Central Valley</div>
+            <div class="color-info">
+              <div class="color-name">Green</div>
+              <div class="color-hex">#22c55e</div>
+            </div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-display" style="background: #a855f7;">Central Coast</div>
+            <div class="color-info">
+              <div class="color-name">Purple</div>
+              <div class="color-hex">#a855f7</div>
+            </div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-display" style="background: #f97316;">Northern CA</div>
+            <div class="color-info">
+              <div class="color-name">Orange</div>
+              <div class="color-hex">#f97316</div>
+            </div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-display" style="background: #eab308;">Sierra Nevada</div>
+            <div class="color-info">
+              <div class="color-name">Yellow</div>
+              <div class="color-hex">#eab308</div>
+            </div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-display" style="background: #14b8a6;">North Coast</div>
+            <div class="color-info">
+              <div class="color-name">Teal</div>
+              <div class="color-hex">#14b8a6</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 
-            if (searchTerm === '') {
-                // Reset: show everything
-                allCards.forEach(card => card.style.display = '');
-                allSections.forEach(section => section.style.display = '');
-                return;
-            }
+  <!-- Floating Action Buttons -->
+  <div class="fab-container">
+    <button class="fab theme-toggle tooltip" data-tooltip="Toggle theme" onclick="toggleTheme()">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <button class="fab tooltip" data-tooltip="Back to top" onclick="scrollToTop()">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+    </button>
+  </div>
 
-            // Search through cards
-            allCards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                if (text.includes(searchTerm)) {
-                    card.style.display = '';
-                    card.style.border = '2px solid var(--primary-blue)';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+  <script>
+    // Show/hide sections
+    function showSection(sectionId, navItem) {
+      // Hide all sections
+      document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+      });
 
-            // Hide sections with no visible cards
-            allSections.forEach(section => {
-                const visibleCards = section.querySelectorAll('.component-card[style*="display: \"\""], .component-card:not([style])');
-                if (visibleCards.length === 0) {
-                    section.style.display = 'none';
-                } else {
-                    section.style.display = '';
-                }
-            });
-        });
+      // Remove active from all nav items
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
 
-        // Reset border on search clear
-        searchInput.addEventListener('input', (e) => {
-            if (e.target.value === '') {
-                allCards.forEach(card => card.style.border = '');
-            }
-        });
-    </script>
+      // Show selected section
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.classList.add('active');
+      }
+
+      // Mark nav item as active
+      if (navItem) {
+        navItem.classList.add('active');
+      }
+    }
+
+    // Toggle sidebar on mobile
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('open');
+    }
+
+    // Search functionality
+    function searchComponents() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toLowerCase();
+      const navItems = document.querySelectorAll('.nav-item');
+
+      navItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(filter)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Copy code to clipboard
+    function copyCode(button) {
+      const codeBlock = button.closest('.code-block');
+      const codeContent = codeBlock.querySelector('.code-content');
+      const text = codeContent.textContent;
+
+      navigator.clipboard.writeText(text).then(() => {
+        button.classList.add('copied');
+        button.querySelector('span').textContent = 'Copied!';
+
+        setTimeout(() => {
+          button.classList.remove('copied');
+          button.querySelector('span').textContent = 'Copy';
+        }, 2000);
+      });
+    }
+
+    // Playground functions
+    function randomizePlayground() {
+      const button = document.getElementById('playgroundButton');
+      const variants = ['primary', 'success', 'danger', 'warning'];
+      const colors = [
+        'linear-gradient(135deg, #3b82f6, #7c3aed)',
+        'linear-gradient(135deg, #22c55e, #16a34a)',
+        'linear-gradient(135deg, #ef4444, #dc2626)',
+        'linear-gradient(135deg, #f59e0b, #d97706)'
+      ];
+
+      const randomIndex = Math.floor(Math.random() * variants.length);
+      button.style.background = colors[randomIndex];
+
+      // Update code
+      const code = document.getElementById('playgroundCode');
+      code.textContent = `<Button\n  variant="${variants[randomIndex]}"\n  size="medium"\n  onClick={handleClick}\n>\n  Click to Play\n</Button>`;
+    }
+
+    function resetPlayground() {
+      const button = document.getElementById('playgroundButton');
+      button.style.background = 'linear-gradient(135deg, #3b82f6, #7c3aed)';
+
+      const code = document.getElementById('playgroundCode');
+      code.textContent = `<Button\n  variant="primary"\n  size="medium"\n  onClick={handleClick}\n>\n  Click to Play\n</Button>`;
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const body = document.body;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Scroll to top
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
 </body>
 </html>

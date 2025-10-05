@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>California Counties Game - Complete Design System</title>
+  <style>
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(to bottom right, rgb(239 246 255), rgb(220 252 231));
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #3b82f6, #7c3aed, #ec4899);
+    }
+
+    .header h1 {
+      background: linear-gradient(to right, #2563eb, #7c3aed);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 2.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header .subtitle {
+      color: #6b7280;
+      margin-top: 0.5rem;
+      font-size: 1.125rem;
+    }
+
+    .header .version {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, #3b82f6, #7c3aed);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .ca-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 0.875rem;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Navigation Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: white;
+      padding: 0.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #6b7280;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab:hover {
+      background: #f3f4f6;
+      color: #1f2937;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, #3b82f6, #7c3aed);
+      color: white;
+    }
+
+    /* Content Sections */
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .card.with-border {
+      border: 2px solid #e5e7eb;
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h3 {
+      font-size: 1.125rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #374151;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+    }
+
+    /* Component Grid */
+    .component-grid {
+      display: grid;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .component-grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    }
+
+    .component-grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    /* Button Showcase */
+    .button-showcase {
+      display: grid;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .button-group {
+      background: #f9fafb;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .button-group-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 1rem;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    /* All Button Variants */
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      font-size: 0.875rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Button Sizes */
+    .btn-small {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+
+    .btn-medium {
+      padding: 0.625rem 1.25rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-large {
+      padding: 0.875rem 1.75rem;
+      font-size: 1rem;
+    }
+
+    /* Button Variants */
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+      box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #3b82f6;
+      box-shadow: none;
+    }
+
+    .btn-ghost:hover {
+      background: #eff6ff;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #3b82f6;
+      border: 2px solid #3b82f6;
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      background: #3b82f6;
+      color: white;
+    }
+
+    /* Loading State */
+    .btn-loading {
+      position: relative;
+      color: transparent !important;
+    }
+
+    .btn-loading::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 50%;
+      left: 50%;
+      margin-left: -8px;
+      margin-top: -8px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spinner 0.6s linear infinite;
+    }
+
+    @keyframes spinner {
+      to { transform: rotate(360deg); }
+    }
+
+    /* County Badges */
+    .badge-showcase {
+      display: grid;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .badge-group {
+      background: #f9fafb;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .county-badge {
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border: 1px solid;
+      cursor: move;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .county-badge:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Badge Sizes */
+    .badge-xs {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .badge-small {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+
+    .badge-medium {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    .badge-large {
+      padding: 0.625rem 1.25rem;
+      font-size: 1rem;
+    }
+
+    /* Badge States */
+    .badge-selected {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 2px #3b82f6, 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .badge-placed {
+      opacity: 0.5;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    .badge-dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
+
+    /* Region Colors */
+    .southern-california {
+      background: #fee2e2;
+      color: #7f1d1d;
+      border-color: #f87171;
+    }
+
+    .bay-area {
+      background: #dbeafe;
+      color: #1e3a8a;
+      border-color: #60a5fa;
+    }
+
+    .central-valley {
+      background: #dcfce7;
+      color: #14532d;
+      border-color: #4ade80;
+    }
+
+    .central-coast {
+      background: #f3e8ff;
+      color: #581c87;
+      border-color: #c084fc;
+    }
+
+    .northern-california {
+      background: #fed7aa;
+      color: #7c2d12;
+      border-color: #fb923c;
+    }
+
+    .sierra-nevada {
+      background: #fef3c7;
+      color: #713f12;
+      border-color: #fbbf24;
+    }
+
+    .north-coast {
+      background: #ccfbf1;
+      color: #134e4a;
+      border-color: #2dd4bf;
+    }
+
+    /* Progress Bar Variations */
+    .progress-showcase {
+      display: grid;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .progress-container {
+      background: #e5e7eb;
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-small {
+      height: 12px;
+    }
+
+    .progress-medium {
+      height: 20px;
+    }
+
+    .progress-large {
+      height: 28px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-default {
+      background: #3b82f6;
+    }
+
+    .progress-gradient {
+      background: linear-gradient(90deg, #3b82f6, #7c3aed);
+    }
+
+    .progress-success {
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+    }
+
+    .progress-animated::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Card Variations */
+    .card-showcase {
+      display: grid;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .card-default {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-elevated {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-bordered {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 2px solid #e5e7eb;
+      box-shadow: none;
+    }
+
+    .card-interactive {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .card-interactive:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Typography Scale */
+    .typography-showcase {
+      display: grid;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .typography-example {
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 0.5rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .typography-label {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Modal Examples */
+    .modal-example {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      margin: 1rem 0;
+      position: relative;
+    }
+
+    .modal-backdrop {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 2rem;
+      border-radius: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    /* Hint Level Examples */
+    .hint-level {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      margin: 1rem 0;
+      text-align: center;
+    }
+
+    .hint-emoji {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    .hint-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, var(--gradient-from), var(--gradient-to));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hint-content {
+      background: var(--hint-bg);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      border: 2px solid var(--hint-border);
+      margin: 1rem 0;
+    }
+
+    /* Regions Panel */
+    .regions-panel {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      padding: 1rem;
+      max-width: 300px;
+    }
+
+    .regions-toggle {
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.2s;
+    }
+
+    .regions-toggle-active {
+      background: linear-gradient(to right, #3b82f6, #14b8a6);
+    }
+
+    .regions-toggle-inactive {
+      background: linear-gradient(to right, #6b7280, #4b5563);
+    }
+
+    .region-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .region-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      transition: background 0.2s;
+    }
+
+    .region-item:hover {
+      background: #f9fafb;
+    }
+
+    .region-swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 0.25rem;
+      border: 1px solid #9ca3af;
+    }
+
+    /* Animation Classes */
+    .fade-in {
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .slide-up {
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .scale-in {
+      animation: scaleIn 0.2s ease-out;
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Interactive States */
+    .interactive-example {
+      padding: 2rem;
+      background: #f9fafb;
+      border-radius: 0.75rem;
+      border: 1px dashed #9ca3af;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .interactive-example:hover {
+      background: #eff6ff;
+      border-color: #3b82f6;
+      border-style: solid;
+    }
+
+    /* Color Palette Grid */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .color-item {
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .color-swatch {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 0.875rem;
+    }
+
+    .color-info {
+      background: white;
+      padding: 0.75rem;
+      border: 1px solid #e5e7eb;
+      border-top: none;
+    }
+
+    .color-name {
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 0.25rem;
+    }
+
+    .color-hex {
+      font-family: 'Courier New', monospace;
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    /* Code Examples */
+    .code-block {
+      background: #1f2937;
+      color: #e5e7eb;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      margin: 1rem 0;
+    }
+
+    .code-inline {
+      background: #f3f4f6;
+      color: #dc2626;
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+    }
+
+    /* API Documentation */
+    .api-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    .api-table th {
+      background: #f9fafb;
+      padding: 0.75rem;
+      text-align: left;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .api-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 0.875rem;
+    }
+
+    .api-table code {
+      background: #f3f4f6;
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-family: 'Courier New', monospace;
+      color: #dc2626;
+    }
+
+    /* Responsive Breakpoints */
+    .breakpoint-indicator {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      background: #1f2937;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      z-index: 9999;
+    }
+
+    /* Accessibility Features */
+    .a11y-feature {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .a11y-label {
+      font-weight: 600;
+      color: #16a34a;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .tabs {
+        flex-wrap: wrap;
+      }
+
+      .tab {
+        flex: 1 1 auto;
+        min-width: 100px;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+      }
+
+      .component-grid-2,
+      .component-grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row,
+      .badge-row {
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>
+        <span class="ca-icon">CA</span>
+        California Counties Game - Complete Design System
+      </h1>
+      <p class="subtitle">Comprehensive documentation of all components, variants, and states</p>
+      <span class="version">v2.0.0</span>
+    </div>
+
+    <!-- Navigation -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('buttons')">Buttons</button>
+      <button class="tab" onclick="showTab('badges')">Badges</button>
+      <button class="tab" onclick="showTab('cards')">Cards</button>
+      <button class="tab" onclick="showTab('progress')">Progress</button>
+      <button class="tab" onclick="showTab('typography')">Typography</button>
+      <button class="tab" onclick="showTab('colors')">Colors</button>
+      <button class="tab" onclick="showTab('modals')">Modals</button>
+      <button class="tab" onclick="showTab('regions')">Regions</button>
+      <button class="tab" onclick="showTab('animations')">Animations</button>
+      <button class="tab" onclick="showTab('responsive')">Responsive</button>
+      <button class="tab" onclick="showTab('api')">Component API</button>
+    </div>
+
+    <!-- Buttons Section -->
+    <div id="buttons" class="content-section active">
+      <div class="card">
+        <h2>🎮 Button Component</h2>
+        <p>All button variants, sizes, and states used throughout the game interface.</p>
+
+        <h3>All Variants × All Sizes</h3>
+        <div class="button-showcase">
+          <!-- Primary Buttons -->
+          <div class="button-group">
+            <div class="button-group-title">Primary Variant</div>
+            <div class="button-row">
+              <button class="btn btn-primary btn-small">Small</button>
+              <button class="btn btn-primary btn-medium">Medium</button>
+              <button class="btn btn-primary btn-large">Large</button>
+              <button class="btn btn-primary btn-medium" disabled>Disabled</button>
+              <button class="btn btn-primary btn-medium btn-loading"></button>
+            </div>
+          </div>
+
+          <!-- Secondary Buttons -->
+          <div class="button-group">
+            <div class="button-group-title">Secondary Variant</div>
+            <div class="button-row">
+              <button class="btn btn-secondary btn-small">Small</button>
+              <button class="btn btn-secondary btn-medium">Medium</button>
+              <button class="btn btn-secondary btn-large">Large</button>
+              <button class="btn btn-secondary btn-medium" disabled>Disabled</button>
+            </div>
+          </div>
+
+          <!-- Success Buttons -->
+          <div class="button-group">
+            <div class="button-group-title">Success Variant</div>
+            <div class="button-row">
+              <button class="btn btn-success btn-small">Small</button>
+              <button class="btn btn-success btn-medium">Medium</button>
+              <button class="btn btn-success btn-large">Large</button>
+              <button class="btn btn-success btn-medium" disabled>Disabled</button>
+            </div>
+          </div>
+
+          <!-- Danger Buttons -->
+          <div class="button-group">
+            <div class="button-group-title">Danger Variant</div>
+            <div class="button-row">
+              <button class="btn btn-danger btn-small">Small</button>
+              <button class="btn btn-danger btn-medium">Medium</button>
+              <button class="btn btn-danger btn-large">Large</button>
+              <button class="btn btn-danger btn-medium" disabled>Disabled</button>
+            </div>
+          </div>
+
+          <!-- Warning Buttons -->
+          <div class="button-group">
+            <div class="button-group-title">Warning Variant</div>
+            <div class="button-row">
+              <button class="btn btn-warning btn-small">💡 Small</button>
+              <button class="btn btn-warning btn-medium">💡 Medium</button>
+              <button class="btn btn-warning btn-large">💡 Large</button>
+              <button class="btn btn-warning btn-medium" disabled>💡 Disabled</button>
+            </div>
+          </div>
+
+          <!-- Ghost Buttons -->
+          <div class="button-group">
+            <div class="button-group-title">Ghost Variant</div>
+            <div class="button-row">
+              <button class="btn btn-ghost btn-small">Small</button>
+              <button class="btn btn-ghost btn-medium">Medium</button>
+              <button class="btn btn-ghost btn-large">Large</button>
+              <button class="btn btn-ghost btn-medium" disabled>Disabled</button>
+            </div>
+          </div>
+
+          <!-- Outline Buttons -->
+          <div class="button-group">
+            <div class="button-group-title">Outline Variant</div>
+            <div class="button-row">
+              <button class="btn btn-outline btn-small">Small</button>
+              <button class="btn btn-outline btn-medium">Medium</button>
+              <button class="btn btn-outline btn-large">Large</button>
+              <button class="btn btn-outline btn-medium" disabled>Disabled</button>
+            </div>
+          </div>
+        </div>
+
+        <h3>Game-Specific Button Uses</h3>
+        <div class="button-group">
+          <div class="button-group-title">In-Game Actions</div>
+          <div class="button-row">
+            <button class="btn btn-primary btn-large">Begin Exploration</button>
+            <button class="btn btn-primary btn-large" style="background: #4c1d95;">📚 Study Mode</button>
+            <button class="btn btn-warning btn-medium">💡 Hint <span style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">3</span></button>
+            <button class="btn btn-success btn-small">🔊</button>
+            <button class="btn btn-secondary btn-small">🔇</button>
+            <button class="btn btn-danger btn-small">↻ Reset</button>
+          </div>
+        </div>
+
+        <h3>Full Width Buttons</h3>
+        <div class="button-group">
+          <button class="btn btn-primary btn-large" style="width: 100%;">Play Again</button>
+          <button class="btn btn-secondary btn-large" style="width: 100%; margin-top: 0.5rem;">Main Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Badges Section -->
+    <div id="badges" class="content-section">
+      <div class="card">
+        <h2>🏷️ Badge Component</h2>
+        <p>County badges with all sizes, variants, and interactive states.</p>
+
+        <h3>Badge Sizes</h3>
+        <div class="badge-showcase">
+          <div class="badge-group">
+            <div class="button-group-title">All Sizes</div>
+            <div class="badge-row">
+              <span class="county-badge badge-xs bay-area">XS Badge</span>
+              <span class="county-badge badge-small bay-area">Small Badge</span>
+              <span class="county-badge badge-medium bay-area">Medium Badge</span>
+              <span class="county-badge badge-large bay-area">Large Badge</span>
+            </div>
+          </div>
+        </div>
+
+        <h3>All Region Colors</h3>
+        <div class="badge-showcase">
+          <div class="badge-group">
+            <div class="button-group-title">Counties by Region</div>
+            <div class="badge-row">
+              <span class="county-badge southern-california">Los Angeles</span>
+              <span class="county-badge southern-california">San Diego</span>
+              <span class="county-badge southern-california">Orange</span>
+              <span class="county-badge southern-california">Riverside</span>
+            </div>
+            <div class="badge-row">
+              <span class="county-badge bay-area">San Francisco</span>
+              <span class="county-badge bay-area">Alameda</span>
+              <span class="county-badge bay-area">Contra Costa</span>
+              <span class="county-badge bay-area">Marin</span>
+            </div>
+            <div class="badge-row">
+              <span class="county-badge central-valley">Fresno</span>
+              <span class="county-badge central-valley">Kern</span>
+              <span class="county-badge central-valley">Tulare</span>
+              <span class="county-badge central-valley">Stanislaus</span>
+            </div>
+            <div class="badge-row">
+              <span class="county-badge central-coast">Santa Barbara</span>
+              <span class="county-badge central-coast">Monterey</span>
+              <span class="county-badge central-coast">San Luis Obispo</span>
+              <span class="county-badge central-coast">Santa Cruz</span>
+            </div>
+            <div class="badge-row">
+              <span class="county-badge northern-california">Sacramento</span>
+              <span class="county-badge northern-california">Shasta</span>
+              <span class="county-badge northern-california">Butte</span>
+              <span class="county-badge northern-california">Tehama</span>
+            </div>
+            <div class="badge-row">
+              <span class="county-badge sierra-nevada">Alpine</span>
+              <span class="county-badge sierra-nevada">Mono</span>
+              <span class="county-badge sierra-nevada">Inyo</span>
+              <span class="county-badge sierra-nevada">Mariposa</span>
+            </div>
+            <div class="badge-row">
+              <span class="county-badge north-coast">Humboldt</span>
+              <span class="county-badge north-coast">Mendocino</span>
+              <span class="county-badge north-coast">Del Norte</span>
+              <span class="county-badge north-coast">Lake</span>
+            </div>
+          </div>
+        </div>
+
+        <h3>Interactive States</h3>
+        <div class="badge-showcase">
+          <div class="badge-group">
+            <div class="button-group-title">All Badge States</div>
+            <div class="badge-row">
+              <span class="county-badge bay-area">Default</span>
+              <span class="county-badge bay-area" style="transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">Hover</span>
+              <span class="county-badge bay-area badge-selected">▶ Selected</span>
+              <span class="county-badge bay-area badge-dragging">Dragging</span>
+              <span class="county-badge bay-area badge-placed">Placed</span>
+            </div>
+          </div>
+        </div>
+
+        <h3>Special Badge Variants</h3>
+        <div class="badge-showcase">
+          <div class="badge-group">
+            <div class="button-group-title">Info & Status Badges</div>
+            <div class="badge-row">
+              <span class="county-badge" style="background: #dbeafe; color: #1e3a8a; border-color: #60a5fa;">Info</span>
+              <span class="county-badge" style="background: #dcfce7; color: #14532d; border-color: #4ade80;">Success</span>
+              <span class="county-badge" style="background: #fef3c7; color: #713f12; border-color: #fbbf24;">Warning</span>
+              <span class="county-badge" style="background: #fee2e2; color: #7f1d1d; border-color: #f87171;">Error</span>
+              <span class="county-badge" style="background: #f3f4f6; color: #6b7280; border-color: #d1d5db;">Disabled</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards Section -->
+    <div id="cards" class="content-section">
+      <div class="card">
+        <h2>🎴 Card Component</h2>
+        <p>All card variants used for layout and content organization.</p>
+
+        <div class="card-showcase">
+          <div class="card-default">
+            <h4>Default Card</h4>
+            <p>Standard card with subtle shadow for content separation.</p>
+            <code class="code-inline">variant="default"</code>
+          </div>
+
+          <div class="card-elevated">
+            <h4>Elevated Card</h4>
+            <p>Prominent card with stronger shadow for important content.</p>
+            <code class="code-inline">variant="elevated"</code>
+          </div>
+
+          <div class="card-bordered">
+            <h4>Bordered Card</h4>
+            <p>Card with border instead of shadow for flat design contexts.</p>
+            <code class="code-inline">variant="bordered"</code>
+          </div>
+
+          <div class="card-interactive">
+            <h4>Interactive Card</h4>
+            <p>Clickable card with hover effects for interactive elements.</p>
+            <code class="code-inline">onClick handler + hover state</code>
+          </div>
+        </div>
+
+        <h3>County Card Component</h3>
+        <div class="card-elevated" style="max-width: 300px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h4 style="margin: 0;">Los Angeles</h4>
+            <span class="county-badge southern-california badge-xs">Southern CA</span>
+          </div>
+          <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; font-size: 0.875rem; color: #6b7280;">
+            <span>📍</span><span>County Seat: Los Angeles</span>
+            <span>👥</span><span>Population: 10M+</span>
+            <span>📏</span><span>Area: 4,000+ sq mi</span>
+            <span>📅</span><span>Founded: 1850</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div id="progress" class="content-section">
+      <div class="card">
+        <h2>📊 Progress Component</h2>
+        <p>Progress bar variations for game completion tracking.</p>
+
+        <div class="progress-showcase">
+          <div class="button-group">
+            <div class="button-group-title">Small Size</div>
+            <div class="progress-container progress-small">
+              <div class="progress-bar progress-default" style="width: 30%;"></div>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <div class="button-group-title">Medium Size (Default)</div>
+            <div class="progress-container progress-medium">
+              <div class="progress-bar progress-gradient" style="width: 65%;"></div>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <div class="button-group-title">Large Size</div>
+            <div class="progress-container progress-large">
+              <div class="progress-bar progress-success" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <div class="button-group-title">Animated Progress</div>
+            <div class="progress-container progress-medium">
+              <div class="progress-bar progress-gradient progress-animated" style="width: 45%;"></div>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <div class="button-group-title">Game Progress (58 Counties)</div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <span style="font-size: 0.75rem; color: #6b7280;">Progress</span>
+              <div style="flex: 1;">
+                <div class="progress-container progress-medium">
+                  <div class="progress-bar progress-gradient progress-animated" style="width: 71%;"></div>
+                </div>
+              </div>
+              <span style="font-size: 0.875rem; font-weight: bold;">41/58</span>
+              <span style="font-size: 0.75rem; font-weight: bold; color: #374151;">71%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typography Section -->
+    <div id="typography" class="content-section">
+      <div class="card">
+        <h2>✏️ Typography System</h2>
+        <p>Complete typography scale and text component variants.</p>
+
+        <div class="typography-showcase">
+          <div class="typography-example">
+            <div class="typography-label">Display (size="display")</div>
+            <h1 style="font-size: 3rem; font-weight: 700; color: #1f2937;">California Counties</h1>
+          </div>
+
+          <div class="typography-example">
+            <div class="typography-label">Title (size="title")</div>
+            <h1 style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(to right, #2563eb, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent;">
+              California Counties Puzzle
+            </h1>
+          </div>
+
+          <div class="typography-example">
+            <div class="typography-label">Heading 1 (size="heading")</div>
+            <h1 style="font-size: 2rem; font-weight: 600; color: #1f2937;">Main Heading</h1>
+          </div>
+
+          <div class="typography-example">
+            <div class="typography-label">Heading 2 (size="section")</div>
+            <h2 style="font-size: 1.5rem; font-weight: 600; color: #374151;">Section Heading</h2>
+          </div>
+
+          <div class="typography-example">
+            <div class="typography-label">Heading 3 (size="subsection")</div>
+            <h3 style="font-size: 1.25rem; font-weight: 600; color: #374151;">Subsection</h3>
+          </div>
+
+          <div class="typography-example">
+            <div class="typography-label">Label (size="label")</div>
+            <p style="font-size: 0.875rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">Label Text</p>
+          </div>
+
+          <div class="typography-example">
+            <div class="typography-label">Body Text - All Sizes</div>
+            <p style="font-size: 1.25rem; color: #1f2937; margin-bottom: 0.5rem;">Extra Large (xl) - Main description text</p>
+            <p style="font-size: 1.125rem; color: #374151; margin-bottom: 0.5rem;">Large (lg) - Important body text</p>
+            <p style="font-size: 1rem; color: #374151; margin-bottom: 0.5rem;">Medium (base) - Standard paragraph text</p>
+            <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;">Small (sm) - Secondary information</p>
+            <p style="font-size: 0.75rem; color: #9ca3af;">Extra Small (xs) - Fine print and labels</p>
+          </div>
+
+          <div class="typography-example">
+            <div class="typography-label">Font Weights</div>
+            <p style="font-weight: 300;">Light (300)</p>
+            <p style="font-weight: 400;">Regular (400)</p>
+            <p style="font-weight: 500;">Medium (500)</p>
+            <p style="font-weight: 600;">Semibold (600)</p>
+            <p style="font-weight: 700;">Bold (700)</p>
+          </div>
+
+          <div class="typography-example">
+            <div class="typography-label">Code Component</div>
+            <p>Inline code: <code class="code-inline">const county = 'San Francisco'</code></p>
+            <div class="code-block">
+// Multi-line code block
+function placeCounty(countyId: string, position: Point) {
+  const county = counties.find(c => c.id === countyId);
+  return validatePlacement(county, position);
+}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colors Section -->
+    <div id="colors" class="content-section">
+      <div class="card">
+        <h2>🎨 Color System</h2>
+        <p>Complete color palette including regions, UI states, and gradients.</p>
+
+        <h3>California Region Colors</h3>
+        <div class="color-grid">
+          <div class="color-item">
+            <div class="color-swatch" style="background: #ef4444;">Southern California</div>
+            <div class="color-info">
+              <div class="color-name">Primary Red</div>
+              <div class="color-hex">#ef4444 • bg-red-500</div>
+              <div class="color-hex">Light: #fee2e2</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #3b82f6;">Bay Area</div>
+            <div class="color-info">
+              <div class="color-name">Primary Blue</div>
+              <div class="color-hex">#3b82f6 • bg-blue-500</div>
+              <div class="color-hex">Light: #dbeafe</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #22c55e;">Central Valley</div>
+            <div class="color-info">
+              <div class="color-name">Primary Green</div>
+              <div class="color-hex">#22c55e • bg-green-500</div>
+              <div class="color-hex">Light: #dcfce7</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #a855f7;">Central Coast</div>
+            <div class="color-info">
+              <div class="color-name">Primary Purple</div>
+              <div class="color-hex">#a855f7 • bg-purple-500</div>
+              <div class="color-hex">Light: #f3e8ff</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #f97316;">Northern California</div>
+            <div class="color-info">
+              <div class="color-name">Primary Orange</div>
+              <div class="color-hex">#f97316 • bg-orange-500</div>
+              <div class="color-hex">Light: #fed7aa</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #eab308;">Sierra Nevada</div>
+            <div class="color-info">
+              <div class="color-name">Primary Yellow</div>
+              <div class="color-hex">#eab308 • bg-yellow-500</div>
+              <div class="color-hex">Light: #fef3c7</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #14b8a6;">North Coast</div>
+            <div class="color-info">
+              <div class="color-name">Primary Teal</div>
+              <div class="color-hex">#14b8a6 • bg-teal-500</div>
+              <div class="color-hex">Light: #ccfbf1</div>
+            </div>
+          </div>
+        </div>
+
+        <h3>UI State Colors</h3>
+        <div class="color-grid">
+          <div class="color-item">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #3b82f6, #7c3aed);">Primary Action</div>
+            <div class="color-info">
+              <div class="color-name">Blue to Purple</div>
+              <div class="color-hex">Buttons & CTAs</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #16a34a;">Success</div>
+            <div class="color-info">
+              <div class="color-name">Success Green</div>
+              <div class="color-hex">#16a34a • Score</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #dc2626;">Error</div>
+            <div class="color-info">
+              <div class="color-name">Error Red</div>
+              <div class="color-hex">#dc2626 • Mistakes</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #f59e0b;">Warning</div>
+            <div class="color-info">
+              <div class="color-name">Warning Amber</div>
+              <div class="color-hex">#f59e0b • Hints</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #7c3aed;">Info</div>
+            <div class="color-info">
+              <div class="color-name">Info Purple</div>
+              <div class="color-hex">#7c3aed • Timer</div>
+            </div>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background: #6b7280;">Disabled</div>
+            <div class="color-info">
+              <div class="color-name">Disabled Gray</div>
+              <div class="color-hex">#6b7280 • Inactive</div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Background Gradients</h3>
+        <div class="button-group">
+          <div style="height: 100px; background: linear-gradient(to bottom right, #eff6ff, #dcfce7); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: #374151; font-weight: 500;">
+            Game Background Gradient
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modals Section -->
+    <div id="modals" class="content-section">
+      <div class="card">
+        <h2>💬 Modal Components</h2>
+        <p>Hint modal with three progressive hint levels.</p>
+
+        <h3>Hint Level 1 - General Location</h3>
+        <div class="modal-backdrop">
+          <div class="hint-level">
+            <div class="hint-emoji">📍</div>
+            <h3 class="hint-title" style="--gradient-from: #6366f1; --gradient-to: #3b82f6;">
+              Hint Level 1: Location Clue
+            </h3>
+            <div class="hint-content" style="--hint-bg: #eff6ff; --hint-border: #60a5fa;">
+              <p style="font-weight: 600; margin-bottom: 0.5rem;">Los Angeles County</p>
+              <p style="color: #4b5563;">🏛️ Region: Southern California</p>
+              <p style="color: #4b5563; font-size: 0.875rem; margin-top: 0.5rem;">📍 Located in the southern part of California</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <span style="font-size: 0.875rem; color: #6b7280;">Hint 1 of 3</span>
+              <button class="btn btn-primary btn-small">Got it!</button>
+            </div>
+          </div>
+        </div>
+
+        <h3>Hint Level 2 - Neighbors & Landmarks</h3>
+        <div class="modal-backdrop">
+          <div class="hint-level">
+            <div class="hint-emoji" style="animation: none;">🧭</div>
+            <h3 class="hint-title" style="--gradient-from: #fbbf24; --gradient-to: #f97316;">
+              Hint Level 2: Neighbors & Landmarks
+            </h3>
+            <div class="hint-content" style="--hint-bg: #fef3c7; --hint-border: #fbbf24;">
+              <p style="font-weight: 600; margin-bottom: 0.75rem;">Los Angeles County Details</p>
+              <p style="font-weight: 500; margin-bottom: 0.5rem;">Neighboring Counties:</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <span style="background: #fde047; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.875rem;">Ventura</span>
+                <span style="background: #fde047; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.875rem;">Kern</span>
+                <span style="background: #fde047; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.875rem;">San Bernardino</span>
+                <span style="background: #fde047; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.875rem;">Orange</span>
+              </div>
+              <p style="font-size: 0.875rem;">🏛️ Famous for: Hollywood, beaches, and downtown LA</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <span style="font-size: 0.875rem; color: #6b7280;">Hint 2 of 3</span>
+              <button class="btn btn-primary btn-small">Got it!</button>
+            </div>
+          </div>
+        </div>
+
+        <h3>Hint Level 3 - Exact Location</h3>
+        <div class="modal-backdrop">
+          <div class="hint-level">
+            <div class="hint-emoji">🎯</div>
+            <h3 class="hint-title" style="--gradient-from: #ef4444; --gradient-to: #ec4899;">
+              Hint Level 3: Exact Location
+            </h3>
+            <div class="hint-content" style="--hint-bg: #fee2e2; --hint-border: #f87171;">
+              <p style="font-weight: 600; margin-bottom: 0.75rem;">Los Angeles County - Final Hint</p>
+              <div style="background: #fecaca; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 0.75rem;">
+                <p style="font-weight: 500; margin-bottom: 0.25rem;">📍 Exact Position:</p>
+                <p>Southwest corner of California, along the Pacific coast</p>
+              </div>
+              <p style="font-size: 0.875rem;">📏 Size/Shape: Large, irregularly shaped county</p>
+              <p style="font-size: 0.875rem;">🎯 Look for: The largest county in Southern California</p>
+              <div style="background: #fecdd3; padding: 0.5rem; border-radius: 0.25rem; margin-top: 0.75rem;">
+                <p style="font-size: 0.75rem;">💡 This county is in the Southern California region</p>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <span style="font-size: 0.875rem; color: #6b7280;">Hint 3 of 3</span>
+              <button class="btn btn-primary btn-small">Got it!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Regions Panel Section -->
+    <div id="regions" class="content-section">
+      <div class="card">
+        <h2>🗺️ Regions Panel</h2>
+        <p>Interactive regions toggle and legend.</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+          <div>
+            <h3>Inactive State</h3>
+            <div class="regions-panel">
+              <button class="regions-toggle regions-toggle-inactive">
+                <span>🗺️</span>
+                <span style="flex: 1; text-align: left;">Show Regions</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <h3>Active State</h3>
+            <div class="regions-panel">
+              <button class="regions-toggle regions-toggle-active">
+                <span>🗺️</span>
+                <span style="flex: 1; text-align: left;">Hide Regions</span>
+              </button>
+              <div style="padding: 1rem; animation: fadeIn 0.3s;">
+                <p style="font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.75rem;">Regions of California:</p>
+                <div class="region-list">
+                  <div class="region-item">
+                    <div class="region-swatch" style="background: #fca5a5;"></div>
+                    <span style="font-size: 0.75rem; font-weight: 500;">Southern</span>
+                  </div>
+                  <div class="region-item">
+                    <div class="region-swatch" style="background: #93c5fd;"></div>
+                    <span style="font-size: 0.75rem; font-weight: 500;">Bay Area</span>
+                  </div>
+                  <div class="region-item">
+                    <div class="region-swatch" style="background: #86efac;"></div>
+                    <span style="font-size: 0.75rem; font-weight: 500;">Valley</span>
+                  </div>
+                  <div class="region-item">
+                    <div class="region-swatch" style="background: #c4b5fd;"></div>
+                    <span style="font-size: 0.75rem; font-weight: 500;">Coast</span>
+                  </div>
+                  <div class="region-item">
+                    <div class="region-swatch" style="background: #fdba74;"></div>
+                    <span style="font-size: 0.75rem; font-weight: 500;">Northern</span>
+                  </div>
+                  <div class="region-item">
+                    <div class="region-swatch" style="background: #fde047;"></div>
+                    <span style="font-size: 0.75rem; font-weight: 500;">Sierra Nevada</span>
+                  </div>
+                  <div class="region-item">
+                    <div class="region-swatch" style="background: #5eead4;"></div>
+                    <span style="font-size: 0.75rem; font-weight: 500;">North Coast</span>
+                  </div>
+                </div>
+                <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb;">
+                  <p style="font-size: 0.625rem; color: #9ca3af; font-style: italic;">
+                    Counties are colored by their geographic region to help you learn patterns
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animations Section -->
+    <div id="animations" class="content-section">
+      <div class="card">
+        <h2>✨ Animations & Transitions</h2>
+        <p>Animation classes and interactive states used throughout the game.</p>
+
+        <h3>Animation Examples</h3>
+        <div class="component-grid component-grid-3">
+          <div class="interactive-example fade-in">
+            <p style="font-weight: 600;">Fade In</p>
+            <p style="font-size: 0.875rem; color: #6b7280;">fadeIn 0.3s ease-in</p>
+          </div>
+
+          <div class="interactive-example slide-up">
+            <p style="font-weight: 600;">Slide Up</p>
+            <p style="font-size: 0.875rem; color: #6b7280;">slideUp 0.3s ease-out</p>
+          </div>
+
+          <div class="interactive-example scale-in">
+            <p style="font-weight: 600;">Scale In</p>
+            <p style="font-size: 0.875rem; color: #6b7280;">scaleIn 0.2s ease-out</p>
+          </div>
+        </div>
+
+        <h3>Hover States</h3>
+        <div class="button-group">
+          <p style="margin-bottom: 1rem;">Hover over elements to see transitions:</p>
+          <div style="display: flex; gap: 1rem;">
+            <div class="interactive-example" style="width: 150px;">
+              <p>Hover Card</p>
+            </div>
+            <button class="btn btn-primary btn-medium">Hover Button</button>
+            <span class="county-badge bay-area">Hover Badge</span>
+          </div>
+        </div>
+
+        <h3>Loading Animations</h3>
+        <div class="button-group">
+          <div style="display: flex; gap: 2rem; align-items: center;">
+            <button class="btn btn-primary btn-medium btn-loading"></button>
+            <div class="progress-container progress-medium" style="width: 200px;">
+              <div class="progress-bar progress-gradient progress-animated" style="width: 100%;"></div>
+            </div>
+            <div class="hint-emoji" style="font-size: 2rem; margin: 0;">📍</div>
+          </div>
+        </div>
+
+        <h3>Transition Timings</h3>
+        <div class="code-block">
+/* Standard transitions */
+.transition-fast    { transition: all 0.15s ease; }
+.transition-base    { transition: all 0.2s ease; }
+.transition-slow    { transition: all 0.3s ease; }
+.transition-smooth  { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Hover effects */
+.hover-lift   { transform: translateY(-2px); }
+.hover-grow   { transform: scale(1.05); }
+.hover-shadow { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); }
+
+/* Active states */
+.active-scale { transform: scale(0.95); }
+.active-dim   { opacity: 0.8; }
+        </div>
+      </div>
+    </div>
+
+    <!-- Responsive Section -->
+    <div id="responsive" class="content-section">
+      <div class="card">
+        <h2>📱 Responsive Design</h2>
+        <p>Breakpoints and responsive behaviors for different screen sizes.</p>
+
+        <h3>Breakpoints</h3>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Breakpoint</th>
+              <th>Min Width</th>
+              <th>CSS Class</th>
+              <th>Target Devices</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>xs</td>
+              <td>0px</td>
+              <td><code>@media (min-width: 0px)</code></td>
+              <td>Mobile phones (portrait)</td>
+            </tr>
+            <tr>
+              <td>sm</td>
+              <td>640px</td>
+              <td><code>@media (min-width: 640px)</code></td>
+              <td>Mobile phones (landscape)</td>
+            </tr>
+            <tr>
+              <td>md</td>
+              <td>768px</td>
+              <td><code>@media (min-width: 768px)</code></td>
+              <td>Tablets (portrait)</td>
+            </tr>
+            <tr>
+              <td>lg</td>
+              <td>1024px</td>
+              <td><code>@media (min-width: 1024px)</code></td>
+              <td>Tablets (landscape), small laptops</td>
+            </tr>
+            <tr>
+              <td>xl</td>
+              <td>1280px</td>
+              <td><code>@media (min-width: 1280px)</code></td>
+              <td>Laptops, desktops</td>
+            </tr>
+            <tr>
+              <td>2xl</td>
+              <td>1536px</td>
+              <td><code>@media (min-width: 1536px)</code></td>
+              <td>Large desktops</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Responsive Layout Grid</h3>
+        <div class="code-block">
+/* Mobile First Approach */
+.game-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .game-container {
+    grid-template-columns: 250px 1fr;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .game-container {
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+  }
+}
+        </div>
+
+        <h3>Touch Interactions</h3>
+        <div class="a11y-feature">
+          <div class="a11y-label">Mobile Touch Support</div>
+          <ul style="font-size: 0.875rem; margin-left: 1.5rem;">
+            <li>Touch-friendly tap targets (min 44x44px)</li>
+            <li>Swipe gestures for county selection</li>
+            <li>Touch-and-hold for drag operations</li>
+            <li>Pinch-to-zoom on map (tablets)</li>
+            <li>Haptic feedback on successful placement</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Section -->
+    <div id="api" class="content-section">
+      <div class="card">
+        <h2>🔧 Component API Reference</h2>
+        <p>Complete prop documentation for all UI components.</p>
+
+        <h3>Button Component API</h3>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>variant</code></td>
+              <td>'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'ghost' | 'outline'</td>
+              <td>'primary'</td>
+              <td>Visual style variant</td>
+            </tr>
+            <tr>
+              <td><code>size</code></td>
+              <td>'small' | 'medium' | 'large'</td>
+              <td>'medium'</td>
+              <td>Button size preset</td>
+            </tr>
+            <tr>
+              <td><code>loading</code></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>Show loading spinner</td>
+            </tr>
+            <tr>
+              <td><code>icon</code></td>
+              <td>ReactNode</td>
+              <td>undefined</td>
+              <td>Icon on left side</td>
+            </tr>
+            <tr>
+              <td><code>iconRight</code></td>
+              <td>ReactNode</td>
+              <td>undefined</td>
+              <td>Icon on right side</td>
+            </tr>
+            <tr>
+              <td><code>fullWidth</code></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>Full width button</td>
+            </tr>
+            <tr>
+              <td><code>disabled</code></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>Disabled state</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Badge Component API</h3>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>variant</code></td>
+              <td>'default' | 'info' | 'success' | 'warning' | 'error' | 'region'</td>
+              <td>'default'</td>
+              <td>Visual variant</td>
+            </tr>
+            <tr>
+              <td><code>size</code></td>
+              <td>'xs' | 'small' | 'medium' | 'large'</td>
+              <td>'small'</td>
+              <td>Badge size</td>
+            </tr>
+            <tr>
+              <td><code>region</code></td>
+              <td>string</td>
+              <td>undefined</td>
+              <td>California region name for auto-coloring</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Card Component API</h3>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>variant</code></td>
+              <td>'default' | 'elevated' | 'bordered'</td>
+              <td>'default'</td>
+              <td>Card style variant</td>
+            </tr>
+            <tr>
+              <td><code>padding</code></td>
+              <td>'none' | 'small' | 'medium' | 'large'</td>
+              <td>'medium'</td>
+              <td>Inner padding</td>
+            </tr>
+            <tr>
+              <td><code>interactive</code></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>Enable hover effects</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Progress Component API</h3>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>value</code></td>
+              <td>number</td>
+              <td>0</td>
+              <td>Current progress value</td>
+            </tr>
+            <tr>
+              <td><code>max</code></td>
+              <td>number</td>
+              <td>100</td>
+              <td>Maximum value</td>
+            </tr>
+            <tr>
+              <td><code>variant</code></td>
+              <td>'default' | 'gradient' | 'success'</td>
+              <td>'default'</td>
+              <td>Visual style</td>
+            </tr>
+            <tr>
+              <td><code>size</code></td>
+              <td>'small' | 'medium' | 'large'</td>
+              <td>'medium'</td>
+              <td>Progress bar height</td>
+            </tr>
+            <tr>
+              <td><code>animated</code></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>Enable shimmer animation</td>
+            </tr>
+            <tr>
+              <td><code>showLabel</code></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>Show percentage label</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Typography Components API</h3>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Props</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>&lt;Heading&gt;</code></td>
+              <td>level: 1-6, size: 'display' | 'title' | 'heading' | 'section' | 'subsection' | 'label'</td>
+              <td>Heading elements with semantic HTML</td>
+            </tr>
+            <tr>
+              <td><code>&lt;Text&gt;</code></td>
+              <td>size: 'xs' | 'sm' | 'base' | 'lg' | 'xl', weight: 'light' | 'normal' | 'medium' | 'semibold' | 'bold'</td>
+              <td>Body text with size and weight variants</td>
+            </tr>
+            <tr>
+              <td><code>&lt;Label&gt;</code></td>
+              <td>htmlFor: string, required: boolean</td>
+              <td>Form label with accessibility support</td>
+            </tr>
+            <tr>
+              <td><code>&lt;Code&gt;</code></td>
+              <td>inline: boolean, language: string</td>
+              <td>Code display with syntax highlighting</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Usage Examples</h3>
+        <div class="code-block">
+import { Button, Badge, Card, Progress, Heading, Text } from './components/ui';
+
+// Button with icon and loading state
+&lt;Button
+  variant="primary"
+  size="large"
+  icon={&lt;span&gt;📚&lt;/span&gt;}
+  loading={isLoading}
+  onClick={handleClick}
+&gt;
+  Study Mode
+&lt;/Button&gt;
+
+// Regional badge with automatic coloring
+&lt;Badge region="Bay Area" size="small"&gt;
+  San Francisco
+&lt;/Badge&gt;
+
+// Animated progress bar
+&lt;Progress
+  value={placedCounties.size}
+  max={counties.length}
+  variant="gradient"
+  size="medium"
+  animated
+  showLabel
+/&gt;
+
+// Card with elevated style
+&lt;Card variant="elevated" padding="large"&gt;
+  &lt;Heading level={2} size="section"&gt;Game Stats&lt;/Heading&gt;
+  &lt;Text size="lg" color="secondary"&gt;Your progress...&lt;/Text&gt;
+&lt;/Card&gt;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(tabName) {
+      // Hide all sections
+      const sections = document.querySelectorAll('.content-section');
+      sections.forEach(section => section.classList.remove('active'));
+
+      // Remove active from all tabs
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
+
+      // Show selected section
+      document.getElementById(tabName).classList.add('active');
+
+      // Mark tab as active
+      event.target.classList.add('active');
+    }
+
+    // Add breakpoint indicator
+    function updateBreakpoint() {
+      const width = window.innerWidth;
+      let breakpoint = 'xs';
+      if (width >= 1536) breakpoint = '2xl';
+      else if (width >= 1280) breakpoint = 'xl';
+      else if (width >= 1024) breakpoint = 'lg';
+      else if (width >= 768) breakpoint = 'md';
+      else if (width >= 640) breakpoint = 'sm';
+
+      const indicator = document.querySelector('.breakpoint-indicator');
+      if (indicator) {
+        indicator.textContent = `${breakpoint} (${width}px)`;
+      }
+    }
+
+    // Create breakpoint indicator
+    const indicator = document.createElement('div');
+    indicator.className = 'breakpoint-indicator';
+    document.body.appendChild(indicator);
+
+    updateBreakpoint();
+    window.addEventListener('resize', updateBreakpoint);
+  </script>
+</body>
+</html>

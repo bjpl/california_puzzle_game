@@ -1,0 +1,177 @@
+/* California Counties Design System - Progress Component */
+
+.ca-progress {
+  width: 100%;
+}
+
+/* Size Variants */
+.ca-progress--small .ca-progress__track {
+  height: 0.25rem;
+}
+
+.ca-progress--medium .ca-progress__track {
+  height: 0.5rem;
+}
+
+.ca-progress--large .ca-progress__track {
+  height: 1rem;
+}
+
+/* Progress Track */
+.ca-progress__track {
+  background-color: #E5E7EB;
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Progress Bar */
+.ca-progress__bar {
+  height: 100%;
+  transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.5rem;
+}
+
+/* Variant Colors */
+.ca-progress__bar--default {
+  background-color: #2563EB;
+}
+
+.ca-progress__bar--success {
+  background-color: #10B981;
+}
+
+.ca-progress__bar--warning {
+  background-color: #F59E0B;
+}
+
+.ca-progress__bar--danger {
+  background-color: #EF4444;
+}
+
+.ca-progress__bar--gradient {
+  background: linear-gradient(
+    90deg,
+    #3B82F6 0%,
+    #2563EB 50%,
+    #1D4ED8 100%
+  );
+}
+
+/* Animated State */
+.ca-progress__bar--animated {
+  animation: progress-pulse 2s ease-in-out infinite;
+}
+
+@keyframes progress-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Striped Pattern */
+.ca-progress__bar--striped {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1rem 1rem;
+  animation: progress-stripes 1s linear infinite;
+}
+
+@keyframes progress-stripes {
+  from {
+    background-position: 1rem 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+/* Labels */
+.ca-progress__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.ca-progress__label {
+  font-size: 0.875rem;
+  color: #4B5563;
+  font-weight: 500;
+}
+
+.ca-progress__label--inside {
+  color: white;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.ca-progress__percentage {
+  font-size: 0.875rem;
+  color: #6B7280;
+  font-weight: 600;
+}
+
+/* Game Progress Specific */
+.ca-game-progress {
+  position: relative;
+}
+
+.ca-game-progress__milestones {
+  position: relative;
+  height: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.ca-game-progress__milestone-marker {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 200ms ease;
+}
+
+.ca-game-progress__milestone-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background-color: #D1D5DB;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ca-game-progress__milestone-marker--achieved .ca-game-progress__milestone-dot {
+  background-color: #10B981;
+  transform: scale(1.2);
+}
+
+.ca-game-progress__milestone-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
