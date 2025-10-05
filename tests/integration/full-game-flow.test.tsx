@@ -6,37 +6,6 @@ import { MOCK_CALIFORNIA_COUNTIES } from '../fixtures';
 import '../mocks/d3-mocks';
 import '../mocks/react-dnd-mocks';
 
-// Mock DataTransfer for jsdom
-class MockDataTransfer {
-  data: Record<string, string> = {};
-  dropEffect: string = 'none';
-  effectAllowed: string = 'all';
-  files: FileList = [] as unknown as FileList;
-  items: DataTransferItemList = [] as unknown as DataTransferItemList;
-  types: string[] = [];
-
-  setData(format: string, data: string): void {
-    this.data[format] = data;
-    if (!this.types.includes(format)) {
-      this.types.push(format);
-    }
-  }
-
-  getData(format: string): string {
-    return this.data[format] || '';
-  }
-
-  clearData(format?: string): void {
-    if (format) {
-      delete this.data[format];
-      this.types = this.types.filter((t) => t !== format);
-    } else {
-      this.data = {};
-      this.types = [];
-    }
-  }
-}
-
 // Mock full game component integrating all systems
 const MockCaliforniaPuzzleGame: React.FC = () => {
   const [gameState, setGameState] = React.useState({
@@ -53,7 +22,7 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
     maxHints: 3,
     timeElapsed: 0,
     timeLimit: null as number | null,
-    availableCounties: MOCK_CALIFORNIA_COUNTIES.slice(0, 5).map(c => c.id), // Use subset for testing - store IDs only
+    availableCounties: MOCK_CALIFORNIA_COUNTIES.slice(0, 5).map((c) => c.id), // Use subset for testing - store IDs only
     placedCounties: [] as string[],
     currentCounty: null as string | null,
     selectedCounty: null as string | null,
@@ -65,13 +34,20 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
 
   React.useEffect(() => {
     if (gameState.isStarted && !gameState.currentCounty && gameState.availableCounties.length > 0) {
-      const remaining = gameState.availableCounties.filter(id => !gameState.placedCounties.includes(id));
-      setGameState(prev => ({ ...prev, currentCounty: remaining[0] || null }));
+      const remaining = gameState.availableCounties.filter(
+        (id) => !gameState.placedCounties.includes(id)
+      );
+      setGameState((prev) => ({ ...prev, currentCounty: remaining[0] || null }));
     }
-  }, [gameState.isStarted, gameState.placedCounties, gameState.availableCounties]);
+  }, [
+    gameState.isStarted,
+    gameState.currentCounty,
+    gameState.placedCounties,
+    gameState.availableCounties,
+  ]);
 
   const startGame = () => {
-    setGameState(prev => ({
+    setGameState((prev) => ({
       ...prev,
       isStarted: true,
       isPaused: false,
@@ -88,19 +64,19 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
   };
 
   const pauseGame = () => {
-    setGameState(prev => ({ ...prev, isPaused: !prev.isPaused }));
+    setGameState((prev) => ({ ...prev, isPaused: !prev.isPaused }));
   };
 
-  const setMode = (mode: typeof gameState.mode) => {
-    setGameState(prev => ({
+  const setMode = (mode: 'practice' | 'timed' | 'challenge' | 'learn') => {
+    setGameState((prev) => ({
       ...prev,
       mode,
       timeLimit: mode === 'timed' ? 300 : mode === 'challenge' ? 180 : null,
     }));
   };
 
-  const setDifficulty = (difficulty: typeof gameState.difficulty) => {
-    setGameState(prev => ({
+  const setDifficulty = (difficulty: 'easy' | 'medium' | 'hard') => {
+    setGameState((prev) => ({
       ...prev,
       difficulty,
       maxHints: difficulty === 'easy' ? 5 : difficulty === 'medium' ? 3 : 1,
@@ -108,7 +84,7 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
   };
 
   const selectCounty = (countyId: string) => {
-    setGameState(prev => ({ ...prev, selectedCounty: countyId }));
+    setGameState((prev) => ({ ...prev, selectedCounty: countyId }));
   };
 
   const placeCounty = (countyId: string, targetId: string) => {
@@ -117,9 +93,9 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
 
     if (isCorrect) {
       const newPlacedCounties = [...gameState.placedCounties, countyId];
-      const remaining = gameState.availableCounties.filter(id => !newPlacedCounties.includes(id));
+      const remaining = gameState.availableCounties.filter((id) => !newPlacedCounties.includes(id));
 
-      setGameState(prev => ({
+      setGameState((prev) => ({
         ...prev,
         placedCounties: newPlacedCounties,
         currentCounty: remaining[0] || null,
@@ -130,7 +106,7 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
         isCompleted: newPlacedCounties.length === prev.availableCounties.length,
       }));
     } else {
-      setGameState(prev => ({
+      setGameState((prev) => ({
         ...prev,
         mistakes: prev.mistakes + 1,
         totalQuestions: newTotalQuestions,
@@ -141,7 +117,7 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
 
   const useHint = () => {
     if (gameState.hintsUsed < gameState.maxHints) {
-      setGameState(prev => ({
+      setGameState((prev) => ({
         ...prev,
         hintsUsed: prev.hintsUsed + 1,
         score: Math.max(0, prev.score - 10),
@@ -150,7 +126,7 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
   };
 
   const resetGame = () => {
-    setGameState(prev => ({
+    setGameState((prev) => ({
       ...prev,
       isStarted: false,
       isPaused: false,
@@ -168,7 +144,7 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
   };
 
   const toggleLabels = () => {
-    setGameState(prev => ({ ...prev, showLabels: !prev.showLabels }));
+    setGameState((prev) => ({ ...prev, showLabels: !prev.showLabels }));
   };
 
   const handleDragStart = (countyId: string) => {
@@ -187,7 +163,7 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
 
   // Show all counties before game starts, filter out placed ones during game
   const availableForDrag = gameState.isStarted
-    ? gameState.availableCounties.filter(id => !gameState.placedCounties.includes(id))
+    ? gameState.availableCounties.filter((id) => !gameState.placedCounties.includes(id))
     : gameState.availableCounties;
 
   return (
@@ -201,7 +177,9 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
           <select
             data-testid="mode-selector"
             value={gameState.mode}
-            onChange={(e) => setMode(e.target.value as any)}
+            onChange={(e) =>
+              setMode(e.target.value as 'practice' | 'timed' | 'challenge' | 'learn')
+            }
             disabled={gameState.isStarted}
           >
             <option value="practice">Practice</option>
@@ -213,7 +191,7 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
           <select
             data-testid="difficulty-selector"
             value={gameState.difficulty}
-            onChange={(e) => setDifficulty(e.target.value as any)}
+            onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
             disabled={gameState.isStarted}
           >
             <option value="easy">Easy</option>
@@ -253,15 +231,21 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
       <div data-testid="game-stats" className="game-stats">
         <div data-testid="score">Score: {gameState.score}</div>
         <div data-testid="accuracy">
-          Accuracy: {gameState.totalQuestions > 0
+          Accuracy:{' '}
+          {gameState.totalQuestions > 0
             ? Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100)
-            : 0}%
+            : 0}
+          %
         </div>
-        <div data-testid="hints">Hints: {gameState.hintsUsed}/{gameState.maxHints}</div>
+        <div data-testid="hints">
+          Hints: {gameState.hintsUsed}/{gameState.maxHints}
+        </div>
         <div data-testid="mistakes">Mistakes: {gameState.mistakes}</div>
         {gameState.timeLimit && (
           <div data-testid="timer">
-            Time: {Math.floor(gameState.timeElapsed / 60)}:{(gameState.timeElapsed % 60).toString().padStart(2, '0')} / {Math.floor(gameState.timeLimit / 60)}:00
+            Time: {Math.floor(gameState.timeElapsed / 60)}:
+            {(gameState.timeElapsed % 60).toString().padStart(2, '0')} /{' '}
+            {Math.floor(gameState.timeLimit / 60)}:00
           </div>
         )}
       </div>
@@ -269,7 +253,7 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
       {/* Current County Indicator */}
       {gameState.isStarted && gameState.currentCounty && (
         <div data-testid="current-county" className="current-county">
-          Place: {MOCK_CALIFORNIA_COUNTIES.find(c => c.id === gameState.currentCounty)?.name}
+          Place: {MOCK_CALIFORNIA_COUNTIES.find((c) => c.id === gameState.currentCounty)?.name}
           <button
             data-testid="use-hint"
             onClick={useHint}
@@ -286,8 +270,8 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
         <div data-testid="counties-panel" className="counties-panel">
           <h3>Available Counties</h3>
           <div data-testid="draggable-counties">
-            {availableForDrag.map(countyId => {
-              const county = MOCK_CALIFORNIA_COUNTIES.find(c => c.id === countyId);
+            {availableForDrag.map((countyId) => {
+              const county = MOCK_CALIFORNIA_COUNTIES.find((c) => c.id === countyId);
               if (!county) return null;
 
               return (
@@ -314,14 +298,9 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
 
         {/* Map Area */}
         <div data-testid="map-area" className="map-area">
-          <svg
-            data-testid="california-map"
-            width="600"
-            height="400"
-            viewBox="0 0 600 400"
-          >
-            {gameState.availableCounties.map(countyId => {
-              const county = MOCK_CALIFORNIA_COUNTIES.find(c => c.id === countyId);
+          <svg data-testid="california-map" width="600" height="400" viewBox="0 0 600 400">
+            {gameState.availableCounties.map((countyId) => {
+              const county = MOCK_CALIFORNIA_COUNTIES.find((c) => c.id === countyId);
               if (!county) return null;
 
               const isPlaced = gameState.placedCounties.includes(countyId);
@@ -349,7 +328,9 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
                         placeCounty(gameState.selectedCounty, countyId);
                       }
                     }}
-                    style={{ cursor: gameState.isStarted && !gameState.isPaused ? 'pointer' : 'default' }}
+                    style={{
+                      cursor: gameState.isStarted && !gameState.isPaused ? 'pointer' : 'default',
+                    }}
                   />
                   {(gameState.showLabels || isPlaced) && (
                     <text
@@ -376,7 +357,9 @@ const MockCaliforniaPuzzleGame: React.FC = () => {
           <h2>Game Complete!</h2>
           <div data-testid="final-stats">
             <div>Final Score: {gameState.score}</div>
-            <div>Accuracy: {Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100)}%</div>
+            <div>
+              Accuracy: {Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100)}%
+            </div>
             <div>Mistakes: {gameState.mistakes}</div>
             <div>Hints Used: {gameState.hintsUsed}</div>
           </div>
@@ -430,7 +413,7 @@ describe('Full Game Flow Integration Tests', () => {
       render(<MockCaliforniaPuzzleGame />);
 
       const availableCounties = MOCK_CALIFORNIA_COUNTIES.slice(0, 5);
-      availableCounties.forEach(county => {
+      availableCounties.forEach((county) => {
         expect(screen.getByTestId(`draggable-county-${county.id}`)).toBeInTheDocument();
         expect(screen.getByTestId(`map-county-${county.id}`)).toBeInTheDocument();
       });
@@ -532,7 +515,7 @@ describe('Full Game Flow Integration Tests', () => {
       const currentCountyName = currentCountyText?.match(/Place: (.+)/)?.[1];
 
       if (currentCountyName) {
-        const county = MOCK_CALIFORNIA_COUNTIES.find(c => c.name === currentCountyName);
+        const county = MOCK_CALIFORNIA_COUNTIES.find((c) => c.name === currentCountyName);
         if (county) {
           // Select the county first
           await user.click(screen.getByTestId(`draggable-county-${county.id}`));
@@ -567,7 +550,7 @@ describe('Full Game Flow Integration Tests', () => {
       const currentCountyElement = screen.getByTestId('current-county');
       const currentCountyText = currentCountyElement.textContent;
       const currentCountyName = currentCountyText?.match(/Place: (.+?)(?:Use Hint|$)/)?.[1]?.trim();
-      const currentCounty = counties.find(c => c.name === currentCountyName);
+      const currentCounty = counties.find((c) => c.name === currentCountyName);
 
       if (currentCounty) {
         // Select the current county
@@ -580,7 +563,7 @@ describe('Full Game Flow Integration Tests', () => {
         });
 
         // Click on wrong position (use a different county's map area)
-        const wrongCounty = counties.find(c => c.id !== currentCounty.id);
+        const wrongCounty = counties.find((c) => c.id !== currentCounty.id);
         if (wrongCounty) {
           const mapCounty = screen.getByTestId(`map-county-${wrongCounty.id}`);
           // Use fireEvent for SVG elements as userEvent might not work properly
@@ -645,18 +628,14 @@ describe('Full Game Flow Integration Tests', () => {
       const draggableCounty = screen.getByTestId(`draggable-county-${firstCounty.id}`);
       const mapTarget = screen.getByTestId(`map-county-${firstCounty.id}`);
 
-      const dataTransfer = new MockDataTransfer();
+      // Use fireEvent to properly trigger React event handlers
+      fireEvent.dragStart(draggableCounty);
 
-      // Create drag event with dataTransfer
-      const dragStartEvent = new Event('dragstart', { bubbles: true, cancelable: true });
-      Object.defineProperty(dragStartEvent, 'dataTransfer', { value: dataTransfer });
-      draggableCounty.dispatchEvent(dragStartEvent);
-
-      fireEvent.dragOver(mapTarget);
-
-      const dropEvent = new Event('drop', { bubbles: true, cancelable: true });
-      Object.defineProperty(dropEvent, 'dataTransfer', { value: dataTransfer });
-      mapTarget.dispatchEvent(dropEvent);
+      // Get the rect element within the map target for proper event handling
+      const rectElement = mapTarget.querySelector('rect');
+      fireEvent.dragOver(rectElement!);
+      fireEvent.drop(rectElement!);
+      fireEvent.dragEnd(draggableCounty);
 
       await waitFor(() => {
         const mapCounty = screen.getByTestId(`map-county-${firstCounty.id}`);
@@ -677,10 +656,8 @@ describe('Full Game Flow Integration Tests', () => {
       const firstCounty = counties[0];
       const draggableCounty = screen.getByTestId(`draggable-county-${firstCounty.id}`);
 
-      const dataTransfer = new MockDataTransfer();
-      const dragStartEvent = new Event('dragstart', { bubbles: true, cancelable: true });
-      Object.defineProperty(dragStartEvent, 'dataTransfer', { value: dataTransfer });
-      draggableCounty.dispatchEvent(dragStartEvent);
+      // Use fireEvent to properly trigger React event handlers
+      fireEvent.dragStart(draggableCounty);
 
       await waitFor(() => {
         expect(draggableCounty).toHaveClass('dragging');
@@ -756,7 +733,8 @@ describe('Full Game Flow Integration Tests', () => {
 
       // Incorrect placement
       await user.click(screen.getByTestId(`draggable-county-${counties[1].id}`));
-      await user.click(screen.getByTestId(`map-county-${counties[2].id}`)); // Wrong position
+      const wrongMap2 = screen.getByTestId(`map-county-${counties[2].id}`);
+      fireEvent.click(wrongMap2.querySelector('rect')!); // Wrong position
 
       await waitFor(() => {
         expect(screen.getByTestId('accuracy')).toHaveTextContent('Accuracy: 50%');
@@ -775,10 +753,12 @@ describe('Full Game Flow Integration Tests', () => {
 
       // Place first county incorrectly, then correctly
       await user.click(screen.getByTestId(`draggable-county-${counties[0].id}`));
-      await user.click(screen.getByTestId(`map-county-${counties[1].id}`)); // Wrong
+      const wrongMapStat = screen.getByTestId(`map-county-${counties[1].id}`);
+      fireEvent.click(wrongMapStat.querySelector('rect')!); // Wrong
 
       await user.click(screen.getByTestId(`draggable-county-${counties[0].id}`));
-      await user.click(screen.getByTestId(`map-county-${counties[0].id}`)); // Correct
+      const correctMapStat = screen.getByTestId(`map-county-${counties[0].id}`);
+      fireEvent.click(correctMapStat.querySelector('rect')!); // Correct
 
       // Place remaining counties correctly
       for (let i = 1; i < counties.length; i++) {
@@ -789,7 +769,8 @@ describe('Full Game Flow Integration Tests', () => {
         });
 
         await user.click(screen.getByTestId(`draggable-county-${county.id}`));
-        await user.click(screen.getByTestId(`map-county-${county.id}`));
+        const mapElStat = screen.getByTestId(`map-county-${county.id}`);
+        fireEvent.click(mapElStat.querySelector('rect')!);
       }
 
       // Check final stats
@@ -871,10 +852,8 @@ describe('Full Game Flow Integration Tests', () => {
       const counties = MOCK_CALIFORNIA_COUNTIES.slice(0, 5);
       const draggableCounty = screen.getByTestId(`draggable-county-${counties[0].id}`);
 
-      const dataTransfer = new MockDataTransfer();
-      const dragStartEvent = new Event('dragstart', { bubbles: true, cancelable: true });
-      Object.defineProperty(dragStartEvent, 'dataTransfer', { value: dataTransfer });
-      draggableCounty.dispatchEvent(dragStartEvent);
+      // Use fireEvent to properly trigger React event handlers
+      fireEvent.dragStart(draggableCounty);
 
       // Pause during drag
       await user.click(screen.getByTestId('pause-game'));
@@ -901,7 +880,8 @@ describe('Full Game Flow Integration Tests', () => {
         });
 
         await user.click(screen.getByTestId(`draggable-county-${county.id}`));
-        await user.click(screen.getByTestId(`map-county-${county.id}`));
+        const mapElPlayAgain = screen.getByTestId(`map-county-${county.id}`);
+        fireEvent.click(mapElPlayAgain.querySelector('rect')!);
       }
 
       // Wait for game over screen
