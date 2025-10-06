@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { DndContext, DragEndEvent, DragStartEvent, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import {
-  GameModeConfiguration,
-  GameContainerProps,
-  County,
-  CountyPiece,
-  Position,
-  DifficultyLevel
-} from '@/types';
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  useSensor,
+  useSensors,
+  PointerSensor,
+} from '@dnd-kit/core';
+import { GameModeConfiguration, GameContainerProps, County, CountyPiece, Position } from '@/types';
 import { useGameStore } from '@/stores/gameStore';
 import { GameModeSelector } from './GameModeSelector';
 import { DifficultySystem, useDifficultySettings } from '../game/DifficultySystem';
@@ -18,30 +18,29 @@ import CountyTray from '../county/CountyTray';
 import CaliforniaMapFixed from '../map/CaliforniaMapFixed';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
-import { GAME_MODES, getDifficultySettings } from '@/config/gameModes';
-import { getCountiesByRegion, getCountyById } from '@/utils/californiaData';
+import { getCountyById } from '@/utils/californiaData';
 import { playSound, SoundType } from '../../utils/soundManager';
 
 type GamePhase = 'mode_selection' | 'study' | 'playing' | 'complete' | 'progression';
 
 export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
-  initialSettings,
+  initialSettings: _initialSettings,
   initialMode,
   onGameComplete,
-  onModeChange
+  onModeChange,
 }) => {
   // Game Store
   const {
-    isGameActive,
+    isGameActive: _isGameActive,
     currentMode,
     placedCounties,
-    remainingCounties,
+    remainingCounties: _remainingCounties,
     score,
     timeElapsed,
     streak,
     mistakes,
     difficulty,
-    settings,
+    settings: _settings,
     stats,
     achievements,
     availableModes,
@@ -51,12 +50,14 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
     placeCounty,
     setCurrentMode,
     updateModeProgress,
-    unlockMode
+    unlockMode,
   } = useGameStore();
 
   // Local State
   const [gamePhase, setGamePhase] = useState<GamePhase>('mode_selection');
-  const [selectedMode, setSelectedMode] = useState<GameModeConfiguration | null>(initialMode || null);
+  const [selectedMode, setSelectedMode] = useState<GameModeConfiguration | null>(
+    initialMode || null
+  );
   const [isDragging, setIsDragging] = useState(false);
   const [gameStartTime, setGameStartTime] = useState<number>(0);
 
@@ -73,23 +74,27 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
   );
 
   // Game state calculations
-  const gameState = useMemo(() => ({
-    timeElapsed,
-    mistakes,
-    streak,
-    placedCounties: placedCounties.length,
-    totalCounties: currentMode.counties.length
-  }), [timeElapsed, mistakes, streak, placedCounties.length, currentMode.counties.length]);
+  const gameState = useMemo(
+    () => ({
+      timeElapsed,
+      mistakes,
+      streak,
+      placedCounties: placedCounties.length,
+      totalCounties: currentMode.counties.length,
+    }),
+    [timeElapsed, mistakes, streak, placedCounties.length, currentMode.counties.length]
+  );
 
   const isGameComplete = gameState.placedCounties === gameState.totalCounties;
-  const gameAccuracy = gameState.totalCounties > 0
-    ? (gameState.placedCounties - mistakes) / gameState.totalCounties
-    : 0;
+  const gameAccuracy =
+    gameState.totalCounties > 0
+      ? (gameState.placedCounties - mistakes) / gameState.totalCounties
+      : 0;
 
   // Initialize counties for the selected mode
   const modeCounties = useMemo(() => {
     return currentMode.counties
-      .map(id => getCountyById(id))
+      .map((id) => getCountyById(id))
       .filter((county): county is County => county !== undefined);
   }, [currentMode.counties]);
 
@@ -125,8 +130,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
       const finalScore = score;
 
       // Calculate stars earned
-      const stars = currentMode ?
-        Math.max(1, Math.floor(gameAccuracy * 3)) : 1;
+      const stars = currentMode ? Math.max(1, Math.floor(gameAccuracy * 3)) : 1;
 
       // Update mode progress
       if (currentMode) {
@@ -147,9 +151,9 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
   // Handle drag start
   const handleDragStart = (event: DragStartEvent) => {
     const countyId = event.active.id as string;
-    const county = modeCounties.find(c => c.id === countyId);
+    const county = modeCounties.find((c) => c.id === countyId);
 
-    if (county && !placedCounties.some(p => p.id === countyId)) {
+    if (county && !placedCounties.some((p) => p.id === countyId)) {
       setIsDragging(true);
       playSound(SoundType.PICKUP);
     }
@@ -162,9 +166,9 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
 
     if (over && active) {
       const draggedId = active.id as string;
-      const targetId = over.id as string;
+      const _targetId = over.id as string;
 
-      const county = modeCounties.find(c => c.id === draggedId);
+      const county = modeCounties.find((c) => c.id === draggedId);
       if (county) {
         // Convert county to CountyPiece for placement
         const countyPiece: CountyPiece = {
@@ -174,7 +178,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
           targetPosition: { x: 0, y: 0 }, // This would be calculated from the county's map position
           rotation: 0,
           scale: 1,
-          zIndex: 1
+          zIndex: 1,
         };
 
         const dropPosition: Position = { x: 0, y: 0 }; // This would come from the actual drop event
@@ -220,7 +224,8 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
                 🗺️ California Counties Adventure
               </h1>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Master California geography through engaging game modes designed for every skill level
+                Master California geography through engaging game modes designed for every skill
+                level
               </p>
             </div>
 
@@ -252,10 +257,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <h1 className="text-3xl font-bold text-gray-900">Your Progress</h1>
-              <CaliforniaButton
-                variant="secondary"
-                onClick={handleBackToModeSelection}
-              >
+              <CaliforniaButton variant="secondary" onClick={handleBackToModeSelection}>
                 ← Back to Modes
               </CaliforniaButton>
             </div>
@@ -281,29 +283,20 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
                 <h1 className="text-3xl font-bold text-gray-900">Study Mode</h1>
                 <p className="text-gray-600">Learn about each county before playing</p>
               </div>
-              <CaliforniaButton
-                variant="secondary"
-                onClick={handleBackToModeSelection}
-              >
+              <CaliforniaButton variant="secondary" onClick={handleBackToModeSelection}>
                 ← Back to Modes
               </CaliforniaButton>
             </div>
 
             {/* Study Mode */}
-            <StudyMode
-              counties={currentMode.counties}
-              onStudyComplete={handleStudyComplete}
-            />
+            <StudyMode counties={currentMode.counties} onStudyComplete={handleStudyComplete} />
           </div>
         </div>
       );
 
     case 'playing':
       return (
-        <DifficultySystem
-          mode={currentMode}
-          gameState={gameState}
-        >
+        <DifficultySystem mode={currentMode} gameState={gameState}>
           <div className="min-h-screen bg-gray-100">
             <div className="container mx-auto p-4 max-w-7xl">
               {/* Game Header */}
@@ -311,11 +304,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
 
               {/* Game Controls */}
               <div className="flex justify-between items-center mb-4">
-                <CaliforniaButton
-                  variant="secondary"
-                  onClick={handleBackToModeSelection}
-                  size="sm"
-                >
+                <CaliforniaButton variant="secondary" onClick={handleBackToModeSelection} size="sm">
                   ← Change Mode
                 </CaliforniaButton>
 
@@ -323,19 +312,13 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
                   <span>Mode: {currentMode.name}</span>
                   <span>Difficulty: {difficulty}</span>
                   {currentMode.timeLimit && (
-                    <span>
-                      Time: {Math.floor((currentMode.timeLimit - timeElapsed) / 1000)}s
-                    </span>
+                    <span>Time: {Math.floor((currentMode.timeLimit - timeElapsed) / 1000)}s</span>
                   )}
                 </div>
               </div>
 
               {/* Game Area */}
-              <DndContext
-                sensors={sensors}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-              >
+              <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                   {/* County Tray */}
                   <div className="lg:col-span-1">
