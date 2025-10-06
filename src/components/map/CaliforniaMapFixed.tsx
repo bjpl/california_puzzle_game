@@ -42,9 +42,12 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   const isWrongHover = isOver && currentCounty?.id !== countyId;
 
   let fillColor = COUNTY_FILL_COLORS.DEFAULT; // Default gray
-  if (isPlaced) fillColor = COUNTY_FILL_COLORS.PLACED; // Green when placed
-  else if (isCorrectHover) fillColor = COUNTY_FILL_COLORS.CORRECT_HOVER; // Light green on correct hover
-  else if (isWrongHover) fillColor = COUNTY_FILL_COLORS.WRONG_HOVER; // Light red on wrong hover
+  if (isPlaced)
+    fillColor = COUNTY_FILL_COLORS.PLACED; // Green when placed
+  else if (isCorrectHover)
+    fillColor = COUNTY_FILL_COLORS.CORRECT_HOVER; // Light green on correct hover
+  else if (isWrongHover)
+    fillColor = COUNTY_FILL_COLORS.WRONG_HOVER; // Light red on wrong hover
   else if (isActive) fillColor = COUNTY_FILL_COLORS.ACTIVE; // Yellow when active
 
   // Calculate optimal text color based on background
@@ -54,8 +57,8 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   const coordinatesToPath = (coords: Record<string, unknown>[], isHole = false): string => {
     if (!coords || coords.length === 0) return '';
 
-    const points = coords.map(coord => projection(coord));
-    const validPoints = points.filter(p => p && !isNaN(p[0]) && !isNaN(p[1]));
+    const points = coords.map((coord) => projection(coord));
+    const validPoints = points.filter((p) => p && !isNaN(p[0]) && !isNaN(p[1]));
 
     if (validPoints.length === 0) return '';
 
@@ -103,10 +106,12 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   // Calculate centroid for label
   const calculateCentroid = () => {
     const geom = county.geometry;
-    let totalX = 0, totalY = 0, count = 0;
+    let totalX = 0,
+      totalY = 0,
+      count = 0;
 
     const processCoords = (coords: Record<string, unknown>[]) => {
-      coords.forEach(coord => {
+      coords.forEach((coord) => {
         const point = projection(coord);
         if (point) {
           totalX += point[0];
@@ -149,7 +154,10 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
           fontWeight="bold"
           pointerEvents="none"
           style={{
-            textShadow: textColor === '#ffffff' ? '1px 1px 2px rgba(0,0,0,0.7)' : '1px 1px 2px rgba(255,255,255,0.7)',
+            textShadow:
+              textColor === '#ffffff'
+                ? '1px 1px 2px rgba(0,0,0,0.7)'
+                : '1px 1px 2px rgba(255,255,255,0.7)',
           }}
         >
           {county.properties.NAME}
@@ -160,21 +168,23 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
 }
 
 export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean }) {
-  const [geoData, setGeoData] = useState<any>(null);
-  const [projection, setProjection] = useState<any>(null);
+  const [geoData, setGeoData] = useState<Record<string, unknown> | null>(null);
+  const [projection, setProjection] = useState<
+    ((coord: [number, number]) => [number, number]) | null
+  >(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const { counties } = useGame();
+  const { counties: _counties } = useGame();
 
   useEffect(() => {
     // Load the GeoJSON data (use different path for dev vs production)
-    const basePath = window.location.hostname === 'localhost'
-      ? '/data/geo/ca-counties-medium.geojson'
-      : '/california_puzzle_game/data/geo/ca-counties-medium.geojson';
-
+    const basePath =
+      window.location.hostname === 'localhost'
+        ? '/data/geo/ca-counties-medium.geojson'
+        : '/california_puzzle_game/data/geo/ca-counties-medium.geojson';
 
     fetch(basePath)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setGeoData(data);
 
         // Create California-optimized projection
@@ -187,23 +197,30 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
           const [lon, lat] = coord;
 
           // Simple linear transformation
-          const x = ((lon - UI_CONFIG.CA_LON_MIN) / UI_CONFIG.CA_LON_RANGE) * width * UI_CONFIG.CA_MAP_PADDING + width * UI_CONFIG.CA_MAP_OFFSET;
-          const y = ((UI_CONFIG.CA_LAT_MAX - lat) / UI_CONFIG.CA_LAT_RANGE) * height * UI_CONFIG.CA_MAP_PADDING + height * UI_CONFIG.CA_MAP_OFFSET;
+          const x =
+            ((lon - UI_CONFIG.CA_LON_MIN) / UI_CONFIG.CA_LON_RANGE) *
+              width *
+              UI_CONFIG.CA_MAP_PADDING +
+            width * UI_CONFIG.CA_MAP_OFFSET;
+          const y =
+            ((UI_CONFIG.CA_LAT_MAX - lat) / UI_CONFIG.CA_LAT_RANGE) *
+              height *
+              UI_CONFIG.CA_MAP_PADDING +
+            height * UI_CONFIG.CA_MAP_OFFSET;
 
           return [x, y];
         };
 
         setProjection(() => californiaProjection);
       })
-      .catch(error => {
+      .catch((error) => {
         mapLogger.error('Error loading GeoJSON:', error);
       });
   }, []);
 
   // Show ALL counties from the GeoJSON (we have all 58 counties now)
   // No filtering needed since our game includes all California counties
-  const filteredFeatures = geoData?.features || [];
-
+  const _filteredFeatures = geoData?.features || [];
 
   if (!geoData || !projection) {
     return (
@@ -270,14 +287,28 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
 
         {/* Legend */}
         <g transform="translate(20, 520)">
-          <rect x="0" y="0" width="15" height="15" fill="#e5e7eb" stroke="#374151" strokeWidth="0.5" />
-          <text x="20" y="12" fontSize="12" fill="#4b5563">Available</text>
+          <rect
+            x="0"
+            y="0"
+            width="15"
+            height="15"
+            fill="#e5e7eb"
+            stroke="#374151"
+            strokeWidth="0.5"
+          />
+          <text x="20" y="12" fontSize="12" fill="#4b5563">
+            Available
+          </text>
 
           <rect x="0" y="20" width="15" height="15" fill="#10b981" />
-          <text x="20" y="32" fontSize="12" fill="#4b5563">Placed</text>
+          <text x="20" y="32" fontSize="12" fill="#4b5563">
+            Placed
+          </text>
 
           <rect x="0" y="40" width="15" height="15" fill="#fef3c7" />
-          <text x="20" y="52" fontSize="12" fill="#4b5563">Selected</text>
+          <text x="20" y="52" fontSize="12" fill="#4b5563">
+            Selected
+          </text>
         </g>
       </svg>
     </div>

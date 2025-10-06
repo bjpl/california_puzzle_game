@@ -1,21 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { mapLogger } from '../../utils/logger';
 import { useDroppable } from '@dnd-kit/core';
-import { mapLogger } from '../../utils/logger';
 import { useGame } from '../../context/GameContext';
 import { mapLogger } from '../../utils/logger';
 import { getSvgTextFill } from '../../utils/colorContrast';
-import { mapLogger } from '../../utils/logger';
 import CountyDetailsModal from '../county/CountyDetailsModal';
-import { mapLogger } from '../../utils/logger';
 import EnhancedStudyMode from '../study/EnhancedStudyMode';
-import { mapLogger } from '../../utils/logger';
-import { saveGameState, generateStudyModeUrl } from '../../utils/gameStateManager';
-import { mapLogger } from '../../utils/logger';
 import { CALIFORNIA_COUNTIES } from '../../utils/californiaData';
-import { mapLogger } from '../../utils/logger';
 import { getRegionHexColor } from '../../config/regionColors';
-import { mapLogger } from '../../utils/logger';
 import '../../styles/educational-design.css';
 
 interface CountyFeature {
@@ -30,7 +21,14 @@ interface CountyFeature {
   };
 }
 
-function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCountyLeave, onLabelPosition }: {
+function CountyDropZone({
+  county,
+  isDragging,
+  onCountyClick,
+  onCountyHover,
+  onCountyLeave,
+  onLabelPosition,
+}: {
   county: CountyFeature;
   isDragging: boolean;
   onCountyClick?: (county: Record<string, unknown>) => void;
@@ -38,14 +36,14 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
   onCountyLeave?: () => void;
   onLabelPosition?: (countyId: string, position: [number, number]) => void;
 }) {
-  const { placedCounties, currentCounty, showRegions, counties } = useGame();
+  const { placedCounties, currentCounty: _currentCounty, showRegions, counties } = useGame();
   const [isHovered, setIsHovered] = useState(false);
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
   const isPlaced = placedCounties.has(countyId);
 
   // Find the region and centroid for this county
-  const countyData = counties.find(c => c.id === countyId);
+  const countyData = counties.find((c) => c.id === countyId);
   const region = countyData?.region || '';
 
   const { isOver, setNodeRef } = useDroppable({
@@ -55,34 +53,34 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
   // Use centralized color configuration for consistency
 
   // Determine fill color based on state and regions
-  let fillColor = (showRegions && region) ? getRegionHexColor(region) : '#f3f4f6'; // Light gray instead of white
+  let fillColor = showRegions && region ? getRegionHexColor(region) : '#f3f4f6'; // Light gray instead of white
   let strokeColor = '#d1d5db'; // Gray stroke for visibility
-  let strokeWidth = "1.5";
+  let strokeWidth = '1.5';
   let fillOpacity = 1; // Full opacity for visibility
 
   if (isPlaced) {
     fillColor = '#10b981'; // Green when placed
     strokeColor = '#047857'; // Darker green stroke
-    strokeWidth = "1";
+    strokeWidth = '1';
     fillOpacity = 0.98; // Nearly opaque when placed
   } else if (isDragging && isOver) {
     fillColor = '#fde68a'; // Softer yellow when hovering over during drag
     strokeColor = '#f59e0b'; // Amber stroke
-    strokeWidth = "1.5";
+    strokeWidth = '1.5';
     fillOpacity = 0.9; // More visible when hovering
   } else if (isHovered) {
     fillOpacity = 0.9; // Brighten on hover
     strokeColor = '#FFFFFF';
-    strokeWidth = "2.5";
+    strokeWidth = '2.5';
   }
 
   // Calculate optimal text color based on background
-  const textColor = getSvgTextFill(fillColor);
+  const _textColor = getSvgTextFill(fillColor);
 
   // Convert Web Mercator (EPSG:3857) to lat/lon (EPSG:4326)
   const webMercatorToLatLon = (x: number, y: number): [number, number] => {
     const lon = (x / 20037508.34) * 180;
-    const lat = (Math.atan(Math.exp((y / 20037508.34) * Math.PI)) * 360 / Math.PI) - 90;
+    const lat = (Math.atan(Math.exp((y / 20037508.34) * Math.PI)) * 360) / Math.PI - 90;
     return [lon, lat];
   };
 
@@ -112,12 +110,14 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
     let pathData = '';
 
     const ringToPath = (ring: number[][]) => {
-      return ring
-        .map((coord, i) => {
-          const [x, y] = project([coord[0], coord[1]]);
-          return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
-        })
-        .join(' ') + 'Z';
+      return (
+        ring
+          .map((coord, i) => {
+            const [x, y] = project([coord[0], coord[1]]);
+            return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+          })
+          .join(' ') + 'Z'
+      );
     };
 
     if (geom.type === 'Polygon') {
@@ -138,7 +138,7 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
   // Calculate the label position for the county
   const getLabelPosition = (): [number, number] => {
     // First try to find centroid data from the californiaData
-    const californiaCountyData = CALIFORNIA_COUNTIES.find(c => c.id === countyId);
+    const californiaCountyData = CALIFORNIA_COUNTIES.find((c) => c.id === countyId);
     if (californiaCountyData?.centroid) {
       return project([californiaCountyData.centroid[0], californiaCountyData.centroid[1]]);
     }
@@ -150,10 +150,12 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
 
     // Otherwise, calculate approximate centroid from geometry
     const geom = county.geometry;
-    let sumX = 0, sumY = 0, count = 0;
+    let sumX = 0,
+      sumY = 0,
+      count = 0;
 
     const processRing = (ring: number[][]) => {
-      ring.forEach(coord => {
+      ring.forEach((coord) => {
         if (coord.length >= 2) {
           const [x, y] = project([coord[0], coord[1]]);
           // Only add valid projected coordinates
@@ -218,14 +220,19 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
         fill={fillColor}
         fillOpacity={fillOpacity}
         stroke={strokeColor}
-        strokeWidth={isDragging && isOver ? "1.5" : strokeWidth}
+        strokeWidth={isDragging && isOver ? '1.5' : strokeWidth}
         strokeLinejoin="round"
         strokeLinecap="round"
         className="transition-all duration-200 hover:opacity-90"
         style={{
           cursor: isPlaced ? 'pointer' : 'pointer',
-          filter: isDragging && isOver ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' : isPlaced ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
-          opacity: 1
+          filter:
+            isDragging && isOver
+              ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'
+              : isPlaced
+                ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))'
+                : 'none',
+          opacity: 1,
         }}
         onMouseEnter={() => {
           setIsHovered(true);
@@ -248,14 +255,23 @@ function CountyDropZone({ county, isDragging, onCountyClick, onCountyHover, onCo
 export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolean }) {
   mapLogger.debug('🗺️ CaliforniaMapSimple component rendering');
   const gameContext = useGame();
-  const { showRegions, placedCounties, counties, score, timerState, mistakes, gameSettings, placementHistory } = gameContext;
+  const {
+    showRegions,
+    placedCounties,
+    counties,
+    score: _score,
+    timerState: _timerState,
+    mistakes: _mistakes,
+    gameSettings: _gameSettings,
+    placementHistory: _placementHistory,
+  } = gameContext;
   mapLogger.debug('🎨 showRegions value:', showRegions);
-  const [selectedCounty, setSelectedCounty] = useState<any>(null);
+  const [selectedCounty, setSelectedCounty] = useState<Record<string, unknown> | null>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
   const [labelPositions, setLabelPositions] = useState<Map<string, [number, number]>>(new Map());
-  const [geoData, setGeoData] = useState<any>(null);
-  const [bounds, setBounds] = useState<any>(null);
+  const [geoData, setGeoData] = useState<Record<string, unknown> | null>(null);
+  const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
@@ -264,27 +280,28 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   const startMouse = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    const basePath = window.location.hostname === 'localhost'
-      ? '/data/geo/ca-counties-medium.geojson'
-      : '/california_puzzle_game/data/geo/ca-counties-medium.geojson';
+    const basePath =
+      window.location.hostname === 'localhost'
+        ? '/data/geo/ca-counties-medium.geojson'
+        : '/california_puzzle_game/data/geo/ca-counties-medium.geojson';
 
     mapLogger.debug('Attempting to fetch GeoJSON from:', basePath);
     fetch(basePath)
-      .then(response => {
+      .then((response) => {
         mapLogger.debug('Fetch response:', response.status, response.statusText);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         mapLogger.debug('GeoJSON loaded successfully, features:', data.features?.length);
         setGeoData(data);
         // We use fixed California bounds in the projection function,
         // so we don't need to calculate them from the data
         setBounds({ loaded: true });
       })
-      .catch(error => {
+      .catch((error) => {
         mapLogger.error('Error loading GeoJSON:', error);
         mapLogger.error('Failed path was:', basePath);
       });
@@ -294,7 +311,9 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
     mapLogger.debug('⏳ Map loading state - geoData:', !!geoData, 'bounds:', !!bounds);
     return (
       <div className="w-full h-full flex items-center justify-center bg-blue-50">
-        <div className="text-gray-700 animate-pulse text-lg font-semibold">Loading California map...</div>
+        <div className="text-gray-700 animate-pulse text-lg font-semibold">
+          Loading California map...
+        </div>
       </div>
     );
   }
@@ -311,7 +330,8 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
 
   // Handle mouse events for panning
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (e.button === 0 && !isDragging) { // Left click when not dragging counties
+    if (e.button === 0 && !isDragging) {
+      // Left click when not dragging counties
       const svg = svgRef.current;
       if (!svg) return;
 
@@ -336,7 +356,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       // Apply the pan offset
       setPan({
         x: startPan.current.x + dx,
-        y: startPan.current.y + dy
+        y: startPan.current.y + dy,
       });
     }
   };
@@ -357,7 +377,10 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   };
 
   return (
-    <div className="w-full h-full relative flex items-center justify-center" style={{ backgroundColor: '#fefefe' }}>
+    <div
+      className="w-full h-full relative flex items-center justify-center"
+      style={{ backgroundColor: '#fefefe' }}
+    >
       {/* Zoom Controls - Clean educational styling */}
       <div className="map-controls">
         <button
@@ -387,7 +410,12 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
           aria-label="Reset map view to default"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
           </svg>
         </button>
       </div>
@@ -395,9 +423,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       {/* Only show drag instruction when dragging - Clean educational styling */}
       {isDragging && (
         <div className="instruction-banner">
-          <p className="instruction-text">
-            Drop the county on its correct location
-          </p>
+          <p className="instruction-text">Drop the county on its correct location</p>
         </div>
       )}
 
@@ -411,7 +437,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
           maxHeight: '100%',
           maxWidth: '100%',
           display: 'block',
-          cursor: isDragging ? 'default' : (isPanning.current ? 'grabbing' : 'grab')
+          cursor: isDragging ? 'default' : isPanning.current ? 'grabbing' : 'grab',
         }}
         preserveAspectRatio="xMidYMid meet"
         onWheel={handleWheel}
@@ -422,12 +448,12 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       >
         <defs>
           <filter id="mapShadow">
-            <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.05"/>
+            <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.05" />
           </filter>
           {/* Clean educational background pattern */}
           <pattern id="educationalPattern" patternUnits="userSpaceOnUse" width="20" height="20">
-            <rect width="20" height="20" fill="#fefefe"/>
-            <circle cx="10" cy="10" r="0.3" fill="#8c8c8c" opacity="0.1"/>
+            <rect width="20" height="20" fill="#fefefe" />
+            <circle cx="10" cy="10" r="0.3" fill="#8c8c8c" opacity="0.1" />
           </pattern>
         </defs>
 
@@ -435,65 +461,65 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         <rect width="800" height="600" fill="#fefefe" />
 
         {/* Apply zoom and pan transformation - zoom from center */}
-        <g transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${300 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
+        <g
+          transform={`translate(${(400 * (1 - zoom)) / 2 + pan.x * zoom}, ${(300 * (1 - zoom)) / 2 + pan.y * zoom}) scale(${zoom})`}
+        >
+          {/* Render all county shapes with hover labels and click handlers */}
+          <g className="county-shapes">
+            {geoData.features.map((feature: CountyFeature, idx: number) => (
+              <CountyDropZone
+                key={feature.properties.NAME || `county-${idx}`}
+                county={feature}
+                isDragging={isDragging}
+                onCountyClick={(county) => setSelectedCounty(county)}
+                onCountyHover={(countyId) => setHoveredCounty(countyId)}
+                onCountyLeave={() => setHoveredCounty(null)}
+                onLabelPosition={(countyId, position) => {
+                  setLabelPositions((prev) => new Map(prev.set(countyId, position)));
+                }}
+              />
+            ))}
+          </g>
 
-        {/* Render all county shapes with hover labels and click handlers */}
-        <g className="county-shapes">
-          {geoData.features.map((feature: CountyFeature, idx: number) => (
-            <CountyDropZone
-              key={feature.properties.NAME || `county-${idx}`}
-              county={feature}
-              isDragging={isDragging}
-              onCountyClick={(county) => setSelectedCounty(county)}
-              onCountyHover={(countyId) => setHoveredCounty(countyId)}
-              onCountyLeave={() => setHoveredCounty(null)}
-              onLabelPosition={(countyId, position) => {
-                setLabelPositions(prev => new Map(prev.set(countyId, position)));
-              }}
-            />
-          ))}
-        </g>
+          {/* Render county labels above all shapes for proper layering */}
+          <g className="county-labels" style={{ pointerEvents: 'none' }}>
+            {Array.from(labelPositions.entries()).map(([countyId, position]) => {
+              const shouldShowLabel = hoveredCounty === countyId;
+              const isPlaced = placedCounties.has(countyId);
 
-        {/* Render county labels above all shapes for proper layering */}
-        <g className="county-labels" style={{ pointerEvents: 'none' }}>
-          {Array.from(labelPositions.entries()).map(([countyId, position]) => {
-            const shouldShowLabel = hoveredCounty === countyId;
-            const isPlaced = placedCounties.has(countyId);
+              if (!isPlaced) return null;
 
-            if (!isPlaced) return null;
+              // Find the county name from the countyId
+              const countyData = counties.find((c) => c.id === countyId);
+              const countyName = countyData?.name || countyId.replace(/-/g, ' ');
+              const [labelX, labelY] = position;
 
-            // Find the county name from the countyId
-            const countyData = counties.find(c => c.id === countyId);
-            const countyName = countyData?.name || countyId.replace(/-/g, ' ');
-            const [labelX, labelY] = position;
-
-            return (
-              <g
-                key={`label-${countyId}`}
-                className={`county-hover-label ${shouldShowLabel ? 'visible' : ''}`}
-                style={{ opacity: shouldShowLabel ? 1 : 0 }}
-              >
-                <rect
-                  className="county-label-bg"
-                  x={labelX - (countyName.length * 4)}
-                  y={labelY - 8}
-                  width={countyName.length * 8}
-                  height={16}
-                />
-                <text
-                  className="county-label"
-                  x={labelX}
-                  y={labelY}
-                  fontSize="12"
-                  fontWeight="600"
+              return (
+                <g
+                  key={`label-${countyId}`}
+                  className={`county-hover-label ${shouldShowLabel ? 'visible' : ''}`}
+                  style={{ opacity: shouldShowLabel ? 1 : 0 }}
                 >
-                  {countyName}
-                </text>
-              </g>
-            );
-          })}
-        </g>
-
+                  <rect
+                    className="county-label-bg"
+                    x={labelX - countyName.length * 4}
+                    y={labelY - 8}
+                    width={countyName.length * 8}
+                    height={16}
+                  />
+                  <text
+                    className="county-label"
+                    x={labelX}
+                    y={labelY}
+                    fontSize="12"
+                    fontWeight="600"
+                  >
+                    {countyName}
+                  </text>
+                </g>
+              );
+            })}
+          </g>
         </g>
         {/* End of zoom/pan group */}
       </svg>
