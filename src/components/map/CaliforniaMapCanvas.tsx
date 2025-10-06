@@ -1,19 +1,15 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { mapLogger } from '../../utils/logger';
 import * as d3 from 'd3';
-import { mapLogger } from '../../utils/logger';
 import {
   County,
   CountyPiece,
   Position,
   CaliforniaMapCanvasProps,
   DifficultyLevel,
-  DropZone
+  DropZone,
 } from '@/types';
 import { CALIFORNIA_CENTER, CALIFORNIA_PROJECTION_CONFIG } from '@/utils/californiaData';
-import { mapLogger } from '../../utils/logger';
 import { getSvgTextFill } from '@/utils/colorContrast';
-import { mapLogger } from '../../utils/logger';
 
 interface MapCanvasState {
   projection: d3.GeoProjection | null;
@@ -29,14 +25,14 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
   placedCounties,
   onCountyDrop,
   showHints,
-  difficulty
+  difficulty,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [mapState, setMapState] = useState<MapCanvasState>({
     projection: null,
     path: null,
     svg: null,
-    zoom: null
+    zoom: null,
   });
   const [dropZones, setDropZones] = useState<DropZone[]>([]);
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
@@ -46,7 +42,8 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     if (!svgRef.current) return;
 
     // Create California-specific Mercator projection
-    const projection = d3.geoMercator()
+    const projection = d3
+      .geoMercator()
       .center(CALIFORNIA_CENTER)
       .scale(CALIFORNIA_PROJECTION_CONFIG.scale)
       .translate([width / 2, height / 2]);
@@ -63,7 +60,8 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     const mapGroup = svg.append('g').attr('class', 'map-group');
 
     // Create zoom behavior
-    const zoom = d3.zoom<SVGSVGElement, unknown>()
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.5, 8])
       .on('zoom', (event) => {
         mapGroup.attr('transform', event.transform);
@@ -72,15 +70,16 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     svg.call(zoom);
 
     // Set up drag behavior for county pieces
-    const drag = d3.drag<SVGGElement, CountyPiece>()
-      .on('start', function(event, d) {
+    const _drag = d3
+      .drag<SVGGElement, CountyPiece>()
+      .on('start', function (_event, _d) {
         d3.select(this).raise().classed('dragging', true);
       })
-      .on('drag', function(event, d) {
+      .on('drag', function (event, _d) {
         const [x, y] = d3.pointer(event, svg.node());
         d3.select(this).attr('transform', `translate(${x},${y})`);
       })
-      .on('end', function(event, d) {
+      .on('end', function (_event, _d) {
         d3.select(this).classed('dragging', false);
         const [x, y] = d3.pointer(event, svg.node());
 
@@ -94,7 +93,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     setMapState({ projection, path, svg, zoom });
 
     // Generate drop zones based on counties
-    const zones: DropZone[] = counties.map(county => {
+    const zones: DropZone[] = counties.map((county) => {
       const centroid = projection(county.centroid);
       const tolerance = getDifficultyTolerance(difficulty);
 
@@ -108,7 +107,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
         ),
         targetCounty: county,
         tolerance,
-        isActive: true
+        isActive: true,
       };
     });
 
@@ -118,22 +117,30 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
   // Helper function to determine tolerance based on difficulty
   const getDifficultyTolerance = (difficulty: DifficultyLevel): number => {
     switch (difficulty) {
-      case DifficultyLevel.EASY: return 80;
-      case DifficultyLevel.MEDIUM: return 60;
-      case DifficultyLevel.HARD: return 40;
-      case DifficultyLevel.EXPERT: return 25;
-      default: return 60;
+      case DifficultyLevel.EASY:
+        return 80;
+      case DifficultyLevel.MEDIUM:
+        return 60;
+      case DifficultyLevel.HARD:
+        return 40;
+      case DifficultyLevel.EXPERT:
+        return 25;
+      default:
+        return 60;
     }
   };
 
   // Find drop zone at position
   const findDropZone = (position: Position): DropZone | null => {
-    return dropZones.find(zone =>
-      position.x >= zone.bounds.left &&
-      position.x <= zone.bounds.right &&
-      position.y >= zone.bounds.top &&
-      position.y <= zone.bounds.bottom
-    ) || null;
+    return (
+      dropZones.find(
+        (zone) =>
+          position.x >= zone.bounds.left &&
+          position.x <= zone.bounds.right &&
+          position.y >= zone.bounds.top &&
+          position.y <= zone.bounds.bottom
+      ) || null
+    );
   };
 
   // Draw county outlines
@@ -146,7 +153,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     mapGroup.selectAll('.county-outline').remove();
 
     // Draw county boundaries
-    counties.forEach(county => {
+    counties.forEach((county) => {
       if (!county.geometry) return;
 
       const outline = mapGroup
@@ -172,7 +179,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
 
   // Get outline styling based on county state and difficulty
   const getOutlineColor = (county: County): string => {
-    const isPlaced = placedCounties.some(p => p.id === county.id);
+    const isPlaced = placedCounties.some((p) => p.id === county.id);
     const isHovered = hoveredCounty === county.id;
 
     if (isPlaced) return '#4ade80'; // Green for placed
@@ -180,57 +187,77 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     if (showHints) return '#6b7280'; // Gray for hints
 
     switch (difficulty) {
-      case DifficultyLevel.EASY: return '#9ca3af';
-      case DifficultyLevel.MEDIUM: return '#6b7280';
-      case DifficultyLevel.HARD: return '#4b5563';
-      case DifficultyLevel.EXPERT: return 'transparent';
-      default: return '#6b7280';
+      case DifficultyLevel.EASY:
+        return '#9ca3af';
+      case DifficultyLevel.MEDIUM:
+        return '#6b7280';
+      case DifficultyLevel.HARD:
+        return '#4b5563';
+      case DifficultyLevel.EXPERT:
+        return 'transparent';
+      default:
+        return '#6b7280';
     }
   };
 
   const getOutlineWidth = (county: County): number => {
-    const isPlaced = placedCounties.some(p => p.id === county.id);
+    const isPlaced = placedCounties.some((p) => p.id === county.id);
     const isHovered = hoveredCounty === county.id;
 
     if (isPlaced) return 3;
     if (isHovered) return 2;
 
     switch (difficulty) {
-      case DifficultyLevel.EASY: return 2;
-      case DifficultyLevel.MEDIUM: return 1.5;
-      case DifficultyLevel.HARD: return 1;
-      case DifficultyLevel.EXPERT: return 0;
-      default: return 1.5;
+      case DifficultyLevel.EASY:
+        return 2;
+      case DifficultyLevel.MEDIUM:
+        return 1.5;
+      case DifficultyLevel.HARD:
+        return 1;
+      case DifficultyLevel.EXPERT:
+        return 0;
+      default:
+        return 1.5;
     }
   };
 
   const getOutlineDashArray = (county: County): string => {
-    const isPlaced = placedCounties.some(p => p.id === county.id);
+    const isPlaced = placedCounties.some((p) => p.id === county.id);
 
     if (isPlaced) return 'none';
 
     switch (difficulty) {
-      case DifficultyLevel.EASY: return 'none';
-      case DifficultyLevel.MEDIUM: return '5,3';
-      case DifficultyLevel.HARD: return '3,3';
-      case DifficultyLevel.EXPERT: return 'none';
-      default: return '5,3';
+      case DifficultyLevel.EASY:
+        return 'none';
+      case DifficultyLevel.MEDIUM:
+        return '5,3';
+      case DifficultyLevel.HARD:
+        return '3,3';
+      case DifficultyLevel.EXPERT:
+        return 'none';
+      default:
+        return '5,3';
     }
   };
 
   const getOutlineOpacity = (county: County): number => {
-    const isPlaced = placedCounties.some(p => p.id === county.id);
+    const isPlaced = placedCounties.some((p) => p.id === county.id);
     const isHovered = hoveredCounty === county.id;
 
     if (isPlaced) return 1;
     if (isHovered) return 0.8;
 
     switch (difficulty) {
-      case DifficultyLevel.EASY: return 0.7;
-      case DifficultyLevel.MEDIUM: return 0.5;
-      case DifficultyLevel.HARD: return 0.3;
-      case DifficultyLevel.EXPERT: return 0;
-      default: return 0.5;
+      case DifficultyLevel.EASY:
+        return 0.7;
+      case DifficultyLevel.MEDIUM:
+        return 0.5;
+      case DifficultyLevel.HARD:
+        return 0.3;
+      case DifficultyLevel.EXPERT:
+        return 0;
+      default:
+        return 0.5;
     }
   };
 
@@ -245,7 +272,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     mapGroup.selectAll('.placed-county-label').remove();
 
     // Draw placed counties
-    placedCounties.forEach(county => {
+    placedCounties.forEach((county) => {
       if (!county.geometry) return;
 
       const fillColor = getPlacedCountyFill(county);
@@ -259,7 +286,10 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
         .attr('stroke', '#059669')
         .attr('stroke-width', 2)
         .style('opacity', 0.8)
-        .attr('transform', `translate(${county.currentPosition.x}, ${county.currentPosition.y}) scale(${county.scale}) rotate(${county.rotation})`);
+        .attr(
+          'transform',
+          `translate(${county.currentPosition.x}, ${county.currentPosition.y}) scale(${county.scale}) rotate(${county.rotation})`
+        );
 
       // Add placement accuracy indicator
       const accuracy = calculatePlacementAccuracy(county);
@@ -288,8 +318,16 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
             .attr('font-weight', 'bold')
             .attr('fill', textColor)
             .attr('pointer-events', 'none')
-            .attr('transform', `translate(${county.currentPosition.x}, ${county.currentPosition.y}) scale(${county.scale}) rotate(${county.rotation})`)
-            .style('text-shadow', textColor === '#ffffff' ? '1px 1px 2px rgba(0,0,0,0.7)' : '1px 1px 2px rgba(255,255,255,0.7)')
+            .attr(
+              'transform',
+              `translate(${county.currentPosition.x}, ${county.currentPosition.y}) scale(${county.scale}) rotate(${county.rotation})`
+            )
+            .style(
+              'text-shadow',
+              textColor === '#ffffff'
+                ? '1px 1px 2px rgba(0,0,0,0.7)'
+                : '1px 1px 2px rgba(255,255,255,0.7)'
+            )
             .text(county.name);
         }
       }
@@ -305,11 +343,11 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
 
     const distance = Math.sqrt(
       Math.pow(targetPosition[0] - county.currentPosition.x, 2) +
-      Math.pow(targetPosition[1] - county.currentPosition.y, 2)
+        Math.pow(targetPosition[1] - county.currentPosition.y, 2)
     );
 
     const tolerance = getDifficultyTolerance(difficulty);
-    return Math.max(0, 1 - (distance / tolerance));
+    return Math.max(0, 1 - distance / tolerance);
   };
 
   // Get fill color for placed counties based on accuracy
@@ -332,8 +370,8 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     mapGroup.selectAll('.drop-zone').remove();
 
     // Draw drop zone circles
-    dropZones.forEach(zone => {
-      const isPlaced = placedCounties.some(p => p.id === zone.targetCounty.id);
+    dropZones.forEach((zone) => {
+      const isPlaced = placedCounties.some((p) => p.id === zone.targetCounty.id);
       if (isPlaced) return;
 
       mapGroup
@@ -394,14 +432,14 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
           border: '1px solid #e5e7eb',
           borderRadius: '8px',
           background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-          cursor: 'move'
+          cursor: 'move',
         }}
       >
         {/* Background pattern for California */}
         <defs>
           <pattern id="californiaPattern" patternUnits="userSpaceOnUse" width="20" height="20">
-            <rect width="20" height="20" fill="#f8fafc"/>
-            <circle cx="10" cy="10" r="1" fill="#e2e8f0"/>
+            <rect width="20" height="20" fill="#f8fafc" />
+            <circle cx="10" cy="10" r="1" fill="#e2e8f0" />
           </pattern>
         </defs>
 
@@ -415,46 +453,49 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
               fontSize="14"
               fontWeight="bold"
             >
-              {counties.find(c => c.id === hoveredCounty)?.name || ''}
+              {counties.find((c) => c.id === hoveredCounty)?.name || ''}
             </text>
           </g>
         )}
       </svg>
 
       {/* Legend */}
-      <div className="map-legend" style={{
-        position: 'absolute',
-        bottom: '10px',
-        right: '10px',
-        background: 'rgba(255, 255, 255, 0.9)',
-        padding: '8px',
-        borderRadius: '4px',
-        fontSize: '12px',
-        backdropFilter: 'blur(4px)'
-      }}>
+      <div
+        className="map-legend"
+        style={{
+          position: 'absolute',
+          bottom: '10px',
+          right: '10px',
+          background: 'rgba(255, 255, 255, 0.9)',
+          padding: '8px',
+          borderRadius: '4px',
+          fontSize: '12px',
+          backdropFilter: 'blur(4px)',
+        }}
+      >
         <div style={{ color: '#10b981' }}>● Perfect placement</div>
         <div style={{ color: '#f59e0b' }}>● Good placement</div>
         <div style={{ color: '#ef4444' }}>● Needs adjustment</div>
-        {showHints && (
-          <div style={{ color: '#6b7280' }}>- - - Target zones</div>
-        )}
+        {showHints && <div style={{ color: '#6b7280' }}>- - - Target zones</div>}
       </div>
 
       {/* Debug info for development */}
       {process.env.NODE_ENV === 'development' && (
-        <div style={{
-          position: 'absolute',
-          top: '10px',
-          left: '10px',
-          background: 'rgba(0, 0, 0, 0.7)',
-          color: 'white',
-          padding: '4px 8px',
-          borderRadius: '4px',
-          fontSize: '10px',
-          fontFamily: 'monospace'
-        }}>
-          Counties: {counties.length} | Placed: {placedCounties.length} |
-          Zones: {dropZones.length} | Difficulty: {difficulty}
+        <div
+          style={{
+            position: 'absolute',
+            top: '10px',
+            left: '10px',
+            background: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '10px',
+            fontFamily: 'monospace',
+          }}
+        >
+          Counties: {counties.length} | Placed: {placedCounties.length} | Zones: {dropZones.length}{' '}
+          | Difficulty: {difficulty}
         </div>
       )}
     </div>

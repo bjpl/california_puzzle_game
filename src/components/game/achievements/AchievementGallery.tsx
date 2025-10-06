@@ -15,10 +15,17 @@ type FilterType = 'all' | 'unlocked' | 'locked' | AchievementCategory | Achievem
 
 const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '', onClose }) => {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('all');
-  const [selectedAchievement, setSelectedAchievement] = useState<AchievementDefinition | null>(null);
+  const [selectedAchievement, setSelectedAchievement] = useState<AchievementDefinition | null>(
+    null
+  );
   const [searchTerm, setSearchTerm] = useState('');
-  
-  const { achievements, totalPoints, completionPercentage, rarityStats } = useAchievements();
+
+  const {
+    achievements,
+    totalPoints,
+    completionPercentage,
+    rarityStats: _rarityStats,
+  } = useAchievements();
 
   const filters = [
     { id: 'all', label: 'All', icon: '📋' },
@@ -32,40 +39,41 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
     { id: 'speed', label: 'Speed', icon: '⚡' },
     { id: 'completion', label: 'Completion', icon: '🏆' },
     { id: 'streak', label: 'Streak', icon: '🔥' },
-    { id: 'exploration', label: 'Exploration', icon: '🗺️' }
+    { id: 'exploration', label: 'Exploration', icon: '🗺️' },
   ];
 
   const filteredAchievements = useMemo(() => {
-    let filtered = achievements.filter(a => !a.hidden || a.isUnlocked);
+    let filtered = achievements.filter((a) => !a.hidden || a.isUnlocked);
 
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(a => 
-        a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.description.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (a) =>
+          a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          a.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Apply category/rarity filter
     switch (selectedFilter) {
       case 'unlocked':
-        filtered = filtered.filter(a => a.isUnlocked);
+        filtered = filtered.filter((a) => a.isUnlocked);
         break;
       case 'locked':
-        filtered = filtered.filter(a => !a.isUnlocked);
+        filtered = filtered.filter((a) => !a.isUnlocked);
         break;
       case 'common':
       case 'rare':
       case 'epic':
       case 'legendary':
-        filtered = filtered.filter(a => a.rarity === selectedFilter);
+        filtered = filtered.filter((a) => a.rarity === selectedFilter);
         break;
       case 'accuracy':
       case 'speed':
       case 'completion':
       case 'streak':
       case 'exploration':
-        filtered = filtered.filter(a => a.category === selectedFilter);
+        filtered = filtered.filter((a) => a.category === selectedFilter);
         break;
       default:
         break;
@@ -76,36 +84,46 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
       if (a.isUnlocked !== b.isUnlocked) {
         return a.isUnlocked ? -1 : 1;
       }
-      
+
       const rarityOrder = { legendary: 0, epic: 1, rare: 2, common: 3 };
       const aRarity = rarityOrder[a.rarity];
       const bRarity = rarityOrder[b.rarity];
-      
+
       if (aRarity !== bRarity) {
         return aRarity - bRarity;
       }
-      
+
       return a.name.localeCompare(b.name);
     });
   }, [achievements, selectedFilter, searchTerm]);
 
   const getRarityColor = (rarity: AchievementRarity): string => {
     switch (rarity) {
-      case AchievementRarity.COMMON: return 'text-gray-600';
-      case AchievementRarity.RARE: return 'text-blue-600';
-      case AchievementRarity.EPIC: return 'text-purple-600';
-      case AchievementRarity.LEGENDARY: return 'text-yellow-600';
-      default: return 'text-gray-600';
+      case AchievementRarity.COMMON:
+        return 'text-gray-600';
+      case AchievementRarity.RARE:
+        return 'text-blue-600';
+      case AchievementRarity.EPIC:
+        return 'text-purple-600';
+      case AchievementRarity.LEGENDARY:
+        return 'text-yellow-600';
+      default:
+        return 'text-gray-600';
     }
   };
 
   const getRarityBg = (rarity: AchievementRarity): string => {
     switch (rarity) {
-      case AchievementRarity.COMMON: return 'bg-gray-100 border-gray-300';
-      case AchievementRarity.RARE: return 'bg-blue-100 border-blue-300';
-      case AchievementRarity.EPIC: return 'bg-purple-100 border-purple-300';
-      case AchievementRarity.LEGENDARY: return 'bg-yellow-100 border-yellow-300';
-      default: return 'bg-gray-100 border-gray-300';
+      case AchievementRarity.COMMON:
+        return 'bg-gray-100 border-gray-300';
+      case AchievementRarity.RARE:
+        return 'bg-blue-100 border-blue-300';
+      case AchievementRarity.EPIC:
+        return 'bg-purple-100 border-purple-300';
+      case AchievementRarity.LEGENDARY:
+        return 'bg-yellow-100 border-yellow-300';
+      default:
+        return 'bg-gray-100 border-gray-300';
     }
   };
 
@@ -117,7 +135,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
   };
 
   const AchievementCard: React.FC<{ achievement: AchievementDefinition }> = ({ achievement }) => (
-    <div 
+    <div
       className={`
         relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200
         ${achievement.isUnlocked ? getRarityBg(achievement.rarity) : 'bg-gray-50 border-gray-200'}
@@ -127,10 +145,12 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
       onClick={() => setSelectedAchievement(achievement)}
     >
       {/* Rarity Badge */}
-      <div className={`absolute top-2 right-2 px-2 py-1 rounded text-xs font-bold uppercase ${getRarityColor(achievement.rarity)}`}>
+      <div
+        className={`absolute top-2 right-2 px-2 py-1 rounded text-xs font-bold uppercase ${getRarityColor(achievement.rarity)}`}
+      >
         {achievement.rarity}
       </div>
-      
+
       {/* Achievement Icon */}
       <div className="text-center mb-3">
         <div className={`text-4xl mb-2 ${achievement.isUnlocked ? '' : 'grayscale'}`}>
@@ -140,26 +160,22 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
           <div className="text-green-600 text-sm font-bold">✓ UNLOCKED</div>
         )}
       </div>
-      
+
       {/* Achievement Info */}
       <div className="text-center">
-        <h3 className="font-bold text-sm mb-1 line-clamp-1">
-          {achievement.name}
-        </h3>
-        <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-          {achievement.description}
-        </p>
-        
+        <h3 className="font-bold text-sm mb-1 line-clamp-1">{achievement.name}</h3>
+        <p className="text-xs text-gray-600 mb-2 line-clamp-2">{achievement.description}</p>
+
         {/* Points */}
         <div className="flex items-center justify-center space-x-1 mb-2">
           <span className="text-xs">✨</span>
           <span className="text-xs font-bold">{achievement.points} pts</span>
         </div>
-        
+
         {/* Progress Bar */}
         {!achievement.isUnlocked && achievement.progress > 0 && (
           <div className="w-full bg-gray-200 rounded-full h-1.5">
-            <div 
+            <div
               className={`h-1.5 rounded-full transition-all duration-300 ${getProgressColor(achievement.progress)}`}
               style={{ width: `${achievement.progress * 100}%` }}
             ></div>
@@ -178,7 +194,9 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
             <div className="flex-1">
               <div className="text-4xl mb-2">{achievement.icon}</div>
               <h2 className="text-xl font-bold mb-1">{achievement.name}</h2>
-              <div className={`inline-block px-2 py-1 rounded text-xs font-bold uppercase ${getRarityColor(achievement.rarity)}`}>
+              <div
+                className={`inline-block px-2 py-1 rounded text-xs font-bold uppercase ${getRarityColor(achievement.rarity)}`}
+              >
                 {achievement.rarity} • {achievement.points} points
               </div>
             </div>
@@ -190,11 +208,11 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
             </button>
           </div>
         </div>
-        
+
         {/* Content */}
         <div className="p-6">
           <p className="text-gray-700 mb-4">{achievement.description}</p>
-          
+
           {/* Status */}
           <div className="mb-4">
             {achievement.isUnlocked ? (
@@ -214,7 +232,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
                   <span className="font-medium">{Math.round(achievement.progress * 100)}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
+                  <div
                     className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(achievement.progress)}`}
                     style={{ width: `${achievement.progress * 100}%` }}
                   ></div>
@@ -222,7 +240,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
               </div>
             )}
           </div>
-          
+
           {/* Requirements */}
           {achievement.requirements && achievement.requirements.length > 0 && (
             <div>
@@ -231,9 +249,11 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
                 {achievement.requirements.map((req, index) => (
                   <li key={index} className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">{req.description}</span>
-                    <span className={`font-medium ${
-                      req.current >= req.threshold ? 'text-green-600' : 'text-gray-400'
-                    }`}>
+                    <span
+                      className={`font-medium ${
+                        req.current >= req.threshold ? 'text-green-600' : 'text-gray-400'
+                      }`}
+                    >
                       {req.current}/{req.threshold}
                     </span>
                   </li>
@@ -241,7 +261,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
               </ul>
             </div>
           )}
-          
+
           {/* Category */}
           <div className="mt-4 pt-4 border-t">
             <div className="text-sm text-gray-600">
@@ -260,19 +280,18 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Achievement Gallery</h2>
           {onClose && (
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-xl"
-            >
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl">
               ×
             </button>
           )}
         </div>
-        
+
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{Math.round(completionPercentage)}%</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {Math.round(completionPercentage)}%
+            </div>
             <div className="text-sm text-gray-500">Complete</div>
           </div>
           <div className="text-center">
@@ -281,18 +300,18 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600">
-              {achievements.filter(a => a.isUnlocked).length}
+              {achievements.filter((a) => a.isUnlocked).length}
             </div>
             <div className="text-sm text-gray-500">Unlocked</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-orange-600">
-              {achievements.filter(a => !a.isUnlocked && a.progress > 0).length}
+              {achievements.filter((a) => !a.isUnlocked && a.progress > 0).length}
             </div>
             <div className="text-sm text-gray-500">In Progress</div>
           </div>
         </div>
-        
+
         {/* Search */}
         <div className="mb-4">
           <input
@@ -304,7 +323,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
           />
         </div>
       </div>
-      
+
       {/* Filters */}
       <div className="border-b p-4">
         <div className="flex flex-wrap gap-2">
@@ -324,7 +343,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
           ))}
         </div>
       </div>
-      
+
       {/* Achievement Grid */}
       <div className="p-6">
         {filteredAchievements.length > 0 ? (
@@ -341,11 +360,9 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
           </div>
         )}
       </div>
-      
+
       {/* Achievement Detail Modal */}
-      {selectedAchievement && (
-        <AchievementDetail achievement={selectedAchievement} />
-      )}
+      {selectedAchievement && <AchievementDetail achievement={selectedAchievement} />}
     </div>
   );
 };

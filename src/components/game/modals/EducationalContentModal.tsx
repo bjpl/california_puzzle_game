@@ -15,9 +15,11 @@ export default function EducationalContentModal({
   onClose,
   county,
   educationContent,
-  memoryAid
+  memoryAid,
 }: EducationalContentModalProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'economy' | 'culture' | 'geography' | 'memory'>('overview');
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'history' | 'economy' | 'culture' | 'geography' | 'memory'
+  >('overview');
 
   useEffect(() => {
     // Reset to overview when county changes
@@ -29,10 +31,7 @@ export default function EducationalContentModal({
   const modalContent = (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal Content */}
       <div className="relative w-full max-w-5xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden animate-slideInUp">
@@ -41,11 +40,7 @@ export default function EducationalContentModal({
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
               <div className="bg-white rounded-lg p-2">
-                <CountyShapeDisplay
-                  countyId={county.id}
-                  size={70}
-                  className=""
-                />
+                <CountyShapeDisplay countyId={county.id} size={70} className="" />
               </div>
               <div>
                 <h2 className="text-3xl font-bold text-white">{county.name} County</h2>
@@ -72,7 +67,11 @@ export default function EducationalContentModal({
               className="text-white hover:bg-blue-700 rounded-lg p-2 transition-colors"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
               </svg>
             </button>
           </div>
@@ -86,11 +85,11 @@ export default function EducationalContentModal({
             { id: 'economy', label: 'Economy', icon: '💼' },
             { id: 'culture', label: 'Culture', icon: '🎭' },
             { id: 'geography', label: 'Geography', icon: '🗺️' },
-            { id: 'memory', label: 'Memory Aids', icon: '🧠' }
-          ].map(tab => (
+            { id: 'memory', label: 'Memory Aids', icon: '🧠' },
+          ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`flex items-center gap-2 px-6 py-4 font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'border-b-3 border-blue-600 text-blue-600 bg-white'
@@ -135,7 +134,9 @@ export default function EducationalContentModal({
                     <span>⭐</span> Known For
                   </h4>
                   <p className="text-sm leading-relaxed text-gray-800">
-                    {county.knownFor || educationContent?.uniqueFeatures || 'Rich history and culture'}
+                    {county.knownFor ||
+                      educationContent?.uniqueFeatures ||
+                      'Rich history and culture'}
                   </p>
                 </div>
               </div>
@@ -166,7 +167,10 @@ export default function EducationalContentModal({
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {county.naturalFeatures.map((feature: string, idx: number) => (
-                        <span key={idx} className="px-3 py-1 bg-green-100 text-green-800 border border-green-300 rounded-full text-sm">
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-green-100 text-green-800 border border-green-300 rounded-full text-sm"
+                        >
                           {feature}
                         </span>
                       ))}
@@ -181,7 +185,10 @@ export default function EducationalContentModal({
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {county.culturalLandmarks.map((landmark: string, idx: number) => (
-                        <span key={idx} className="px-3 py-1 bg-purple-100 text-purple-800 border border-purple-300 rounded-full text-sm">
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-purple-100 text-purple-800 border border-purple-300 rounded-full text-sm"
+                        >
                           {landmark}
                         </span>
                       ))}
@@ -213,7 +220,8 @@ export default function EducationalContentModal({
               <div className="prose prose-lg max-w-none">
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">Historical Background</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  {educationContent?.historicalContext || 'Historical information is being compiled for this county.'}
+                  {educationContent?.historicalContext ||
+                    'Historical information is being compiled for this county.'}
                 </p>
               </div>
 
@@ -221,14 +229,16 @@ export default function EducationalContentModal({
                 <div className="bg-yellow-50 rounded-xl p-5 border border-yellow-200">
                   <h4 className="font-bold text-yellow-900 mb-4 text-lg">Key Historical Events</h4>
                   <div className="space-y-3">
-                    {educationContent.specificData.historicalEvents.map((event: string, idx: number) => (
-                      <div key={idx} className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 bg-yellow-200 rounded-full flex items-center justify-center">
-                          <span className="text-yellow-800 font-bold text-sm">{idx + 1}</span>
+                    {educationContent.specificData.historicalEvents.map(
+                      (event: string, idx: number) => (
+                        <div key={idx} className="flex gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 bg-yellow-200 rounded-full flex items-center justify-center">
+                            <span className="text-yellow-800 font-bold text-sm">{idx + 1}</span>
+                          </div>
+                          <p className="text-yellow-800">{event}</p>
                         </div>
-                        <p className="text-yellow-800">{event}</p>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -240,7 +250,8 @@ export default function EducationalContentModal({
               <div className="prose prose-lg max-w-none">
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">Economic Profile</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  {educationContent?.economicImportance || 'Economic data is being analyzed for this county.'}
+                  {educationContent?.economicImportance ||
+                    'Economic data is being analyzed for this county.'}
                 </p>
               </div>
 
@@ -248,14 +259,19 @@ export default function EducationalContentModal({
                 <div className="bg-blue-50 rounded-xl p-5 border border-blue-200">
                   <h4 className="font-bold text-blue-900 mb-4 text-lg">Major Industries</h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {educationContent.specificData.industries.map((industry: string, idx: number) => (
-                      <div key={idx} className="bg-white p-4 rounded-lg border border-blue-300 hover:shadow-md transition-shadow">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">🏭</span>
-                          <span className="text-blue-800 font-medium">{industry}</span>
+                    {educationContent.specificData.industries.map(
+                      (industry: string, idx: number) => (
+                        <div
+                          key={idx}
+                          className="bg-white p-4 rounded-lg border border-blue-300 hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl">🏭</span>
+                            <span className="text-blue-800 font-medium">{industry}</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -267,14 +283,16 @@ export default function EducationalContentModal({
               <div className="prose prose-lg max-w-none">
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">Cultural Heritage</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  {educationContent?.culturalHeritage || 'Cultural information is being researched for this county.'}
+                  {educationContent?.culturalHeritage ||
+                    'Cultural information is being researched for this county.'}
                 </p>
               </div>
 
               <div className="bg-indigo-50 rounded-xl p-5 border border-indigo-200">
                 <h4 className="font-bold text-indigo-900 mb-4 text-lg">Unique Features</h4>
                 <p className="text-indigo-800 leading-relaxed">
-                  {educationContent?.uniqueFeatures || 'This county has many unique characteristics that make it special.'}
+                  {educationContent?.uniqueFeatures ||
+                    'This county has many unique characteristics that make it special.'}
                 </p>
               </div>
 
@@ -282,12 +300,17 @@ export default function EducationalContentModal({
                 <div className="bg-green-50 rounded-xl p-5 border border-green-200">
                   <h4 className="font-bold text-green-900 mb-4 text-lg">Major Attractions</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {educationContent.specificData.majorAttractions.map((attraction: string, idx: number) => (
-                      <div key={idx} className="flex items-center gap-3 bg-white p-3 rounded-lg border border-green-300">
-                        <span className="text-2xl">📍</span>
-                        <span className="text-green-800">{attraction}</span>
-                      </div>
-                    ))}
+                    {educationContent.specificData.majorAttractions.map(
+                      (attraction: string, idx: number) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-3 bg-white p-3 rounded-lg border border-green-300"
+                        >
+                          <span className="text-2xl">📍</span>
+                          <span className="text-green-800">{attraction}</span>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -299,7 +322,8 @@ export default function EducationalContentModal({
               <div className="prose prose-lg max-w-none">
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">Geographical Features</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  {educationContent?.geographicalSignificance || 'Geographic analysis is being prepared for this county.'}
+                  {educationContent?.geographicalSignificance ||
+                    'Geographic analysis is being prepared for this county.'}
                 </p>
               </div>
 
@@ -325,7 +349,9 @@ export default function EducationalContentModal({
 
               {/* County Shape Visual */}
               <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-purple-200">
-                <h4 className="font-bold text-purple-900 mb-4 text-center">County Geographic Shape</h4>
+                <h4 className="font-bold text-purple-900 mb-4 text-center">
+                  County Geographic Shape
+                </h4>
                 <div className="flex justify-center">
                   <CountyShapeDisplay
                     countyId={county.id}
@@ -389,9 +415,7 @@ export default function EducationalContentModal({
         {/* Footer */}
         <div className="border-t bg-gray-50 p-4">
           <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-600">
-              Educational content for {county.name} County
-            </p>
+            <p className="text-sm text-gray-600">Educational content for {county.name} County</p>
             <button
               onClick={onClose}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
@@ -405,13 +429,11 @@ export default function EducationalContentModal({
   );
 
   // Use portal to render at document root
-  return typeof document !== 'undefined'
-    ? createPortal(modalContent, document.body)
-    : null;
+  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : null;
 }
 
 // Add animation styles to globals.css if not already present
-const animationStyles = `
+const _animationStyles = `
 @keyframes slideInUp {
   from {
     opacity: 0;
