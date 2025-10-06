@@ -8,11 +8,12 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { logger } from '../utils/logger';
 import { useGameStore } from '../stores/gameStore';
-import { logger } from '../utils/logger';
-import { playSound, SoundType, soundManager } from '../utils/soundManager';
-import { logger } from '../utils/logger';
-import { initializeSoundSystem, setupAudioContextResume, cleanupSoundSystem } from '../utils/initializeSound';
-import { logger } from '../utils/logger';
+import { playSound, SoundType, soundManager as _soundManager } from '../utils/soundManager';
+import {
+  initializeSoundSystem,
+  setupAudioContextResume,
+  cleanupSoundSystem,
+} from '../utils/initializeSound';
 
 export interface UseSoundOptions {
   enableClickSounds?: boolean;
@@ -40,7 +41,7 @@ export const useSound = (options: UseSoundOptions = {}): UseSoundReturn => {
     enableClickSounds = true,
     enableHoverSounds = true,
     enableGameSounds = true,
-    autoInitialize = false
+    autoInitialize = false,
   } = options;
 
   const isInitializedRef = useRef(false);
@@ -51,7 +52,7 @@ export const useSound = (options: UseSoundOptions = {}): UseSoundReturn => {
     toggleMute,
     startBackgroundMusic,
     stopBackgroundMusic,
-    updateSoundSettings
+    updateSoundSettings: _updateSoundSettings,
   } = gameStore;
 
   const { soundSettings } = settings;
@@ -86,38 +87,47 @@ export const useSound = (options: UseSoundOptions = {}): UseSoundReturn => {
   }, []);
 
   // Safe play sound function that respects settings
-  const playSoundSafe = useCallback((soundType: SoundType) => {
-    // Check if sound is muted
-    if (soundSettings.muted) return;
+  const playSoundSafe = useCallback(
+    (soundType: SoundType) => {
+      // Check if sound is muted
+      if (soundSettings.muted) return;
 
-    // Check category-specific settings
-    switch (soundType) {
-      case SoundType.CLICK:
-      case SoundType.HOVER:
-        if (!soundSettings.enableClickSounds) return;
-        break;
-      case SoundType.PICKUP:
-      case SoundType.CORRECT:
-      case SoundType.INCORRECT:
-      case SoundType.WIN:
-        if (!soundSettings.enableGameSounds) return;
-        break;
-      case SoundType.ACHIEVEMENT:
-        if (!soundSettings.enableAchievementSounds) return;
-        break;
-      case SoundType.BACKGROUND_MUSIC:
-        if (!soundSettings.enableBackgroundMusic) return;
-        break;
-    }
+      // Check category-specific settings
+      switch (soundType) {
+        case SoundType.CLICK:
+        case SoundType.HOVER:
+          if (!soundSettings.enableClickSounds) return;
+          break;
+        case SoundType.PICKUP:
+        case SoundType.CORRECT:
+        case SoundType.INCORRECT:
+        case SoundType.WIN:
+          if (!soundSettings.enableGameSounds) return;
+          break;
+        case SoundType.ACHIEVEMENT:
+          if (!soundSettings.enableAchievementSounds) return;
+          break;
+        case SoundType.BACKGROUND_MUSIC:
+          if (!soundSettings.enableBackgroundMusic) return;
+          break;
+      }
 
-    // Check component-specific options
-    if (soundType === SoundType.CLICK && !enableClickSounds) return;
-    if (soundType === SoundType.HOVER && !enableHoverSounds) return;
-    if ([SoundType.PICKUP, SoundType.CORRECT, SoundType.INCORRECT, SoundType.WIN].includes(soundType) && !enableGameSounds) return;
+      // Check component-specific options
+      if (soundType === SoundType.CLICK && !enableClickSounds) return;
+      if (soundType === SoundType.HOVER && !enableHoverSounds) return;
+      if (
+        [SoundType.PICKUP, SoundType.CORRECT, SoundType.INCORRECT, SoundType.WIN].includes(
+          soundType
+        ) &&
+        !enableGameSounds
+      )
+        return;
 
-    // Play the sound
-    playSound(soundType);
-  }, [soundSettings, enableClickSounds, enableHoverSounds, enableGameSounds]);
+      // Play the sound
+      playSound(soundType);
+    },
+    [soundSettings, enableClickSounds, enableHoverSounds, enableGameSounds]
+  );
 
   return {
     playSound: playSoundSafe,
@@ -127,7 +137,7 @@ export const useSound = (options: UseSoundOptions = {}): UseSoundReturn => {
     startBackgroundMusic,
     stopBackgroundMusic,
     soundSettings,
-    initializeSound
+    initializeSound,
   };
 };
 
@@ -137,7 +147,7 @@ export const useSound = (options: UseSoundOptions = {}): UseSoundReturn => {
 export const useButtonSounds = () => {
   const { playSound } = useSound({
     enableClickSounds: true,
-    enableHoverSounds: true
+    enableHoverSounds: true,
   });
 
   const handleClick = useCallback(() => {
@@ -150,7 +160,7 @@ export const useButtonSounds = () => {
 
   return {
     onClickSound: handleClick,
-    onHoverSound: handleHover
+    onHoverSound: handleHover,
   };
 };
 
@@ -159,7 +169,7 @@ export const useButtonSounds = () => {
  */
 export const useGameSounds = () => {
   const { playSound } = useSound({
-    enableGameSounds: true
+    enableGameSounds: true,
   });
 
   const playPickupSound = useCallback(() => {
@@ -187,7 +197,7 @@ export const useGameSounds = () => {
     playCorrectSound,
     playIncorrectSound,
     playWinSound,
-    playAchievementSound
+    playAchievementSound,
   };
 };
 
@@ -196,36 +206,43 @@ export const useGameSounds = () => {
  */
 export const useSoundSettings = () => {
   const gameStore = useGameStore();
-  const {
-    settings,
-    updateSoundSettings,
-    toggleMute,
-    startBackgroundMusic,
-    stopBackgroundMusic
-  } = gameStore;
+  const { settings, updateSoundSettings, toggleMute, startBackgroundMusic, stopBackgroundMusic } =
+    gameStore;
 
   const { soundSettings } = settings;
 
-  const setMasterVolume = useCallback((volume: number) => {
-    updateSoundSettings({ masterVolume: Math.max(0, Math.min(1, volume)) });
-  }, [updateSoundSettings]);
+  const setMasterVolume = useCallback(
+    (volume: number) => {
+      updateSoundSettings({ masterVolume: Math.max(0, Math.min(1, volume)) });
+    },
+    [updateSoundSettings]
+  );
 
-  const setEffectsVolume = useCallback((volume: number) => {
-    updateSoundSettings({ effectsVolume: Math.max(0, Math.min(1, volume)) });
-  }, [updateSoundSettings]);
+  const setEffectsVolume = useCallback(
+    (volume: number) => {
+      updateSoundSettings({ effectsVolume: Math.max(0, Math.min(1, volume)) });
+    },
+    [updateSoundSettings]
+  );
 
-  const setMusicVolume = useCallback((volume: number) => {
-    updateSoundSettings({ musicVolume: Math.max(0, Math.min(1, volume)) });
-  }, [updateSoundSettings]);
+  const setMusicVolume = useCallback(
+    (volume: number) => {
+      updateSoundSettings({ musicVolume: Math.max(0, Math.min(1, volume)) });
+    },
+    [updateSoundSettings]
+  );
 
-  const enableBackgroundMusic = useCallback((enabled: boolean) => {
-    updateSoundSettings({ enableBackgroundMusic: enabled });
-    if (enabled && !soundSettings.muted) {
-      startBackgroundMusic();
-    } else {
-      stopBackgroundMusic();
-    }
-  }, [updateSoundSettings, soundSettings.muted, startBackgroundMusic, stopBackgroundMusic]);
+  const enableBackgroundMusic = useCallback(
+    (enabled: boolean) => {
+      updateSoundSettings({ enableBackgroundMusic: enabled });
+      if (enabled && !soundSettings.muted) {
+        startBackgroundMusic();
+      } else {
+        stopBackgroundMusic();
+      }
+    },
+    [updateSoundSettings, soundSettings.muted, startBackgroundMusic, stopBackgroundMusic]
+  );
 
   return {
     soundSettings,
@@ -234,7 +251,7 @@ export const useSoundSettings = () => {
     setMusicVolume,
     enableBackgroundMusic,
     toggleMute,
-    updateSoundSettings
+    updateSoundSettings,
   };
 };
 

@@ -4,13 +4,14 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { logger } from '../utils/logger';
 import { storageManager, GameSession } from '../utils/storage';
-import { logger } from '../utils/logger';
 import { achievementSystem } from '../utils/achievements';
-import { logger } from '../utils/logger';
 import { useGameStore } from '../stores/gameStore';
-import { logger } from '../utils/logger';
-import { GameStats, PlacementResult, DifficultyLevel, CaliforniaRegion } from '../types';
-import { logger } from '../utils/logger';
+import {
+  GameStats as _GameStats,
+  PlacementResult,
+  DifficultyLevel as _DifficultyLevel,
+  CaliforniaRegion as _CaliforniaRegion,
+} from '../types';
 
 interface AutoSaveOptions {
   enabled?: boolean;
@@ -31,7 +32,7 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
     enabled = true,
     interval = 30000, // 30 seconds default
     onSave,
-    onError
+    onError,
   } = options;
 
   const gameState = useGameStore();
@@ -51,27 +52,27 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
 
       // Save settings
       storageManager.saveSettings(gameState.settings);
-      
+
       // Save stats
       storageManager.saveStats(gameState.stats);
-      
+
       // Save achievements
       storageManager.saveAchievements(gameState.achievements);
-      
+
       // Update current session if game is active
       if (gameState.isGameActive && currentSessionRef.current) {
         const updatedSession: GameSession = {
           ...currentSessionRef.current,
           score: gameState.score,
           timeElapsed: gameState.timeElapsed,
-          placementsCorrect: gameState.placedCounties.filter(c => c.isPlaced).length,
+          placementsCorrect: gameState.placedCounties.filter((c) => c.isPlaced).length,
           placementsTotal: gameState.placedCounties.length + gameState.remainingCounties.length,
-          hintsUsed: gameState.hintSystem.usedHints
+          hintsUsed: gameState.hintSystem.usedHints,
         };
-        
+
         currentSessionRef.current = updatedSession;
       }
-      
+
       lastSaveTimeRef.current = new Date();
       onSave?.(true);
       return true;
@@ -99,9 +100,9 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
       placementsCorrect: 0,
       placementsTotal: gameState.remainingCounties.length,
       hintsUsed: 0,
-      achievementsUnlocked: []
+      achievementsUnlocked: [],
     };
-    
+
     currentSessionRef.current = session;
   }, [gameState.selectedRegion, gameState.difficulty, gameState.remainingCounties.length]);
 
@@ -113,11 +114,11 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
         endTime: new Date(),
         score: gameState.score,
         timeElapsed: gameState.timeElapsed,
-        placementsCorrect: gameState.placedCounties.filter(c => c.isPlaced).length,
+        placementsCorrect: gameState.placedCounties.filter((c) => c.isPlaced).length,
         placementsTotal: gameState.placedCounties.length + gameState.remainingCounties.length,
-        hintsUsed: gameState.hintSystem.usedHints
+        hintsUsed: gameState.hintSystem.usedHints,
       };
-      
+
       storageManager.saveSession(session);
       currentSessionRef.current = null;
     }
@@ -135,14 +136,12 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
   // Handle achievement unlocks
   useEffect(() => {
     if (currentSessionRef.current) {
-      const unlockedIds = gameState.achievements
-        .filter(a => a.isUnlocked)
-        .map(a => a.id);
-      
+      const unlockedIds = gameState.achievements.filter((a) => a.isUnlocked).map((a) => a.id);
+
       const newUnlocks = unlockedIds.filter(
-        id => !currentSessionRef.current!.achievementsUnlocked.includes(id)
+        (id) => !currentSessionRef.current!.achievementsUnlocked.includes(id)
       );
-      
+
       if (newUnlocks.length > 0) {
         currentSessionRef.current.achievementsUnlocked = unlockedIds;
       }
@@ -155,7 +154,7 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
       autoSaveIntervalRef.current = setInterval(() => {
         saveGameData();
       }, interval);
-      
+
       return () => {
         if (autoSaveIntervalRef.current) {
           clearInterval(autoSaveIntervalRef.current);
@@ -175,7 +174,7 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
             storageManager.saveSettings(gameState.settings);
             storageManager.saveStats(gameState.stats);
             storageManager.saveAchievements(gameState.achievements);
-            
+
             if (currentSessionRef.current) {
               endSession();
             }
@@ -187,7 +186,7 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
-    
+
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
@@ -196,7 +195,7 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
   // Toggle auto-save
   const toggleAutoSave = useCallback(() => {
     isEnabledRef.current = !isEnabledRef.current;
-    
+
     if (isEnabledRef.current) {
       // Start auto-save
       autoSaveIntervalRef.current = setInterval(() => {
@@ -220,54 +219,53 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
     isAutoSaveEnabled: isEnabledRef.current,
     lastSaveTime: lastSaveTimeRef.current,
     saveNow,
-    toggleAutoSave
+    toggleAutoSave,
   };
 }
 
 // Hook for tracking placement results and updating achievements
 export function usePlacementTracking() {
   const gameState = useGameStore();
-  
-  const trackPlacement = useCallback(async (placement: PlacementResult) => {
-    try {
-      // Update achievements
-      const newAchievements = achievementSystem.updateProgress(
-        gameState.stats,
-        placement,
-        {
+
+  const trackPlacement = useCallback(
+    async (placement: PlacementResult) => {
+      try {
+        // Update achievements
+        const newAchievements = achievementSystem.updateProgress(gameState.stats, placement, {
           difficulty: gameState.difficulty,
           region: gameState.selectedRegion,
           timeElapsed: gameState.timeElapsed,
           hintsUsed: gameState.hintSystem.usedHints,
           mistakes: gameState.mistakes,
-          streak: gameState.streak
-        }
-      );
-      
-      // Save updated achievements if any were unlocked
-      if (newAchievements.length > 0) {
-        storageManager.saveAchievements(achievementSystem.getAllAchievements());
-        
-        // Trigger achievement notifications (if using notification system)
-        newAchievements.forEach(achievement => {
-          logger.debug(`Achievement unlocked: ${achievement.name}`);
+          streak: gameState.streak,
         });
+
+        // Save updated achievements if any were unlocked
+        if (newAchievements.length > 0) {
+          storageManager.saveAchievements(achievementSystem.getAllAchievements());
+
+          // Trigger achievement notifications (if using notification system)
+          newAchievements.forEach((achievement) => {
+            logger.debug(`Achievement unlocked: ${achievement.name}`);
+          });
+        }
+
+        return newAchievements;
+      } catch (error) {
+        logger.error('Failed to track placement:', error);
+        return [];
       }
-      
-      return newAchievements;
-    } catch (error) {
-      logger.error('Failed to track placement:', error);
-      return [];
-    }
-  }, [gameState]);
-  
+    },
+    [gameState]
+  );
+
   return { trackPlacement };
 }
 
 // Hook for loading saved data on app start
 export function useDataLoader() {
   const gameStore = useGameStore();
-  
+
   const loadSavedData = useCallback(async () => {
     try {
       const profile = storageManager.getCurrentProfile();
@@ -275,28 +273,28 @@ export function useDataLoader() {
         logger.debug('No current profile, using default data');
         return;
       }
-      
+
       // Load settings
       const settings = storageManager.loadSettings();
       gameStore.updateSettings(settings);
-      
+
       // Load achievements
       const achievements = storageManager.loadAchievements();
       // Merge with current achievements
       const currentAchievements = gameStore.achievements;
-      const mergedAchievements = currentAchievements.map(current => {
-        const saved = achievements.find(a => a.id === current.id);
+      const _mergedAchievements = currentAchievements.map((current) => {
+        const saved = achievements.find((a) => a.id === current.id);
         return saved ? { ...current, ...saved } : current;
       });
-      
+
       // Note: This would require a method to set achievements in the store
       // For now, we'll assume the store handles this through persistence
-      
+
       logger.debug('Saved data loaded successfully');
     } catch (error) {
       logger.error('Failed to load saved data:', error);
     }
   }, [gameStore]);
-  
+
   return { loadSavedData };
 }

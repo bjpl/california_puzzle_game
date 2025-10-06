@@ -1,8 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { californiaCounties } from '../data/californiaCounties';
-import { allCaliforniaCounties, County as CompleteCounty } from '../data/californiaCountiesComplete';
+import { californiaCounties as _californiaCounties } from '../data/californiaCounties';
+import {
+  allCaliforniaCounties,
+  County as _CompleteCounty,
+} from '../data/californiaCountiesComplete';
 import { useTimer, TimerState } from '../hooks/useTimer';
-import { calculateScore, calculateGameMetrics, ScoreCalculation, GameMetrics } from '../utils/scoring';
+import {
+  calculateScore,
+  calculateGameMetrics,
+  ScoreCalculation,
+  GameMetrics,
+} from '../utils/scoring';
 import { saveLeaderboardEntry, LeaderboardEntry } from '../utils/leaderboard';
 import { loadGameState, clearGameState } from '../utils/gameStateManager';
 
@@ -96,7 +104,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     enableTimer: true,
     enableScoring: true,
     showMultipliers: true,
-    playerName: 'Player'
+    playerName: 'Player',
   });
 
   // Basic game state
@@ -153,9 +161,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     maxDuration: gameSettings.maxTime,
     autoStart: false,
     onComplete: () => setIsGameComplete(true),
-    onTick: (elapsed, remaining) => {
+    onTick: (_elapsed, _remaining) => {
       // Could trigger urgency effects here
-    }
+    },
   });
 
   // Game completion effect
@@ -172,7 +180,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const regionCounts: Record<string, { total: number; completed: number }> = {};
 
     // Count total counties per region
-    counties.forEach(county => {
+    counties.forEach((county) => {
       if (!regionCounts[county.region]) {
         regionCounts[county.region] = { total: 0, completed: 0 };
       }
@@ -180,7 +188,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Count completed counties per region
-    counties.forEach(county => {
+    counties.forEach((county) => {
       if (placedCounties.has(county.id)) {
         regionCounts[county.region].completed++;
       }
@@ -197,142 +205,155 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, [placedCounties, counties]);
 
   // Calculate current game metrics
-  const gameMetrics = calculateGameMetrics(
-    placementHistory,
-    timerState.elapsed
+  const gameMetrics = calculateGameMetrics(placementHistory, timerState.elapsed);
+
+  const selectCounty = useCallback(
+    (county: County) => {
+      setCurrentCounty(county);
+      setCountySelectionTime(Date.now());
+
+      // Record split time for county selection
+      if (gameSettings.enableTimer) {
+        timerControls.recordSplit(`Selected ${county.name}`);
+      }
+    },
+    [gameSettings.enableTimer, timerControls]
   );
 
-  const selectCounty = useCallback((county: County) => {
-    setCurrentCounty(county);
-    setCountySelectionTime(Date.now());
+  const placeCounty = useCallback(
+    (countyId: string, isCorrect: boolean, placementAccuracy: number = 1.0) => {
+      // Start timer on first county placement
+      if (!timerStarted && gameSettings.enableTimer) {
+        timerControls.start();
+        setTimerStarted(true);
+      }
 
-    // Record split time for county selection
-    if (gameSettings.enableTimer) {
-      timerControls.recordSplit(`Selected ${county.name}`);
-    }
-  }, [gameSettings.enableTimer, timerControls]);
+      const placementTime = Date.now() - countySelectionTime;
+      const county = counties.find((c) => c.id === countyId);
 
-  const placeCounty = useCallback((countyId: string, isCorrect: boolean, placementAccuracy: number = 1.0) => {
-    // Start timer on first county placement
-    if (!timerStarted && gameSettings.enableTimer) {
-      timerControls.start();
-      setTimerStarted(true);
-    }
+      if (!county) return;
 
-    const placementTime = Date.now() - countySelectionTime;
-    const county = counties.find(c => c.id === countyId);
+      let newStreak = currentStreak;
+      let scoreCalculation: ScoreCalculation;
 
-    if (!county) return;
+      if (isCorrect && currentCounty && currentCounty.id === countyId) {
+        // Correct placement
+        newStreak = currentStreak + 1;
+        setCurrentStreak(newStreak);
+        setMaxStreak((prev) => Math.max(prev, newStreak));
 
-    let newStreak = currentStreak;
-    let scoreCalculation: ScoreCalculation;
+        // Calculate advanced score
+        if (gameSettings.enableScoring) {
+          scoreCalculation = calculateScore(
+            true,
+            placementTime,
+            newStreak,
+            gameSettings.difficulty,
+            county.region,
+            completedRegions,
+            Object.keys(counties.reduce((acc, c) => ({ ...acc, [c.region]: true }), {})).length,
+            placementAccuracy
+          );
 
-    if (isCorrect && currentCounty && currentCounty.id === countyId) {
-      // Correct placement
-      newStreak = currentStreak + 1;
-      setCurrentStreak(newStreak);
-      setMaxStreak(prev => Math.max(prev, newStreak));
-
-      // Calculate advanced score
-      if (gameSettings.enableScoring) {
-        scoreCalculation = calculateScore(
-          true,
-          placementTime,
-          newStreak,
-          gameSettings.difficulty,
-          county.region,
-          completedRegions,
-          Object.keys(counties.reduce((acc, c) => ({ ...acc, [c.region]: true }), {})).length,
-          placementAccuracy
-        );
-
-        setScore(prev => prev + scoreCalculation.totalPoints);
-        setLastScoreCalculation(scoreCalculation);
-      } else {
-        // Simple scoring
-        scoreCalculation = {
-          basePoints: 100,
-          timeBonus: 0,
-          accuracyPoints: 100,
-          streakPoints: 0,
-          difficultyPoints: 0,
-          regionalPoints: 0,
-          totalPoints: 100,
-          modifiers: {
+          setScore((prev) => prev + scoreCalculation.totalPoints);
+          setLastScoreCalculation(scoreCalculation);
+        } else {
+          // Simple scoring
+          scoreCalculation = {
+            basePoints: 100,
             timeBonus: 0,
-            accuracyMultiplier: 1,
-            streakBonus: 0,
-            difficultyMultiplier: 1,
-            regionalBonus: 0,
-            perfectPlacementBonus: 0
-          }
-        };
-        setScore(prev => prev + 100);
-      }
+            accuracyPoints: 100,
+            streakPoints: 0,
+            difficultyPoints: 0,
+            regionalPoints: 0,
+            totalPoints: 100,
+            modifiers: {
+              timeBonus: 0,
+              accuracyMultiplier: 1,
+              streakBonus: 0,
+              difficultyMultiplier: 1,
+              regionalBonus: 0,
+              perfectPlacementBonus: 0,
+            },
+          };
+          setScore((prev) => prev + 100);
+        }
 
-      setPlacedCounties(prev => new Set([...prev, countyId]));
-      setCurrentCounty(null);
+        setPlacedCounties((prev) => new Set([...prev, countyId]));
+        setCurrentCounty(null);
 
-      // Record split time for successful placement
-      if (gameSettings.enableTimer) {
-        timerControls.recordSplit(`Placed ${county.name}`);
-      }
-    } else {
-      // Incorrect placement
-      newStreak = 0;
-      setCurrentStreak(0);
-      setMistakes(prev => prev + 1);
-
-      if (gameSettings.enableScoring) {
-        scoreCalculation = calculateScore(
-          false,
-          placementTime,
-          0,
-          gameSettings.difficulty,
-          county.region,
-          completedRegions,
-          Object.keys(counties.reduce((acc, c) => ({ ...acc, [c.region]: true }), {})).length,
-          0
-        );
-
-        setScore(prev => Math.max(0, prev + scoreCalculation.totalPoints)); // totalPoints will be negative
-        setLastScoreCalculation(scoreCalculation);
+        // Record split time for successful placement
+        if (gameSettings.enableTimer) {
+          timerControls.recordSplit(`Placed ${county.name}`);
+        }
       } else {
-        // Simple penalty
-        scoreCalculation = {
-          basePoints: 0,
-          timeBonus: 0,
-          accuracyPoints: 0,
-          streakPoints: 0,
-          difficultyPoints: 0,
-          regionalPoints: 0,
-          totalPoints: -10,
-          modifiers: {
+        // Incorrect placement
+        newStreak = 0;
+        setCurrentStreak(0);
+        setMistakes((prev) => prev + 1);
+
+        if (gameSettings.enableScoring) {
+          scoreCalculation = calculateScore(
+            false,
+            placementTime,
+            0,
+            gameSettings.difficulty,
+            county.region,
+            completedRegions,
+            Object.keys(counties.reduce((acc, c) => ({ ...acc, [c.region]: true }), {})).length,
+            0
+          );
+
+          setScore((prev) => Math.max(0, prev + scoreCalculation.totalPoints)); // totalPoints will be negative
+          setLastScoreCalculation(scoreCalculation);
+        } else {
+          // Simple penalty
+          scoreCalculation = {
+            basePoints: 0,
             timeBonus: 0,
-            accuracyMultiplier: 0,
-            streakBonus: 0,
-            difficultyMultiplier: 1,
-            regionalBonus: 0,
-            perfectPlacementBonus: 0
-          }
-        };
-        setScore(prev => Math.max(0, prev - 10));
+            accuracyPoints: 0,
+            streakPoints: 0,
+            difficultyPoints: 0,
+            regionalPoints: 0,
+            totalPoints: -10,
+            modifiers: {
+              timeBonus: 0,
+              accuracyMultiplier: 0,
+              streakBonus: 0,
+              difficultyMultiplier: 1,
+              regionalBonus: 0,
+              perfectPlacementBonus: 0,
+            },
+          };
+          setScore((prev) => Math.max(0, prev - 10));
+        }
       }
-    }
 
-    // Record placement in history
-    const placementRecord: PlacementRecord = {
-      countyId,
-      isCorrect,
-      placementTime,
-      region: county.region,
-      scoreCalculation,
-      timestamp: Date.now()
-    };
+      // Record placement in history
+      const placementRecord: PlacementRecord = {
+        countyId,
+        isCorrect,
+        placementTime,
+        region: county.region,
+        scoreCalculation,
+        timestamp: Date.now(),
+      };
 
-    setPlacementHistory(prev => [...prev, placementRecord]);
-  }, [currentCounty, currentStreak, countySelectionTime, counties, completedRegions,
-      gameSettings.difficulty, gameSettings.enableScoring, gameSettings.enableTimer, timerControls, timerStarted]);
+      setPlacementHistory((prev) => [...prev, placementRecord]);
+    },
+    [
+      currentCounty,
+      currentStreak,
+      countySelectionTime,
+      counties,
+      completedRegions,
+      gameSettings.difficulty,
+      gameSettings.enableScoring,
+      gameSettings.enableTimer,
+      timerControls,
+      timerStarted,
+    ]
+  );
 
   const clearCurrentCounty = useCallback(() => {
     setCurrentCounty(null);
@@ -383,14 +404,17 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, [gameSettings.enableTimer, timerControls]);
 
   const updateSettings = useCallback((newSettings: Partial<GameSettings>) => {
-    setGameSettings(prev => ({ ...prev, ...newSettings }));
+    setGameSettings((prev) => ({ ...prev, ...newSettings }));
   }, []);
 
-  const recordSplitTime = useCallback((name: string) => {
-    if (gameSettings.enableTimer) {
-      timerControls.recordSplit(name);
-    }
-  }, [gameSettings.enableTimer, timerControls]);
+  const recordSplitTime = useCallback(
+    (name: string) => {
+      if (gameSettings.enableTimer) {
+        timerControls.recordSplit(name);
+      }
+    },
+    [gameSettings.enableTimer, timerControls]
+  );
 
   const saveToLeaderboard = useCallback((): LeaderboardEntry | null => {
     if (isGameComplete && gameSettings.enableScoring) {
@@ -402,17 +426,23 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       );
     }
     return null;
-  }, [isGameComplete, gameSettings.enableScoring, gameSettings.playerName,
-      score, gameMetrics, gameSettings.difficulty]);
+  }, [
+    isGameComplete,
+    gameSettings.enableScoring,
+    gameSettings.playerName,
+    score,
+    gameMetrics,
+    gameSettings.difficulty,
+  ]);
 
   const useHint = useCallback(() => {
     if (hints <= 0 || !currentCounty) return false;
 
     // Deduct a hint
-    setHints(prev => prev - 1);
+    setHints((prev) => prev - 1);
 
     // Deduct points for using a hint (50 points like Colombia app)
-    setScore(prev => Math.max(0, prev - 50));
+    setScore((prev) => Math.max(0, prev - 50));
 
     // Set the hinted county so the map can show visual indicators
     setHintedCounty(currentCounty.id);
@@ -426,7 +456,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, [hints, currentCounty]);
 
   const toggleShowRegions = useCallback(() => {
-    setShowRegions(prev => !prev);
+    setShowRegions((prev) => !prev);
   }, []);
 
   return (
