@@ -5,77 +5,85 @@ import { MOCK_CALIFORNIA_COUNTIES, MOCK_MAP_DIMENSIONS } from '../../fixtures';
 import '../../mocks/d3-mocks';
 
 // Mock California Map Component
-const MockCaliforniaMap = React.forwardRef<SVGSVGElement, {
-  counties: typeof MOCK_CALIFORNIA_COUNTIES;
-  dimensions: typeof MOCK_MAP_DIMENSIONS;
-  onCountyClick?: (countyId: string) => void;
-  onCountyHover?: (countyId: string | null) => void;
-  selectedCounty?: string | null;
-  highlightedCounty?: string | null;
-  placedCounties?: string[];
-  isInteractive?: boolean;
-}>(({
-  counties,
-  dimensions,
-  onCountyClick,
-  onCountyHover,
-  selectedCounty,
-  highlightedCounty,
-  placedCounties = [],
-  isInteractive = true
-}, ref) => {
-  return (
-    <svg
-      ref={ref}
-      width={dimensions.width}
-      height={dimensions.height}
-      viewBox={`${dimensions.viewBox.x} ${dimensions.viewBox.y} ${dimensions.viewBox.width} ${dimensions.viewBox.height}`}
-      data-testid="california-map"
-      role="img"
-      aria-label="California Counties Map"
-    >
-      <g data-testid="counties-group">
-        {counties.map((county) => (
-          <g
-            key={county.id}
-            data-testid={`county-${county.id}`}
-            data-county-id={county.id}
-            className={`county ${selectedCounty === county.id ? 'selected' : ''} ${
-              highlightedCounty === county.id ? 'highlighted' : ''
-            } ${placedCounties.includes(county.id) ? 'placed' : ''}`}
-          >
-            <path
-              d={`M ${county.geometry.coordinates[0].map(coord => coord.join(',')).join(' L ')} Z`}
-              fill={placedCounties.includes(county.id) ? '#4ade80' : '#e5e7eb'}
-              stroke="#374151"
-              strokeWidth="1"
-              onClick={isInteractive ? () => onCountyClick?.(county.id) : undefined}
-              onMouseEnter={isInteractive ? () => onCountyHover?.(county.id) : undefined}
-              onMouseLeave={isInteractive ? () => onCountyHover?.(null) : undefined}
-              style={{ cursor: isInteractive ? 'pointer' : 'default' }}
-              role="button"
-              tabIndex={isInteractive ? 0 : -1}
-              aria-label={`${county.name} County`}
-              aria-pressed={selectedCounty === county.id}
-            />
-            <text
-              x={county.coordinates.lng}
-              y={county.coordinates.lat}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontSize="12"
-              fill="#374151"
-              pointerEvents="none"
-              data-testid={`county-label-${county.id}`}
+const MockCaliforniaMap = React.forwardRef<
+  SVGSVGElement,
+  {
+    counties: typeof MOCK_CALIFORNIA_COUNTIES;
+    dimensions: typeof MOCK_MAP_DIMENSIONS;
+    onCountyClick?: (countyId: string) => void;
+    onCountyHover?: (countyId: string | null) => void;
+    selectedCounty?: string | null;
+    highlightedCounty?: string | null;
+    placedCounties?: string[];
+    isInteractive?: boolean;
+  }
+>(
+  (
+    {
+      counties,
+      dimensions,
+      onCountyClick,
+      onCountyHover,
+      selectedCounty,
+      highlightedCounty,
+      placedCounties = [],
+      isInteractive = true,
+    },
+    ref
+  ) => {
+    return (
+      <svg
+        ref={ref}
+        width={dimensions.width}
+        height={dimensions.height}
+        viewBox={`${dimensions.viewBox.x} ${dimensions.viewBox.y} ${dimensions.viewBox.width} ${dimensions.viewBox.height}`}
+        data-testid="california-map"
+        role="img"
+        aria-label="California Counties Map"
+      >
+        <g data-testid="counties-group">
+          {counties.map((county) => (
+            <g
+              key={county.id}
+              data-testid={`county-${county.id}`}
+              data-county-id={county.id}
+              className={`county ${selectedCounty === county.id ? 'selected' : ''} ${
+                highlightedCounty === county.id ? 'highlighted' : ''
+              } ${placedCounties.includes(county.id) ? 'placed' : ''}`}
             >
-              {county.name}
-            </text>
-          </g>
-        ))}
-      </g>
-    </svg>
-  );
-});
+              <path
+                d={`M ${county.geometry.coordinates[0].map((coord) => coord.join(',')).join(' L ')} Z`}
+                fill={placedCounties.includes(county.id) ? '#4ade80' : '#e5e7eb'}
+                stroke="#374151"
+                strokeWidth="1"
+                onClick={isInteractive ? () => onCountyClick?.(county.id) : undefined}
+                onMouseEnter={isInteractive ? () => onCountyHover?.(county.id) : undefined}
+                onMouseLeave={isInteractive ? () => onCountyHover?.(null) : undefined}
+                style={{ cursor: isInteractive ? 'pointer' : 'default' }}
+                role="button"
+                tabIndex={isInteractive ? 0 : -1}
+                aria-label={`${county.name} County`}
+                aria-pressed={selectedCounty === county.id}
+              />
+              <text
+                x={county.coordinates.lng}
+                y={county.coordinates.lat}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fontSize="12"
+                fill="#374151"
+                pointerEvents="none"
+                data-testid={`county-label-${county.id}`}
+              >
+                {county.name}
+              </text>
+            </g>
+          ))}
+        </g>
+      </svg>
+    );
+  }
+);
 
 MockCaliforniaMap.displayName = 'MockCaliforniaMap';
 
@@ -191,7 +199,7 @@ describe('Map Rendering', () => {
       const placedCounties = ['los-angeles', 'san-diego'];
       render(<MockCaliforniaMap {...defaultProps} placedCounties={placedCounties} />);
 
-      placedCounties.forEach(countyId => {
+      placedCounties.forEach((countyId) => {
         const county = screen.getByTestId(`county-${countyId}`);
         expect(county).toHaveClass('placed');
 
@@ -206,7 +214,7 @@ describe('Map Rendering', () => {
       MOCK_CALIFORNIA_COUNTIES.forEach((county) => {
         const countyGroup = screen.getByTestId(`county-${county.id}`);
         const path = countyGroup.querySelector('path');
-        expect(path).toHaveAttribute('tabIndex', '-1');
+        expect(path).toHaveAttribute('tabindex', '-1');
         expect(path).toHaveStyle('cursor: default');
       });
     });
@@ -221,7 +229,8 @@ describe('Map Rendering', () => {
       const path = losAngelesCounty.querySelector('path');
 
       if (path) {
-        path.click();
+        // Use fireEvent or dispatchEvent for SVG elements
+        path.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         expect(onCountyClick).toHaveBeenCalledWith('los-angeles');
       }
     });
@@ -234,13 +243,17 @@ describe('Map Rendering', () => {
       const path = losAngelesCounty.querySelector('path');
 
       if (path) {
-        // Mouse enter
-        path.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-        expect(onCountyHover).toHaveBeenCalledWith('los-angeles');
+        // Mouse enter - use mouseover which bubbles correctly
+        path.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+        await waitFor(() => {
+          expect(onCountyHover).toHaveBeenCalledWith('los-angeles');
+        });
 
-        // Mouse leave
-        path.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
-        expect(onCountyHover).toHaveBeenCalledWith(null);
+        // Mouse leave - use mouseout which bubbles correctly
+        path.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
+        await waitFor(() => {
+          expect(onCountyHover).toHaveBeenCalledWith(null);
+        });
       }
     });
 
@@ -261,8 +274,8 @@ describe('Map Rendering', () => {
       const path = losAngelesCounty.querySelector('path');
 
       if (path) {
-        path.click();
-        path.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+        path.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        path.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
 
         expect(onCountyClick).not.toHaveBeenCalled();
         expect(onCountyHover).not.toHaveBeenCalled();
@@ -280,7 +293,7 @@ describe('Map Rendering', () => {
 
         expect(path).toHaveAttribute('role', 'button');
         expect(path).toHaveAttribute('aria-label', `${county.name} County`);
-        expect(path).toHaveAttribute('tabIndex', '0');
+        expect(path).toHaveAttribute('tabindex', '0');
       });
     });
 
@@ -303,7 +316,7 @@ describe('Map Rendering', () => {
 
       MOCK_CALIFORNIA_COUNTIES.forEach((county) => {
         const label = screen.getByTestId(`county-label-${county.id}`);
-        expect(label).toHaveAttribute('pointerEvents', 'none');
+        expect(label).toHaveAttribute('pointer-events', 'none');
       });
     });
   });
