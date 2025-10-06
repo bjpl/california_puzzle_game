@@ -35,7 +35,7 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
   damping = 15,
   stiffness = 300,
   className = '',
-  dragConstraints
+  dragConstraints,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isNearTarget, setIsNearTarget] = useState(false);
@@ -50,28 +50,18 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
   const springY = useSpring(y, { damping, stiffness });
 
   // Transform values for visual effects
-  const scale = useTransform(
-    [x, y],
-    ([latestX, latestY]) => {
-      if (!isDragging) return 1;
-      const distance = Math.sqrt(latestX * latestX + latestY * latestY);
-      return Math.max(0.95, 1 - distance * 0.0001);
-    }
-  );
+  const scale = useTransform([x, y], ([latestX, latestY]) => {
+    if (!isDragging) return 1;
+    const distance = Math.sqrt(latestX * latestX + latestY * latestY);
+    return Math.max(0.95, 1 - distance * 0.0001);
+  });
 
-  const rotate = useTransform(
-    [x, y],
-    ([latestX, latestY]) => {
-      if (!isDragging) return 0;
-      return latestX * 0.1;
-    }
-  );
+  const rotate = useTransform([x, y], ([latestX, _latestY]) => {
+    if (!isDragging) return 0;
+    return latestX * 0.1;
+  });
 
-  const opacity = useTransform(
-    scale,
-    [0.95, 1],
-    [0.8, 1]
-  );
+  const opacity = useTransform(scale, [0.95, 1], [0.8, 1]);
 
   // Check for magnetic targets
   const checkMagneticTargets = (currentX: number, currentY: number) => {
@@ -83,7 +73,7 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
       if (distance <= target.radius) {
         setIsNearTarget(true);
         // Apply magnetic effect
-        const magnetStrength = 1 - (distance / target.radius);
+        const magnetStrength = 1 - distance / target.radius;
         const magnetX = (target.x - currentX) * magnetStrength * 0.3;
         const magnetY = (target.y - currentY) * magnetStrength * 0.3;
 
@@ -196,19 +186,27 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
         boxShadow: getBoxShadow(),
         border: `2px solid ${getBorderColor()}`,
         borderRadius: '8px',
-        transition: 'box-shadow 0.2s ease, border-color 0.2s ease'
+        transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
       }}
-      whileHover={!disabled ? {
-        scale: 1.02,
-        transition: { duration: 0.2 }
-      } : {}}
-      whileTap={!disabled ? {
-        scale: 0.95,
-        transition: { duration: 0.1 }
-      } : {}}
+      whileHover={
+        !disabled
+          ? {
+              scale: 1.02,
+              transition: { duration: 0.2 },
+            }
+          : {}
+      }
+      whileTap={
+        !disabled
+          ? {
+              scale: 0.95,
+              transition: { duration: 0.1 },
+            }
+          : {}
+      }
       animate={{
         scale: disabled ? 0.9 : 1,
-        opacity: disabled ? 0.5 : 1
+        opacity: disabled ? 0.5 : 1,
       }}
     >
       {children}
@@ -222,7 +220,7 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
           exit={{ opacity: 0 }}
           style={{
             background: 'linear-gradient(45deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.2))',
-            border: '2px dashed #22C55E'
+            border: '2px dashed #22C55E',
           }}
         />
       )}
@@ -243,19 +241,19 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
                 left: '50%',
                 top: '50%',
                 marginLeft: '-4px',
-                marginTop: '-4px'
+                marginTop: '-4px',
               }}
               animate={{
                 x: [0, (i - 1) * 20, 0],
                 y: [0, Math.sin(i) * 15, 0],
                 opacity: [0, 1, 0],
-                scale: [0, 1, 0]
+                scale: [0, 1, 0],
               }}
               transition={{
                 duration: 2,
                 repeat: Infinity,
                 delay: i * 0.2,
-                ease: 'easeInOut'
+                ease: 'easeInOut',
               }}
             />
           ))}
@@ -272,7 +270,7 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
               linear-gradient(to bottom, rgba(59, 130, 246, 0.2) 1px, transparent 1px)
             `,
             backgroundSize: `${gridSize}px ${gridSize}px`,
-            transform: `translate(-${gridSize/2}px, -${gridSize/2}px)`
+            transform: `translate(-${gridSize / 2}px, -${gridSize / 2}px)`,
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.5 }}

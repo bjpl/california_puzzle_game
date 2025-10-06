@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  HintVisualData,
-  Position,
-  HintType,
-  County
-} from '@/types';
+import { HintVisualData, Position, HintType, County } from '@/types';
 
 interface HintVisualIndicatorsProps {
   visualData: HintVisualData;
@@ -29,7 +24,7 @@ const PulseEffect: React.FC<PulseEffectProps> = ({
   radius,
   opacity,
   duration,
-  intensity
+  intensity,
 }) => {
   return (
     <motion.div
@@ -48,13 +43,13 @@ const PulseEffect: React.FC<PulseEffectProps> = ({
       transition={{
         duration: duration / 1000,
         repeat: Infinity,
-        ease: "easeInOut"
+        ease: 'easeInOut',
       }}
     >
       <div
         className="w-full h-full rounded-full border-4 border-blue-400"
         style={{
-          boxShadow: `0 0 20px rgba(59, 130, 246, ${opacity * intensity})`
+          boxShadow: `0 0 20px rgba(59, 130, 246, ${opacity * intensity})`,
         }}
       />
     </motion.div>
@@ -67,11 +62,7 @@ interface SpotlightEffectProps {
   fadeEdge: number;
 }
 
-const SpotlightEffect: React.FC<SpotlightEffectProps> = ({
-  center,
-  radius,
-  fadeEdge
-}) => {
+const SpotlightEffect: React.FC<SpotlightEffectProps> = ({ center, radius, fadeEdge }) => {
   return (
     <motion.div
       className="absolute pointer-events-none"
@@ -83,7 +74,7 @@ const SpotlightEffect: React.FC<SpotlightEffectProps> = ({
         background: `radial-gradient(circle at ${center.x}px ${center.y}px,
           transparent ${radius - fadeEdge}px,
           rgba(0,0,0,0.4) ${radius}px,
-          rgba(0,0,0,0.7) ${radius + fadeEdge}px)`
+          rgba(0,0,0,0.7) ${radius + fadeEdge}px)`,
       }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -100,18 +91,14 @@ interface ArrowIndicatorProps {
   color?: string;
 }
 
-const ArrowIndicator: React.FC<ArrowIndicatorProps> = ({
-  from,
-  to,
-  style,
-  color = '#3B82F6'
-}) => {
-  const distance = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
-  const angle = Math.atan2(to.y - from.y, to.x - from.x);
+const ArrowIndicator: React.FC<ArrowIndicatorProps> = ({ from, to, style, color = '#3B82F6' }) => {
+  const _distance = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
+  const _angle = Math.atan2(to.y - from.y, to.x - from.x);
 
-  const pathD = style === 'curved'
-    ? `M ${from.x} ${from.y} Q ${from.x + (to.x - from.x) / 2} ${from.y - 50} ${to.x} ${to.y}`
-    : `M ${from.x} ${from.y} L ${to.x} ${to.y}`;
+  const pathD =
+    style === 'curved'
+      ? `M ${from.x} ${from.y} Q ${from.x + (to.x - from.x) / 2} ${from.y - 50} ${to.x} ${to.y}`
+      : `M ${from.x} ${from.y} L ${to.x} ${to.y}`;
 
   return (
     <motion.svg
@@ -120,25 +107,15 @@ const ArrowIndicator: React.FC<ArrowIndicatorProps> = ({
         left: 0,
         top: 0,
         width: '100%',
-        height: '100%'
+        height: '100%',
       }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       <defs>
-        <marker
-          id="arrowhead"
-          markerWidth="10"
-          markerHeight="7"
-          refX="9"
-          refY="3.5"
-          orient="auto"
-        >
-          <polygon
-            points="0 0, 10 3.5, 0 7"
-            fill={color}
-          />
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill={color} />
         </marker>
       </defs>
 
@@ -150,9 +127,9 @@ const ArrowIndicator: React.FC<ArrowIndicatorProps> = ({
         markerEnd="url(#arrowhead)"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
-        transition={{ duration: 1, ease: "easeInOut" }}
+        transition={{ duration: 1, ease: 'easeInOut' }}
         style={{
-          filter: `drop-shadow(0 0 6px ${color}40)`
+          filter: `drop-shadow(0 0 6px ${color}40)`,
         }}
       />
     </motion.svg>
@@ -166,20 +143,21 @@ interface HighlightAreaProps {
   hintType: HintType;
 }
 
-const HighlightArea: React.FC<HighlightAreaProps> = ({
-  center,
-  radius,
-  opacity,
-  hintType
-}) => {
+const HighlightArea: React.FC<HighlightAreaProps> = ({ center, radius, opacity, hintType }) => {
   const getHighlightColor = (type: HintType): string => {
     switch (type) {
-      case HintType.LOCATION: return 'rgb(59, 130, 246)'; // blue
-      case HintType.SHAPE: return 'rgb(16, 185, 129)'; // green
-      case HintType.NEIGHBOR: return 'rgb(245, 158, 11)'; // yellow
-      case HintType.FACT: return 'rgb(139, 92, 246)'; // purple
-      case HintType.EDUCATIONAL: return 'rgb(236, 72, 153)'; // pink
-      default: return 'rgb(59, 130, 246)'; // blue
+      case HintType.LOCATION:
+        return 'rgb(59, 130, 246)'; // blue
+      case HintType.SHAPE:
+        return 'rgb(16, 185, 129)'; // green
+      case HintType.NEIGHBOR:
+        return 'rgb(245, 158, 11)'; // yellow
+      case HintType.FACT:
+        return 'rgb(139, 92, 246)'; // purple
+      case HintType.EDUCATIONAL:
+        return 'rgb(236, 72, 153)'; // pink
+      default:
+        return 'rgb(59, 130, 246)'; // blue
     }
   };
 
@@ -197,14 +175,16 @@ const HighlightArea: React.FC<HighlightAreaProps> = ({
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity }}
       exit={{ scale: 0, opacity: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       <div
         className="w-full h-full rounded-full"
         style={{
-          background: `radial-gradient(circle, ${color}${Math.floor(opacity * 255).toString(16).padStart(2, '0')} 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${color}${Math.floor(opacity * 255)
+            .toString(16)
+            .padStart(2, '0')} 0%, transparent 70%)`,
           border: `2px solid ${color}`,
-          boxShadow: `0 0 20px ${color}60, inset 0 0 20px ${color}20`
+          boxShadow: `0 0 20px ${color}60, inset 0 0 20px ${color}20`,
         }}
       />
     </motion.div>
@@ -217,16 +197,15 @@ interface HeatMapIndicatorProps {
   hintType: HintType;
 }
 
-const HeatMapIndicator: React.FC<HeatMapIndicatorProps> = ({
-  positions,
-  intensity,
-  hintType
-}) => {
+const _HeatMapIndicator: React.FC<HeatMapIndicatorProps> = ({ positions, intensity, hintType }) => {
   const getHeatColor = (type: HintType): string => {
     switch (type) {
-      case HintType.LOCATION: return 'rgba(59, 130, 246, ';
-      case HintType.NEIGHBOR: return 'rgba(245, 158, 11, ';
-      default: return 'rgba(59, 130, 246, ';
+      case HintType.LOCATION:
+        return 'rgba(59, 130, 246, ';
+      case HintType.NEIGHBOR:
+        return 'rgba(245, 158, 11, ';
+      default:
+        return 'rgba(59, 130, 246, ';
     }
   };
 
@@ -243,7 +222,7 @@ const HeatMapIndicator: React.FC<HeatMapIndicatorProps> = ({
             top: position.y - 30,
             width: 60,
             height: 60,
-            background: `radial-gradient(circle, ${baseColor}${intensity}) 0%, transparent 70%)`
+            background: `radial-gradient(circle, ${baseColor}${intensity}) 0%, transparent 70%)`,
           }}
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -281,7 +260,7 @@ const ShapeOutline: React.FC<ShapeOutlineProps> = ({ county, opacity }) => {
         style={{
           left: x - 100,
           top: y - 75,
-          position: 'absolute'
+          position: 'absolute',
         }}
       >
         <motion.path
@@ -292,9 +271,9 @@ const ShapeOutline: React.FC<ShapeOutlineProps> = ({ county, opacity }) => {
           strokeDasharray="5,5"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 2, ease: "easeInOut" }}
+          transition={{ duration: 2, ease: 'easeInOut' }}
           style={{
-            filter: 'drop-shadow(0 0 8px #10B98140)'
+            filter: 'drop-shadow(0 0 8px #10B98140)',
           }}
         />
       </svg>
@@ -308,14 +287,14 @@ const HintVisualIndicators: React.FC<HintVisualIndicatorsProps> = ({
   county,
   isActive,
   onAnimationComplete,
-  className = ''
+  className = '',
 }) => {
   const [animationStage, setAnimationStage] = useState(0);
 
   useEffect(() => {
     if (isActive) {
       const timer = setTimeout(() => {
-        setAnimationStage(prev => prev + 1);
+        setAnimationStage((prev) => prev + 1);
         if (onAnimationComplete) {
           onAnimationComplete();
         }
@@ -372,12 +351,7 @@ const HintVisualIndicators: React.FC<HintVisualIndicatorsProps> = ({
         )}
 
         {/* Shape Outline for Shape Hints */}
-        {hintType === HintType.SHAPE && (
-          <ShapeOutline
-            county={county}
-            opacity={0.6}
-          />
-        )}
+        {hintType === HintType.SHAPE && <ShapeOutline county={county} opacity={0.6} />}
       </AnimatePresence>
 
       {/* Animated Text Overlay */}
