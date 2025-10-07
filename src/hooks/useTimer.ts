@@ -57,8 +57,8 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
     onComplete,
     onSplitTime,
     maxDuration,
-    isCountdown = false,
-    precision = 10
+    isCountdown: _isCountdown = false,
+    precision: _precision = 10,
   } = options;
 
   const [elapsed, setElapsed] = useState(0);
@@ -70,7 +70,7 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
     bestTime: null,
     averageTime: 0,
     totalSessions: 0,
-    completedSessions: 0
+    completedSessions: 0,
   });
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -107,9 +107,9 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
     setIsRunning(true);
     setIsPaused(false);
 
-    setStats(prev => ({
+    setStats((prev) => ({
       ...prev,
-      totalSessions: prev.totalSessions + 1
+      totalSessions: prev.totalSessions + 1,
     }));
   }, [elapsed, isCompleted]);
 
@@ -169,7 +169,7 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
 
   // Add time to timer
   const addTime = useCallback((milliseconds: number) => {
-    setElapsed(prev => {
+    setElapsed((prev) => {
       const newElapsed = Math.max(0, prev + milliseconds);
       startTimeRef.current = Date.now() - newElapsed;
       return newElapsed;
@@ -177,27 +177,31 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
   }, []);
 
   // Record split time
-  const recordSplit = useCallback((name: string) => {
-    const splitTime: SplitTime = {
-      name,
-      timestamp: Date.now(),
-      elapsed
-    };
+  const recordSplit = useCallback(
+    (name: string) => {
+      const splitTime: SplitTime = {
+        name,
+        timestamp: Date.now(),
+        elapsed,
+      };
 
-    setSplitTimes(prev => [...prev, splitTime]);
+      setSplitTimes((prev) => [...prev, splitTime]);
 
-    if (onSplitTime) {
-      onSplitTime(splitTime);
-    }
-  }, [elapsed, onSplitTime]);
+      if (onSplitTime) {
+        onSplitTime(splitTime);
+      }
+    },
+    [elapsed, onSplitTime]
+  );
 
   // Update best time
   const updateBestTime = useCallback((time: number) => {
-    setStats(prev => ({
+    setStats((prev) => ({
       ...prev,
       bestTime: prev.bestTime === null ? time : Math.min(prev.bestTime, time),
       completedSessions: prev.completedSessions + 1,
-      averageTime: ((prev.averageTime * prev.completedSessions) + time) / (prev.completedSessions + 1)
+      averageTime:
+        (prev.averageTime * prev.completedSessions + time) / (prev.completedSessions + 1),
     }));
   }, []);
 
@@ -266,7 +270,7 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
     stats,
     formattedTime,
     formattedRemaining,
-    progressPercentage
+    progressPercentage,
   };
 
   const timerControls: TimerControls = {
@@ -278,7 +282,7 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
     addTime,
     recordSplit,
     updateBestTime,
-    formatTime
+    formatTime,
   };
 
   return [timerState, timerControls];

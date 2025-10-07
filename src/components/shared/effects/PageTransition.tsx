@@ -14,7 +14,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
   mode = 'slide',
   direction = 'right',
   duration = 0.5,
-  className = ''
+  className = '',
 }) => {
   const getVariants = () => {
     switch (mode) {
@@ -23,7 +23,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
           initial: {
             x: direction === 'left' ? '-100%' : direction === 'right' ? '100%' : 0,
             y: direction === 'up' ? '-100%' : direction === 'down' ? '100%' : 0,
-            opacity: 0
+            opacity: 0,
           },
           animate: {
             x: 0,
@@ -33,17 +33,17 @@ const PageTransition: React.FC<PageTransitionProps> = ({
               type: 'spring',
               damping: 25,
               stiffness: 120,
-              duration
-            }
+              duration,
+            },
           },
           exit: {
             x: direction === 'left' ? '100%' : direction === 'right' ? '-100%' : 0,
             y: direction === 'up' ? '100%' : direction === 'down' ? '-100%' : 0,
             opacity: 0,
             transition: {
-              duration: duration * 0.7
-            }
-          }
+              duration: duration * 0.7,
+            },
+          },
         };
 
       case 'fade':
@@ -53,15 +53,15 @@ const PageTransition: React.FC<PageTransitionProps> = ({
             opacity: 1,
             transition: {
               duration,
-              ease: 'easeOut'
-            }
+              ease: 'easeOut',
+            },
           },
           exit: {
             opacity: 0,
             transition: {
-              duration: duration * 0.7
-            }
-          }
+              duration: duration * 0.7,
+            },
+          },
         };
 
       case 'scale':
@@ -69,7 +69,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
           initial: {
             scale: 0.8,
             opacity: 0,
-            filter: 'blur(10px)'
+            filter: 'blur(10px)',
           },
           animate: {
             scale: 1,
@@ -79,17 +79,17 @@ const PageTransition: React.FC<PageTransitionProps> = ({
               type: 'spring',
               damping: 20,
               stiffness: 100,
-              duration
-            }
+              duration,
+            },
           },
           exit: {
             scale: 1.1,
             opacity: 0,
             filter: 'blur(10px)',
             transition: {
-              duration: duration * 0.7
-            }
-          }
+              duration: duration * 0.7,
+            },
+          },
         };
 
       case 'rotate':
@@ -97,7 +97,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
           initial: {
             rotateY: -90,
             opacity: 0,
-            transformPerspective: 1000
+            transformPerspective: 1000,
           },
           animate: {
             rotateY: 0,
@@ -106,16 +106,16 @@ const PageTransition: React.FC<PageTransitionProps> = ({
               type: 'spring',
               damping: 15,
               stiffness: 100,
-              duration
-            }
+              duration,
+            },
           },
           exit: {
             rotateY: 90,
             opacity: 0,
             transition: {
-              duration: duration * 0.7
-            }
-          }
+              duration: duration * 0.7,
+            },
+          },
         };
 
       case 'california':
@@ -125,7 +125,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
             scale: 0.3,
             rotateZ: -180,
             opacity: 0,
-            filter: 'hue-rotate(180deg) brightness(0.3)'
+            filter: 'hue-rotate(180deg) brightness(0.3)',
           },
           animate: {
             scale: 1,
@@ -137,8 +137,8 @@ const PageTransition: React.FC<PageTransitionProps> = ({
               damping: 15,
               stiffness: 80,
               duration: duration * 1.2,
-              delay: 0.1
-            }
+              delay: 0.1,
+            },
           },
           exit: {
             scale: 0.3,
@@ -146,16 +146,16 @@ const PageTransition: React.FC<PageTransitionProps> = ({
             opacity: 0,
             filter: 'hue-rotate(180deg) brightness(0.3)',
             transition: {
-              duration: duration * 0.8
-            }
-          }
+              duration: duration * 0.8,
+            },
+          },
         };
 
       default:
         return {
           initial: { opacity: 0 },
           animate: { opacity: 1 },
-          exit: { opacity: 0 }
+          exit: { opacity: 0 },
         };
     }
   };
@@ -169,7 +169,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
       exit="exit"
       style={{
         width: '100%',
-        height: '100%'
+        height: '100%',
       }}
     >
       {children}
@@ -179,7 +179,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
 
 // Higher order component for wrapping pages
 export const withPageTransition = (
-  Component: React.ComponentType<any>,
+  Component: React.ComponentType<Record<string, unknown>>,
   transitionProps?: Partial<PageTransitionProps>
 ) => {
   return (props: Record<string, unknown>) => (
@@ -199,7 +199,7 @@ interface RouteTransitionProps {
 export const RouteTransition: React.FC<RouteTransitionProps> = ({
   children,
   location,
-  mode = 'slide'
+  mode = 'slide',
 }) => (
   <AnimatePresence mode="wait">
     <PageTransition key={location} mode={mode}>

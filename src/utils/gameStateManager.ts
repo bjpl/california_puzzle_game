@@ -32,9 +32,10 @@ export function saveGameState(gameState: Omit<SavedGameState, 'timestamp'>): boo
   try {
     const stateWithTimestamp: SavedGameState = {
       ...gameState,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
+    // eslint-disable-next-line no-restricted-globals
     localStorage.setItem(GAME_STATE_KEY, JSON.stringify(stateWithTimestamp));
     return true;
   } catch (error) {
@@ -45,6 +46,7 @@ export function saveGameState(gameState: Omit<SavedGameState, 'timestamp'>): boo
 
 export function loadGameState(): SavedGameState | null {
   try {
+    // eslint-disable-next-line no-restricted-globals
     const savedState = localStorage.getItem(GAME_STATE_KEY);
     if (!savedState) return null;
 
@@ -70,6 +72,7 @@ export function loadGameState(): SavedGameState | null {
 
 export function clearGameState(): void {
   try {
+    // eslint-disable-next-line no-restricted-globals
     localStorage.removeItem(GAME_STATE_KEY);
   } catch (error) {
     storageLogger.error('Failed to clear game state:', error);
@@ -78,9 +81,11 @@ export function clearGameState(): void {
 
 export function hasValidGameState(): boolean {
   const gameState = loadGameState();
-  return gameState !== null &&
-         gameState.placedCounties.length > 0 &&
-         gameState.placedCounties.length < 58; // Not completed
+  return (
+    gameState !== null &&
+    gameState.placedCounties.length > 0 &&
+    gameState.placedCounties.length < 58
+  ); // Not completed
 }
 
 // Generate return URL with game state indication

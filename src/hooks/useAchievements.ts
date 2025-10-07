@@ -2,11 +2,22 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { achievementLogger } from '../utils/logger';
-import { achievementSystem, AchievementDefinition, AchievementNotification, AchievementRarity } from '../utils/achievements';
+import {
+  achievementSystem,
+  AchievementDefinition,
+  AchievementNotification,
+  AchievementRarity,
+} from '../utils/achievements';
 import { achievementLogger } from '../utils/logger';
 import { storageManager } from '../utils/storage';
 import { achievementLogger } from '../utils/logger';
-import { Achievement, GameStats, PlacementResult, DifficultyLevel, CaliforniaRegion } from '../types';
+import {
+  Achievement,
+  GameStats,
+  PlacementResult,
+  DifficultyLevel,
+  CaliforniaRegion,
+} from '../types';
 import { achievementLogger } from '../utils/logger';
 
 interface AchievementHookReturn {
@@ -17,9 +28,13 @@ interface AchievementHookReturn {
   completionPercentage: number;
   rarityStats: Record<AchievementRarity, { total: number; unlocked: number }>;
   recentUnlocks: AchievementDefinition[];
-  
+
   // Actions
-  checkAchievements: (stats: GameStats, placement?: PlacementResult, gameData?: Record<string, unknown>) => Promise<Achievement[]>;
+  checkAchievements: (
+    stats: GameStats,
+    placement?: PlacementResult,
+    gameData?: Record<string, unknown>
+  ) => Promise<Achievement[]>;
   markNotificationAsRead: (index: number) => void;
   markAllNotificationsAsRead: () => void;
   getAchievementsByCategory: (category: string) => AchievementDefinition[];
@@ -30,70 +45,73 @@ interface AchievementHookReturn {
 export function useAchievements(): AchievementHookReturn {
   const [achievements, setAchievements] = useState<AchievementDefinition[]>([]);
   const [notifications, setNotifications] = useState<AchievementNotification[]>([]);
-  const [lastUpdate, setLastUpdate] = useState<number>(Date.now());
+  const [_lastUpdate, setLastUpdate] = useState<number>(Date.now());
 
   // Load achievements and notifications
   const loadAchievements = useCallback(() => {
     const allAchievements = achievementSystem.getAllAchievements();
     const storedAchievements = storageManager.loadAchievements();
-    
+
     // Merge stored progress with definitions
-    const mergedAchievements = allAchievements.map(definition => {
-      const stored = storedAchievements.find(a => a.id === definition.id);
+    const mergedAchievements = allAchievements.map((definition) => {
+      const stored = storedAchievements.find((a) => a.id === definition.id);
       if (stored) {
         return {
           ...definition,
           progress: stored.progress,
           isUnlocked: stored.isUnlocked,
-          unlockedAt: stored.unlockedAt
+          unlockedAt: stored.unlockedAt,
         };
       }
       return definition;
     });
-    
+
     setAchievements(mergedAchievements);
     setNotifications(achievementSystem.getNotifications());
   }, []);
 
   // Check for new achievements
-  const checkAchievements = useCallback(async (
-    stats: GameStats,
-    placement?: PlacementResult,
-    gameData?: {
-      difficulty: DifficultyLevel;
-      region: CaliforniaRegion;
-      timeElapsed: number;
-      hintsUsed: number;
-      mistakes: number;
-      streak: number;
-    }
-  ): Promise<Achievement[]> => {
-    try {
-      // Update achievement system with current data
-      const newlyUnlocked = achievementSystem.updateProgress(stats, placement, gameData);
-      
-      if (newlyUnlocked.length > 0) {
-        // Save updated achievements
-        const updatedAchievements = achievementSystem.getAllAchievements();
-        storageManager.saveAchievements(updatedAchievements);
-        
-        // Refresh local state
-        setAchievements(updatedAchievements);
-        setNotifications(achievementSystem.getNotifications());
-        setLastUpdate(Date.now());
-        
-        // Show notifications (this could trigger UI notifications)
-        newlyUnlocked.forEach(achievement => {
-          achievementLogger.debug(`🏆 Achievement Unlocked: ${achievement.name}`);
-        });
+  const checkAchievements = useCallback(
+    async (
+      stats: GameStats,
+      placement?: PlacementResult,
+      gameData?: {
+        difficulty: DifficultyLevel;
+        region: CaliforniaRegion;
+        timeElapsed: number;
+        hintsUsed: number;
+        mistakes: number;
+        streak: number;
       }
-      
-      return newlyUnlocked;
-    } catch (error) {
-      achievementLogger.error('Error checking achievements:', error);
-      return [];
-    }
-  }, []);
+    ): Promise<Achievement[]> => {
+      try {
+        // Update achievement system with current data
+        const newlyUnlocked = achievementSystem.updateProgress(stats, placement, gameData);
+
+        if (newlyUnlocked.length > 0) {
+          // Save updated achievements
+          const updatedAchievements = achievementSystem.getAllAchievements();
+          storageManager.saveAchievements(updatedAchievements);
+
+          // Refresh local state
+          setAchievements(updatedAchievements);
+          setNotifications(achievementSystem.getNotifications());
+          setLastUpdate(Date.now());
+
+          // Show notifications (this could trigger UI notifications)
+          newlyUnlocked.forEach((achievement) => {
+            achievementLogger.debug(`🏆 Achievement Unlocked: ${achievement.name}`);
+          });
+        }
+
+        return newlyUnlocked;
+      } catch (error) {
+        achievementLogger.error('Error checking achievements:', error);
+        return [];
+      }
+    },
+    []
+  );
 
   const markNotificationAsRead = useCallback((index: number) => {
     achievementSystem.markNotificationAsRead(index);
@@ -105,13 +123,19 @@ export function useAchievements(): AchievementHookReturn {
     setNotifications(achievementSystem.getNotifications());
   }, []);
 
-  const getAchievementsByCategory = useCallback((category: string) => {
-    return achievements.filter(a => a.category === category);
-  }, [achievements]);
+  const getAchievementsByCategory = useCallback(
+    (category: string) => {
+      return achievements.filter((a) => a.category === category);
+    },
+    [achievements]
+  );
 
-  const getAchievementsByRarity = useCallback((rarity: AchievementRarity) => {
-    return achievements.filter(a => a.rarity === rarity);
-  }, [achievements]);
+  const getAchievementsByRarity = useCallback(
+    (rarity: AchievementRarity) => {
+      return achievements.filter((a) => a.rarity === rarity);
+    },
+    [achievements]
+  );
 
   const refreshAchievements = useCallback(() => {
     loadAchievements();
@@ -124,18 +148,16 @@ export function useAchievements(): AchievementHookReturn {
 
   // Computed values
   const unreadCount = useMemo(() => {
-    return notifications.filter(n => !n.isRead).length;
+    return notifications.filter((n) => !n.isRead).length;
   }, [notifications]);
 
   const totalPoints = useMemo(() => {
-    return achievements
-      .filter(a => a.isUnlocked)
-      .reduce((sum, a) => sum + a.points, 0);
+    return achievements.filter((a) => a.isUnlocked).reduce((sum, a) => sum + a.points, 0);
   }, [achievements]);
 
   const completionPercentage = useMemo(() => {
     const total = achievements.length;
-    const unlocked = achievements.filter(a => a.isUnlocked).length;
+    const unlocked = achievements.filter((a) => a.isUnlocked).length;
     return total > 0 ? (unlocked / total) * 100 : 0;
   }, [achievements]);
 
@@ -144,10 +166,10 @@ export function useAchievements(): AchievementHookReturn {
       [AchievementRarity.COMMON]: { total: 0, unlocked: 0 },
       [AchievementRarity.RARE]: { total: 0, unlocked: 0 },
       [AchievementRarity.EPIC]: { total: 0, unlocked: 0 },
-      [AchievementRarity.LEGENDARY]: { total: 0, unlocked: 0 }
+      [AchievementRarity.LEGENDARY]: { total: 0, unlocked: 0 },
     };
 
-    achievements.forEach(achievement => {
+    achievements.forEach((achievement) => {
       stats[achievement.rarity].total++;
       if (achievement.isUnlocked) {
         stats[achievement.rarity].unlocked++;
@@ -159,7 +181,7 @@ export function useAchievements(): AchievementHookReturn {
 
   const recentUnlocks = useMemo(() => {
     return achievements
-      .filter(a => a.isUnlocked && a.unlockedAt)
+      .filter((a) => a.isUnlocked && a.unlockedAt)
       .sort((a, b) => {
         const timeA = a.unlockedAt?.getTime() || 0;
         const timeB = b.unlockedAt?.getTime() || 0;
@@ -181,7 +203,7 @@ export function useAchievements(): AchievementHookReturn {
     markAllNotificationsAsRead,
     getAchievementsByCategory,
     getAchievementsByRarity,
-    refreshAchievements
+    refreshAchievements,
   };
 }
 
@@ -191,34 +213,37 @@ export function useAchievementNotifications() {
   const [currentAchievement, setCurrentAchievement] = useState<AchievementDefinition | null>(null);
   const [notificationQueue, setNotificationQueue] = useState<AchievementDefinition[]>([]);
 
-  const showAchievementNotification = useCallback((achievement: AchievementDefinition) => {
-    if (showNotification) {
-      // Add to queue if another notification is showing
-      setNotificationQueue(prev => [...prev, achievement]);
-    } else {
-      setCurrentAchievement(achievement);
-      setShowNotification(true);
-      
-      // Auto-hide after 5 seconds
-      setTimeout(() => {
-        setShowNotification(false);
-        
-        // Show next notification if any
+  const showAchievementNotification = useCallback(
+    (achievement: AchievementDefinition) => {
+      if (showNotification) {
+        // Add to queue if another notification is showing
+        setNotificationQueue((prev) => [...prev, achievement]);
+      } else {
+        setCurrentAchievement(achievement);
+        setShowNotification(true);
+
+        // Auto-hide after 5 seconds
         setTimeout(() => {
-          setNotificationQueue(prev => {
-            if (prev.length > 0) {
-              const next = prev[0];
-              const remaining = prev.slice(1);
-              setCurrentAchievement(next);
-              setShowNotification(true);
-              return remaining;
-            }
-            return prev;
-          });
-        }, 500); // Small delay between notifications
-      }, 5000);
-    }
-  }, [showNotification]);
+          setShowNotification(false);
+
+          // Show next notification if any
+          setTimeout(() => {
+            setNotificationQueue((prev) => {
+              if (prev.length > 0) {
+                const next = prev[0];
+                const remaining = prev.slice(1);
+                setCurrentAchievement(next);
+                setShowNotification(true);
+                return remaining;
+              }
+              return prev;
+            });
+          }, 500); // Small delay between notifications
+        }, 5000);
+      }
+    },
+    [showNotification]
+  );
 
   const hideNotification = useCallback(() => {
     setShowNotification(false);
@@ -229,16 +254,16 @@ export function useAchievementNotifications() {
     currentAchievement,
     notificationQueue: notificationQueue.length,
     showAchievementNotification,
-    hideNotification
+    hideNotification,
   };
 }
 
 // Hook for achievement progress tracking
 export function useAchievementProgress(achievementId: string) {
   const { achievements } = useAchievements();
-  
+
   const achievement = useMemo(() => {
-    return achievements.find(a => a.id === achievementId);
+    return achievements.find((a) => a.id === achievementId);
   }, [achievements, achievementId]);
 
   const progressDetails = useMemo(() => {
@@ -250,13 +275,13 @@ export function useAchievementProgress(achievementId: string) {
       description: achievement.description,
       progress: achievement.progress,
       isUnlocked: achievement.isUnlocked,
-      requirements: achievement.requirements.map(req => ({
+      requirements: achievement.requirements.map((req) => ({
         description: req.description,
         current: req.current,
         threshold: req.threshold,
         progress: req.threshold > 0 ? Math.min(req.current / req.threshold, 1) : 0,
-        isCompleted: req.current >= req.threshold
-      }))
+        isCompleted: req.current >= req.threshold,
+      })),
     };
   }, [achievement]);
 
@@ -264,6 +289,6 @@ export function useAchievementProgress(achievementId: string) {
     achievement,
     progressDetails,
     isUnlocked: achievement?.isUnlocked || false,
-    progress: achievement?.progress || 0
+    progress: achievement?.progress || 0,
   };
 }

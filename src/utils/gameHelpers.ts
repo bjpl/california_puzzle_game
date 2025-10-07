@@ -1,4 +1,10 @@
-import { County, CountyPiece, Position, DifficultyLevel, CaliforniaRegion } from '@/types';
+import {
+  County,
+  CountyPiece as _CountyPiece,
+  Position,
+  DifficultyLevel,
+  CaliforniaRegion,
+} from '@/types';
 
 /**
  * Calculate the distance between two positions
@@ -17,7 +23,7 @@ export const calculateAccuracy = (
 ): number => {
   const distance = calculateDistance(targetPosition, actualPosition);
   if (distance <= tolerance) {
-    return Math.max(0, 1 - (distance / tolerance));
+    return Math.max(0, 1 - distance / tolerance);
   }
   return 0;
 };
@@ -30,7 +36,7 @@ export const getDifficultyTolerance = (difficulty: DifficultyLevel): number => {
     [DifficultyLevel.EASY]: 80,
     [DifficultyLevel.MEDIUM]: 60,
     [DifficultyLevel.HARD]: 40,
-    [DifficultyLevel.EXPERT]: 25
+    [DifficultyLevel.EXPERT]: 25,
   };
   return tolerances[difficulty];
 };
@@ -49,7 +55,7 @@ export const calculateBaseScore = (
     [DifficultyLevel.EASY]: 1.0,
     [DifficultyLevel.MEDIUM]: 1.5,
     [DifficultyLevel.HARD]: 2.0,
-    [DifficultyLevel.EXPERT]: 3.0
+    [DifficultyLevel.EXPERT]: 3.0,
   }[difficulty];
 
   const speedBonus = timeToPlace < 5000 ? 1.5 : timeToPlace < 10000 ? 1.2 : 1.0;
@@ -62,7 +68,7 @@ export const calculateBaseScore = (
  * Get streak multiplier
  */
 export const getStreakMultiplier = (streak: number): number => {
-  return 1 + (Math.min(streak, 10) * 0.1); // Max 2x multiplier at 10 streak
+  return 1 + Math.min(streak, 10) * 0.1; // Max 2x multiplier at 10 streak
 };
 
 /**
@@ -93,8 +99,8 @@ export const formatScore = (score: number): string => {
  */
 export const getAccuracyColor = (accuracy: number): string => {
   if (accuracy >= 0.95) return '#10b981'; // Emerald - Perfect
-  if (accuracy >= 0.8) return '#f59e0b';  // Amber - Good
-  if (accuracy >= 0.6) return '#f97316';  // Orange - OK
+  if (accuracy >= 0.8) return '#f59e0b'; // Amber - Good
+  if (accuracy >= 0.6) return '#f97316'; // Orange - OK
   return '#ef4444'; // Red - Poor
 };
 
@@ -106,7 +112,7 @@ export const getDifficultyColor = (difficulty: DifficultyLevel): string => {
     [DifficultyLevel.EASY]: '#10b981',
     [DifficultyLevel.MEDIUM]: '#f59e0b',
     [DifficultyLevel.HARD]: '#f97316',
-    [DifficultyLevel.EXPERT]: '#ef4444'
+    [DifficultyLevel.EXPERT]: '#ef4444',
   };
   return colors[difficulty];
 };
@@ -123,7 +129,7 @@ export const getRegionColor = (region: CaliforniaRegion): string => {
     [CaliforniaRegion.CENTRAL]: '#8b5cf6',
     [CaliforniaRegion.CENTRAL_VALLEY]: '#f97316',
     [CaliforniaRegion.COASTAL]: '#06b6d4',
-    [CaliforniaRegion.INLAND]: '#84cc16'
+    [CaliforniaRegion.INLAND]: '#84cc16',
   };
   return colors[region];
 };
@@ -148,7 +154,7 @@ export const getRandomRotation = (seed: string): number => {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
     const char = seed.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
 
@@ -163,10 +169,12 @@ export const isWithinBounds = (
   position: Position,
   bounds: { x: number; y: number; width: number; height: number }
 ): boolean => {
-  return position.x >= bounds.x &&
-         position.x <= bounds.x + bounds.width &&
-         position.y >= bounds.y &&
-         position.y <= bounds.y + bounds.height;
+  return (
+    position.x >= bounds.x &&
+    position.x <= bounds.x + bounds.width &&
+    position.y >= bounds.y &&
+    position.y <= bounds.y + bounds.height
+  );
 };
 
 /**
@@ -178,7 +186,7 @@ export const clampPosition = (
 ): Position => {
   return {
     x: Math.max(bounds.x, Math.min(position.x, bounds.x + bounds.width)),
-    y: Math.max(bounds.y, Math.min(position.y, bounds.y + bounds.height))
+    y: Math.max(bounds.y, Math.min(position.y, bounds.y + bounds.height)),
   };
 };
 
@@ -220,7 +228,7 @@ export const calculateGridLayout = (
     itemSize,
     padding,
     totalWidth: cols * itemWithPadding + padding,
-    totalHeight: rows * itemWithPadding + padding
+    totalHeight: rows * itemWithPadding + padding,
   };
 };
 
@@ -238,14 +246,14 @@ export const getGridPosition = (
 
   return {
     x: col * (itemSize + padding) + padding,
-    y: row * (itemSize + padding) + padding
+    y: row * (itemSize + padding) + padding,
   };
 };
 
 /**
  * Debounce function for performance
  */
-export const debounce = <T extends (...args: Record<string, unknown>[]) => any>(
+export const debounce = <T extends (...args: never[]) => unknown>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {
@@ -260,7 +268,7 @@ export const debounce = <T extends (...args: Record<string, unknown>[]) => any>(
 /**
  * Throttle function for performance
  */
-export const throttle = <T extends (...args: Record<string, unknown>[]) => any>(
+export const throttle = <T extends (...args: never[]) => unknown>(
   func: T,
   limit: number
 ): ((...args: Parameters<T>) => void) => {
@@ -270,7 +278,7 @@ export const throttle = <T extends (...args: Record<string, unknown>[]) => any>(
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 };
@@ -297,10 +305,12 @@ export const rectanglesOverlap = (
   rect1: { x: number; y: number; width: number; height: number },
   rect2: { x: number; y: number; width: number; height: number }
 ): boolean => {
-  return rect1.x < rect2.x + rect2.width &&
-         rect1.x + rect1.width > rect2.x &&
-         rect1.y < rect2.y + rect2.height &&
-         rect1.y + rect1.height > rect2.y;
+  return (
+    rect1.x < rect2.x + rect2.width &&
+    rect1.x + rect1.width > rect2.x &&
+    rect1.y < rect2.y + rect2.height &&
+    rect1.y + rect1.height > rect2.y
+  );
 };
 
 /**

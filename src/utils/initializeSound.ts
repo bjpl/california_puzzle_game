@@ -26,7 +26,7 @@ export const initializeSoundSystem = async (): Promise<void> => {
       master: soundSettings.masterVolume,
       effects: soundSettings.effectsVolume,
       music: soundSettings.musicVolume,
-      muted: soundSettings.muted
+      muted: soundSettings.muted,
     });
 
     // Preload all sound effects for better performance
@@ -38,7 +38,6 @@ export const initializeSoundSystem = async (): Promise<void> => {
     }
 
     soundLogger.debug('✅ Sound system initialized successfully');
-
   } catch (error) {
     soundLogger.warn('⚠️ Sound system initialization failed:', error);
     soundLogger.debug('🔇 Continuing with silent mode (Web Audio API fallbacks will still work)');
@@ -70,7 +69,6 @@ export const setupAudioContextResume = (): void => {
       document.removeEventListener('click', resumeAudioContext);
       document.removeEventListener('keydown', resumeAudioContext);
       document.removeEventListener('touchstart', resumeAudioContext);
-
     } catch (error) {
       soundLogger.warn('Failed to resume audio context:', error);
     }
@@ -105,12 +103,13 @@ export const checkAudioSupport = (): {
   const support = {
     webAudioAPI: false,
     audioElement: false,
-    recommendations: [] as string[]
+    recommendations: [] as string[],
   };
 
   // Check Web Audio API support
   try {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    const AudioContext =
+      window.AudioContext || (window as Record<string, unknown>).webkitAudioContext;
     support.webAudioAPI = !!AudioContext;
   } catch (e) {
     support.webAudioAPI = false;
@@ -155,7 +154,7 @@ export const getAudioInfo = (): {
       contextState: audioContext.state,
       sampleRate: audioContext.sampleRate,
       baseLatency: audioContext.baseLatency,
-      outputLatency: audioContext.outputLatency
+      outputLatency: audioContext.outputLatency,
     };
   } catch (error) {
     soundLogger.warn('Failed to get audio context info:', error);
@@ -184,7 +183,7 @@ export const testAllSounds = async (): Promise<void> => {
     await playSound(soundType);
 
     // Wait between sounds
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 
   soundLogger.debug('✅ Sound test complete');
@@ -210,5 +209,5 @@ export default {
   checkAudioSupport,
   getAudioInfo,
   testAllSounds,
-  useInitializeSound
+  useInitializeSound,
 };

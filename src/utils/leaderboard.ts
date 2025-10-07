@@ -72,7 +72,7 @@ export function saveLeaderboardEntry(
     completionDate: new Date().toISOString(),
     maxStreak: gameMetrics.maxStreak,
     regionsCompleted: gameMetrics.regionsCompleted.size,
-    tier: tier.tier
+    tier: tier.tier,
   };
 
   // Get existing entries
@@ -94,6 +94,7 @@ export function saveLeaderboardEntry(
 
   // Save to localStorage
   try {
+    // eslint-disable-next-line no-restricted-globals
     localStorage.setItem(STORAGE_KEY, JSON.stringify(topEntries));
   } catch (error) {
     logger.warn('Failed to save leaderboard entry:', error);
@@ -110,6 +111,7 @@ export function saveLeaderboardEntry(
  */
 export function getLeaderboardEntries(filters?: LeaderboardFilters): LeaderboardEntry[] {
   try {
+    // eslint-disable-next-line no-restricted-globals
     const stored = localStorage.getItem(STORAGE_KEY);
     let entries: LeaderboardEntry[] = stored ? JSON.parse(stored) : [];
 
@@ -133,7 +135,10 @@ export function getLeaderboardEntries(filters?: LeaderboardFilters): Leaderboard
 /**
  * Get top entries for a specific difficulty
  */
-export function getTopScoresByDifficulty(difficulty: string, limit: number = 10): LeaderboardEntry[] {
+export function getTopScoresByDifficulty(
+  difficulty: string,
+  limit: number = 10
+): LeaderboardEntry[] {
   const entries = getLeaderboardEntries({ difficulty });
   return entries.slice(0, limit);
 }
@@ -143,8 +148,8 @@ export function getTopScoresByDifficulty(difficulty: string, limit: number = 10)
  */
 export function getPlayerBestScores(playerName: string, limit: number = 10): LeaderboardEntry[] {
   const entries = getLeaderboardEntries();
-  const playerEntries = entries.filter(entry =>
-    entry.playerName.toLowerCase() === playerName.toLowerCase()
+  const playerEntries = entries.filter(
+    (entry) => entry.playerName.toLowerCase() === playerName.toLowerCase()
   );
 
   return playerEntries.slice(0, limit);
@@ -153,7 +158,10 @@ export function getPlayerBestScores(playerName: string, limit: number = 10): Lea
 /**
  * Get player ranking
  */
-export function getPlayerRanking(playerName: string, difficulty?: string): {
+export function getPlayerRanking(
+  playerName: string,
+  difficulty?: string
+): {
   rank: number | null;
   totalPlayers: number;
   percentile: number;
@@ -162,15 +170,15 @@ export function getPlayerRanking(playerName: string, difficulty?: string): {
   const entries = getLeaderboardEntries(filters);
   const totalPlayers = entries.length;
 
-  const playerEntry = entries.find(entry =>
-    entry.playerName.toLowerCase() === playerName.toLowerCase()
+  const playerEntry = entries.find(
+    (entry) => entry.playerName.toLowerCase() === playerName.toLowerCase()
   );
 
   if (!playerEntry || !playerEntry.rank) {
     return {
       rank: null,
       totalPlayers,
-      percentile: 0
+      percentile: 0,
     };
   }
 
@@ -179,7 +187,7 @@ export function getPlayerRanking(playerName: string, difficulty?: string): {
   return {
     rank: playerEntry.rank,
     totalPlayers,
-    percentile
+    percentile,
   };
 }
 
@@ -188,8 +196,8 @@ export function getPlayerRanking(playerName: string, difficulty?: string): {
  */
 export function getPlayerStats(playerName: string): LeaderboardStats {
   const entries = getLeaderboardEntries();
-  const playerEntries = entries.filter(entry =>
-    entry.playerName.toLowerCase() === playerName.toLowerCase()
+  const playerEntries = entries.filter(
+    (entry) => entry.playerName.toLowerCase() === playerName.toLowerCase()
   );
 
   if (playerEntries.length === 0) {
@@ -201,16 +209,16 @@ export function getPlayerStats(playerName: string): LeaderboardStats {
       bestAccuracy: 0,
       bestStreak: 0,
       favoriteRegion: '',
-      totalPlayTime: 0
+      totalPlayTime: 0,
     };
   }
 
   const totalGames = playerEntries.length;
   const averageScore = playerEntries.reduce((sum, entry) => sum + entry.score, 0) / totalGames;
-  const bestScore = Math.max(...playerEntries.map(entry => entry.score));
-  const bestTime = Math.min(...playerEntries.map(entry => entry.totalTime));
-  const bestAccuracy = Math.max(...playerEntries.map(entry => entry.accuracy));
-  const bestStreak = Math.max(...playerEntries.map(entry => entry.maxStreak));
+  const bestScore = Math.max(...playerEntries.map((entry) => entry.score));
+  const bestTime = Math.min(...playerEntries.map((entry) => entry.totalTime));
+  const bestAccuracy = Math.max(...playerEntries.map((entry) => entry.accuracy));
+  const bestStreak = Math.max(...playerEntries.map((entry) => entry.maxStreak));
   const totalPlayTime = playerEntries.reduce((sum, entry) => sum + entry.totalTime, 0);
 
   // Calculate favorite region based on most played region
@@ -218,10 +226,10 @@ export function getPlayerStats(playerName: string): LeaderboardStats {
 
   // Note: This assumes entries have a region field. If not, we'd need to track this separately
   // For now, we'll return 'N/A' but the infrastructure is here for when region data is available
-  playerEntries.forEach(entry => {
+  playerEntries.forEach((entry) => {
     // Check if entry has difficulty field which might encode region information
     // Or we could add a region field to LeaderboardEntry in the future
-    const region = (entry as any).region || 'unknown';
+    const region = (entry as Record<string, unknown>).region || 'unknown';
     regionCounts.set(region, (regionCounts.get(region) || 0) + 1);
   });
 
@@ -243,7 +251,7 @@ export function getPlayerStats(playerName: string): LeaderboardStats {
     bestAccuracy,
     bestStreak,
     favoriteRegion,
-    totalPlayTime
+    totalPlayTime,
   };
 }
 
@@ -252,7 +260,9 @@ export function getPlayerStats(playerName: string): LeaderboardStats {
  */
 export function clearLeaderboard(): void {
   try {
+    // eslint-disable-next-line no-restricted-globals
     localStorage.removeItem(STORAGE_KEY);
+    // eslint-disable-next-line no-restricted-globals
     localStorage.removeItem(STATS_KEY);
   } catch (error) {
     logger.warn('Failed to clear leaderboard:', error);
@@ -264,14 +274,19 @@ export function clearLeaderboard(): void {
  */
 export function exportLeaderboardData(): string {
   const entries = getLeaderboardEntries();
+  // eslint-disable-next-line no-restricted-globals
   const stats = localStorage.getItem(STATS_KEY);
 
-  return JSON.stringify({
-    entries,
-    stats: stats ? JSON.parse(stats) : null,
-    exportDate: new Date().toISOString(),
-    version: '1.0'
-  }, null, 2);
+  return JSON.stringify(
+    {
+      entries,
+      stats: stats ? JSON.parse(stats) : null,
+      exportDate: new Date().toISOString(),
+      version: '1.0',
+    },
+    null,
+    2
+  );
 }
 
 /**
@@ -282,9 +297,11 @@ export function importLeaderboardData(data: string): boolean {
     const parsed = JSON.parse(data);
 
     if (parsed.entries && Array.isArray(parsed.entries)) {
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed.entries));
 
       if (parsed.stats) {
+        // eslint-disable-next-line no-restricted-globals
         localStorage.setItem(STATS_KEY, JSON.stringify(parsed.stats));
       }
 
@@ -320,10 +337,10 @@ export function getAchievementScores(): {
   const entries = getLeaderboardEntries();
 
   return {
-    perfectGame: entries.filter(entry => entry.accuracy >= 0.99),
-    speedRuns: entries.filter(entry => entry.totalTime < 60000).slice(0, 10), // Under 1 minute
-    highScores: entries.filter(entry => entry.score >= 10000).slice(0, 10),
-    streakMasters: entries.filter(entry => entry.maxStreak >= 15).slice(0, 10)
+    perfectGame: entries.filter((entry) => entry.accuracy >= 0.99),
+    speedRuns: entries.filter((entry) => entry.totalTime < 60000).slice(0, 10), // Under 1 minute
+    highScores: entries.filter((entry) => entry.score >= 10000).slice(0, 10),
+    streakMasters: entries.filter((entry) => entry.maxStreak >= 15).slice(0, 10),
   };
 }
 
@@ -333,19 +350,22 @@ function generateEntryId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
-function applyFilters(entries: LeaderboardEntry[], filters: LeaderboardFilters): LeaderboardEntry[] {
+function applyFilters(
+  entries: LeaderboardEntry[],
+  filters: LeaderboardFilters
+): LeaderboardEntry[] {
   let filtered = [...entries];
 
   if (filters.difficulty) {
-    filtered = filtered.filter(entry => entry.difficulty === filters.difficulty);
+    filtered = filtered.filter((entry) => entry.difficulty === filters.difficulty);
   }
 
   if (filters.minAccuracy) {
-    filtered = filtered.filter(entry => entry.accuracy >= filters.minAccuracy);
+    filtered = filtered.filter((entry) => entry.accuracy >= filters.minAccuracy);
   }
 
   if (filters.tier) {
-    filtered = filtered.filter(entry => entry.tier === filters.tier);
+    filtered = filtered.filter((entry) => entry.tier === filters.tier);
   }
 
   if (filters.timeRange) {
@@ -366,7 +386,7 @@ function applyFilters(entries: LeaderboardEntry[], filters: LeaderboardFilters):
         cutoff.setFullYear(1970); // Show all
     }
 
-    filtered = filtered.filter(entry => new Date(entry.completionDate) >= cutoff);
+    filtered = filtered.filter((entry) => new Date(entry.completionDate) >= cutoff);
   }
 
   return filtered;
@@ -374,6 +394,7 @@ function applyFilters(entries: LeaderboardEntry[], filters: LeaderboardFilters):
 
 function updatePlayerStats(entry: LeaderboardEntry, gameMetrics: GameMetrics): void {
   try {
+    // eslint-disable-next-line no-restricted-globals
     const stored = localStorage.getItem(STATS_KEY);
     const stats = stored ? JSON.parse(stored) : {};
 
@@ -398,6 +419,7 @@ function updatePlayerStats(entry: LeaderboardEntry, gameMetrics: GameMetrics): v
       stats.bestStreak = gameMetrics.maxStreak;
     }
 
+    // eslint-disable-next-line no-restricted-globals
     localStorage.setItem(STATS_KEY, JSON.stringify(stats));
   } catch (error) {
     logger.warn('Failed to update player stats:', error);

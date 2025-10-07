@@ -1,14 +1,6 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import {
-  MapPin,
-  Mountain,
-  Trees,
-  Waves,
-  Sun,
-  Trophy,
-  Star
-} from 'lucide-react';
+import { MapPin, Mountain, Trees, Waves, Sun, Trophy, Star as _Star } from 'lucide-react';
 
 interface Milestone {
   position: number;
@@ -34,43 +26,43 @@ const defaultMilestones: Milestone[] = [
     icon: MapPin,
     label: 'Start Journey',
     completed: true,
-    description: 'Begin your California exploration'
+    description: 'Begin your California exploration',
   },
   {
     position: 20,
     icon: Sun,
     label: 'Golden State Rookie',
     completed: true,
-    description: 'Complete your first 5 counties'
+    description: 'Complete your first 5 counties',
   },
   {
     position: 40,
     icon: Waves,
     label: 'Coastal Explorer',
     completed: false,
-    description: 'Discover 15 California counties'
+    description: 'Discover 15 California counties',
   },
   {
     position: 60,
     icon: Trees,
     label: 'Redwood Ranger',
     completed: false,
-    description: 'Master 25 counties across regions'
+    description: 'Master 25 counties across regions',
   },
   {
     position: 80,
     icon: Mountain,
     label: 'Sierra Climber',
     completed: false,
-    description: 'Conquer 40+ counties'
+    description: 'Conquer 40+ counties',
   },
   {
     position: 100,
     icon: Trophy,
     label: 'California Master',
     completed: false,
-    description: 'Complete all 58 counties!'
-  }
+    description: 'Complete all 58 counties!',
+  },
 ];
 
 export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
@@ -80,13 +72,13 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   subtitle,
   showPercentage = true,
   variant = 'default',
-  className
+  className,
 }) => {
   const clampedPercentage = Math.min(Math.max(completionPercentage, 0), 100);
 
-  const updatedMilestones = milestones.map(milestone => ({
+  const updatedMilestones = milestones.map((milestone) => ({
     ...milestone,
-    completed: clampedPercentage >= milestone.position
+    completed: clampedPercentage >= milestone.position,
   }));
 
   if (variant === 'compact') {
@@ -115,18 +107,14 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-bold text-ca-charcoal-700">{title}</h3>
-          {subtitle && (
-            <p className="text-sm text-ca-slate-600 mt-1">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-sm text-ca-slate-600 mt-1">{subtitle}</p>}
         </div>
         {showPercentage && (
           <div className="text-right">
             <div className="text-2xl font-bold text-ca-sunset-600">
               {Math.round(clampedPercentage)}%
             </div>
-            <div className="text-xs text-ca-gray-500 uppercase tracking-wide">
-              Complete
-            </div>
+            <div className="text-xs text-ca-gray-500 uppercase tracking-wide">Complete</div>
           </div>
         )}
       </div>
@@ -199,7 +187,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
           <h4 className="text-sm font-semibold text-ca-charcoal-700 mb-3">Recent Achievements</h4>
           <div className="flex gap-2">
             {updatedMilestones
-              .filter(m => m.completed)
+              .filter((m) => m.completed)
               .slice(-3)
               .map((milestone, index) => {
                 const IconComponent = milestone.icon;
@@ -209,9 +197,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
                     className="flex items-center gap-2 px-3 py-1.5 bg-ca-gold-50 border border-ca-gold-200 rounded-lg"
                   >
                     <IconComponent className="w-4 h-4 text-ca-gold-600" />
-                    <span className="text-xs font-medium text-ca-gold-700">
-                      {milestone.label}
-                    </span>
+                    <span className="text-xs font-medium text-ca-gold-700">{milestone.label}</span>
                   </div>
                 );
               })}

@@ -1,10 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { useGame } from '../../context/GameContext';
 
-export default function StudyMode({ onClose, focusCounty }: { onClose: () => void; focusCounty?: Record<string, unknown> }) {
+export default function StudyMode({
+  onClose,
+  focusCounty,
+}: {
+  onClose: () => void;
+  focusCounty?: Record<string, unknown>;
+}) {
   const { counties } = useGame();
-  const [selectedRegion, setSelectedRegion] = useState<string>(focusCounty ? focusCounty.region : 'all');
-  const [selectedCounty, setSelectedCounty] = useState<any>(focusCounty || null);
+  const [selectedRegion, setSelectedRegion] = useState<string>(
+    focusCounty ? focusCounty.region : 'all'
+  );
+  const [selectedCounty, setSelectedCounty] = useState<Record<string, unknown> | null>(
+    focusCounty || null
+  );
   const focusCountyRef = useRef<HTMLButtonElement>(null);
 
   // Scroll to focused county when component mounts
@@ -13,19 +23,18 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
       setTimeout(() => {
         focusCountyRef.current?.scrollIntoView({
           behavior: 'smooth',
-          block: 'center'
+          block: 'center',
         });
       }, 100); // Small delay to ensure DOM is ready
     }
   }, [focusCounty]);
 
   // Get unique regions
-  const regions = Array.from(new Set(counties.map(c => c.region))).sort();
+  const regions = Array.from(new Set(counties.map((c) => c.region))).sort();
 
   // Filter counties by region
-  const filteredCounties = selectedRegion === 'all'
-    ? counties
-    : counties.filter(c => c.region === selectedRegion);
+  const filteredCounties =
+    selectedRegion === 'all' ? counties : counties.filter((c) => c.region === selectedRegion);
 
   // Sort counties alphabetically
   const sortedCounties = [...filteredCounties].sort((a, b) => a.name.localeCompare(b.name));
@@ -59,8 +68,7 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
           <p className="mt-2 text-blue-100">
             {focusCounty
               ? `Learn about ${focusCounty.name} County and explore other California counties.`
-              : `Learn about California's ${counties.length} counties. Click on any county to see details!`
-            }
+              : `Learn about California's ${counties.length} counties. Click on any county to see details!`}
           </p>
         </div>
 
@@ -77,8 +85,8 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
             >
               All Regions ({counties.length})
             </button>
-            {regions.map(region => {
-              const count = counties.filter(c => c.region === region).length;
+            {regions.map((region) => {
+              const count = counties.filter((c) => c.region === region).length;
               return (
                 <button
                   key={region}
@@ -105,17 +113,16 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
                 {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
               </h3>
               <div className="grid grid-cols-2 gap-2">
-                {sortedCounties.map(county => {
-                  const colorClass = regionColors[county.region] || 'bg-gray-50 border-gray-400 text-gray-900';
+                {sortedCounties.map((county) => {
+                  const colorClass =
+                    regionColors[county.region] || 'bg-gray-50 border-gray-400 text-gray-900';
                   return (
                     <button
                       key={county.id}
                       ref={focusCounty && county.id === focusCounty.id ? focusCountyRef : null}
                       onClick={() => setSelectedCounty(county)}
                       className={`p-2 border rounded-lg text-left hover:shadow-md transition-all ${
-                        selectedCounty?.id === county.id
-                          ? 'ring-2 ring-blue-500 shadow-md'
-                          : ''
+                        selectedCounty?.id === county.id ? 'ring-2 ring-blue-500 shadow-md' : ''
                       } ${colorClass}`}
                     >
                       <div className="font-medium text-sm">{county.name}</div>
@@ -134,9 +141,11 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">
                   {selectedCounty.name} County
                 </h3>
-                <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 ${
-                  regionColors[selectedCounty.region] || 'bg-gray-100 text-gray-700'
-                }`}>
+                <div
+                  className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 ${
+                    regionColors[selectedCounty.region] || 'bg-gray-100 text-gray-700'
+                  }`}
+                >
                   {selectedCounty.region}
                 </div>
 
@@ -151,9 +160,7 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
                   {selectedCounty.population && (
                     <div>
                       <h4 className="font-semibold text-gray-700">Population</h4>
-                      <p className="text-gray-600">
-                        {selectedCounty.population.toLocaleString()}
-                      </p>
+                      <p className="text-gray-600">{selectedCounty.population.toLocaleString()}</p>
                     </div>
                   )}
 
@@ -175,9 +182,7 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
 
                   {selectedCounty.funFact && (
                     <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <h4 className="font-semibold text-blue-900 mb-2">
-                        💡 Fun Fact
-                      </h4>
+                      <h4 className="font-semibold text-blue-900 mb-2">💡 Fun Fact</h4>
                       <p className="text-blue-800">{selectedCounty.funFact}</p>
                     </div>
                   )}
@@ -185,12 +190,10 @@ export default function StudyMode({ onClose, focusCounty }: { onClose: () => voi
 
                 {/* Study Tips */}
                 <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <h4 className="font-semibold text-yellow-900 mb-2">
-                    📍 Location Tip
-                  </h4>
+                  <h4 className="font-semibold text-yellow-900 mb-2">📍 Location Tip</h4>
                   <p className="text-yellow-800 text-sm">
-                    {selectedCounty.name} is located in {selectedCounty.region}.
-                    Try to remember its position relative to other counties in the region!
+                    {selectedCounty.name} is located in {selectedCounty.region}. Try to remember its
+                    position relative to other counties in the region!
                   </p>
                 </div>
               </div>

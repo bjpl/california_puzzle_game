@@ -1,7 +1,14 @@
 // Comprehensive Achievements System for California Puzzle Game
 // Handles achievement definitions, progress tracking, and unlock logic
 
-import { Achievement, AchievementCategory, DifficultyLevel, CaliforniaRegion, GameStats, PlacementResult } from '../types';
+import {
+  Achievement,
+  AchievementCategory,
+  DifficultyLevel,
+  CaliforniaRegion,
+  GameStats,
+  PlacementResult,
+} from '../types';
 import { achievementLogger } from './logger';
 
 export interface AchievementDefinition extends Achievement {
@@ -16,7 +23,7 @@ export enum AchievementRarity {
   COMMON = 'common',
   RARE = 'rare',
   EPIC = 'epic',
-  LEGENDARY = 'legendary'
+  LEGENDARY = 'legendary',
 }
 
 export interface AchievementRequirement {
@@ -42,7 +49,7 @@ export enum RequirementType {
   HINTS_NOT_USED = 'hints_not_used',
   MISTAKES_UNDER = 'mistakes_under',
   SPEED_PLACEMENT = 'speed_placement',
-  ACHIEVEMENT_COUNT = 'achievement_count'
+  ACHIEVEMENT_COUNT = 'achievement_count',
 }
 
 export interface AchievementProgress {
@@ -81,13 +88,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.PERFECT_PLACEMENTS,
-          target: null,
-          current: 0,
-          threshold: 1,
-          description: 'Place 1 county correctly'
-        }]
+        requirements: [
+          {
+            type: RequirementType.PERFECT_PLACEMENTS,
+            target: null,
+            current: 0,
+            threshold: 1,
+            description: 'Place 1 county correctly',
+          },
+        ],
       },
       {
         id: 'getting_started',
@@ -100,13 +109,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.GAMES_PLAYED,
-          target: null,
-          current: 0,
-          threshold: 1,
-          description: 'Complete 1 game'
-        }]
+        requirements: [
+          {
+            type: RequirementType.GAMES_PLAYED,
+            target: null,
+            current: 0,
+            threshold: 1,
+            description: 'Complete 1 game',
+          },
+        ],
       },
       {
         id: 'bay_area_beginner',
@@ -119,13 +130,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.REGION_COMPLETED,
-          target: { region: CaliforniaRegion.BAY_AREA, difficulty: DifficultyLevel.EASY },
-          current: 0,
-          threshold: 1,
-          description: 'Complete Bay Area on Easy'
-        }]
+        requirements: [
+          {
+            type: RequirementType.REGION_COMPLETED,
+            target: { region: CaliforniaRegion.BAY_AREA, difficulty: DifficultyLevel.EASY },
+            current: 0,
+            threshold: 1,
+            description: 'Complete Bay Area on Easy',
+          },
+        ],
       },
       {
         id: 'quick_learner',
@@ -138,13 +151,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.COUNTIES_LEARNED,
-          target: null,
-          current: 0,
-          threshold: 10,
-          description: 'Learn 10 counties'
-        }]
+        requirements: [
+          {
+            type: RequirementType.COUNTIES_LEARNED,
+            target: null,
+            current: 0,
+            threshold: 10,
+            description: 'Learn 10 counties',
+          },
+        ],
       },
       {
         id: 'daily_player',
@@ -157,13 +172,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.CONSECUTIVE_DAYS,
-          target: null,
-          current: 0,
-          threshold: 3,
-          description: 'Play 3 days in a row'
-        }]
+        requirements: [
+          {
+            type: RequirementType.CONSECUTIVE_DAYS,
+            target: null,
+            current: 0,
+            threshold: 3,
+            description: 'Play 3 days in a row',
+          },
+        ],
       },
 
       // RARE ACHIEVEMENTS (Moderate challenge)
@@ -178,13 +195,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.ACCURACY_PERCENTAGE,
-          target: null,
-          current: 0,
-          threshold: 100,
-          description: 'Achieve 100% accuracy'
-        }]
+        requirements: [
+          {
+            type: RequirementType.ACCURACY_PERCENTAGE,
+            target: null,
+            current: 0,
+            threshold: 100,
+            description: 'Achieve 100% accuracy',
+          },
+        ],
       },
       {
         id: 'speed_demon',
@@ -197,13 +216,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.TIME_UNDER,
-          target: null,
-          current: 0,
-          threshold: 3000,
-          description: 'Place in under 3 seconds'
-        }]
+        requirements: [
+          {
+            type: RequirementType.TIME_UNDER,
+            target: null,
+            current: 0,
+            threshold: 3000,
+            description: 'Place in under 3 seconds',
+          },
+        ],
       },
       {
         id: 'streak_master',
@@ -216,13 +237,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.STREAK_LENGTH,
-          target: null,
-          current: 0,
-          threshold: 10,
-          description: 'Achieve 10-county streak'
-        }]
+        requirements: [
+          {
+            type: RequirementType.STREAK_LENGTH,
+            target: null,
+            current: 0,
+            threshold: 10,
+            description: 'Achieve 10-county streak',
+          },
+        ],
       },
       {
         id: 'no_hints_needed',
@@ -235,13 +258,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.HINTS_NOT_USED,
-          target: null,
-          current: 0,
-          threshold: 1,
-          description: 'Complete without hints'
-        }]
+        requirements: [
+          {
+            type: RequirementType.HINTS_NOT_USED,
+            target: null,
+            current: 0,
+            threshold: 1,
+            description: 'Complete without hints',
+          },
+        ],
       },
       {
         id: 'california_explorer',
@@ -255,13 +280,15 @@ class AchievementSystem {
         isUnlocked: false,
         hidden: false,
         group: 'explorer',
-        requirements: [{
-          type: RequirementType.REGION_COMPLETED,
-          target: { difficulty: DifficultyLevel.EASY },
-          current: 0,
-          threshold: 8, // All regions
-          description: 'Complete all regions on Easy'
-        }]
+        requirements: [
+          {
+            type: RequirementType.REGION_COMPLETED,
+            target: { difficulty: DifficultyLevel.EASY },
+            current: 0,
+            threshold: 8, // All regions
+            description: 'Complete all regions on Easy',
+          },
+        ],
       },
       {
         id: 'scholar',
@@ -274,13 +301,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.COUNTIES_LEARNED,
-          target: null,
-          current: 0,
-          threshold: 25,
-          description: 'Learn 25 counties'
-        }]
+        requirements: [
+          {
+            type: RequirementType.COUNTIES_LEARNED,
+            target: null,
+            current: 0,
+            threshold: 25,
+            description: 'Learn 25 counties',
+          },
+        ],
       },
 
       // EPIC ACHIEVEMENTS (Significant challenge)
@@ -295,13 +324,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.TIME_UNDER,
-          target: null,
-          current: 0,
-          threshold: 120000,
-          description: 'Complete in under 2 minutes'
-        }]
+        requirements: [
+          {
+            type: RequirementType.TIME_UNDER,
+            target: null,
+            current: 0,
+            threshold: 120000,
+            description: 'Complete in under 2 minutes',
+          },
+        ],
       },
       {
         id: 'perfectionist',
@@ -314,13 +345,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.ACCURACY_PERCENTAGE,
-          target: null,
-          current: 0,
-          threshold: 95,
-          description: 'Achieve 95% average accuracy'
-        }]
+        requirements: [
+          {
+            type: RequirementType.ACCURACY_PERCENTAGE,
+            target: null,
+            current: 0,
+            threshold: 95,
+            description: 'Achieve 95% average accuracy',
+          },
+        ],
       },
       {
         id: 'marathon_runner',
@@ -333,13 +366,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.TOTAL_PLAYTIME,
-          target: null,
-          current: 0,
-          threshold: 7200000, // 2 hours in ms
-          description: 'Play for 2 hours straight'
-        }]
+        requirements: [
+          {
+            type: RequirementType.TOTAL_PLAYTIME,
+            target: null,
+            current: 0,
+            threshold: 7200000, // 2 hours in ms
+            description: 'Play for 2 hours straight',
+          },
+        ],
       },
       {
         id: 'medium_master',
@@ -353,13 +388,15 @@ class AchievementSystem {
         isUnlocked: false,
         hidden: false,
         group: 'master',
-        requirements: [{
-          type: RequirementType.REGION_COMPLETED,
-          target: { difficulty: DifficultyLevel.MEDIUM },
-          current: 0,
-          threshold: 8,
-          description: 'Complete all regions on Medium'
-        }]
+        requirements: [
+          {
+            type: RequirementType.REGION_COMPLETED,
+            target: { difficulty: DifficultyLevel.MEDIUM },
+            current: 0,
+            threshold: 8,
+            description: 'Complete all regions on Medium',
+          },
+        ],
       },
       {
         id: 'streak_legend',
@@ -372,13 +409,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.STREAK_LENGTH,
-          target: null,
-          current: 0,
-          threshold: 25,
-          description: 'Achieve 25-county streak'
-        }]
+        requirements: [
+          {
+            type: RequirementType.STREAK_LENGTH,
+            target: null,
+            current: 0,
+            threshold: 25,
+            description: 'Achieve 25-county streak',
+          },
+        ],
       },
       {
         id: 'county_master',
@@ -391,13 +430,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: false,
-        requirements: [{
-          type: RequirementType.COUNTIES_LEARNED,
-          target: null,
-          current: 0,
-          threshold: 58,
-          description: 'Learn all 58 counties'
-        }]
+        requirements: [
+          {
+            type: RequirementType.COUNTIES_LEARNED,
+            target: null,
+            current: 0,
+            threshold: 58,
+            description: 'Learn all 58 counties',
+          },
+        ],
       },
 
       // LEGENDARY ACHIEVEMENTS (Extreme challenge)
@@ -413,13 +454,15 @@ class AchievementSystem {
         isUnlocked: false,
         hidden: true,
         group: 'legend',
-        requirements: [{
-          type: RequirementType.REGION_COMPLETED,
-          target: { difficulty: DifficultyLevel.EXPERT },
-          current: 0,
-          threshold: 8,
-          description: 'Complete all regions on Expert'
-        }]
+        requirements: [
+          {
+            type: RequirementType.REGION_COMPLETED,
+            target: { difficulty: DifficultyLevel.EXPERT },
+            current: 0,
+            threshold: 8,
+            description: 'Complete all regions on Expert',
+          },
+        ],
       },
       {
         id: 'flawless_victory',
@@ -432,13 +475,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: true,
-        requirements: [{
-          type: RequirementType.MISTAKES_UNDER,
-          target: { difficulty: DifficultyLevel.EXPERT },
-          current: 0,
-          threshold: 0,
-          description: 'No mistakes on Expert'
-        }]
+        requirements: [
+          {
+            type: RequirementType.MISTAKES_UNDER,
+            target: { difficulty: DifficultyLevel.EXPERT },
+            current: 0,
+            threshold: 0,
+            description: 'No mistakes on Expert',
+          },
+        ],
       },
       {
         id: 'speed_of_light',
@@ -451,13 +496,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: true,
-        requirements: [{
-          type: RequirementType.TIME_UNDER,
-          target: { difficulty: DifficultyLevel.EXPERT },
-          current: 0,
-          threshold: 300000, // 5 minutes
-          description: 'Complete Expert in under 5 minutes'
-        }]
+        requirements: [
+          {
+            type: RequirementType.TIME_UNDER,
+            target: { difficulty: DifficultyLevel.EXPERT },
+            current: 0,
+            threshold: 300000, // 5 minutes
+            description: 'Complete Expert in under 5 minutes',
+          },
+        ],
       },
       {
         id: 'ultimate_streak',
@@ -470,13 +517,15 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: true,
-        requirements: [{
-          type: RequirementType.STREAK_LENGTH,
-          target: null,
-          current: 0,
-          threshold: 50,
-          description: 'Achieve 50-county streak'
-        }]
+        requirements: [
+          {
+            type: RequirementType.STREAK_LENGTH,
+            target: null,
+            current: 0,
+            threshold: 50,
+            description: 'Achieve 50-county streak',
+          },
+        ],
       },
       {
         id: 'achievement_hunter',
@@ -489,18 +538,20 @@ class AchievementSystem {
         progress: 0,
         isUnlocked: false,
         hidden: true,
-        requirements: [{
-          type: RequirementType.ACHIEVEMENT_COUNT,
-          target: null,
-          current: 0,
-          threshold: 22, // All other achievements
-          description: 'Unlock all achievements'
-        }]
-      }
+        requirements: [
+          {
+            type: RequirementType.ACHIEVEMENT_COUNT,
+            target: null,
+            current: 0,
+            threshold: 22, // All other achievements
+            description: 'Unlock all achievements',
+          },
+        ],
+      },
     ];
 
     // Initialize achievements map
-    achievementDefs.forEach(achievement => {
+    achievementDefs.forEach((achievement) => {
       this.achievements.set(achievement.id, achievement);
     });
   }
@@ -514,15 +565,15 @@ class AchievementSystem {
   }
 
   public getAchievementsByCategory(category: AchievementCategory): AchievementDefinition[] {
-    return this.getAllAchievements().filter(a => a.category === category);
+    return this.getAllAchievements().filter((a) => a.category === category);
   }
 
   public getAchievementsByRarity(rarity: AchievementRarity): AchievementDefinition[] {
-    return this.getAllAchievements().filter(a => a.rarity === rarity);
+    return this.getAllAchievements().filter((a) => a.rarity === rarity);
   }
 
   public getVisibleAchievements(): AchievementDefinition[] {
-    return this.getAllAchievements().filter(a => !a.hidden || a.isUnlocked);
+    return this.getAllAchievements().filter((a) => !a.hidden || a.isUnlocked);
   }
 
   public updateProgress(
@@ -546,7 +597,7 @@ class AchievementSystem {
       const currentValues: Record<string, number> = {};
 
       // Update current values based on requirements
-      achievement.requirements.forEach(req => {
+      achievement.requirements.forEach((req) => {
         switch (req.type) {
           case RequirementType.GAMES_PLAYED:
             currentValues[req.type] = stats.totalGamesPlayed;
@@ -603,13 +654,15 @@ class AchievementSystem {
             }
             break;
 
-          case RequirementType.ACHIEVEMENT_COUNT:
-            const unlockedCount = this.getAllAchievements()
-              .filter(a => a.id !== achievement.id && a.isUnlocked).length;
+          case RequirementType.ACHIEVEMENT_COUNT: {
+            const unlockedCount = this.getAllAchievements().filter(
+              (a) => a.id !== achievement.id && a.isUnlocked
+            ).length;
             currentValues[req.type] = unlockedCount;
             req.current = unlockedCount;
             shouldCheck = true;
             break;
+          }
 
           // Add more requirement types as needed
         }
@@ -618,10 +671,10 @@ class AchievementSystem {
       if (shouldCheck) {
         // Calculate progress
         const totalRequirements = achievement.requirements.length;
-        const metRequirements = achievement.requirements.filter(req => 
-          req.current >= req.threshold
+        const metRequirements = achievement.requirements.filter(
+          (req) => req.current >= req.threshold
         ).length;
-        
+
         achievement.progress = metRequirements / totalRequirements;
 
         // Check if all requirements are met
@@ -629,7 +682,7 @@ class AchievementSystem {
           achievement.isUnlocked = true;
           achievement.unlockedAt = new Date();
           newlyUnlocked.push(achievement);
-          
+
           // Add notification
           this.addNotification(achievement);
         }
@@ -643,7 +696,7 @@ class AchievementSystem {
     this.notifications.push({
       achievement,
       timestamp: new Date(),
-      isRead: false
+      isRead: false,
     });
 
     // Keep only last 50 notifications
@@ -657,7 +710,7 @@ class AchievementSystem {
   }
 
   public getUnreadNotifications(): AchievementNotification[] {
-    return this.notifications.filter(n => !n.isRead);
+    return this.notifications.filter((n) => !n.isRead);
   }
 
   public markNotificationAsRead(index: number): void {
@@ -667,18 +720,18 @@ class AchievementSystem {
   }
 
   public markAllNotificationsAsRead(): void {
-    this.notifications.forEach(n => n.isRead = true);
+    this.notifications.forEach((n) => (n.isRead = true));
   }
 
   public getTotalPoints(): number {
     return this.getAllAchievements()
-      .filter(a => a.isUnlocked)
+      .filter((a) => a.isUnlocked)
       .reduce((total, a) => total + a.points, 0);
   }
 
   public getCompletionPercentage(): number {
     const total = this.getAllAchievements().length;
-    const unlocked = this.getAllAchievements().filter(a => a.isUnlocked).length;
+    const unlocked = this.getAllAchievements().filter((a) => a.isUnlocked).length;
     return total > 0 ? (unlocked / total) * 100 : 0;
   }
 
@@ -687,10 +740,10 @@ class AchievementSystem {
       [AchievementRarity.COMMON]: { total: 0, unlocked: 0 },
       [AchievementRarity.RARE]: { total: 0, unlocked: 0 },
       [AchievementRarity.EPIC]: { total: 0, unlocked: 0 },
-      [AchievementRarity.LEGENDARY]: { total: 0, unlocked: 0 }
+      [AchievementRarity.LEGENDARY]: { total: 0, unlocked: 0 },
     };
 
-    this.getAllAchievements().forEach(achievement => {
+    this.getAllAchievements().forEach((achievement) => {
       stats[achievement.rarity].total++;
       if (achievement.isUnlocked) {
         stats[achievement.rarity].unlocked++;
@@ -701,35 +754,41 @@ class AchievementSystem {
   }
 
   public exportProgress(): string {
-    return JSON.stringify({
-      achievements: Array.from(this.achievements.values()),
-      notifications: this.notifications,
-      exportedAt: new Date()
-    }, null, 2);
+    return JSON.stringify(
+      {
+        achievements: Array.from(this.achievements.values()),
+        notifications: this.notifications,
+        exportedAt: new Date(),
+      },
+      null,
+      2
+    );
   }
 
   public importProgress(data: string): boolean {
     try {
       const parsed = JSON.parse(data);
-      
+
       if (parsed.achievements) {
         parsed.achievements.forEach((achievement: AchievementDefinition) => {
           const existing = this.achievements.get(achievement.id);
           if (existing) {
             existing.progress = achievement.progress;
             existing.isUnlocked = achievement.isUnlocked;
-            existing.unlockedAt = achievement.unlockedAt ? new Date(achievement.unlockedAt) : undefined;
+            existing.unlockedAt = achievement.unlockedAt
+              ? new Date(achievement.unlockedAt)
+              : undefined;
           }
         });
       }
-      
+
       if (parsed.notifications) {
         this.notifications = parsed.notifications.map((n: Record<string, unknown>) => ({
           ...n,
-          timestamp: new Date(n.timestamp)
+          timestamp: new Date(n.timestamp),
         }));
       }
-      
+
       return true;
     } catch (error) {
       achievementLogger.error('Failed to import achievement progress:', error);

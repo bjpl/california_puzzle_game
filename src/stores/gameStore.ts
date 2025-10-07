@@ -17,11 +17,11 @@ import {
   AchievementCategory,
   GameModeConfiguration,
   HintSystemState,
-  HintConfiguration,
+  HintConfiguration as _HintConfiguration,
   HintType,
-  StruggleData
+  StruggleData,
 } from '@/types';
-import { GAME_MODES, getModeById, getDifficultySettings } from '@/config/gameModes';
+import { GAME_MODES, getModeById as _getModeById, getDifficultySettings } from '@/config/gameModes';
 
 interface GameStore extends GameState {
   // Settings
@@ -39,7 +39,12 @@ interface GameStore extends GameState {
 
   // Mode Management
   setCurrentMode: (mode: GameModeConfiguration) => void;
-  updateModeProgress: (modeId: string, stars: number, score: number, completionTime?: number) => void;
+  updateModeProgress: (
+    modeId: string,
+    stars: number,
+    score: number,
+    completionTime?: number
+  ) => void;
   unlockMode: (modeId: string) => void;
 
   // County placement
@@ -88,7 +93,7 @@ const defaultSoundSettings: SoundSettings = {
   enableBackgroundMusic: true,
   enableClickSounds: true,
   enableGameSounds: true,
-  enableAchievementSounds: true
+  enableAchievementSounds: true,
 };
 
 const defaultSettings: GameSettings = {
@@ -107,8 +112,8 @@ const defaultSettings: GameSettings = {
     freeHintsAllowed: 1,
     autoSuggestThreshold: 3,
     enableVisualIndicators: true,
-    enableEducationalHints: true
-  }
+    enableEducationalHints: true,
+  },
 };
 
 const defaultStats: GameStats = {
@@ -121,7 +126,7 @@ const defaultStats: GameStats = {
   favoriteRegion: CaliforniaRegion.BAY_AREA,
   countiesLearned: new Set(),
   perfectPlacements: 0,
-  longestStreak: 0
+  longestStreak: 0,
 };
 
 const achievements: Achievement[] = [
@@ -132,7 +137,7 @@ const achievements: Achievement[] = [
     icon: '🎯',
     progress: 0,
     isUnlocked: false,
-    category: AchievementCategory.COMPLETION
+    category: AchievementCategory.COMPLETION,
   },
   {
     id: 'perfect_placement',
@@ -141,7 +146,7 @@ const achievements: Achievement[] = [
     icon: '🎯',
     progress: 0,
     isUnlocked: false,
-    category: AchievementCategory.ACCURACY
+    category: AchievementCategory.ACCURACY,
   },
   {
     id: 'speed_demon',
@@ -150,7 +155,7 @@ const achievements: Achievement[] = [
     icon: '⚡',
     progress: 0,
     isUnlocked: false,
-    category: AchievementCategory.SPEED
+    category: AchievementCategory.SPEED,
   },
   {
     id: 'bay_area_master',
@@ -159,7 +164,7 @@ const achievements: Achievement[] = [
     icon: '🌉',
     progress: 0,
     isUnlocked: false,
-    category: AchievementCategory.COMPLETION
+    category: AchievementCategory.COMPLETION,
   },
   {
     id: 'streak_10',
@@ -168,7 +173,7 @@ const achievements: Achievement[] = [
     icon: '🔥',
     progress: 0,
     isUnlocked: false,
-    category: AchievementCategory.STREAK
+    category: AchievementCategory.STREAK,
   },
   {
     id: 'california_expert',
@@ -177,8 +182,8 @@ const achievements: Achievement[] = [
     icon: '🏆',
     progress: 0,
     isUnlocked: false,
-    category: AchievementCategory.COMPLETION
-  }
+    category: AchievementCategory.COMPLETION,
+  },
 ];
 
 const calculatePlacementAccuracy = (
@@ -188,11 +193,11 @@ const calculatePlacementAccuracy = (
 ): number => {
   const distance = Math.sqrt(
     Math.pow(targetPosition.x - actualPosition.x, 2) +
-    Math.pow(targetPosition.y - actualPosition.y, 2)
+      Math.pow(targetPosition.y - actualPosition.y, 2)
   );
 
   if (distance <= tolerance) {
-    return Math.max(0, 1 - (distance / tolerance));
+    return Math.max(0, 1 - distance / tolerance);
   }
   return 0;
 };
@@ -207,13 +212,12 @@ const calculateScoreMultipliers = (
     [DifficultyLevel.EASY]: 1.0,
     [DifficultyLevel.MEDIUM]: 1.5,
     [DifficultyLevel.HARD]: 2.0,
-    [DifficultyLevel.EXPERT]: 3.0
+    [DifficultyLevel.EXPERT]: 3.0,
   }[difficulty];
 
-  const speedMultiplier = timeToPlace < 5000 ? 1.5 :
-                         timeToPlace < 10000 ? 1.2 : 1.0;
+  const speedMultiplier = timeToPlace < 5000 ? 1.5 : timeToPlace < 10000 ? 1.2 : 1.0;
 
-  const streakMultiplier = 1 + (Math.min(streak, 10) * 0.1);
+  const streakMultiplier = 1 + Math.min(streak, 10) * 0.1;
 
   return {
     base: 100,
@@ -221,7 +225,7 @@ const calculateScoreMultipliers = (
     speed: speedMultiplier,
     difficulty: difficultyMultiplier,
     streak: streakMultiplier,
-    total: 100 * accuracy * speedMultiplier * difficultyMultiplier * streakMultiplier
+    total: 100 * accuracy * speedMultiplier * difficultyMultiplier * streakMultiplier,
   };
 };
 
@@ -255,7 +259,7 @@ export const useGameStore = create<GameStore>()(
           cooldownTimeRemaining: 0,
           lastHintUsedAt: undefined,
           strugglingCounties: [],
-          autoSuggestEnabled: true
+          autoSuggestEnabled: true,
         },
 
         // Game control actions
@@ -273,8 +277,8 @@ export const useGameStore = create<GameStore>()(
             currentHint: undefined,
             stats: {
               ...state.stats,
-              totalGamesPlayed: state.stats.totalGamesPlayed + 1
-            }
+              totalGamesPlayed: state.stats.totalGamesPlayed + 1,
+            },
           }));
 
           // Reset hint system for new game
@@ -300,17 +304,19 @@ export const useGameStore = create<GameStore>()(
             settings: {
               ...state.settings,
               showHints: mode.showHints && difficultySettings.enableHints,
-              difficulty: mode.difficulty
+              difficulty: mode.difficulty,
             },
             hintSystem: {
               ...state.hintSystem,
-              availableHints: difficultySettings.enableHints ? state.settings.hintSettings.maxHintsPerLevel : 0,
-              usedHints: 0
+              availableHints: difficultySettings.enableHints
+                ? state.settings.hintSettings.maxHintsPerLevel
+                : 0,
+              usedHints: 0,
             },
             stats: {
               ...state.stats,
-              totalGamesPlayed: state.stats.totalGamesPlayed + 1
-            }
+              totalGamesPlayed: state.stats.totalGamesPlayed + 1,
+            },
           }));
         },
 
@@ -332,8 +338,8 @@ export const useGameStore = create<GameStore>()(
               bestScore: Math.max(state.stats.bestScore, state.score),
               totalScore: state.stats.totalScore + state.score,
               totalPlayTime: state.stats.totalPlayTime + state.timeElapsed,
-              longestStreak: Math.max(state.stats.longestStreak, state.streak)
-            }
+              longestStreak: Math.max(state.stats.longestStreak, state.streak),
+            },
           });
         },
 
@@ -348,7 +354,7 @@ export const useGameStore = create<GameStore>()(
             remainingCounties: [],
             currentHint: undefined,
             streak: 0,
-            mistakes: 0
+            mistakes: 0,
           });
         },
 
@@ -357,31 +363,36 @@ export const useGameStore = create<GameStore>()(
           set({ currentMode: mode });
         },
 
-        updateModeProgress: (modeId: string, stars: number, score: number, completionTime?: number) => {
+        updateModeProgress: (
+          modeId: string,
+          stars: number,
+          score: number,
+          completionTime?: number
+        ) => {
           set((state) => ({
-            availableModes: state.availableModes.map(mode =>
+            availableModes: state.availableModes.map((mode) =>
               mode.id === modeId
                 ? {
                     ...mode,
                     stars: Math.max(mode.stars, stars),
                     bestScore: Math.max(mode.bestScore || 0, score),
-                    completionTime: completionTime && (!mode.completionTime || completionTime < mode.completionTime)
-                      ? completionTime
-                      : mode.completionTime,
-                    isCompleted: true
+                    completionTime:
+                      completionTime &&
+                      (!mode.completionTime || completionTime < mode.completionTime)
+                        ? completionTime
+                        : mode.completionTime,
+                    isCompleted: true,
                   }
                 : mode
-            )
+            ),
           }));
         },
 
         unlockMode: (modeId: string) => {
           set((state) => ({
-            availableModes: state.availableModes.map(mode =>
-              mode.id === modeId
-                ? { ...mode, isLocked: false }
-                : mode
-            )
+            availableModes: state.availableModes.map((mode) =>
+              mode.id === modeId ? { ...mode, isLocked: false } : mode
+            ),
           }));
         },
 
@@ -389,7 +400,8 @@ export const useGameStore = create<GameStore>()(
         placeCounty: (county: CountyPiece, position: Position): PlacementResult => {
           const state = get();
           const difficultySettings = getDifficultySettings(state.difficulty);
-          const tolerance = state.currentMode.dropZoneTolerance || difficultySettings.dropZoneTolerance;
+          const tolerance =
+            state.currentMode.dropZoneTolerance || difficultySettings.dropZoneTolerance;
 
           const accuracy = calculatePlacementAccuracy(county.targetPosition, position, tolerance);
           const isCorrect = accuracy > 0.8; // 80% accuracy threshold
@@ -410,23 +422,26 @@ export const useGameStore = create<GameStore>()(
             accuracy,
             distance: Math.sqrt(
               Math.pow(county.targetPosition.x - position.x, 2) +
-              Math.pow(county.targetPosition.y - position.y, 2)
+                Math.pow(county.targetPosition.y - position.y, 2)
             ),
             isCorrect,
             scoreAwarded,
-            timeToPlace
+            timeToPlace,
           };
 
           // Update game state
           set((prevState) => ({
-            placedCounties: [...prevState.placedCounties, {
-              ...county,
-              isPlaced: true,
-              currentPosition: position
-            }],
-            remainingCounties: prevState.remainingCounties.filter(c => c.id !== county.id),
+            placedCounties: [
+              ...prevState.placedCounties,
+              {
+                ...county,
+                isPlaced: true,
+                currentPosition: position,
+              },
+            ],
+            remainingCounties: prevState.remainingCounties.filter((c) => c.id !== county.id),
             score: prevState.score + scoreAwarded,
-            streak: isCorrect ? prevState.streak + 1 : 0
+            streak: isCorrect ? prevState.streak + 1 : 0,
           }));
 
           // Update stats and check achievements
@@ -441,26 +456,27 @@ export const useGameStore = create<GameStore>()(
 
         removeCounty: (countyId: string) => {
           set((state) => {
-            const county = state.placedCounties.find(c => c.id === countyId);
+            const county = state.placedCounties.find((c) => c.id === countyId);
             if (!county) return state;
 
             return {
-              placedCounties: state.placedCounties.filter(c => c.id !== countyId),
-              remainingCounties: [...state.remainingCounties, {
-                ...county,
-                isPlaced: false
-              }]
+              placedCounties: state.placedCounties.filter((c) => c.id !== countyId),
+              remainingCounties: [
+                ...state.remainingCounties,
+                {
+                  ...county,
+                  isPlaced: false,
+                },
+              ],
             };
           });
         },
 
         moveCounty: (countyId: string, position: Position) => {
           set((state) => ({
-            placedCounties: state.placedCounties.map(county =>
-              county.id === countyId
-                ? { ...county, currentPosition: position }
-                : county
-            )
+            placedCounties: state.placedCounties.map((county) =>
+              county.id === countyId ? { ...county, currentPosition: position } : county
+            ),
           }));
         },
 
@@ -482,7 +498,7 @@ export const useGameStore = create<GameStore>()(
 
         updateStreak: (isCorrect: boolean) => {
           set((state) => ({
-            streak: isCorrect ? state.streak + 1 : 0
+            streak: isCorrect ? state.streak + 1 : 0,
           }));
         },
 
@@ -491,7 +507,7 @@ export const useGameStore = create<GameStore>()(
           const state = get();
           const newlyUnlocked: Achievement[] = [];
 
-          const updatedAchievements = state.achievements.map(achievement => {
+          const updatedAchievements = state.achievements.map((achievement) => {
             if (achievement.isUnlocked) return achievement;
 
             let shouldUnlock = false;
@@ -521,9 +537,11 @@ export const useGameStore = create<GameStore>()(
                 if (state.streak >= 10) shouldUnlock = true;
                 break;
               case 'bay_area_master':
-                if (state.selectedRegion === CaliforniaRegion.BAY_AREA &&
-                    state.difficulty === DifficultyLevel.EXPERT &&
-                    state.remainingCounties.length === 0) {
+                if (
+                  state.selectedRegion === CaliforniaRegion.BAY_AREA &&
+                  state.difficulty === DifficultyLevel.EXPERT &&
+                  state.remainingCounties.length === 0
+                ) {
                   shouldUnlock = true;
                   newProgress = 1;
                 }
@@ -534,7 +552,7 @@ export const useGameStore = create<GameStore>()(
               ...achievement,
               progress: newProgress,
               isUnlocked: shouldUnlock,
-              unlockedAt: shouldUnlock ? new Date() : achievement.unlockedAt
+              unlockedAt: shouldUnlock ? new Date() : achievement.unlockedAt,
             };
 
             if (shouldUnlock && !achievement.isUnlocked) {
@@ -552,11 +570,11 @@ export const useGameStore = create<GameStore>()(
 
         unlockAchievement: (achievementId: string) => {
           set((state) => ({
-            achievements: state.achievements.map(achievement =>
+            achievements: state.achievements.map((achievement) =>
               achievement.id === achievementId
                 ? { ...achievement, isUnlocked: true, progress: 1, unlockedAt: new Date() }
                 : achievement
-            )
+            ),
           }));
           // Play achievement sound when manually unlocking
           playSound(SoundType.ACHIEVEMENT);
@@ -565,14 +583,14 @@ export const useGameStore = create<GameStore>()(
         // Settings management
         updateSettings: (newSettings: Partial<GameSettings>) => {
           set((state) => ({
-            settings: { ...state.settings, ...newSettings }
+            settings: { ...state.settings, ...newSettings },
           }));
         },
 
         // Timer
         updateTimer: (deltaTime: number) => {
           set((state) => ({
-            timeElapsed: state.timeElapsed + deltaTime
+            timeElapsed: state.timeElapsed + deltaTime,
           }));
         },
 
@@ -589,20 +607,23 @@ export const useGameStore = create<GameStore>()(
           const state = get();
 
           // Check if hint can be used
-          if (state.hintSystem.cooldownTimeRemaining > 0 ||
-              state.hintSystem.availableHints <= 0) {
+          if (state.hintSystem.cooldownTimeRemaining > 0 || state.hintSystem.availableHints <= 0) {
             return;
           }
 
-          const cost = isAutoSuggested ? 0 :
-                      (type === HintType.EDUCATIONAL ? 0 : state.settings.hintSettings.scorePenaltyPerHint);
+          const cost = isAutoSuggested
+            ? 0
+            : type === HintType.EDUCATIONAL
+              ? 0
+              : state.settings.hintSettings.scorePenaltyPerHint;
 
-          const freeHint = state.hintSystem.usedHints < state.settings.hintSettings.freeHintsAllowed;
+          const freeHint =
+            state.hintSystem.usedHints < state.settings.hintSettings.freeHintsAllowed;
           const actualCost = freeHint ? 0 : cost;
 
           set((prevState) => ({
             score: Math.max(0, prevState.score - actualCost),
-            currentHint: prevState.remainingCounties.find(c => c.id === countyId),
+            currentHint: prevState.remainingCounties.find((c) => c.id === countyId),
             hintSystem: {
               ...prevState.hintSystem,
               availableHints: prevState.hintSystem.availableHints - 1,
@@ -611,31 +632,29 @@ export const useGameStore = create<GameStore>()(
               hintProgress: 0.3,
               cooldownTimeRemaining: prevState.settings.hintSettings.hintCooldownMs,
               lastHintUsedAt: Date.now(),
-              strugglingCounties: prevState.hintSystem.strugglingCounties.map(struggle =>
+              strugglingCounties: prevState.hintSystem.strugglingCounties.map((struggle) =>
                 struggle.countyId === countyId
                   ? { ...struggle, suggestedHints: [...struggle.suggestedHints, type] }
                   : struggle
-              )
-            }
+              ),
+            },
           }));
         },
 
         updateHintSystem: (updates: Partial<HintSystemState>) => {
           set((state) => ({
-            hintSystem: { ...state.hintSystem, ...updates }
+            hintSystem: { ...state.hintSystem, ...updates },
           }));
         },
 
         analyzePlayerStruggle: (countyId: string, position: Position, isCorrect: boolean) => {
           set((state) => {
             const existingStruggle = state.hintSystem.strugglingCounties.find(
-              s => s.countyId === countyId
+              (s) => s.countyId === countyId
             );
 
             const now = Date.now();
-            const timeSpent = existingStruggle
-              ? now - existingStruggle.lastAttemptAt
-              : 1000; // Default time for first attempt
+            const timeSpent = existingStruggle ? now - existingStruggle.lastAttemptAt : 1000; // Default time for first attempt
 
             if (isCorrect) {
               // Remove from struggling counties if correct
@@ -643,9 +662,9 @@ export const useGameStore = create<GameStore>()(
                 hintSystem: {
                   ...state.hintSystem,
                   strugglingCounties: state.hintSystem.strugglingCounties.filter(
-                    s => s.countyId !== countyId
-                  )
-                }
+                    (s) => s.countyId !== countyId
+                  ),
+                },
               };
             }
 
@@ -655,7 +674,7 @@ export const useGameStore = create<GameStore>()(
                   attempts: existingStruggle.attempts + 1,
                   lastAttemptAt: now,
                   totalTimeSpent: existingStruggle.totalTimeSpent + timeSpent,
-                  wrongPlacements: [...existingStruggle.wrongPlacements, position]
+                  wrongPlacements: [...existingStruggle.wrongPlacements, position],
                 }
               : {
                   countyId,
@@ -663,18 +682,18 @@ export const useGameStore = create<GameStore>()(
                   lastAttemptAt: now,
                   totalTimeSpent: timeSpent,
                   wrongPlacements: [position],
-                  suggestedHints: []
+                  suggestedHints: [],
                 };
 
             return {
               hintSystem: {
                 ...state.hintSystem,
                 strugglingCounties: existingStruggle
-                  ? state.hintSystem.strugglingCounties.map(s =>
+                  ? state.hintSystem.strugglingCounties.map((s) =>
                       s.countyId === countyId ? updatedStruggle : s
                     )
-                  : [...state.hintSystem.strugglingCounties, updatedStruggle]
-              }
+                  : [...state.hintSystem.strugglingCounties, updatedStruggle],
+              },
             };
           });
         },
@@ -689,9 +708,9 @@ export const useGameStore = create<GameStore>()(
               cooldownTimeRemaining: 0,
               lastHintUsedAt: undefined,
               strugglingCounties: [],
-              autoSuggestEnabled: true
+              autoSuggestEnabled: true,
             },
-            currentHint: undefined
+            currentHint: undefined,
           }));
         },
 
@@ -704,24 +723,27 @@ export const useGameStore = create<GameStore>()(
             }
 
             const totalPlacements = state.stats.totalGamesPlayed * 10; // Rough estimate
-            const newAverageAccuracy = totalPlacements > 0
-              ? (state.stats.averageAccuracy * (totalPlacements - 1) + placement.accuracy) / totalPlacements
-              : placement.accuracy;
+            const newAverageAccuracy =
+              totalPlacements > 0
+                ? (state.stats.averageAccuracy * (totalPlacements - 1) + placement.accuracy) /
+                  totalPlacements
+                : placement.accuracy;
 
             return {
               stats: {
                 ...state.stats,
                 averageAccuracy: newAverageAccuracy,
                 countiesLearned: newCountiesLearned,
-                perfectPlacements: placement.accuracy === 1
-                  ? state.stats.perfectPlacements + 1
-                  : state.stats.perfectPlacements
-              }
+                perfectPlacements:
+                  placement.accuracy === 1
+                    ? state.stats.perfectPlacements + 1
+                    : state.stats.perfectPlacements,
+              },
             };
           });
         },
 
-        getPersonalBest: (region: CaliforniaRegion, difficulty: DifficultyLevel): number => {
+        getPersonalBest: (_region: CaliforniaRegion, _difficulty: DifficultyLevel): number => {
           // This would typically be stored in more detailed stats
           // For now, return the overall best score
           return get().stats.bestScore;
@@ -737,15 +759,15 @@ export const useGameStore = create<GameStore>()(
               master: updatedSoundSettings.masterVolume,
               effects: updatedSoundSettings.effectsVolume,
               music: updatedSoundSettings.musicVolume,
-              muted: updatedSoundSettings.muted
+              muted: updatedSoundSettings.muted,
             });
 
             return {
               settings: {
                 ...state.settings,
                 soundSettings: updatedSoundSettings,
-                soundEnabled: !updatedSoundSettings.muted
-              }
+                soundEnabled: !updatedSoundSettings.muted,
+              },
             };
           });
         },
@@ -765,22 +787,25 @@ export const useGameStore = create<GameStore>()(
 
         startBackgroundMusic: () => {
           const state = get();
-          if (state.settings.soundSettings.enableBackgroundMusic && !state.settings.soundSettings.muted) {
+          if (
+            state.settings.soundSettings.enableBackgroundMusic &&
+            !state.settings.soundSettings.muted
+          ) {
             soundManager.startBackgroundMusic();
           }
         },
 
         stopBackgroundMusic: () => {
           soundManager.stopBackgroundMusic();
-        }
+        },
       }),
       {
         name: 'california-puzzle-game',
         partialize: (state) => ({
           settings: state.settings,
           stats: state.stats,
-          achievements: state.achievements
-        })
+          achievements: state.achievements,
+        }),
       }
     ),
     { name: 'CaliforniaPuzzleGame' }

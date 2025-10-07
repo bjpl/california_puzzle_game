@@ -13,7 +13,7 @@ import {
   RegionProgress,
   FlashcardSettings,
   MapExplorationSettings,
-  GridStudySettings
+  GridStudySettings,
 } from '../types/study';
 import { allCaliforniaCounties, californiaRegions } from '../data/californiaCountiesComplete';
 
@@ -58,7 +58,7 @@ const defaultProgress: StudyProgress = {
   currentStreak: 0,
   longestStreak: 0,
   lastStudyDate: null,
-  studyStartDate: null
+  studyStartDate: null,
 };
 
 const defaultStats: StudyStats = {
@@ -70,7 +70,7 @@ const defaultStats: StudyStats = {
   countiesPerDay: 0,
   weeklyGoal: 10,
   weeklyProgress: 0,
-  achievements: []
+  achievements: [],
 };
 
 const defaultFlashcardSettings: FlashcardSettings = {
@@ -79,7 +79,7 @@ const defaultFlashcardSettings: FlashcardSettings = {
   showHints: true,
   randomOrder: true,
   focusOnWeakAreas: true,
-  repeatIncorrect: true
+  repeatIncorrect: true,
 };
 
 const defaultMapSettings: MapExplorationSettings = {
@@ -87,7 +87,7 @@ const defaultMapSettings: MapExplorationSettings = {
   highlightStudied: true,
   groupByRegion: true,
   showDifficulty: true,
-  interactiveMode: true
+  interactiveMode: true,
 };
 
 const defaultGridSettings: GridStudySettings = {
@@ -96,10 +96,10 @@ const defaultGridSettings: GridStudySettings = {
     region: null,
     difficulty: null,
     studied: null,
-    mastered: null
+    mastered: null,
   },
   cardsPerPage: 12,
-  showDetails: true
+  showDetails: true,
 };
 
 export const useStudyStore = create<StudyStore>()(
@@ -129,7 +129,7 @@ export const useStudyStore = create<StudyStore>()(
             countiesStudied: [],
             totalTime: 0,
             accuracy: 0,
-            completionRate: 0
+            completionRate: 0,
           };
 
           set((state) => ({
@@ -137,8 +137,8 @@ export const useStudyStore = create<StudyStore>()(
             isStudySessionActive: true,
             progress: {
               ...state.progress,
-              studyStartDate: state.progress.studyStartDate || new Date()
-            }
+              studyStartDate: state.progress.studyStartDate || new Date(),
+            },
           }));
         },
 
@@ -153,7 +153,8 @@ export const useStudyStore = create<StudyStore>()(
             ...state.currentSession,
             endTime,
             totalTime: Math.round(totalTime / 1000), // seconds
-            completionRate: state.currentSession.countiesStudied.length / allCaliforniaCounties.length * 100
+            completionRate:
+              (state.currentSession.countiesStudied.length / allCaliforniaCounties.length) * 100,
           };
 
           set((state) => ({
@@ -164,8 +165,10 @@ export const useStudyStore = create<StudyStore>()(
               ...state.stats,
               totalSessions: state.stats.totalSessions + 1,
               totalTimeSpent: state.stats.totalTimeSpent + Math.round(totalTime / 60000), // minutes
-              averageSessionTime: (state.stats.totalTimeSpent + Math.round(totalTime / 60000)) / (state.stats.totalSessions + 1)
-            }
+              averageSessionTime:
+                (state.stats.totalTimeSpent + Math.round(totalTime / 60000)) /
+                (state.stats.totalSessions + 1),
+            },
           }));
 
           get().updateProgress();
@@ -184,10 +187,17 @@ export const useStudyStore = create<StudyStore>()(
             difficulty,
             lastStudied: now,
             nextReview: null,
-            masteryLevel: Math.min(100, (existingInfo?.masteryLevel || 0) + (difficulty === 'easy' ? 25 : difficulty === 'medium' ? 15 : 10)),
+            masteryLevel: Math.min(
+              100,
+              (existingInfo?.masteryLevel || 0) +
+                (difficulty === 'easy' ? 25 : difficulty === 'medium' ? 15 : 10)
+            ),
             streakCount: (existingInfo?.streakCount || 0) + 1,
-            incorrectCount: difficulty === 'hard' ? (existingInfo?.incorrectCount || 0) + 1 : existingInfo?.incorrectCount || 0,
-            averageTime: existingInfo?.averageTime || 30
+            incorrectCount:
+              difficulty === 'hard'
+                ? (existingInfo?.incorrectCount || 0) + 1
+                : existingInfo?.incorrectCount || 0,
+            averageTime: existingInfo?.averageTime || 30,
           };
 
           // Update spaced repetition
@@ -195,13 +205,16 @@ export const useStudyStore = create<StudyStore>()(
           get().updateSpacedRepetition(countyId, quality);
 
           // Update current session
-          const updatedSession = state.currentSession ? {
-            ...state.currentSession,
-            countiesStudied: [...state.currentSession.countiesStudied, countyId]
-          } : null;
+          const updatedSession = state.currentSession
+            ? {
+                ...state.currentSession,
+                countiesStudied: [...state.currentSession.countiesStudied, countyId],
+              }
+            : null;
 
           // Check for streak
-          const isConsecutiveDay = state.progress.lastStudyDate &&
+          const isConsecutiveDay =
+            state.progress.lastStudyDate &&
             Math.abs(now.getTime() - state.progress.lastStudyDate.getTime()) < 48 * 60 * 60 * 1000;
 
           const newStreak = isConsecutiveDay ? state.progress.currentStreak + 1 : 1;
@@ -213,13 +226,14 @@ export const useStudyStore = create<StudyStore>()(
               ...prevState.progress,
               studiedCounties: new Set([...prevState.progress.studiedCounties, countyId]),
               totalStudied: new Set([...prevState.progress.studiedCounties, countyId]).size,
-              masteredCounties: newInfo.masteryLevel >= 80 ?
-                new Set([...prevState.progress.masteredCounties, countyId]) :
-                prevState.progress.masteredCounties,
+              masteredCounties:
+                newInfo.masteryLevel >= 80
+                  ? new Set([...prevState.progress.masteredCounties, countyId])
+                  : prevState.progress.masteredCounties,
               currentStreak: newStreak,
               longestStreak: Math.max(prevState.progress.longestStreak, newStreak),
-              lastStudyDate: now
-            }
+              lastStudyDate: now,
+            },
           }));
         },
 
@@ -248,20 +262,20 @@ export const useStudyStore = create<StudyStore>()(
             easeFactor: newEaseFactor,
             nextReview,
             lastReview: new Date(),
-            quality
+            quality,
           };
 
           set((state) => ({
-            spacedRepetition: new Map(state.spacedRepetition).set(countyId, newItem)
+            spacedRepetition: new Map(state.spacedRepetition).set(countyId, newItem),
           }));
         },
 
-        getNextCountyToStudy: (mode: StudyModeType): string | null => {
+        getNextCountyToStudy: (_mode: StudyModeType): string | null => {
           const state = get();
 
           // For spaced repetition, prioritize counties due for review
           const dueForReview = Array.from(state.spacedRepetition.values())
-            .filter(item => item.nextReview <= new Date())
+            .filter((item) => item.nextReview <= new Date())
             .sort((a, b) => a.nextReview.getTime() - b.nextReview.getTime());
 
           if (dueForReview.length > 0) {
@@ -270,7 +284,7 @@ export const useStudyStore = create<StudyStore>()(
 
           // Otherwise, return unstudied counties
           const unstudied = allCaliforniaCounties.filter(
-            county => !state.progress.studiedCounties.has(county.id)
+            (county) => !state.progress.studiedCounties.has(county.id)
           );
 
           if (unstudied.length === 0) return null;
@@ -289,49 +303,54 @@ export const useStudyStore = create<StudyStore>()(
 
         getCountyStudyInfo: (countyId: string): CountyStudyInfo => {
           const state = get();
-          return state.studyInfo.get(countyId) || {
-            countyId,
-            timesStudied: 0,
-            difficulty: null,
-            lastStudied: null,
-            nextReview: null,
-            masteryLevel: 0,
-            streakCount: 0,
-            incorrectCount: 0,
-            averageTime: 0
-          };
+          return (
+            state.studyInfo.get(countyId) || {
+              countyId,
+              timesStudied: 0,
+              difficulty: null,
+              lastStudied: null,
+              nextReview: null,
+              masteryLevel: 0,
+              streakCount: 0,
+              incorrectCount: 0,
+              averageTime: 0,
+            }
+          );
         },
 
         getRegionProgress: (regionName: string): RegionProgress => {
           const state = get();
-          const regionCounties = californiaRegions[regionName as keyof typeof californiaRegions] || [];
+          const regionCounties =
+            californiaRegions[regionName as keyof typeof californiaRegions] || [];
 
-          const studied = regionCounties.filter(countyName => {
-            const county = allCaliforniaCounties.find(c => c.name === countyName);
+          const studied = regionCounties.filter((countyName) => {
+            const county = allCaliforniaCounties.find((c) => c.name === countyName);
             return county && state.progress.studiedCounties.has(county.id);
           }).length;
 
-          const mastered = regionCounties.filter(countyName => {
-            const county = allCaliforniaCounties.find(c => c.name === countyName);
+          const mastered = regionCounties.filter((countyName) => {
+            const county = allCaliforniaCounties.find((c) => c.name === countyName);
             return county && state.progress.masteredCounties.has(county.id);
           }).length;
 
           const lastStudiedDates = regionCounties
-            .map(countyName => {
-              const county = allCaliforniaCounties.find(c => c.name === countyName);
+            .map((countyName) => {
+              const county = allCaliforniaCounties.find((c) => c.name === countyName);
               if (!county) return null;
               const info = state.studyInfo.get(county.id);
               return info?.lastStudied;
             })
             .filter(Boolean) as Date[];
 
-          const lastStudied = lastStudiedDates.length > 0 ?
-            new Date(Math.max(...lastStudiedDates.map(d => d.getTime()))) : null;
+          const lastStudied =
+            lastStudiedDates.length > 0
+              ? new Date(Math.max(...lastStudiedDates.map((d) => d.getTime())))
+              : null;
 
           // Calculate average time from actual session data
           const regionSessions = regionCounties
-            .map(countyName => {
-              const county = allCaliforniaCounties.find(c => c.name === countyName);
+            .map((countyName) => {
+              const county = allCaliforniaCounties.find((c) => c.name === countyName);
               return county ? state.studyInfo.get(county.id) : null;
             })
             .filter(Boolean) as CountyStudyInfo[];
@@ -345,7 +364,7 @@ export const useStudyStore = create<StudyStore>()(
             studied,
             mastered,
             averageTime: Math.round(averageTime),
-            lastStudied
+            lastStudied,
           };
         },
 
@@ -357,20 +376,31 @@ export const useStudyStore = create<StudyStore>()(
         updateProgress: () => {
           const state = get();
           const today = new Date();
-          const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+          const weekStart = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate() - today.getDay()
+          );
 
           const weeklyStudied = state.sessions
-            .filter(session => session.startTime >= weekStart)
+            .filter((session) => session.startTime >= weekStart)
             .reduce((total, session) => total + session.countiesStudied.length, 0);
 
           set((state) => ({
             stats: {
               ...state.stats,
               weeklyProgress: (weeklyStudied / state.stats.weeklyGoal) * 100,
-              countiesPerDay: state.progress.totalStudied / Math.max(1,
-                Math.ceil((today.getTime() - (state.progress.studyStartDate?.getTime() || today.getTime())) / (24 * 60 * 60 * 1000))
-              )
-            }
+              countiesPerDay:
+                state.progress.totalStudied /
+                Math.max(
+                  1,
+                  Math.ceil(
+                    (today.getTime() -
+                      (state.progress.studyStartDate?.getTime() || today.getTime())) /
+                      (24 * 60 * 60 * 1000)
+                  )
+                ),
+            },
           }));
         },
 
@@ -381,7 +411,7 @@ export const useStudyStore = create<StudyStore>()(
             spacedRepetition: new Map(),
             sessions: [],
             currentSession: null,
-            isStudySessionActive: false
+            isStudySessionActive: false,
           });
         },
 
@@ -391,12 +421,12 @@ export const useStudyStore = create<StudyStore>()(
             progress: {
               ...state.progress,
               studiedCounties: Array.from(state.progress.studiedCounties),
-              masteredCounties: Array.from(state.progress.masteredCounties)
+              masteredCounties: Array.from(state.progress.masteredCounties),
             },
             studyInfo: Array.from(state.studyInfo.entries()),
             spacedRepetition: Array.from(state.spacedRepetition.entries()),
             sessions: state.sessions,
-            stats: state.stats
+            stats: state.stats,
           });
         },
 
@@ -407,12 +437,12 @@ export const useStudyStore = create<StudyStore>()(
               progress: {
                 ...parsed.progress,
                 studiedCounties: new Set(parsed.progress.studiedCounties),
-                masteredCounties: new Set(parsed.progress.masteredCounties)
+                masteredCounties: new Set(parsed.progress.masteredCounties),
               },
               studyInfo: new Map(parsed.studyInfo),
               spacedRepetition: new Map(parsed.spacedRepetition),
               sessions: parsed.sessions,
-              stats: parsed.stats
+              stats: parsed.stats,
             });
           } catch (error) {
             logger.error('Failed to import progress:', error);
@@ -422,13 +452,13 @@ export const useStudyStore = create<StudyStore>()(
         // Goals and achievements
         setGoal: (goal: StudyGoal) => {
           set((state) => ({
-            goals: [...state.goals.filter(g => g.id !== goal.id), goal]
+            goals: [...state.goals.filter((g) => g.id !== goal.id), goal],
           }));
         },
 
         checkGoalProgress: () => {
           const state = get();
-          const updatedGoals = state.goals.map(goal => {
+          const updatedGoals = state.goals.map((goal) => {
             let currentProgress = goal.current;
 
             if (goal.category) {
@@ -449,7 +479,9 @@ export const useStudyStore = create<StudyStore>()(
                   currentProgress = state.stats.totalTimeSpent;
                   break;
                 case 'weekly_progress':
-                  currentProgress = Math.round((state.stats.weeklyProgress / 100) * state.stats.weeklyGoal);
+                  currentProgress = Math.round(
+                    (state.stats.weeklyProgress / 100) * state.stats.weeklyGoal
+                  );
                   break;
                 default:
                   currentProgress = goal.current;
@@ -461,7 +493,7 @@ export const useStudyStore = create<StudyStore>()(
             return {
               ...goal,
               current: currentProgress,
-              completed: isComplete || goal.completed
+              completed: isComplete || goal.completed,
             };
           });
 
@@ -470,30 +502,30 @@ export const useStudyStore = create<StudyStore>()(
 
         completeGoal: (goalId: string) => {
           set((state) => ({
-            goals: state.goals.map(goal =>
+            goals: state.goals.map((goal) =>
               goal.id === goalId ? { ...goal, completed: true } : goal
-            )
+            ),
           }));
         },
 
         // Settings
         updateFlashcardSettings: (settings: Partial<FlashcardSettings>) => {
           set((state) => ({
-            flashcardSettings: { ...state.flashcardSettings, ...settings }
+            flashcardSettings: { ...state.flashcardSettings, ...settings },
           }));
         },
 
         updateMapSettings: (settings: Partial<MapExplorationSettings>) => {
           set((state) => ({
-            mapSettings: { ...state.mapSettings, ...settings }
+            mapSettings: { ...state.mapSettings, ...settings },
           }));
         },
 
         updateGridSettings: (settings: Partial<GridStudySettings>) => {
           set((state) => ({
-            gridSettings: { ...state.gridSettings, ...settings }
+            gridSettings: { ...state.gridSettings, ...settings },
           }));
-        }
+        },
       }),
       {
         name: 'california-study-store',
@@ -501,7 +533,7 @@ export const useStudyStore = create<StudyStore>()(
           progress: {
             ...state.progress,
             studiedCounties: Array.from(state.progress.studiedCounties),
-            masteredCounties: Array.from(state.progress.masteredCounties)
+            masteredCounties: Array.from(state.progress.masteredCounties),
           },
           studyInfo: Array.from(state.studyInfo.entries()),
           spacedRepetition: Array.from(state.spacedRepetition.entries()),
@@ -510,17 +542,23 @@ export const useStudyStore = create<StudyStore>()(
           stats: state.stats,
           flashcardSettings: state.flashcardSettings,
           mapSettings: state.mapSettings,
-          gridSettings: state.gridSettings
+          gridSettings: state.gridSettings,
         }),
         onRehydrateStorage: () => (state) => {
           if (state) {
             // Convert arrays back to Sets and Maps
-            state.progress.studiedCounties = new Set(state.progress.studiedCounties as any);
-            state.progress.masteredCounties = new Set(state.progress.masteredCounties as any);
-            state.studyInfo = new Map(state.studyInfo as any);
-            state.spacedRepetition = new Map(state.spacedRepetition as any);
+            state.progress.studiedCounties = new Set(
+              state.progress.studiedCounties as unknown as string[]
+            );
+            state.progress.masteredCounties = new Set(
+              state.progress.masteredCounties as unknown as string[]
+            );
+            state.studyInfo = new Map(state.studyInfo as unknown as [string, CountyStudyInfo][]);
+            state.spacedRepetition = new Map(
+              state.spacedRepetition as unknown as [string, SpacedRepetitionItem][]
+            );
           }
-        }
+        },
       }
     ),
     { name: 'CaliforniaStudyStore' }

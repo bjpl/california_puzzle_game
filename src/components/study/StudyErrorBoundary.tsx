@@ -22,6 +22,7 @@ export function StudyErrorBoundary({ children, onReset }: Props) {
         // Study mode specific error handling
         // e.g., save current progress before crash
         try {
+          // eslint-disable-next-line no-restricted-globals
           const currentProgress = localStorage.getItem('californiaStudyProgress');
           if (currentProgress) {
             studyLogger.info('Study progress preserved:', currentProgress);
@@ -70,9 +71,7 @@ function StudyErrorFallback({ onReset }: { onReset?: () => void }) {
 
           <h2 className="mt-4 text-2xl font-bold text-gray-900">Study Session Error</h2>
 
-          <p className="mt-2 text-gray-600">
-            Your study session encountered an error.
-          </p>
+          <p className="mt-2 text-gray-600">Your study session encountered an error.</p>
 
           <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
             <p className="text-sm text-green-800 font-medium">
@@ -88,7 +87,7 @@ function StudyErrorFallback({ onReset }: { onReset?: () => void }) {
           </button>
 
           <button
-            onClick={() => window.location.href = '/'}
+            onClick={() => (window.location.href = '/')}
             className="mt-3 w-full px-4 py-3 bg-gray-200 text-gray-900 rounded-md hover:bg-gray-300 transition-colors"
           >
             Return to Home

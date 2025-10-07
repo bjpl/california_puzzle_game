@@ -9,7 +9,7 @@
  */
 export function getRelativeLuminance(r: number, g: number, b: number): number {
   // Convert RGB values to relative luminance
-  const [rs, gs, bs] = [r, g, b].map(c => {
+  const [rs, gs, bs] = [r, g, b].map((c) => {
     c = c / 255;
     return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
   });
@@ -46,13 +46,13 @@ export function parseColor(color: string): [number, number, number] {
       return [
         parseInt(hex[0] + hex[0], 16),
         parseInt(hex[1] + hex[1], 16),
-        parseInt(hex[2] + hex[2], 16)
+        parseInt(hex[2] + hex[2], 16),
       ];
     } else if (hex.length === 6) {
       return [
         parseInt(hex.slice(0, 2), 16),
         parseInt(hex.slice(2, 4), 16),
-        parseInt(hex.slice(4, 6), 16)
+        parseInt(hex.slice(4, 6), 16),
       ];
     }
   }
@@ -60,11 +60,7 @@ export function parseColor(color: string): [number, number, number] {
   // Handle rgb/rgba colors
   const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
   if (rgbMatch) {
-    return [
-      parseInt(rgbMatch[1]),
-      parseInt(rgbMatch[2]),
-      parseInt(rgbMatch[3])
-    ];
+    return [parseInt(rgbMatch[1]), parseInt(rgbMatch[2]), parseInt(rgbMatch[3])];
   }
 
   // Handle named colors (common ones)
@@ -78,7 +74,7 @@ export function parseColor(color: string): [number, number, number] {
     orange: [255, 165, 0],
     purple: [128, 0, 128],
     gray: [128, 128, 128],
-    grey: [128, 128, 128]
+    grey: [128, 128, 128],
   };
 
   return namedColors[color.toLowerCase()] || [128, 128, 128]; // Default to gray
@@ -98,14 +94,14 @@ export function getOptimalTextColor(
   } = {}
 ): string {
   const {
-    preferredDark = '#1f2937',    // Tailwind gray-800
-    preferredLight = '#ffffff',   // Pure white
-    fallbackDark = '#000000',     // Pure black
-    fallbackLight = '#ffffff'     // Pure white
+    preferredDark = '#1f2937', // Tailwind gray-800
+    preferredLight = '#ffffff', // Pure white
+    fallbackDark = '#000000', // Pure black
+    fallbackLight = '#ffffff', // Pure white
   } = options;
 
   const bgColor = parseColor(backgroundColor);
-  const bgLuminance = getRelativeLuminance(...bgColor);
+  const _bgLuminance = getRelativeLuminance(...bgColor);
 
   // Test preferred colors first
   const preferredDarkRgb = parseColor(preferredDark);
@@ -143,10 +139,10 @@ export function getOptimalTextColor(
  */
 export function getCountyTextColor(regionColor: string): string {
   return getOptimalTextColor(regionColor, {
-    preferredDark: '#1f2937',     // Nice dark gray for good readability
-    preferredLight: '#ffffff',    // Pure white for dark backgrounds
-    fallbackDark: '#000000',      // Pure black if needed
-    fallbackLight: '#ffffff'      // Pure white if needed
+    preferredDark: '#1f2937', // Nice dark gray for good readability
+    preferredLight: '#ffffff', // Pure white for dark backgrounds
+    fallbackDark: '#000000', // Pure black if needed
+    fallbackLight: '#ffffff', // Pure white if needed
   });
 }
 
@@ -163,7 +159,7 @@ export function getTextColorClass(backgroundColor: string): string {
     '#000000': 'text-black',
     '#1f2937': 'text-gray-800',
     '#374151': 'text-gray-700',
-    '#4b5563': 'text-gray-600'
+    '#4b5563': 'text-gray-600',
   };
 
   return colorClassMap[optimalColor] || 'text-gray-800';
@@ -196,6 +192,6 @@ export function meetsAccessibilityStandards(
 export function getSvgTextFill(backgroundColor: string): string {
   return getOptimalTextColor(backgroundColor, {
     preferredDark: '#1f2937',
-    preferredLight: '#ffffff'
+    preferredLight: '#ffffff',
   });
 }

@@ -1,16 +1,19 @@
 // Data Migration System
 // Handles version updates and data structure changes
 
-import { storageManager } from './storage';
+import { storageManager as _storageManager } from './storage';
 import { storageLogger } from './logger';
-import { GameSettings, GameStats, Achievement } from '../types';
-import { storageLogger } from './logger';
+import {
+  GameSettings as _GameSettings,
+  GameStats as _GameStats,
+  Achievement as _Achievement,
+} from '../types';
 
 export interface MigrationScript {
   version: string;
   description: string;
-  migrate: (data: Record<string, unknown>) => any;
-  rollback?: (data: Record<string, unknown>) => any;
+  migrate: (data: Record<string, unknown>) => Record<string, unknown>;
+  rollback?: (data: Record<string, unknown>) => Record<string, unknown>;
 }
 
 export interface MigrationResult {
@@ -59,7 +62,7 @@ class DataMigrationManager {
                 enableBackgroundMusic: true,
                 enableClickSounds: true,
                 enableGameSounds: true,
-                enableAchievementSounds: true
+                enableAchievementSounds: true,
               },
               hintSettings: {
                 maxHintsPerLevel: 3,
@@ -68,8 +71,8 @@ class DataMigrationManager {
                 freeHintsAllowed: 1,
                 autoSuggestThreshold: 3,
                 enableVisualIndicators: true,
-                enableEducationalHints: true
-              }
+                enableEducationalHints: true,
+              },
             },
             stats: {
               totalGamesPlayed: 0,
@@ -81,13 +84,13 @@ class DataMigrationManager {
               favoriteRegion: 'bay_area',
               countiesLearned: [],
               perfectPlacements: 0,
-              longestStreak: 0
+              longestStreak: 0,
             },
-            achievements: []
+            achievements: [],
           };
         }
         return data;
-      }
+      },
     });
 
     // Example future migration (1.0.0 -> 1.1.0)
@@ -96,27 +99,29 @@ class DataMigrationManager {
       description: 'Add new achievement system and profile features',
       migrate: (data: Record<string, unknown>) => {
         const migrated = { ...data };
-        
+
         // Add new fields if they don't exist
         if (!migrated.profiles) {
           migrated.profiles = [];
         }
-        
+
         // Migrate old stats format to new format
         if (migrated.stats && Array.isArray(migrated.stats.countiesLearned)) {
           migrated.stats.countiesLearned = new Set(migrated.stats.countiesLearned);
         }
-        
+
         // Add new achievement fields
         if (migrated.achievements && Array.isArray(migrated.achievements)) {
-          migrated.achievements = migrated.achievements.map((achievement: Record<string, unknown>) => ({
-            ...achievement,
-            rarity: achievement.rarity || 'common',
-            points: achievement.points || 10,
-            hidden: achievement.hidden || false
-          }));
+          migrated.achievements = migrated.achievements.map(
+            (achievement: Record<string, unknown>) => ({
+              ...achievement,
+              rarity: achievement.rarity || 'common',
+              points: achievement.points || 10,
+              hidden: achievement.hidden || false,
+            })
+          );
         }
-        
+
         // Add profile preferences
         migrated.profiles.forEach((profile: Record<string, unknown>) => {
           if (!profile.preferences) {
@@ -126,32 +131,32 @@ class DataMigrationManager {
               notifications: true,
               autoSave: true,
               cloudSync: false,
-              analytics: true
+              analytics: true,
             };
           }
         });
-        
+
         migrated.version = '1.1.0';
         return migrated;
       },
       rollback: (data: Record<string, unknown>) => {
         const rolledBack = { ...data };
-        
+
         // Remove new fields
         if (rolledBack.profiles) {
           rolledBack.profiles.forEach((profile: Record<string, unknown>) => {
             delete profile.preferences;
           });
         }
-        
+
         // Convert Set back to Array
         if (rolledBack.stats && rolledBack.stats.countiesLearned instanceof Set) {
           rolledBack.stats.countiesLearned = Array.from(rolledBack.stats.countiesLearned);
         }
-        
+
         rolledBack.version = '1.0.0';
         return rolledBack;
-      }
+      },
     });
 
     // Example migration (1.1.0 -> 1.2.0)
@@ -160,25 +165,25 @@ class DataMigrationManager {
       description: 'Enhanced leaderboard and session tracking',
       migrate: (data: Record<string, unknown>) => {
         const migrated = { ...data };
-        
+
         // Add new leaderboard fields
         if (migrated.leaderboard && Array.isArray(migrated.leaderboard)) {
           migrated.leaderboard = migrated.leaderboard.map((entry: Record<string, unknown>) => ({
             ...entry,
             accuracy: entry.accuracy || 0.8,
-            date: entry.date || new Date().toISOString()
+            date: entry.date || new Date().toISOString(),
           }));
         }
-        
+
         // Add session metadata
         if (migrated.sessions && Array.isArray(migrated.sessions)) {
           migrated.sessions = migrated.sessions.map((session: Record<string, unknown>) => ({
             ...session,
             achievementsUnlocked: session.achievementsUnlocked || [],
-            endTime: session.endTime || session.startTime
+            endTime: session.endTime || session.startTime,
           }));
         }
-        
+
         // Add new settings
         if (migrated.settings) {
           if (!migrated.settings.soundSettings) {
@@ -190,14 +195,14 @@ class DataMigrationManager {
               enableBackgroundMusic: true,
               enableClickSounds: true,
               enableGameSounds: true,
-              enableAchievementSounds: true
+              enableAchievementSounds: true,
             };
           }
         }
-        
+
         migrated.version = '1.2.0';
         return migrated;
-      }
+      },
     });
   }
 
@@ -210,7 +215,7 @@ class DataMigrationManager {
   }
 
   public getAllMigrations(): MigrationScript[] {
-    return Array.from(this.migrations.values()).sort((a, b) => 
+    return Array.from(this.migrations.values()).sort((a, b) =>
       this.compareVersions(a.version, b.version)
     );
   }
@@ -221,7 +226,7 @@ class DataMigrationManager {
       fromVersion: fromVersion || '0.0.0',
       toVersion: this.currentVersion,
       migrationsApplied: [],
-      errors: []
+      errors: [],
     };
 
     try {
@@ -236,7 +241,7 @@ class DataMigrationManager {
 
       // Get all migrations that need to be applied
       const migrationsToApply = this.getMigrationsToApply(storedVersion, this.currentVersion);
-      
+
       if (migrationsToApply.length === 0) {
         result.success = true;
         return result;
@@ -244,18 +249,20 @@ class DataMigrationManager {
 
       // Load current data
       let data = this.loadAllData();
-      
+
       // Apply migrations in order
       for (const migration of migrationsToApply) {
         try {
-          storageLogger.debug(`Applying migration: ${migration.version} - ${migration.description}`);
+          storageLogger.debug(
+            `Applying migration: ${migration.version} - ${migration.description}`
+          );
           data = migration.migrate(data);
           result.migrationsApplied.push(migration.version);
         } catch (error) {
           const errorMsg = `Failed to apply migration ${migration.version}: ${error}`;
           storageLogger.error(errorMsg);
           result.errors.push(errorMsg);
-          
+
           // Attempt rollback
           if (migration.rollback && result.migrationsApplied.length > 0) {
             try {
@@ -267,17 +274,18 @@ class DataMigrationManager {
               result.errors.push(rollbackMsg);
             }
           }
-          
+
           return result;
         }
       }
 
       // Save migrated data
       this.saveAllData(data);
-      
+
       result.success = true;
-      storageLogger.debug(`Migration completed successfully from ${result.fromVersion} to ${result.toVersion}`);
-      
+      storageLogger.debug(
+        `Migration completed successfully from ${result.fromVersion} to ${result.toVersion}`
+      );
     } catch (error) {
       const errorMsg = `Migration failed: ${error}`;
       storageLogger.error(errorMsg);
@@ -290,6 +298,7 @@ class DataMigrationManager {
   private getStoredVersion(): string {
     try {
       const versionKey = 'california_puzzle_version';
+      // eslint-disable-next-line no-restricted-globals
       const version = localStorage.getItem(versionKey);
       return version || '0.0.0';
     } catch (error) {
@@ -300,39 +309,44 @@ class DataMigrationManager {
 
   private getMigrationsToApply(fromVersion: string, toVersion: string): MigrationScript[] {
     const allMigrations = this.getAllMigrations();
-    
-    return allMigrations.filter(migration => {
+
+    return allMigrations.filter((migration) => {
       const migrationVersion = migration.version;
-      return this.compareVersions(migrationVersion, fromVersion) > 0 &&
-             this.compareVersions(migrationVersion, toVersion) <= 0;
+      return (
+        this.compareVersions(migrationVersion, fromVersion) > 0 &&
+        this.compareVersions(migrationVersion, toVersion) <= 0
+      );
     });
   }
 
   private compareVersions(version1: string, version2: string): number {
     const v1Parts = version1.split('.').map(Number);
     const v2Parts = version2.split('.').map(Number);
-    
+
     for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
       const v1Part = v1Parts[i] || 0;
       const v2Part = v2Parts[i] || 0;
-      
+
       if (v1Part > v2Part) return 1;
       if (v1Part < v2Part) return -1;
     }
-    
+
     return 0;
   }
 
   private loadAllData(): Record<string, unknown> {
     try {
       const data: Record<string, unknown> = {};
-      
+
       // Load all storage keys
       const prefix = 'california_puzzle_';
+      // eslint-disable-next-line no-restricted-globals
       for (let i = 0; i < localStorage.length; i++) {
+        // eslint-disable-next-line no-restricted-globals
         const key = localStorage.key(i);
         if (key && key.startsWith(prefix)) {
           const shortKey = key.replace(prefix, '');
+          // eslint-disable-next-line no-restricted-globals
           const value = localStorage.getItem(key);
           if (value) {
             try {
@@ -343,7 +357,7 @@ class DataMigrationManager {
           }
         }
       }
-      
+
       return data;
     } catch (error) {
       storageLogger.error('Failed to load data for migration:', error);
@@ -354,21 +368,22 @@ class DataMigrationManager {
   private saveAllData(data: Record<string, unknown>): void {
     try {
       const prefix = 'california_puzzle_';
-      
+
       // Save each data key
       Object.entries(data).forEach(([key, value]) => {
         const fullKey = prefix + key;
         try {
           const serialized = typeof value === 'string' ? value : JSON.stringify(value);
+          // eslint-disable-next-line no-restricted-globals
           localStorage.setItem(fullKey, serialized);
         } catch (error) {
           storageLogger.error(`Failed to save key ${key}:`, error);
         }
       });
-      
+
       // Update version
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem(prefix + 'version', this.currentVersion);
-      
     } catch (error) {
       storageLogger.error('Failed to save migrated data:', error);
       throw error;
@@ -381,9 +396,9 @@ class DataMigrationManager {
       const backup = {
         version: this.currentVersion,
         timestamp: new Date().toISOString(),
-        data
+        data,
       };
-      
+
       return JSON.stringify(backup, null, 2);
     } catch (error) {
       storageLogger.error('Failed to create backup:', error);
@@ -394,17 +409,17 @@ class DataMigrationManager {
   public async restoreFromBackup(backupString: string): Promise<boolean> {
     try {
       const backup = JSON.parse(backupString);
-      
+
       if (!backup.data || !backup.version) {
         throw new Error('Invalid backup format');
       }
-      
+
       // Save backup data
       this.saveAllData(backup.data);
-      
+
       // Run migration if needed
       const migrationResult = await this.migrateData(backup.version);
-      
+
       return migrationResult.success;
     } catch (error) {
       storageLogger.error('Failed to restore from backup:', error);
@@ -424,14 +439,14 @@ class DataMigrationManager {
   public async testMigration(fromVersion: string, toVersion: string): Promise<MigrationResult> {
     const originalVersion = this.currentVersion;
     const originalData = this.loadAllData();
-    
+
     try {
       this.currentVersion = toVersion;
       const result = await this.migrateData(fromVersion);
-      
+
       // Restore original state
       this.saveAllData(originalData);
-      
+
       return result;
     } finally {
       this.currentVersion = originalVersion;
@@ -441,15 +456,18 @@ class DataMigrationManager {
   public clearAllData(): void {
     const prefix = 'california_puzzle_';
     const keysToRemove: string[] = [];
-    
+
+    // eslint-disable-next-line no-restricted-globals
     for (let i = 0; i < localStorage.length; i++) {
+      // eslint-disable-next-line no-restricted-globals
       const key = localStorage.key(i);
       if (key && key.startsWith(prefix)) {
         keysToRemove.push(key);
       }
     }
-    
-    keysToRemove.forEach(key => localStorage.removeItem(key));
+
+    // eslint-disable-next-line no-restricted-globals
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
   }
 }
 
@@ -460,7 +478,7 @@ export const dataMigrationManager = new DataMigrationManager();
 export async function runStartupMigrations(): Promise<MigrationResult> {
   storageLogger.debug('Running startup data migrations...');
   const result = await dataMigrationManager.migrateData();
-  
+
   if (result.success) {
     storageLogger.debug('Data migrations completed successfully');
     if (result.migrationsApplied.length > 0) {
@@ -469,7 +487,7 @@ export async function runStartupMigrations(): Promise<MigrationResult> {
   } else {
     storageLogger.error('Data migration failed:', result.errors);
   }
-  
+
   return result;
 }
 
