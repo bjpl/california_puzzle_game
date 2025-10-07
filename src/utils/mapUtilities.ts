@@ -4,6 +4,8 @@
  */
 
 import * as d3 from 'd3-geo';
+import { zoom, zoomIdentity, ZoomBehavior, ZoomTransform } from 'd3-zoom';
+import { Selection } from 'd3-selection';
 import { logger } from './logger';
 
 export interface MapOptions {
@@ -45,7 +47,7 @@ export class CaliforniaMapUtilities {
   private californiaBounds: CaliforniaBounds = {
     southwest: [-124.848974, 32.528832],
     northeast: [-114.131211, 42.009518],
-    center: [-119.449444, 37.166111]
+    center: [-119.449444, 37.166111],
   };
 
   private projections: Record<string, d3.GeoProjection>;
@@ -63,7 +65,8 @@ export class CaliforniaMapUtilities {
 
     this.projections = {
       // Albers Equal Area Conic - Best for California overview
-      albers: d3.geoAlbers()
+      albers: d3
+        .geoAlbers()
         .parallels([34, 40.5])
         .rotate([120, 0])
         .center([-2, 36.5])
@@ -71,18 +74,20 @@ export class CaliforniaMapUtilities {
         .translate([mapWidth / 2, mapHeight / 2]),
 
       // Mercator - Web compatible
-      mercator: d3.geoMercator()
+      mercator: d3
+        .geoMercator()
         .center(this.californiaBounds.center)
         .scale(3500)
         .translate([mapWidth / 2, mapHeight / 2]),
 
       // Lambert Conformal Conic - Shape preserving
-      lambert: d3.geoConicConformal()
+      lambert: d3
+        .geoConicConformal()
         .parallels([33, 45])
         .rotate([120, 0])
         .center([-2, 36.5])
         .scale(6000)
-        .translate([mapWidth / 2, mapHeight / 2])
+        .translate([mapWidth / 2, mapHeight / 2]),
     };
   }
 
@@ -101,7 +106,7 @@ export class CaliforniaMapUtilities {
     try {
       const [geoResponse, lookupResponse] = await Promise.all([
         fetch(geoDataPath),
-        fetch(lookupPath)
+        fetch(lookupPath),
       ]);
 
       if (!geoResponse.ok || !lookupResponse.ok) {
@@ -120,12 +125,18 @@ export class CaliforniaMapUtilities {
   }
 
   // Zoom utilities
-  setupZoomBehavior(svg: d3.Selection<any, any, any, any>, onZoom?: (transform: d3.ZoomTransform) => void): d3.ZoomBehavior<any, any> {
+  setupZoomBehavior(
+    svg: Selection<SVGSVGElement, unknown, null, undefined>,
+    onZoom?: (transform: ZoomTransform) => void
+  ): ZoomBehavior<SVGSVGElement, unknown> {
     const { width, height } = this.options;
 
-    const zoomBehavior = d3.zoom<any, any>()
+    const zoomBehavior = zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.5, 20])
-      .extent([[0, 0], [width, height]])
+      .extent([
+        [0, 0],
+        [width, height],
+      ])
       .on('zoom', (event) => {
         this.currentZoomLevel = event.transform.k;
         if (onZoom) {
@@ -137,7 +148,7 @@ export class CaliforniaMapUtilities {
     return zoomBehavior;
   }
 
-  zoomToCounty(countyId: string, duration = 750): d3.ZoomTransform {
+  zoomToCounty(countyId: string, _duration = 750): ZoomTransform {
     if (!this.geoData || !this.currentPath) {
       throw new Error('Geo data not loaded or projection not set');
     }
@@ -158,12 +169,10 @@ export class CaliforniaMapUtilities {
     const scale = Math.min(8, 0.9 / Math.max(dx / this.options.width, dy / this.options.height));
     const translate = [this.options.width / 2 - scale * x, this.options.height / 2 - scale * y];
 
-    return d3.zoomIdentity
-      .translate(translate[0], translate[1])
-      .scale(scale);
+    return zoomIdentity.translate(translate[0], translate[1]).scale(scale);
   }
 
-  zoomToFitAll(padding = 0.1): d3.ZoomTransform {
+  zoomToFitAll(padding = 0.1): ZoomTransform {
     if (!this.geoData || !this.currentPath) {
       throw new Error('Geo data not loaded or projection not set');
     }
@@ -176,13 +185,19 @@ export class CaliforniaMapUtilities {
     const scale = (1 - padding) / Math.max(dx / this.options.width, dy / this.options.height);
     const translate = [this.options.width / 2 - scale * x, this.options.height / 2 - scale * y];
 
-    return d3.zoomIdentity
-      .translate(translate[0], translate[1])
-      .scale(scale);
+    return zoomIdentity.translate(translate[0], translate[1]).scale(scale);
   }
 
   // County boundary detection
-  getCountyAtPoint(point: [number, number], transform: d3.ZoomTransform | null = null): { county: Record<string, unknown>; id: string; name: string; properties: Record<string, unknown> } | null {
+  getCountyAtPoint(
+    point: [number, number],
+    transform: ZoomTransform | null = null
+  ): {
+    county: Record<string, unknown>;
+    id: string;
+    name: string;
+    properties: Record<string, unknown>;
+  } | null {
     if (!this.geoData || !this.currentPath || !this.currentProjection) {
       return null;
     }
@@ -190,10 +205,7 @@ export class CaliforniaMapUtilities {
     // Apply inverse transform if zoomed/panned
     let testPoint = point;
     if (transform) {
-      testPoint = [
-        (point[0] - transform.x) / transform.k,
-        (point[1] - transform.y) / transform.k
-      ];
+      testPoint = [(point[0] - transform.x) / transform.k, (point[1] - transform.y) / transform.k];
     }
 
     // Convert screen coordinates to geographic coordinates
@@ -207,7 +219,7 @@ export class CaliforniaMapUtilities {
           county: feature,
           id: feature.properties.GEOID,
           name: feature.properties.NAME,
-          properties: feature.properties
+          properties: feature.properties,
         };
       }
     }
@@ -240,8 +252,7 @@ export class CaliforniaMapUtilities {
       const [xi, yi] = ring[i];
       const [xj, yj] = ring[j];
 
-      if (((yi > y) !== (yj > y)) &&
-          (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {
+      if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
         inside = !inside;
       }
     }
@@ -250,7 +261,9 @@ export class CaliforniaMapUtilities {
   }
 
   // Performance optimization: Get appropriate detail level
-  getOptimalDetailLevel(zoomLevel = this.currentZoomLevel): 'ultra-low' | 'low' | 'medium' | 'high' {
+  getOptimalDetailLevel(
+    zoomLevel = this.currentZoomLevel
+  ): 'ultra-low' | 'low' | 'medium' | 'high' {
     if (zoomLevel <= 5) return 'ultra-low';
     if (zoomLevel <= 7) return 'low';
     if (zoomLevel <= 9) return 'medium';
@@ -258,20 +271,26 @@ export class CaliforniaMapUtilities {
   }
 
   // Coordinate transformations
-  screenToGeo(screenPoint: [number, number], transform: d3.ZoomTransform | null = null): [number, number] | null {
+  screenToGeo(
+    screenPoint: [number, number],
+    transform: ZoomTransform | null = null
+  ): [number, number] | null {
     if (!this.currentProjection) return null;
 
     let point = screenPoint;
     if (transform) {
       point = [
         (screenPoint[0] - transform.x) / transform.k,
-        (screenPoint[1] - transform.y) / transform.k
+        (screenPoint[1] - transform.y) / transform.k,
       ];
     }
     return this.currentProjection.invert!(point) || null;
   }
 
-  geoToScreen(geoPoint: [number, number], transform: d3.ZoomTransform | null = null): [number, number] | null {
+  geoToScreen(
+    geoPoint: [number, number],
+    transform: ZoomTransform | null = null
+  ): [number, number] | null {
     if (!this.currentProjection) return null;
 
     const screenPoint = this.currentProjection(geoPoint);
@@ -280,14 +299,17 @@ export class CaliforniaMapUtilities {
     if (transform) {
       return [
         screenPoint[0] * transform.k + transform.x,
-        screenPoint[1] * transform.k + transform.y
+        screenPoint[1] * transform.k + transform.y,
       ];
     }
     return screenPoint;
   }
 
   // Calculate county centroid in screen coordinates
-  getCountyCentroid(countyId: string, transform: d3.ZoomTransform | null = null): [number, number] | null {
+  getCountyCentroid(
+    countyId: string,
+    transform: ZoomTransform | null = null
+  ): [number, number] | null {
     if (!this.currentPath) return null;
 
     const county = this.geoData.features.find(
@@ -298,16 +320,16 @@ export class CaliforniaMapUtilities {
 
     const centroid = this.currentPath.centroid(county);
     if (transform) {
-      return [
-        centroid[0] * transform.k + transform.x,
-        centroid[1] * transform.k + transform.y
-      ];
+      return [centroid[0] * transform.k + transform.x, centroid[1] * transform.k + transform.y];
     }
     return centroid;
   }
 
   // Get county bounds in screen coordinates
-  getCountyBounds(countyId: string, transform: d3.ZoomTransform | null = null): [[number, number], [number, number]] | null {
+  getCountyBounds(
+    countyId: string,
+    transform: ZoomTransform | null = null
+  ): [[number, number], [number, number]] | null {
     if (!this.currentPath) return null;
 
     const county = this.geoData.features.find(
@@ -320,26 +342,35 @@ export class CaliforniaMapUtilities {
     if (transform) {
       return [
         [bounds[0][0] * transform.k + transform.x, bounds[0][1] * transform.k + transform.y],
-        [bounds[1][0] * transform.k + transform.x, bounds[1][1] * transform.k + transform.y]
+        [bounds[1][0] * transform.k + transform.x, bounds[1][1] * transform.k + transform.y],
       ];
     }
     return bounds;
   }
 
   // Getters for internal state (for collision detector)
-  get path(): d3.GeoPath | null { return this.currentPath; }
-  get data(): Record<string, unknown> { return this.geoData; }
-  get projection(): d3.GeoProjection | null { return this.currentProjection; }
+  get path(): d3.GeoPath | null {
+    return this.currentPath;
+  }
+  get data(): Record<string, unknown> {
+    return this.geoData;
+  }
+  get projection(): d3.GeoProjection | null {
+    return this.currentProjection;
+  }
 }
 
 // Specialized collision detection system
 export class CountyCollisionDetector {
   private mapUtils: CaliforniaMapUtilities;
-  private spatialIndex = new Map<string, {
-    bounds: [[number, number], [number, number]];
-    feature: Record<string, unknown>;
-    center: [number, number];
-  }>();
+  private spatialIndex = new Map<
+    string,
+    {
+      bounds: [[number, number], [number, number]];
+      feature: Record<string, unknown>;
+      center: [number, number];
+    }
+  >();
 
   constructor(mapUtils: CaliforniaMapUtilities) {
     this.mapUtils = mapUtils;
@@ -358,7 +389,7 @@ export class CountyCollisionDetector {
       this.spatialIndex.set(id, {
         bounds,
         feature,
-        center: this.mapUtils.path!.centroid(feature)
+        center: this.mapUtils.path!.centroid(feature),
       });
     });
   }
@@ -377,7 +408,7 @@ export class CountyCollisionDetector {
           county: indexEntry.feature,
           overlap: overlap.percentage,
           center: indexEntry.center,
-          snapPoint: this.calculateSnapPoint(draggedBounds, indexEntry.bounds)
+          snapPoint: this.calculateSnapPoint(draggedBounds, indexEntry.bounds),
         });
       }
     }
@@ -400,12 +431,19 @@ export class CountyCollisionDetector {
       right: rect.right,
       bottom: rect.bottom,
       width: rect.width,
-      height: rect.height
+      height: rect.height,
     };
   }
 
   private calculateOverlap(
-    bounds1: { left: number; top: number; right: number; bottom: number; width: number; height: number },
+    bounds1: {
+      left: number;
+      top: number;
+      right: number;
+      bottom: number;
+      width: number;
+      height: number;
+    },
     bounds2: [[number, number], [number, number]]
   ): { area: number; percentage: number; intersection: boolean } {
     const left = Math.max(bounds1.left, bounds2[0][0]);
@@ -425,7 +463,7 @@ export class CountyCollisionDetector {
     return {
       area: overlapArea,
       percentage,
-      intersection: overlapArea > 0
+      intersection: overlapArea > 0,
     };
   }
 
@@ -435,7 +473,7 @@ export class CountyCollisionDetector {
   ): [number, number] {
     return [
       (targetBounds[0][0] + targetBounds[1][0]) / 2,
-      (targetBounds[0][1] + targetBounds[1][1]) / 2
+      (targetBounds[0][1] + targetBounds[1][1]) / 2,
     ];
   }
 
@@ -453,7 +491,7 @@ export class CountyCollisionDetector {
           countyId,
           county: indexEntry.feature,
           distance,
-          center: indexEntry.center
+          center: indexEntry.center,
         };
       }
     }

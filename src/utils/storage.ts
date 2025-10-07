@@ -75,7 +75,7 @@ class StorageManager {
 
   private migrate(fromVersion: string | null): void {
     storageLogger.debug(`Migrating storage from ${fromVersion || 'initial'} to ${STORAGE_VERSION}`);
-    
+
     // Handle migration logic here
     if (!fromVersion) {
       // First time setup
@@ -84,7 +84,7 @@ class StorageManager {
       this.setItem('leaderboard', []);
       this.setItem('sessions', []);
     }
-    
+
     // Add migration logic for future versions
   }
 
@@ -94,11 +94,12 @@ class StorageManager {
 
   private getItem<T>(key: string): T | null {
     try {
+      // eslint-disable-next-line no-restricted-globals
       const item = localStorage.getItem(this.getKey(key));
       if (!item) return null;
-      
+
       const parsed = JSON.parse(item);
-      
+
       // Handle Date objects
       return this.deserializeDates(parsed);
     } catch (error) {
@@ -110,8 +111,9 @@ class StorageManager {
   private setItem<T>(key: string, value: T): void {
     try {
       const serialized = JSON.stringify(value, this.dateReplacer);
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem(this.getKey(key), serialized);
-      
+
       // Notify listeners
       this.notifyListeners(key, value);
     } catch (error) {
@@ -120,6 +122,7 @@ class StorageManager {
   }
 
   private removeItem(key: string): void {
+    // eslint-disable-next-line no-restricted-globals
     localStorage.removeItem(this.getKey(key));
     this.notifyListeners(key, null);
   }
@@ -136,7 +139,7 @@ class StorageManager {
 
   private deserializeDates(obj: Record<string, unknown>): Record<string, unknown> {
     if (obj === null || obj === undefined) return obj;
-    
+
     if (typeof obj === 'object') {
       if (obj.__date) {
         return new Date(obj.__date);
@@ -144,18 +147,18 @@ class StorageManager {
       if (obj.__set) {
         return new Set(obj.__set);
       }
-      
+
       if (Array.isArray(obj)) {
-        return obj.map(item => this.deserializeDates(item));
+        return obj.map((item) => this.deserializeDates(item));
       }
-      
+
       const result: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(obj)) {
         result[key] = this.deserializeDates(value);
       }
       return result;
     }
-    
+
     return obj;
   }
 
@@ -170,13 +173,13 @@ class StorageManager {
       settings: this.getDefaultSettings(),
       stats: this.getDefaultStats(),
       achievements: [],
-      preferences: this.getDefaultPreferences()
+      preferences: this.getDefaultPreferences(),
     };
 
     const profiles = this.getProfiles();
     profiles.push(profile);
     this.setItem('profiles', profiles);
-    
+
     return profile;
   }
 
@@ -186,17 +189,17 @@ class StorageManager {
 
   public getProfile(id: string): UserProfile | null {
     const profiles = this.getProfiles();
-    return profiles.find(p => p.id === id) || null;
+    return profiles.find((p) => p.id === id) || null;
   }
 
   public updateProfile(profile: UserProfile): void {
     const profiles = this.getProfiles();
-    const index = profiles.findIndex(p => p.id === profile.id);
-    
+    const index = profiles.findIndex((p) => p.id === profile.id);
+
     if (index !== -1) {
       profiles[index] = { ...profile, lastPlayedAt: new Date() };
       this.setItem('profiles', profiles);
-      
+
       if (this.currentProfile?.id === profile.id) {
         this.currentProfile = profiles[index];
       }
@@ -205,14 +208,14 @@ class StorageManager {
 
   public deleteProfile(id: string): void {
     const profiles = this.getProfiles();
-    const filtered = profiles.filter(p => p.id !== id);
+    const filtered = profiles.filter((p) => p.id !== id);
     this.setItem('profiles', filtered);
-    
+
     // Clear current profile if it was deleted
     if (this.currentProfile?.id === id) {
       this.setCurrentProfile(null);
     }
-    
+
     // Clean up related data
     this.cleanupProfileData(id);
   }
@@ -294,18 +297,18 @@ class StorageManager {
   public saveSession(session: GameSession): void {
     const sessions = this.getSessions();
     sessions.push(session);
-    
+
     // Keep only last 100 sessions to prevent storage bloat
     if (sessions.length > 100) {
       sessions.splice(0, sessions.length - 100);
     }
-    
+
     this.setItem('sessions', sessions);
   }
 
   public getSessions(profileId?: string): GameSession[] {
     const sessions = this.getItem<GameSession[]>('sessions') || [];
-    return profileId ? sessions.filter(s => s.profileId === profileId) : sessions;
+    return profileId ? sessions.filter((s) => s.profileId === profileId) : sessions;
   }
 
   public getRecentSessions(count: number = 10, profileId?: string): GameSession[] {
@@ -319,27 +322,30 @@ class StorageManager {
   public updateLeaderboard(entry: LeaderboardEntry): void {
     const leaderboard = this.getLeaderboard();
     leaderboard.push(entry);
-    
+
     // Sort by score descending and keep top 1000
     leaderboard.sort((a, b) => b.score - a.score);
     if (leaderboard.length > 1000) {
       leaderboard.splice(1000);
     }
-    
+
     this.setItem('leaderboard', leaderboard);
   }
 
-  public getLeaderboard(region?: CaliforniaRegion, difficulty?: DifficultyLevel): LeaderboardEntry[] {
+  public getLeaderboard(
+    region?: CaliforniaRegion,
+    difficulty?: DifficultyLevel
+  ): LeaderboardEntry[] {
     let leaderboard = this.getItem<LeaderboardEntry[]>('leaderboard') || [];
-    
+
     if (region) {
-      leaderboard = leaderboard.filter(entry => entry.region === region);
+      leaderboard = leaderboard.filter((entry) => entry.region === region);
     }
-    
+
     if (difficulty) {
-      leaderboard = leaderboard.filter(entry => entry.difficulty === difficulty);
+      leaderboard = leaderboard.filter((entry) => entry.difficulty === difficulty);
     }
-    
+
     return leaderboard;
   }
 
@@ -350,9 +356,9 @@ class StorageManager {
       profiles: this.getProfiles(),
       sessions: this.getSessions(),
       leaderboard: this.getLeaderboard(),
-      exportedAt: new Date()
+      exportedAt: new Date(),
     };
-    
+
     return JSON.stringify(data, this.dateReplacer, 2);
   }
 
@@ -360,19 +366,19 @@ class StorageManager {
     try {
       const data = JSON.parse(dataString);
       const deserializedData = this.deserializeDates(data);
-      
+
       if (deserializedData.profiles) {
         this.setItem('profiles', deserializedData.profiles);
       }
-      
+
       if (deserializedData.sessions) {
         this.setItem('sessions', deserializedData.sessions);
       }
-      
+
       if (deserializedData.leaderboard) {
         this.setItem('leaderboard', deserializedData.leaderboard);
       }
-      
+
       return true;
     } catch (error) {
       storageLogger.error('Failed to import data:', error);
@@ -381,10 +387,11 @@ class StorageManager {
   }
 
   public clearAllData(): void {
-    const keys = Object.keys(localStorage)
-      .filter(key => key.startsWith(STORAGE_PREFIX));
-    
-    keys.forEach(key => localStorage.removeItem(key));
+    // eslint-disable-next-line no-restricted-globals
+    const keys = Object.keys(localStorage).filter((key) => key.startsWith(STORAGE_PREFIX));
+
+    // eslint-disable-next-line no-restricted-globals
+    keys.forEach((key) => localStorage.removeItem(key));
     this.currentProfile = null;
   }
 
@@ -406,7 +413,7 @@ class StorageManager {
   private notifyListeners(key: string, data: Record<string, unknown>): void {
     const listeners = this.listeners.get(key);
     if (listeners) {
-      listeners.forEach(callback => callback(data));
+      listeners.forEach((callback) => callback(data));
     }
   }
 
@@ -431,8 +438,8 @@ class StorageManager {
         freeHintsAllowed: 1,
         autoSuggestThreshold: 3,
         enableVisualIndicators: true,
-        enableEducationalHints: true
-      }
+        enableEducationalHints: true,
+      },
     };
   }
 
@@ -447,7 +454,7 @@ class StorageManager {
       favoriteRegion: CaliforniaRegion.BAY_AREA,
       countiesLearned: new Set(),
       perfectPlacements: 0,
-      longestStreak: 0
+      longestStreak: 0,
     };
   }
 
@@ -458,39 +465,40 @@ class StorageManager {
       notifications: true,
       autoSave: true,
       cloudSync: false,
-      analytics: true
+      analytics: true,
     };
   }
 
   private cleanupProfileData(profileId: string): void {
     // Remove sessions for deleted profile
     const sessions = this.getSessions();
-    const filteredSessions = sessions.filter(s => s.profileId !== profileId);
+    const filteredSessions = sessions.filter((s) => s.profileId !== profileId);
     this.setItem('sessions', filteredSessions);
-    
+
     // Remove leaderboard entries for deleted profile
     const leaderboard = this.getLeaderboard();
-    const filteredLeaderboard = leaderboard.filter(e => e.profileId !== profileId);
+    const filteredLeaderboard = leaderboard.filter((e) => e.profileId !== profileId);
     this.setItem('leaderboard', filteredLeaderboard);
   }
 
   // Storage usage info
   public getStorageInfo(): { used: number; available: number; percentage: number } {
     let used = 0;
-    const keys = Object.keys(localStorage)
-      .filter(key => key.startsWith(STORAGE_PREFIX));
-    
-    keys.forEach(key => {
+    // eslint-disable-next-line no-restricted-globals
+    const keys = Object.keys(localStorage).filter((key) => key.startsWith(STORAGE_PREFIX));
+
+    keys.forEach((key) => {
+      // eslint-disable-next-line no-restricted-globals
       used += key.length + (localStorage.getItem(key)?.length || 0);
     });
-    
+
     // Rough estimate of available space (most browsers allow ~5-10MB)
     const available = 5 * 1024 * 1024; // 5MB estimate
-    
+
     return {
       used,
       available,
-      percentage: (used / available) * 100
+      percentage: (used / available) * 100,
     };
   }
 }

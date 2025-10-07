@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { MOCK_CALIFORNIA_COUNTIES } from '../../fixtures';
 
 describe('County Data Integrity', () => {
@@ -56,11 +56,11 @@ describe('County Data Integrity', () => {
     });
 
     it('should have unique identifiers', () => {
-      const ids = MOCK_CALIFORNIA_COUNTIES.map(county => county.id);
+      const ids = MOCK_CALIFORNIA_COUNTIES.map((county) => county.id);
       const uniqueIds = [...new Set(ids)];
       expect(uniqueIds).toHaveLength(ids.length);
 
-      const fipsCodes = MOCK_CALIFORNIA_COUNTIES.map(county => county.countyFIPS);
+      const fipsCodes = MOCK_CALIFORNIA_COUNTIES.map((county) => county.countyFIPS);
       const uniqueFips = [...new Set(fipsCodes)];
       expect(uniqueFips).toHaveLength(fipsCodes.length);
     });
@@ -134,7 +134,7 @@ describe('County Data Integrity', () => {
     it('should have counties established after CA statehood for most', () => {
       const statehood = 1850;
       const afterStatehood = MOCK_CALIFORNIA_COUNTIES.filter(
-        county => county.established >= statehood
+        (county) => county.established >= statehood
       );
 
       expect(afterStatehood.length).toBeGreaterThan(MOCK_CALIFORNIA_COUNTIES.length * 0.8);
@@ -152,7 +152,7 @@ describe('County Data Integrity', () => {
         'Inland Empire',
         'North Coast',
         'Sierra Nevada',
-        'Desert'
+        'Desert',
       ];
 
       MOCK_CALIFORNIA_COUNTIES.forEach((county) => {
@@ -161,13 +161,16 @@ describe('County Data Integrity', () => {
     });
 
     it('should have balanced regional distribution', () => {
-      const regionCounts = MOCK_CALIFORNIA_COUNTIES.reduce((acc, county) => {
-        acc[county.region] = (acc[county.region] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const regionCounts = MOCK_CALIFORNIA_COUNTIES.reduce(
+        (acc, county) => {
+          acc[county.region] = (acc[county.region] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
       // No region should be empty
-      Object.values(regionCounts).forEach(count => {
+      Object.values(regionCounts).forEach((count) => {
         expect(count).toBeGreaterThan(0);
       });
     });
@@ -185,26 +188,26 @@ describe('County Data Integrity', () => {
     });
 
     it('should have no duplicate names', () => {
-      const names = MOCK_CALIFORNIA_COUNTIES.map(county => county.name);
+      const names = MOCK_CALIFORNIA_COUNTIES.map((county) => county.name);
       const uniqueNames = [...new Set(names)];
       expect(uniqueNames).toHaveLength(names.length);
     });
 
     it('should validate cross-referenced data integrity', () => {
       // Los Angeles should be largest by population
-      const losAngeles = MOCK_CALIFORNIA_COUNTIES.find(c => c.id === 'los-angeles');
+      const losAngeles = MOCK_CALIFORNIA_COUNTIES.find((c) => c.id === 'los-angeles');
       if (losAngeles) {
-        const otherCounties = MOCK_CALIFORNIA_COUNTIES.filter(c => c.id !== 'los-angeles');
-        otherCounties.forEach(county => {
+        const otherCounties = MOCK_CALIFORNIA_COUNTIES.filter((c) => c.id !== 'los-angeles');
+        otherCounties.forEach((county) => {
           expect(losAngeles.population).toBeGreaterThan(county.population);
         });
       }
 
       // San Bernardino should be largest by area
-      const sanBernardino = MOCK_CALIFORNIA_COUNTIES.find(c => c.id === 'san-bernardino');
+      const sanBernardino = MOCK_CALIFORNIA_COUNTIES.find((c) => c.id === 'san-bernardino');
       if (sanBernardino) {
-        const otherCounties = MOCK_CALIFORNIA_COUNTIES.filter(c => c.id !== 'san-bernardino');
-        otherCounties.forEach(county => {
+        const otherCounties = MOCK_CALIFORNIA_COUNTIES.filter((c) => c.id !== 'san-bernardino');
+        otherCounties.forEach((county) => {
           expect(sanBernardino.area).toBeGreaterThanOrEqual(county.area);
         });
       }

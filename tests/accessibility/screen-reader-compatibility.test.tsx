@@ -1,9 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { axe } from '../a11y-setup';
-import { waitForAnnouncement } from '../a11y-setup';
 
 // Mock screen reader compatible game component
 const MockScreenReaderGame: React.FC = () => {
@@ -36,37 +35,50 @@ const MockScreenReaderGame: React.FC = () => {
   };
 
   const startGame = () => {
-    setGameState(prev => ({ ...prev, isStarted: true }));
-    announceToScreenReader('Game started. Use arrow keys to navigate counties, space to select, and enter to place.', 'assertive');
+    setGameState((prev) => ({ ...prev, isStarted: true }));
+    announceToScreenReader(
+      'Game started. Use arrow keys to navigate counties, space to select, and enter to place.',
+      'assertive'
+    );
   };
 
   const selectCounty = (countyId: string) => {
-    const county = counties.find(c => c.id === countyId);
-    setGameState(prev => ({ ...prev, selectedCounty: countyId }));
-    announceToScreenReader(`${county?.name} county selected. Population: ${county?.population}. Press enter to place on map.`);
+    const county = counties.find((c) => c.id === countyId);
+    setGameState((prev) => ({ ...prev, selectedCounty: countyId }));
+    announceToScreenReader(
+      `${county?.name} county selected. Population: ${county?.population}. Press enter to place on map.`
+    );
   };
 
   const placeCounty = (countyId: string) => {
     if (gameState.selectedCounty) {
-      const county = counties.find(c => c.id === gameState.selectedCounty);
+      const county = counties.find((c) => c.id === gameState.selectedCounty);
       const isCorrect = gameState.selectedCounty === countyId;
 
       if (isCorrect) {
-        setGameState(prev => ({
+        setGameState((prev) => ({
           ...prev,
           placedCounties: [...prev.placedCounties, countyId],
           selectedCounty: null,
           score: prev.score + 100,
         }));
-        announceToScreenReader(`Correct! ${county?.name} county placed. Score increased to ${gameState.score + 100}.`);
+        announceToScreenReader(
+          `Correct! ${county?.name} county placed. Score increased to ${gameState.score + 100}.`
+        );
 
         // Check for completion
         if (gameState.placedCounties.length + 1 === counties.length) {
-          setGameState(prev => ({ ...prev, isCompleted: true }));
-          announceToScreenReader('Congratulations! All counties placed correctly. Game completed!', 'assertive');
+          setGameState((prev) => ({ ...prev, isCompleted: true }));
+          announceToScreenReader(
+            'Congratulations! All counties placed correctly. Game completed!',
+            'assertive'
+          );
         }
       } else {
-        announceToScreenReader(`Incorrect placement for ${county?.name} county. Try again.`, 'assertive');
+        announceToScreenReader(
+          `Incorrect placement for ${county?.name} county. Try again.`,
+          'assertive'
+        );
       }
     }
   };
@@ -82,7 +94,7 @@ const MockScreenReaderGame: React.FC = () => {
   };
 
   const getMapCellStatus = (countyId: string) => {
-    const county = counties.find(c => c.id === countyId);
+    const county = counties.find((c) => c.id === countyId);
     const isOccupied = gameState.placedCounties.includes(countyId);
 
     if (isOccupied) {
@@ -90,7 +102,7 @@ const MockScreenReaderGame: React.FC = () => {
     }
 
     if (gameState.selectedCounty) {
-      const selectedCounty = counties.find(c => c.id === gameState.selectedCounty);
+      const selectedCounty = counties.find((c) => c.id === gameState.selectedCounty);
       return `Drop zone for ${county?.name} county. Currently holding ${selectedCounty?.name} county. Press enter to place.`;
     }
 
@@ -124,21 +136,19 @@ const MockScreenReaderGame: React.FC = () => {
       <header>
         <h1 id="game-title">California Counties Puzzle</h1>
         <p id="game-description" className="sr-only">
-          An educational game where you place California counties on a map.
-          Use keyboard navigation to select counties and place them in their correct locations.
+          An educational game where you place California counties on a map. Use keyboard navigation
+          to select counties and place them in their correct locations.
         </p>
       </header>
 
       {/* Game controls */}
       <div role="region" aria-labelledby="controls-heading">
-        <h2 id="controls-heading" className="sr-only">Game Controls</h2>
+        <h2 id="controls-heading" className="sr-only">
+          Game Controls
+        </h2>
 
         {!gameState.isStarted ? (
-          <button
-            data-testid="start-button"
-            onClick={startGame}
-            aria-describedby="start-help"
-          >
+          <button data-testid="start-button" onClick={startGame} aria-describedby="start-help">
             Start Game
           </button>
         ) : (
@@ -176,32 +186,34 @@ const MockScreenReaderGame: React.FC = () => {
         aria-live="polite"
         data-testid="game-status"
       >
-        <h2 id="status-heading" className="sr-only">Game Status</h2>
+        <h2 id="status-heading" className="sr-only">
+          Game Status
+        </h2>
         <div>
           <span aria-label={`Current score: ${gameState.score} points`}>
             Score: {gameState.score}
           </span>
         </div>
         <div>
-          <span aria-label={`${gameState.placedCounties.length} out of ${counties.length} counties placed`}>
+          <span
+            aria-label={`${gameState.placedCounties.length} out of ${counties.length} counties placed`}
+          >
             Progress: {gameState.placedCounties.length}/{counties.length} counties placed
           </span>
         </div>
         {gameState.selectedCounty && (
           <div>
-            <span aria-label={`Currently selected: ${counties.find(c => c.id === gameState.selectedCounty)?.name} county`}>
-              Selected: {counties.find(c => c.id === gameState.selectedCounty)?.name}
+            <span
+              aria-label={`Currently selected: ${counties.find((c) => c.id === gameState.selectedCounty)?.name} county`}
+            >
+              Selected: {counties.find((c) => c.id === gameState.selectedCounty)?.name}
             </span>
           </div>
         )}
       </div>
 
       {/* Instructions */}
-      <div
-        role="region"
-        aria-labelledby="instructions-heading"
-        data-testid="instructions"
-      >
+      <div role="region" aria-labelledby="instructions-heading" data-testid="instructions">
         <h2 id="instructions-heading">How to Play</h2>
         <ul>
           <li>Navigate between counties using Tab or Arrow keys</li>
@@ -215,58 +227,53 @@ const MockScreenReaderGame: React.FC = () => {
       {gameState.isStarted && (
         <>
           {/* Counties selection area */}
-          <div
-            role="region"
-            aria-labelledby="counties-heading"
-            data-testid="counties-section"
-          >
+          <div role="region" aria-labelledby="counties-heading" data-testid="counties-section">
             <h2 id="counties-heading">Counties to Place</h2>
             <div
               role="listbox"
               aria-label="Available counties to select and place"
               aria-required="true"
-              aria-activedescendant={gameState.selectedCounty ? `county-${gameState.selectedCounty}` : undefined}
+              aria-activedescendant={
+                gameState.selectedCounty ? `county-${gameState.selectedCounty}` : undefined
+              }
             >
-              {counties.filter(county => !gameState.placedCounties.includes(county.id)).map((county, index) => (
-                <div
-                  key={county.id}
-                  id={`county-${county.id}`}
-                  role="option"
-                  tabIndex={0}
-                  aria-selected={gameState.selectedCounty === county.id}
-                  className={`county-option ${gameState.selectedCounty === county.id ? 'selected' : ''}`}
-                  onClick={() => selectCounty(county.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      selectCounty(county.id);
-                    }
-                  }}
-                  data-testid={`county-option-${county.id}`}
-                  aria-describedby={`county-${county.id}-description`}
-                >
-                  <div className="county-name">{county.name} County</div>
-                  <div className="county-info">Population: {county.population}</div>
+              {counties
+                .filter((county) => !gameState.placedCounties.includes(county.id))
+                .map((county, _index) => (
+                  <div
+                    key={county.id}
+                    id={`county-${county.id}`}
+                    role="option"
+                    tabIndex={0}
+                    aria-selected={gameState.selectedCounty === county.id}
+                    className={`county-option ${gameState.selectedCounty === county.id ? 'selected' : ''}`}
+                    onClick={() => selectCounty(county.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectCounty(county.id);
+                      }
+                    }}
+                    data-testid={`county-option-${county.id}`}
+                    aria-describedby={`county-${county.id}-description`}
+                  >
+                    <div className="county-name">{county.name} County</div>
+                    <div className="county-info">Population: {county.population}</div>
 
-                  <div id={`county-${county.id}-description`} className="sr-only">
-                    {county.name} County, population {county.population}.
-                    Status: {getCountyStatus(county.id)}.
-                    {gameState.selectedCounty === county.id
-                      ? 'Press Tab to navigate to map area and Enter to place.'
-                      : 'Press Enter or Space to select this county.'
-                    }
+                    <div id={`county-${county.id}-description`} className="sr-only">
+                      {county.name} County, population {county.population}. Status:{' '}
+                      {getCountyStatus(county.id)}.
+                      {gameState.selectedCounty === county.id
+                        ? 'Press Tab to navigate to map area and Enter to place.'
+                        : 'Press Enter or Space to select this county.'}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
 
           {/* Map area */}
-          <div
-            role="region"
-            aria-labelledby="map-heading"
-            data-testid="map-section"
-          >
+          <div role="region" aria-labelledby="map-heading" data-testid="map-section">
             <h2 id="map-heading">California Map</h2>
             <div
               role="application"
@@ -301,7 +308,9 @@ const MockScreenReaderGame: React.FC = () => {
                     </div>
 
                     {gameState.placedCounties.includes(county.id) && (
-                      <div aria-hidden="true" className="placed-indicator">✓</div>
+                      <div aria-hidden="true" className="placed-indicator">
+                        ✓
+                      </div>
                     )}
 
                     <div className="cell-label">{county.name}</div>
@@ -323,8 +332,8 @@ const MockScreenReaderGame: React.FC = () => {
         >
           <h2 id="completion-title">Game Completed!</h2>
           <div id="completion-description">
-            Congratulations! You successfully placed all {counties.length} counties.
-            Your final score is {gameState.score} points.
+            Congratulations! You successfully placed all {counties.length} counties. Your final
+            score is {gameState.score} points.
           </div>
           <button
             onClick={() => {
@@ -346,11 +355,7 @@ const MockScreenReaderGame: React.FC = () => {
       )}
 
       {/* Keyboard shortcuts help */}
-      <div
-        role="region"
-        aria-labelledby="shortcuts-heading"
-        data-testid="keyboard-shortcuts"
-      >
+      <div role="region" aria-labelledby="shortcuts-heading" data-testid="keyboard-shortcuts">
         <h2 id="shortcuts-heading">Keyboard Shortcuts</h2>
         <dl>
           <dt>Tab</dt>
@@ -549,7 +554,8 @@ describe('Screen Reader Compatibility', () => {
       await user.click(screen.getByTestId('map-cell-los-angeles'));
 
       await waitFor(() => {
-        const mapCellStatus = screen.getByTestId('map-cell-los-angeles')
+        const mapCellStatus = screen
+          .getByTestId('map-cell-los-angeles')
           .querySelector('#map-cell-los-angeles-status');
         expect(mapCellStatus).toHaveTextContent(/Los Angeles county is correctly placed/);
       });
@@ -585,7 +591,8 @@ describe('Screen Reader Compatibility', () => {
       await user.click(screen.getByTestId('map-cell-los-angeles'));
 
       // Should provide clear instruction
-      const mapCellStatus = screen.getByTestId('map-cell-los-angeles')
+      const mapCellStatus = screen
+        .getByTestId('map-cell-los-angeles')
         .querySelector('#map-cell-los-angeles-status');
       expect(mapCellStatus).toHaveTextContent(/Select a county first/);
     });
@@ -674,7 +681,7 @@ describe('Screen Reader Compatibility', () => {
     });
 
     it('should meet WCAG 2.1 AA requirements for screen readers', async () => {
-      render(<MockScreenReaderGame />);
+      const { container } = render(<MockScreenReaderGame />);
 
       // All content should be accessible to screen readers
       const hiddenElements = container.querySelectorAll('.sr-only');
@@ -682,7 +689,7 @@ describe('Screen Reader Compatibility', () => {
 
       // Interactive elements should have proper labels
       const buttons = screen.getAllByRole('button');
-      buttons.forEach(button => {
+      buttons.forEach((button) => {
         expect(button).toHaveAccessibleName();
       });
     });

@@ -86,8 +86,8 @@ const MockMemoryTestComponent: React.FC<{
   createEventListeners = false,
   createTimers = false,
 }) => {
-  const [data, setData] = React.useState<any[]>([]);
-  const [listeners, setListeners] = React.useState<any[]>([]);
+  const [data, setData] = React.useState<Record<string, unknown>[]>([]);
+  const [listeners, setListeners] = React.useState<Record<string, unknown>[]>([]);
   const timersRef = React.useRef<NodeJS.Timeout[]>([]);
 
   React.useEffect(() => {
@@ -100,7 +100,7 @@ const MockMemoryTestComponent: React.FC<{
       const leakyData = Array.from({ length: 1000 }, (_, i) => ({
         id: i,
         largeString: 'x'.repeat(10000), // 10KB string
-        circularRef: null as any,
+        circularRef: null as Record<string, unknown> | null,
       }));
 
       // Create circular references (memory leak)

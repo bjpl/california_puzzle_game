@@ -3,6 +3,8 @@
  * Uses Web Audio API to generate tones directly
  */
 
+import { logger } from './logger';
+
 export type SoundType =
   | 'correct'
   | 'incorrect'
@@ -24,6 +26,7 @@ class SimpleSoundManager {
 
   private constructor() {
     // Initialize from localStorage settings
+    // eslint-disable-next-line no-restricted-globals
     const savedSettings = localStorage.getItem('soundSettings');
     if (savedSettings) {
       const settings = JSON.parse(savedSettings);
@@ -47,7 +50,8 @@ class SimpleSoundManager {
     if (this.audioContext) return;
 
     try {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.audioContext = new (window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
       this.gainNode = this.audioContext.createGain();
       this.gainNode.connect(this.audioContext.destination);
       this.gainNode.gain.value = this.masterVolume;
@@ -115,10 +119,10 @@ class SimpleSoundManager {
           sample = Math.sin(2 * Math.PI * frequency * t) > 0 ? 1 : -1;
           break;
         case 'sawtooth':
-          sample = 2 * (t * frequency % 1) - 1;
+          sample = 2 * ((t * frequency) % 1) - 1;
           break;
         case 'triangle':
-          sample = Math.abs(2 * (2 * t * frequency % 2 - 1)) - 1;
+          sample = Math.abs(2 * (((2 * t * frequency) % 2) - 1)) - 1;
           break;
       }
 
@@ -203,8 +207,11 @@ class SimpleSoundManager {
         const sample = Math.sin(2 * Math.PI * frequency * noteTime);
 
         // Apply envelope
-        const envelope = Math.min(1, (noteTime * sampleRate) / (sampleRate * 0.01),
-                                  ((noteDuration - noteTime) * sampleRate) / (sampleRate * 0.05));
+        const envelope = Math.min(
+          1,
+          (noteTime * sampleRate) / (sampleRate * 0.01),
+          ((noteDuration - noteTime) * sampleRate) / (sampleRate * 0.05)
+        );
         channelData[i] = sample * envelope * 0.3;
       } else {
         channelData[i] = 0;
@@ -294,10 +301,14 @@ class SimpleSoundManager {
    * Save settings to localStorage
    */
   private saveSettings(): void {
-    localStorage.setItem('soundSettings', JSON.stringify({
-      enabled: this.enabled,
-      volume: this.masterVolume,
-    }));
+    // eslint-disable-next-line no-restricted-globals
+    localStorage.setItem(
+      'soundSettings',
+      JSON.stringify({
+        enabled: this.enabled,
+        volume: this.masterVolume,
+      })
+    );
   }
 }
 

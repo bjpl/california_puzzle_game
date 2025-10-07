@@ -8,6 +8,8 @@
  * - Sound sprite support for multiple effects
  */
 
+import { soundLogger } from './logger';
+
 export enum SoundType {
   PICKUP = 'pickup',
   CORRECT = 'correct',
@@ -16,7 +18,7 @@ export enum SoundType {
   CLICK = 'click',
   HOVER = 'hover',
   ACHIEVEMENT = 'achievement',
-  BACKGROUND_MUSIC = 'background_music'
+  BACKGROUND_MUSIC = 'background_music',
 }
 
 export interface SoundConfig {
@@ -46,7 +48,7 @@ class SoundManager {
     master: 0.7,
     effects: 0.8,
     music: 0.5,
-    muted: false
+    muted: false,
   };
   private isInitialized = false;
   private backgroundMusic: HTMLAudioElement | null = null;
@@ -60,8 +62,8 @@ class SoundManager {
       placeholder: {
         frequency: 440,
         duration: 0.2,
-        waveType: 'sine'
-      }
+        waveType: 'sine',
+      },
     },
     [SoundType.CORRECT]: {
       type: SoundType.CORRECT,
@@ -70,8 +72,8 @@ class SoundManager {
       placeholder: {
         frequency: 660,
         duration: 0.5,
-        waveType: 'square'
-      }
+        waveType: 'square',
+      },
     },
     [SoundType.INCORRECT]: {
       type: SoundType.INCORRECT,
@@ -80,8 +82,8 @@ class SoundManager {
       placeholder: {
         frequency: 220,
         duration: 0.3,
-        waveType: 'sawtooth'
-      }
+        waveType: 'sawtooth',
+      },
     },
     [SoundType.WIN]: {
       type: SoundType.WIN,
@@ -90,8 +92,8 @@ class SoundManager {
       placeholder: {
         frequency: 880,
         duration: 1.0,
-        waveType: 'triangle'
-      }
+        waveType: 'triangle',
+      },
     },
     [SoundType.CLICK]: {
       type: SoundType.CLICK,
@@ -100,8 +102,8 @@ class SoundManager {
       placeholder: {
         frequency: 800,
         duration: 0.1,
-        waveType: 'square'
-      }
+        waveType: 'square',
+      },
     },
     [SoundType.HOVER]: {
       type: SoundType.HOVER,
@@ -110,8 +112,8 @@ class SoundManager {
       placeholder: {
         frequency: 600,
         duration: 0.15,
-        waveType: 'sine'
-      }
+        waveType: 'sine',
+      },
     },
     [SoundType.ACHIEVEMENT]: {
       type: SoundType.ACHIEVEMENT,
@@ -120,8 +122,8 @@ class SoundManager {
       placeholder: {
         frequency: 1320,
         duration: 0.8,
-        waveType: 'triangle'
-      }
+        waveType: 'triangle',
+      },
     },
     [SoundType.BACKGROUND_MUSIC]: {
       type: SoundType.BACKGROUND_MUSIC,
@@ -131,23 +133,21 @@ class SoundManager {
       placeholder: {
         frequency: 440,
         duration: 60,
-        waveType: 'sine'
-      }
-    }
+        waveType: 'sine',
+      },
+    },
   };
 
   // File paths for actual sound files (when available)
   // Use proper base path for GitHub Pages deployment
   private getBasePath(): string {
     if (typeof window !== 'undefined') {
-      return window.location.hostname === 'localhost'
-        ? ''
-        : '/california_puzzle_game';
+      return window.location.hostname === 'localhost' ? '' : '/california_puzzle_game';
     }
     return '';
   }
 
-  private soundPaths: Record<SoundType, string> = {} as Record<SoundType, string>;
+  private _soundPaths: Record<SoundType, string> = {} as Record<SoundType, string>;
 
   private constructor() {
     // Initialize sound paths with proper base path
@@ -160,7 +160,7 @@ class SoundManager {
       [SoundType.CLICK]: `${basePath}/sounds/click.mp3`,
       [SoundType.HOVER]: `${basePath}/sounds/hover.mp3`,
       [SoundType.ACHIEVEMENT]: `${basePath}/sounds/achievement.mp3`,
-      [SoundType.BACKGROUND_MUSIC]: `${basePath}/sounds/background.mp3`
+      [SoundType.BACKGROUND_MUSIC]: `${basePath}/sounds/background.mp3`,
     };
 
     this.initializeAudioContext();
@@ -178,7 +178,8 @@ class SoundManager {
    */
   private async initializeAudioContext(): Promise<void> {
     try {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.audioContext = new (window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
       this.isInitialized = true;
       soundLogger.debug('🔊 Audio context initialized successfully');
     } catch (error) {
@@ -296,7 +297,6 @@ class SoundManager {
 
       // Placeholder tone created successfully
       return audio;
-
     } catch (error) {
       soundLogger.error('Failed to create placeholder audio:', error);
       return null;
@@ -309,9 +309,8 @@ class SoundManager {
   private calculateVolume(baseVolume: number, category: 'effects' | 'music'): number {
     if (this.volumeSettings.muted) return 0;
 
-    const categoryVolume = category === 'effects'
-      ? this.volumeSettings.effects
-      : this.volumeSettings.music;
+    const categoryVolume =
+      category === 'effects' ? this.volumeSettings.effects : this.volumeSettings.music;
 
     return baseVolume * categoryVolume * this.volumeSettings.master;
   }
@@ -355,7 +354,6 @@ class SoundManager {
       if (playPromise !== undefined) {
         await playPromise;
       }
-
     } catch (error) {
       soundLogger.error(`Failed to play sound ${soundType}:`, error);
     }
@@ -388,11 +386,12 @@ class SoundManager {
       }
 
       // Fade in
-      this.fadeVolume(this.backgroundMusic, 0, this.calculateVolume(
-        this.soundConfigs[SoundType.BACKGROUND_MUSIC].volume,
-        'music'
-      ), this.soundConfigs[SoundType.BACKGROUND_MUSIC].fadeDuration || 2000);
-
+      this.fadeVolume(
+        this.backgroundMusic,
+        0,
+        this.calculateVolume(this.soundConfigs[SoundType.BACKGROUND_MUSIC].volume, 'music'),
+        this.soundConfigs[SoundType.BACKGROUND_MUSIC].fadeDuration || 2000
+      );
     } catch (error) {
       soundLogger.error('Failed to start background music:', error);
     }
@@ -430,7 +429,7 @@ class SoundManager {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
 
-        audio.volume = startVolume + (volumeDiff * progress);
+        audio.volume = startVolume + volumeDiff * progress;
 
         if (progress < 1) {
           requestAnimationFrame(updateVolume);
@@ -498,7 +497,9 @@ class SoundManager {
    * Preload all sounds for better performance
    */
   public async preloadSounds(): Promise<void> {
-    const soundTypes = Object.values(SoundType).filter(type => type !== SoundType.BACKGROUND_MUSIC);
+    const soundTypes = Object.values(SoundType).filter(
+      (type) => type !== SoundType.BACKGROUND_MUSIC
+    );
 
     const loadPromises = soundTypes.map(async (soundType) => {
       try {
@@ -545,7 +546,8 @@ export const soundManager = SoundManager.getInstance();
 export const playSound = (soundType: SoundType) => soundManager.playSound(soundType);
 export const startBackgroundMusic = () => soundManager.startBackgroundMusic();
 export const stopBackgroundMusic = () => soundManager.stopBackgroundMusic();
-export const setVolume = (settings: Partial<VolumeSettings>) => soundManager.setVolumeSettings(settings);
+export const setVolume = (settings: Partial<VolumeSettings>) =>
+  soundManager.setVolumeSettings(settings);
 export const toggleMute = () => soundManager.setMuted(!soundManager.isMuted());
 export const preloadSounds = () => soundManager.preloadSounds();
 

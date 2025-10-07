@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { act, renderHook } from '@testing-library/react';
-import { MOCK_CALIFORNIA_COUNTIES, MOCK_GAME_STATE } from '../../fixtures';
+import { act } from '@testing-library/react';
+import { MOCK_CALIFORNIA_COUNTIES } from '../../fixtures';
 
 // Mock game state management using Zustand pattern
 interface GameState {
@@ -77,7 +77,7 @@ const createGameStore = () => {
     gameStartTime: null,
     gameEndTime: null,
 
-    availableCounties: MOCK_CALIFORNIA_COUNTIES.map(c => c.id),
+    availableCounties: MOCK_CALIFORNIA_COUNTIES.map((c) => c.id),
     placedCounties: [],
     currentCounty: null,
     selectedCounty: null,
@@ -218,7 +218,7 @@ const createGameStore = () => {
         const newPlacedCounties = [...state.placedCounties, countyId];
 
         // Remove from available counties and select next
-        const remainingCounties = state.availableCounties.filter(id => id !== countyId);
+        const remainingCounties = state.availableCounties.filter((id) => id !== countyId);
         const nextCounty = remainingCounties.length > 0 ? remainingCounties[0] : null;
 
         state = {
@@ -249,7 +249,7 @@ const createGameStore = () => {
     },
 
     removeCounty: (countyId) => {
-      const newPlacedCounties = state.placedCounties.filter(id => id !== countyId);
+      const newPlacedCounties = state.placedCounties.filter((id) => id !== countyId);
       state = {
         ...state,
         placedCounties: newPlacedCounties,
@@ -298,8 +298,8 @@ const createGameStore = () => {
   };
 };
 
-// Hook for using game store
-const useGameStore = () => {
+// Hook for using game store (unused in tests, but kept for reference)
+const _useGameStore = () => {
   const store = createGameStore();
   return store.getState();
 };
@@ -331,7 +331,7 @@ describe('Game State Management', () => {
 
     it('should have all counties available initially', () => {
       const state = gameStore.getState();
-      const expectedCounties = MOCK_CALIFORNIA_COUNTIES.map(c => c.id);
+      const expectedCounties = MOCK_CALIFORNIA_COUNTIES.map((c) => c.id);
 
       expect(state.availableCounties).toEqual(expectedCounties);
     });
@@ -721,7 +721,7 @@ describe('Game State Management', () => {
       // Place all counties
       const counties = gameStore.getState().availableCounties;
       act(() => {
-        counties.forEach(countyId => {
+        counties.forEach((countyId) => {
           state.placeCounty(countyId, true);
         });
       });
@@ -760,8 +760,9 @@ describe('Game State Management', () => {
       const newState = gameStore.getState();
 
       // Validate state consistency
-      expect(newState.placedCounties.length + (newState.currentCounty ? 1 : 0))
-        .toBeLessThanOrEqual(newState.availableCounties.length);
+      expect(newState.placedCounties.length + (newState.currentCounty ? 1 : 0)).toBeLessThanOrEqual(
+        newState.availableCounties.length
+      );
       expect(newState.correctAnswers).toBeLessThanOrEqual(newState.totalQuestions);
       expect(newState.hintsUsed).toBeLessThanOrEqual(newState.maxHints);
     });

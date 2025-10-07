@@ -17,39 +17,37 @@ export const customRender = (
   const {
     withRouter = false,
     withDndProvider = false,
-    initialState,
+    initialState: _initialState,
     ...renderOptions
   } = options;
 
-  let Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <>{children}</>
-  );
+  const DefaultWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return React.createElement(React.Fragment, null, children);
+  };
+
+  let Wrapper = DefaultWrapper;
 
   // Add providers as needed
   if (withDndProvider) {
-    const MockDndProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-      <div data-testid="dnd-provider">{children}</div>
-    );
-    Wrapper = MockDndProvider;
+    Wrapper = ({ children }) =>
+      React.createElement('div', { 'data-testid': 'dnd-provider' }, children);
   }
 
   if (withRouter) {
-    const MockRouter: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-      <div data-testid="router-provider">{children}</div>
-    );
     const PreviousWrapper = Wrapper;
-    Wrapper = ({ children }) => (
-      <MockRouter>
-        <PreviousWrapper>{children}</PreviousWrapper>
-      </MockRouter>
-    );
+    Wrapper = ({ children }) =>
+      React.createElement(
+        'div',
+        { 'data-testid': 'router-provider' },
+        React.createElement(PreviousWrapper, null, children)
+      );
   }
 
   return render(ui, { wrapper: Wrapper, ...renderOptions });
 };
 
 // Test data generators
-export const generateMockCounty = (overrides: Partial<any> = {}) => ({
+export const generateMockCounty = (overrides: Partial<Record<string, unknown>> = {}) => ({
   id: 'test-county',
   name: 'Test County',
   population: 1000000,
@@ -60,13 +58,15 @@ export const generateMockCounty = (overrides: Partial<any> = {}) => ({
   countyFIPS: '06999',
   geometry: {
     type: 'Polygon',
-    coordinates: [[
-      [-118.6, 34.0],
-      [-118.0, 34.0],
-      [-118.0, 34.5],
-      [-118.6, 34.5],
-      [-118.6, 34.0]
-    ]]
+    coordinates: [
+      [
+        [-118.6, 34.0],
+        [-118.0, 34.0],
+        [-118.0, 34.5],
+        [-118.6, 34.5],
+        [-118.6, 34.0],
+      ],
+    ],
   },
   ...overrides,
 });
@@ -82,7 +82,7 @@ export const generateMockCounties = (count: number): Record<string, unknown>[] =
   );
 };
 
-export const generateMockGameState = (overrides: Partial<any> = {}) => ({
+export const generateMockGameState = (overrides: Partial<Record<string, unknown>> = {}) => ({
   mode: 'practice',
   difficulty: 'medium',
   isGameStarted: false,
@@ -184,11 +184,10 @@ export const getFocusableElements = (container: Element): Element[] => {
     '[contenteditable="true"]',
   ].join(', ');
 
-  return Array.from(container.querySelectorAll(focusableSelectors))
-    .filter((element) => {
-      const style = window.getComputedStyle(element);
-      return style.display !== 'none' && style.visibility !== 'hidden';
-    });
+  return Array.from(container.querySelectorAll(focusableSelectors)).filter((element) => {
+    const style = window.getComputedStyle(element);
+    return style.display !== 'none' && style.visibility !== 'hidden';
+  });
 };
 
 export const testTabOrder = async (
@@ -238,6 +237,8 @@ export const createMockResizeObserver = () => {
 // Data validation helpers
 export const validateCountyData = (county: Record<string, unknown>): string[] => {
   const errors: string[] = [];
+  const coordinates = county.coordinates as Record<string, unknown>;
+  const geometry = county.geometry as Record<string, unknown>;
 
   if (!county.id || typeof county.id !== 'string') {
     errors.push('County must have a valid id');
@@ -255,13 +256,11 @@ export const validateCountyData = (county: Record<string, unknown>): string[] =>
     errors.push('County must have a valid area');
   }
 
-  if (!county.coordinates ||
-      typeof county.coordinates.lat !== 'number' ||
-      typeof county.coordinates.lng !== 'number') {
+  if (!coordinates || typeof coordinates.lat !== 'number' || typeof coordinates.lng !== 'number') {
     errors.push('County must have valid coordinates');
   }
 
-  if (!county.geometry || county.geometry.type !== 'Polygon') {
+  if (!geometry || geometry.type !== 'Polygon') {
     errors.push('County must have valid polygon geometry');
   }
 
@@ -270,24 +269,31 @@ export const validateCountyData = (county: Record<string, unknown>): string[] =>
 
 export const validateGameState = (state: Record<string, unknown>): string[] => {
   const errors: string[] = [];
+  const mode = state.mode as string;
+  const difficulty = state.difficulty as string;
+  const score = state.score as number;
+  const correctAnswers = state.correctAnswers as number;
+  const totalQuestions = state.totalQuestions as number;
+  const hintsUsed = state.hintsUsed as number;
+  const maxHints = state.maxHints as number;
 
-  if (!['practice', 'timed', 'challenge', 'learn'].includes(state.mode)) {
+  if (!['practice', 'timed', 'challenge', 'learn'].includes(mode)) {
     errors.push('Invalid game mode');
   }
 
-  if (!['easy', 'medium', 'hard'].includes(state.difficulty)) {
+  if (!['easy', 'medium', 'hard'].includes(difficulty)) {
     errors.push('Invalid difficulty level');
   }
 
-  if (typeof state.score !== 'number' || state.score < 0) {
+  if (typeof score !== 'number' || score < 0) {
     errors.push('Score must be a non-negative number');
   }
 
-  if (state.correctAnswers > state.totalQuestions) {
+  if (correctAnswers > totalQuestions) {
     errors.push('Correct answers cannot exceed total questions');
   }
 
-  if (state.hintsUsed > state.maxHints) {
+  if (hintsUsed > maxHints) {
     errors.push('Hints used cannot exceed max hints');
   }
 

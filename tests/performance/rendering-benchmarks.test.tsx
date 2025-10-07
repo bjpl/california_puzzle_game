@@ -100,7 +100,7 @@ const MockHighPerformanceMap: React.FC<{
   enableOptimizations?: boolean;
   stressTest?: boolean;
 }> = ({ counties, onPerformanceData, enableOptimizations = true, stressTest = false }) => {
-  const [renderMetrics, setRenderMetrics] = React.useState<any>(null);
+  const [renderMetrics, setRenderMetrics] = React.useState<Record<string, unknown> | null>(null);
   const mapRef = React.useRef<SVGSVGElement>(null);
   const performanceMonitor = React.useRef(new PerformanceMonitor());
 

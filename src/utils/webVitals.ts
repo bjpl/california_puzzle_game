@@ -36,15 +36,12 @@ function logMetric(metric: Metric) {
   const { name, value, rating, id } = metric;
   const color = rating === 'good' ? 'green' : rating === 'needs-improvement' ? 'orange' : 'red';
 
-  console.log(
-    `%c[Web Vitals] ${name}`,
-    `color: ${color}; font-weight: bold;`,
-    {
-      value: `${value.toFixed(2)}ms`,
-      rating,
-      id,
-    }
-  );
+  // eslint-disable-next-line no-console
+  console.info(`%c[Web Vitals] ${name}`, `color: ${color}; font-weight: bold;`, {
+    value: `${value.toFixed(2)}ms`,
+    rating,
+    id,
+  });
 }
 
 /**
@@ -55,8 +52,8 @@ function sendToAnalytics(metric: Metric) {
   const { name, value, rating, id, delta } = metric;
 
   // Example: Google Analytics 4
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', name, {
+  if (typeof window !== 'undefined' && (window as Record<string, unknown>).gtag) {
+    (window as Record<string, unknown>).gtag('event', name, {
       value: Math.round(name === 'CLS' ? delta * 1000 : delta),
       metric_id: id,
       metric_value: value,
@@ -116,7 +113,8 @@ export function measurePerformance(name: string, startMark: string, endMark: str
     const measure = window.performance.getEntriesByName(name)[0];
 
     if (measure) {
-      console.log(`[Performance] ${name}: ${measure.duration.toFixed(2)}ms`);
+      // eslint-disable-next-line no-console
+      console.info(`[Performance] ${name}: ${measure.duration.toFixed(2)}ms`);
       return measure.duration;
     }
   }

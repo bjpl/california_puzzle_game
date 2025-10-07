@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { MOCK_SCORING_CONFIG } from '../../fixtures';
 
 // Mock scoring system
@@ -66,7 +66,8 @@ class ScoringAlgorithm {
     const perfectGameBonus = stats.isPerfectGame ? this.config.perfectGameBonus : 0;
 
     // Calculate subtotal before difficulty multiplier
-    const subtotal = Math.max(0,
+    const subtotal = Math.max(
+      0,
       baseScore + timeBonus + accuracyBonus + perfectGameBonus - hintsUsedPenalty - mistakesPenalty
     );
 
@@ -82,8 +83,8 @@ class ScoringAlgorithm {
         hintsUsedPenalty,
         mistakesPenalty,
         perfectGameBonus,
-        difficultyMultiplier
-      }
+        difficultyMultiplier,
+      },
     };
   }
 
@@ -119,7 +120,9 @@ class ScoringAlgorithm {
     const perfectGameBonus = this.config.perfectGameBonus;
     const difficultyMultiplier = this.config.difficultyMultipliers[difficulty];
 
-    return Math.round((baseScore + maxTimeBonus + maxAccuracyBonus + perfectGameBonus) * difficultyMultiplier);
+    return Math.round(
+      (baseScore + maxTimeBonus + maxAccuracyBonus + perfectGameBonus) * difficultyMultiplier
+    );
   }
 }
 
@@ -139,7 +142,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
@@ -156,7 +159,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 5,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
@@ -173,7 +176,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 10,
         mistakes: 10,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
@@ -191,7 +194,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'medium',
-        isPerfectGame: true
+        isPerfectGame: true,
       };
 
       const result = scoringAlgorithm.calculateScore(fastStats);
@@ -207,7 +210,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'medium',
-        isPerfectGame: true
+        isPerfectGame: true,
       };
 
       const result = scoringAlgorithm.calculateScore(slowStats);
@@ -232,7 +235,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'medium',
-        isPerfectGame: true
+        isPerfectGame: true,
       };
 
       const result = scoringAlgorithm.calculateScore(perfectStats);
@@ -248,7 +251,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 3,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(partialStats);
@@ -274,7 +277,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 3,
         mistakes: 0,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
@@ -290,7 +293,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 3,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
@@ -306,7 +309,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 2,
         mistakes: 5,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
@@ -325,7 +328,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'medium',
-        isPerfectGame: true
+        isPerfectGame: true,
       };
 
       const result = scoringAlgorithm.calculateScore(perfectStats);
@@ -341,7 +344,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 1,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(imperfectStats);
@@ -366,12 +369,14 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'easy',
-        isPerfectGame: true
+        isPerfectGame: true,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
 
-      expect(result.breakdown.difficultyMultiplier).toBe(MOCK_SCORING_CONFIG.difficultyMultipliers.easy);
+      expect(result.breakdown.difficultyMultiplier).toBe(
+        MOCK_SCORING_CONFIG.difficultyMultipliers.easy
+      );
     });
 
     it('should apply medium difficulty multiplier', () => {
@@ -382,12 +387,14 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'medium',
-        isPerfectGame: true
+        isPerfectGame: true,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
 
-      expect(result.breakdown.difficultyMultiplier).toBe(MOCK_SCORING_CONFIG.difficultyMultipliers.medium);
+      expect(result.breakdown.difficultyMultiplier).toBe(
+        MOCK_SCORING_CONFIG.difficultyMultipliers.medium
+      );
     });
 
     it('should apply hard difficulty multiplier', () => {
@@ -398,12 +405,14 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'hard',
-        isPerfectGame: true
+        isPerfectGame: true,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
 
-      expect(result.breakdown.difficultyMultiplier).toBe(MOCK_SCORING_CONFIG.difficultyMultipliers.hard);
+      expect(result.breakdown.difficultyMultiplier).toBe(
+        MOCK_SCORING_CONFIG.difficultyMultipliers.hard
+      );
     });
 
     it('should show higher scores for harder difficulties', () => {
@@ -413,7 +422,7 @@ describe('Scoring Algorithms', () => {
         timeElapsed: 60,
         hintsUsed: 0,
         mistakes: 0,
-        isPerfectGame: true
+        isPerfectGame: true,
       };
 
       const easyResult = scoringAlgorithm.calculateScore({ ...baseStats, difficulty: 'easy' });
@@ -448,12 +457,13 @@ describe('Scoring Algorithms', () => {
     it('should calculate maximum possible score correctly', () => {
       const maxScore = scoringAlgorithm.getMaxPossibleScore(10, 'medium');
 
-      const expectedMax = Math.round((
-        MOCK_SCORING_CONFIG.baseScore * 10 +
-        MOCK_SCORING_CONFIG.timeBonus * 10 +
-        MOCK_SCORING_CONFIG.accuracyBonus * 10 +
-        MOCK_SCORING_CONFIG.perfectGameBonus
-      ) * MOCK_SCORING_CONFIG.difficultyMultipliers.medium);
+      const expectedMax = Math.round(
+        (MOCK_SCORING_CONFIG.baseScore * 10 +
+          MOCK_SCORING_CONFIG.timeBonus * 10 +
+          MOCK_SCORING_CONFIG.accuracyBonus * 10 +
+          MOCK_SCORING_CONFIG.perfectGameBonus) *
+          MOCK_SCORING_CONFIG.difficultyMultipliers.medium
+      );
 
       expect(maxScore).toBe(expectedMax);
     });
@@ -477,7 +487,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       expect(() => {
@@ -493,7 +503,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: -1,
         mistakes: -1,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
@@ -508,7 +518,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 0,
         mistakes: 0,
         difficulty: 'medium',
-        isPerfectGame: true
+        isPerfectGame: true,
       };
 
       expect(() => {
@@ -528,7 +538,7 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 1,
         mistakes: 2,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result1 = scoringAlgorithm.calculateScore(stats);
@@ -546,20 +556,21 @@ describe('Scoring Algorithms', () => {
         hintsUsed: 1,
         mistakes: 1,
         difficulty: 'medium',
-        isPerfectGame: false
+        isPerfectGame: false,
       };
 
       const result = scoringAlgorithm.calculateScore(stats);
       const breakdown = result.breakdown;
 
       // Manually calculate expected total
-      const subtotal = Math.max(0,
+      const subtotal = Math.max(
+        0,
         breakdown.baseScore +
-        breakdown.timeBonus +
-        breakdown.accuracyBonus +
-        breakdown.perfectGameBonus -
-        breakdown.hintsUsedPenalty -
-        breakdown.mistakesPenalty
+          breakdown.timeBonus +
+          breakdown.accuracyBonus +
+          breakdown.perfectGameBonus -
+          breakdown.hintsUsedPenalty -
+          breakdown.mistakesPenalty
       );
 
       const expectedTotal = Math.round(subtotal * breakdown.difficultyMultiplier);

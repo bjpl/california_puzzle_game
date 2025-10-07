@@ -4,7 +4,11 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { getPlayerStats, saveLeaderboardEntry, clearLeaderboard } from '../../../src/utils/leaderboard';
+import {
+  getPlayerStats,
+  saveLeaderboardEntry,
+  clearLeaderboard,
+} from '../../../src/utils/leaderboard';
 
 describe('leaderboard - TODO implementations', () => {
   beforeEach(() => {
@@ -22,7 +26,7 @@ describe('leaderboard - TODO implementations', () => {
         totalTime: 60000,
         accuracy: 0.85,
         maxStreak: 5,
-        regionsCompleted: new Set(['bay_area'])
+        regionsCompleted: new Set(['bay_area']),
       };
 
       // Save multiple entries for Bay Area
@@ -44,7 +48,7 @@ describe('leaderboard - TODO implementations', () => {
         totalTime: 60000,
         accuracy: 0.85,
         maxStreak: 5,
-        regionsCompleted: new Set(['bay_area'])
+        regionsCompleted: new Set(['bay_area']),
       };
 
       saveLeaderboardEntry(playerName, 1000, gameMetrics, 'medium');
@@ -73,8 +77,8 @@ describe('leaderboard - TODO implementations', () => {
             totalTime: 60000,
             accuracy: 0.8,
             maxStreak: 3,
-            regionsCompleted: new Set(['bay_area'])
-          }
+            regionsCompleted: new Set(['bay_area']),
+          },
         },
         {
           playerName,
@@ -83,8 +87,8 @@ describe('leaderboard - TODO implementations', () => {
             totalTime: 45000,
             accuracy: 0.9,
             maxStreak: 5,
-            regionsCompleted: new Set(['central'])
-          }
+            regionsCompleted: new Set(['central']),
+          },
         },
         {
           playerName,
@@ -93,12 +97,12 @@ describe('leaderboard - TODO implementations', () => {
             totalTime: 50000,
             accuracy: 0.85,
             maxStreak: 4,
-            regionsCompleted: new Set(['southern'])
-          }
-        }
+            regionsCompleted: new Set(['southern']),
+          },
+        },
       ];
 
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         saveLeaderboardEntry(entry.playerName, entry.score, entry.gameMetrics, 'medium');
       });
 
@@ -122,13 +126,13 @@ describe('leaderboard - TODO implementations', () => {
       // Play 10 games
       for (let i = 0; i < 10; i++) {
         const gameMetrics = {
-          totalTime: 60000 + (i * 1000),
-          accuracy: 0.8 + (i * 0.01),
+          totalTime: 60000 + i * 1000,
+          accuracy: 0.8 + i * 0.01,
           maxStreak: 3 + i,
-          regionsCompleted: new Set(['bay_area'])
+          regionsCompleted: new Set(['bay_area']),
         };
 
-        saveLeaderboardEntry(playerName, 1000 + (i * 100), gameMetrics, 'medium');
+        saveLeaderboardEntry(playerName, 1000 + i * 100, gameMetrics, 'medium');
       }
 
       const stats = getPlayerStats(playerName);
@@ -142,12 +146,12 @@ describe('leaderboard - TODO implementations', () => {
 
       const regions = ['bay_area', 'central', 'southern', 'bay_area', 'bay_area'];
 
-      regions.forEach((region, i) => {
+      regions.forEach((region, _i) => {
         const gameMetrics = {
           totalTime: 60000,
           accuracy: 0.8,
           maxStreak: 3,
-          regionsCompleted: new Set([region])
+          regionsCompleted: new Set([region]),
         };
 
         saveLeaderboardEntry(playerName, 1000, gameMetrics, 'medium');
