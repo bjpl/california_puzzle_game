@@ -112,6 +112,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     });
 
     setDropZones(zones);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, height, counties, difficulty, onCountyDrop]);
 
   // Helper function to determine tolerance based on difficulty
@@ -175,6 +176,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
           .style('cursor', 'help');
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapState, counties, showHints]);
 
   // Get outline styling based on county state and difficulty
@@ -332,6 +334,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
         }
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapState, placedCounties]);
 
   // Calculate placement accuracy based on position

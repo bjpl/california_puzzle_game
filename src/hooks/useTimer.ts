@@ -249,6 +249,7 @@ export const useTimer = (options: UseTimerOptions = {}): [TimerState, TimerContr
         clearInterval(intervalRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRunning, isPaused, isCompleted, interval, onTick, onComplete, maxDuration]);
 
   // Cleanup on unmount

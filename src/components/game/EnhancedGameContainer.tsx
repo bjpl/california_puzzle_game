@@ -146,6 +146,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
       // Play completion sound
       playSound(SoundType.COMPLETE);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGameComplete, gamePhase, score, gameAccuracy, currentMode, gameStartTime]);
 
   // Handle drag start

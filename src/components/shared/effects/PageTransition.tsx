@@ -178,6 +178,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
 };
 
 // Higher order component for wrapping pages
+// eslint-disable-next-line react-refresh/only-export-components
 export const withPageTransition = (
   Component: React.ComponentType<Record<string, unknown>>,
   transitionProps?: Partial<PageTransitionProps>

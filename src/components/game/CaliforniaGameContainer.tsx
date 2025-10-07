@@ -11,7 +11,7 @@ import {
   DifficultyLevel,
   GameMode,
   PlacementResult,
-  Achievement
+  Achievement,
 } from '@/types';
 import { useGameStore } from '@/stores/gameStore';
 import { getCountiesByRegion } from '@/utils/californiaData';
@@ -29,7 +29,7 @@ interface GameContainerState {
 
 const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
   initialSettings: _initialSettings,
-  onGameComplete
+  onGameComplete,
 }) => {
   const {
     // Game state
@@ -61,7 +61,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
     // Stats and achievements
     stats: _stats,
     achievements: _achievements,
-    checkAchievements
+    checkAchievements,
   } = useGameStore();
 
   const [containerState, setContainerState] = useState<GameContainerState>({
@@ -71,7 +71,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
     gameMode: GameMode.PRACTICE,
     showSettings: false,
     showAchievements: false,
-    newAchievements: []
+    newAchievements: [],
   });
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -89,7 +89,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
       targetPosition: { x: 0, y: 0 }, // Will be calculated based on map projection
       rotation: 0,
       scale: 1,
-      zIndex: index
+      zIndex: index,
     }));
   }, [availableCounties]);
 
@@ -99,11 +99,11 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
 
     startGame(containerState.currentRegion, containerState.currentDifficulty);
 
-    setContainerState(prev => ({
+    setContainerState((prev) => ({
       ...prev,
       gameStarted: true,
       recentPlacement: undefined,
-      newAchievements: []
+      newAchievements: [],
     }));
 
     // Start timer for timed modes
@@ -112,7 +112,16 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
         updateTimer(100); // Update every 100ms for smooth timer
       }, 100);
     }
-  }, [containerState.currentRegion, containerState.currentDifficulty, containerState.gameMode, settings.enableTimer, startGame, updateTimer, initializeCountyPieces]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    containerState.currentRegion,
+    containerState.currentDifficulty,
+    containerState.gameMode,
+    settings.enableTimer,
+    startGame,
+    updateTimer,
+    initializeCountyPieces,
+  ]);
 
   // Handle game pause/resume
   const handlePauseToggle = useCallback(() => {
@@ -135,34 +144,38 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
   }, []);
 
   // Handle county drop
-  const handleCountyDrop = useCallback((county: CountyPiece, position: Position) => {
-    const isGameActive = _isGameActive;
-    if (!isGameActive || isPaused) return;
+  const handleCountyDrop = useCallback(
+    (county: CountyPiece, position: Position) => {
+      const isGameActive = _isGameActive;
+      if (!isGameActive || isPaused) return;
 
-    const placement = placeCounty(county, position);
+      const placement = placeCounty(county, position);
 
-    setContainerState(prev => ({
-      ...prev,
-      recentPlacement: placement
-    }));
-
-    // Check for newly unlocked achievements
-    const newAchievements = checkAchievements(placement);
-    if (newAchievements.length > 0) {
-      setContainerState(prev => ({
+      setContainerState((prev) => ({
         ...prev,
-        newAchievements: [...prev.newAchievements, ...newAchievements]
+        recentPlacement: placement,
       }));
-    }
 
-    // Check for game completion
-    if (remainingCounties.length === 1) { // This county will be removed after placement
-      setTimeout(() => {
-        handleGameComplete();
-      }, 500);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_isGameActive, isPaused, placeCounty, checkAchievements, remainingCounties.length]);
+      // Check for newly unlocked achievements
+      const newAchievements = checkAchievements(placement);
+      if (newAchievements.length > 0) {
+        setContainerState((prev) => ({
+          ...prev,
+          newAchievements: [...prev.newAchievements, ...newAchievements],
+        }));
+      }
+
+      // Check for game completion
+      if (remainingCounties.length === 1) {
+        // This county will be removed after placement
+        setTimeout(() => {
+          handleGameComplete();
+        }, 500);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [_isGameActive, isPaused, placeCounty, checkAchievements, remainingCounties.length]
+  );
 
   // Handle county drag end (including failed drops)
   const handleCountyDragEnd = useCallback((_county: CountyPiece, _position: Position) => {
@@ -183,46 +196,55 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
       onGameComplete(score, stats);
     }
 
-    setContainerState(prev => ({
+    setContainerState((prev) => ({
       ...prev,
-      gameStarted: false
+      gameStarted: false,
     }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endGame, score, stats, onGameComplete]);
 
   // Handle region change
-  const handleRegionChange = useCallback((region: CaliforniaRegion) => {
-    if (isGameActive) {
-      // Confirm region change during active game
-      const confirm = window.confirm('Changing region will end the current game. Continue?');
-      if (!confirm) return;
+  const handleRegionChange = useCallback(
+    (region: CaliforniaRegion) => {
+      if (isGameActive) {
+        // Confirm region change during active game
+        const confirm = window.confirm('Changing region will end the current game. Continue?');
+        if (!confirm) return;
 
-      resetGame();
-    }
+        resetGame();
+      }
 
-    setContainerState(prev => ({
-      ...prev,
-      currentRegion: region,
-      gameStarted: false
-    }));
-  }, [isGameActive, resetGame]);
+      setContainerState((prev) => ({
+        ...prev,
+        currentRegion: region,
+        gameStarted: false,
+      }));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [isGameActive, resetGame]
+  );
 
   // Handle difficulty change
-  const handleDifficultyChange = useCallback((difficulty: DifficultyLevel) => {
-    if (isGameActive) {
-      const confirm = window.confirm('Changing difficulty will end the current game. Continue?');
-      if (!confirm) return;
+  const handleDifficultyChange = useCallback(
+    (difficulty: DifficultyLevel) => {
+      if (isGameActive) {
+        const confirm = window.confirm('Changing difficulty will end the current game. Continue?');
+        if (!confirm) return;
 
-      resetGame();
-    }
+        resetGame();
+      }
 
-    setContainerState(prev => ({
-      ...prev,
-      currentDifficulty: difficulty,
-      gameStarted: false
-    }));
+      setContainerState((prev) => ({
+        ...prev,
+        currentDifficulty: difficulty,
+        gameStarted: false,
+      }));
 
-    updateSettings({ difficulty });
-  }, [isGameActive, resetGame, updateSettings]);
+      updateSettings({ difficulty });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [isGameActive, resetGame, updateSettings]
+  );
 
   // Handle hint request
   const handleUseHint = useCallback(() => {
@@ -258,31 +280,40 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
   return (
     <div ref={gameContainerRef} className="california-game-container">
       {/* Game Header */}
-      <div className="game-header" style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '16px 24px',
-        backgroundColor: '#ffffff',
-        borderBottom: '1px solid #e5e7eb',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-      }}>
+      <div
+        className="game-header"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '16px 24px',
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid #e5e7eb',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         {/* Title and Region */}
         <div className="header-left">
           <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '700', color: '#111827' }}>
             California Counties Puzzle
           </h1>
           <div style={{ fontSize: '14px', color: '#6b7280', marginTop: '2px' }}>
-            {containerState.currentRegion.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())} • {containerState.currentDifficulty} Mode
+            {containerState.currentRegion
+              .replace('_', ' ')
+              .replace(/\b\w/g, (l) => l.toUpperCase())}{' '}
+            • {containerState.currentDifficulty} Mode
           </div>
         </div>
 
         {/* Game Stats */}
-        <div className="game-stats" style={{
-          display: 'flex',
-          gap: '24px',
-          alignItems: 'center'
-        }}>
+        <div
+          className="game-stats"
+          style={{
+            display: 'flex',
+            gap: '24px',
+            alignItems: 'center',
+          }}
+        >
           {/* Score */}
           <div className="stat-item">
             <div style={{ fontSize: '12px', color: '#6b7280', textAlign: 'center' }}>Score</div>
@@ -304,7 +335,13 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
           {/* Streak */}
           <div className="stat-item">
             <div style={{ fontSize: '12px', color: '#6b7280', textAlign: 'center' }}>Streak</div>
-            <div style={{ fontSize: '18px', fontWeight: '600', color: streak > 0 ? '#f59e0b' : '#111827' }}>
+            <div
+              style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: streak > 0 ? '#f59e0b' : '#111827',
+              }}
+            >
               {streak}
             </div>
           </div>
@@ -319,10 +356,13 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="header-actions" style={{
-          display: 'flex',
-          gap: '8px'
-        }}>
+        <div
+          className="header-actions"
+          style={{
+            display: 'flex',
+            gap: '8px',
+          }}
+        >
           {/* Hint Button */}
           {settings.showHints && remainingCounties.length > 0 && (
             <button
@@ -335,7 +375,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                 borderRadius: '6px',
                 backgroundColor: '#ffffff',
                 color: '#374151',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               💡 Hint
@@ -353,7 +393,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                 borderRadius: '6px',
                 backgroundColor: '#ffffff',
                 color: '#374151',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               {isPaused ? '▶️ Resume' : '⏸️ Pause'}
@@ -371,7 +411,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
               backgroundColor: '#3b82f6',
               color: 'white',
               cursor: 'pointer',
-              fontWeight: '500'
+              fontWeight: '500',
             }}
           >
             {containerState.gameStarted ? '🔄 Reset' : '🎮 Start Game'}
@@ -380,36 +420,45 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
       </div>
 
       {/* Progress Bar */}
-      <div className="progress-bar" style={{
-        height: '4px',
-        backgroundColor: '#e5e7eb',
-        position: 'relative'
-      }}>
+      <div
+        className="progress-bar"
+        style={{
+          height: '4px',
+          backgroundColor: '#e5e7eb',
+          position: 'relative',
+        }}
+      >
         <div
           style={{
             height: '100%',
             backgroundColor: '#10b981',
             width: `${getProgressPercentage()}%`,
-            transition: 'width 0.3s ease'
+            transition: 'width 0.3s ease',
           }}
         />
       </div>
 
       {/* Main Game Area */}
-      <div className="game-main" style={{
-        display: 'flex',
-        height: 'calc(100vh - 120px)',
-        backgroundColor: '#f9fafb'
-      }}>
-        {/* Left Sidebar - Controls */}
-        <div className="game-sidebar" style={{
-          width: '320px',
-          backgroundColor: '#ffffff',
-          borderRight: '1px solid #e5e7eb',
+      <div
+        className="game-main"
+        style={{
           display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden'
-        }}>
+          height: 'calc(100vh - 120px)',
+          backgroundColor: '#f9fafb',
+        }}
+      >
+        {/* Left Sidebar - Controls */}
+        <div
+          className="game-sidebar"
+          style={{
+            width: '320px',
+            backgroundColor: '#ffffff',
+            borderRight: '1px solid #e5e7eb',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}
+        >
           {/* Region Selector */}
           {!containerState.gameStarted && (
             <RegionSelector
@@ -426,7 +475,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                 Difficulty Level
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {Object.values(DifficultyLevel).map(difficulty => (
+                {Object.values(DifficultyLevel).map((difficulty) => (
                   <button
                     key={difficulty}
                     onClick={() => handleDifficultyChange(difficulty)}
@@ -434,11 +483,13 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                       padding: '8px 12px',
                       border: `2px solid ${containerState.currentDifficulty === difficulty ? '#3b82f6' : '#e5e7eb'}`,
                       borderRadius: '6px',
-                      backgroundColor: containerState.currentDifficulty === difficulty ? '#eff6ff' : '#ffffff',
-                      color: containerState.currentDifficulty === difficulty ? '#1e40af' : '#374151',
+                      backgroundColor:
+                        containerState.currentDifficulty === difficulty ? '#eff6ff' : '#ffffff',
+                      color:
+                        containerState.currentDifficulty === difficulty ? '#1e40af' : '#374151',
                       cursor: 'pointer',
                       fontSize: '12px',
-                      textTransform: 'capitalize'
+                      textTransform: 'capitalize',
                     }}
                   >
                     {difficulty}
@@ -462,11 +513,14 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
         </div>
 
         {/* Main Map Area */}
-        <div className="map-area" style={{
-          flex: 1,
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
+        <div
+          className="map-area"
+          style={{
+            flex: 1,
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
           {containerState.gameStarted ? (
             <CaliforniaMapCanvas
               width={800}
@@ -478,20 +532,21 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
               difficulty={containerState.currentDifficulty}
             />
           ) : (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              flexDirection: 'column',
-              color: '#6b7280'
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                flexDirection: 'column',
+                color: '#6b7280',
+              }}
+            >
               <div style={{ fontSize: '48px', marginBottom: '16px' }}>🗺️</div>
-              <h2 style={{ margin: '0 0 8px 0', color: '#374151' }}>
-                Ready to Start?
-              </h2>
+              <h2 style={{ margin: '0 0 8px 0', color: '#374151' }}>Ready to Start?</h2>
               <p style={{ margin: 0, textAlign: 'center', maxWidth: '400px' }}>
-                Select a region and difficulty level, then click "Start Game" to begin placing California counties!
+                Select a region and difficulty level, then click "Start Game" to begin placing
+                California counties!
               </p>
             </div>
           )}
@@ -515,7 +570,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                   justifyContent: 'center',
                   color: 'white',
                   fontSize: '24px',
-                  fontWeight: '600'
+                  fontWeight: '600',
                 }}
               >
                 <div style={{ textAlign: 'center' }}>
@@ -531,7 +586,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                       borderRadius: '8px',
                       backgroundColor: '#3b82f6',
                       color: 'white',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
                     }}
                   >
                     Resume Game
@@ -559,17 +614,17 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                   backgroundColor: containerState.recentPlacement.isCorrect ? '#10b981' : '#f59e0b',
                   color: 'white',
                   fontWeight: '600',
-                  zIndex: 1000
+                  zIndex: 1000,
                 }}
                 onAnimationComplete={() => {
                   setTimeout(() => {
-                    setContainerState(prev => ({ ...prev, recentPlacement: undefined }));
+                    setContainerState((prev) => ({ ...prev, recentPlacement: undefined }));
                   }, 2000);
                 }}
               >
                 {containerState.recentPlacement.isCorrect ? '✅' : '⚠️'}
-                {containerState.recentPlacement.county.name} •
-                +{containerState.recentPlacement.scoreAwarded} points •
+                {containerState.recentPlacement.county.name} • +
+                {containerState.recentPlacement.scoreAwarded} points •
                 {Math.round(containerState.recentPlacement.accuracy * 100)}% accuracy
               </motion.div>
             )}
@@ -595,13 +650,13 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                   fontWeight: '600',
                   maxWidth: '280px',
                   zIndex: 1000,
-                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)'
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
                 }}
                 onAnimationComplete={() => {
                   setTimeout(() => {
-                    setContainerState(prev => ({
+                    setContainerState((prev) => ({
                       ...prev,
-                      newAchievements: prev.newAchievements.filter(a => a.id !== achievement.id)
+                      newAchievements: prev.newAchievements.filter((a) => a.id !== achievement.id),
                     }));
                   }, 3000);
                 }}
@@ -609,12 +664,8 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '20px' }}>{achievement.icon}</span>
                   <div>
-                    <div style={{ fontSize: '14px', fontWeight: '700' }}>
-                      Achievement Unlocked!
-                    </div>
-                    <div style={{ fontSize: '12px', opacity: 0.9 }}>
-                      {achievement.name}
-                    </div>
+                    <div style={{ fontSize: '14px', fontWeight: '700' }}>Achievement Unlocked!</div>
+                    <div style={{ fontSize: '12px', opacity: 0.9 }}>{achievement.name}</div>
                   </div>
                 </div>
               </motion.div>

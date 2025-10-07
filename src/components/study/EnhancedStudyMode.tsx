@@ -364,6 +364,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewMode, quizState, quizQuestion, showAnswer, currentQuestionIndex, questionHistory]);
 
   // Get region colors from centralized configuration

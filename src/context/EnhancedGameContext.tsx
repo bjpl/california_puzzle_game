@@ -124,6 +124,7 @@ export const EnhancedGameProvider: React.FC<EnhancedGameProviderProps> = ({ chil
     };
 
     initialize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Profile management functions
@@ -311,6 +312,7 @@ export const EnhancedGameProvider: React.FC<EnhancedGameProviderProps> = ({ chil
 };
 
 // Hook to use the enhanced game context
+// eslint-disable-next-line react-refresh/only-export-components
 export const useEnhancedGame = (): EnhancedGameContextValue => {
   const context = useContext(EnhancedGameContext);
   if (!context) {
@@ -320,6 +322,7 @@ export const useEnhancedGame = (): EnhancedGameContextValue => {
 };
 
 // Higher-order component for components that need the enhanced context
+// eslint-disable-next-line react-refresh/only-export-components
 export const withEnhancedGame = <P extends object>(
   Component: React.ComponentType<P>
 ): React.ComponentType<P> => {

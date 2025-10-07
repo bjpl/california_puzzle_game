@@ -27,7 +27,7 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
   mode,
   gameState,
   onDifficultyAdjust,
-  children
+  children,
 }) => {
   // Base difficulty settings from the mode
   const baseDifficultySettings = useMemo(() => {
@@ -48,23 +48,29 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
     let adaptationLevel = 0;
 
     // Time-based adjustments
-    if (averageTimePerCounty > 30000) { // Taking too long (30+ seconds per county)
+    if (averageTimePerCounty > 30000) {
+      // Taking too long (30+ seconds per county)
       adaptationLevel -= 1;
-    } else if (averageTimePerCounty < 5000) { // Very fast (under 5 seconds)
+    } else if (averageTimePerCounty < 5000) {
+      // Very fast (under 5 seconds)
       adaptationLevel += 1;
     }
 
     // Error-based adjustments
-    if (errorRate > 0.3) { // High error rate (30%+)
+    if (errorRate > 0.3) {
+      // High error rate (30%+)
       adaptationLevel -= 1;
-    } else if (errorRate < 0.05) { // Very low error rate (under 5%)
+    } else if (errorRate < 0.05) {
+      // Very low error rate (under 5%)
       adaptationLevel += 1;
     }
 
     // Streak-based adjustments
-    if (streak > 5) { // Good streak
+    if (streak > 5) {
+      // Good streak
       adaptationLevel += 0.5;
-    } else if (mistakes > 3 && streak === 0) { // Struggling
+    } else if (mistakes > 3 && streak === 0) {
+      // Struggling
       adaptationLevel -= 1;
     }
 
@@ -85,24 +91,23 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
     }
 
     // Adjust hint availability
-    const shouldShowHints = mode.showHints && (
-      baseDifficultySettings.enableHints || adaptationLevel < -0.5
-    );
+    const shouldShowHints =
+      mode.showHints && (baseDifficultySettings.enableHints || adaptationLevel < -0.5);
 
     // Adjust time multiplier for scoring
-    const timeMultiplier = baseDifficultySettings.timeMultiplier + (adaptationLevel * 0.1);
+    const timeMultiplier = baseDifficultySettings.timeMultiplier + adaptationLevel * 0.1;
 
     return {
       currentSettings: {
         ...adaptedSettings,
         dropZoneTolerance: Math.max(20, adaptedSettings.dropZoneTolerance + toleranceAdjustment),
         enableHints: shouldShowHints,
-        timeMultiplier: Math.max(0.5, Math.min(2.0, timeMultiplier))
+        timeMultiplier: Math.max(0.5, Math.min(2.0, timeMultiplier)),
       },
       adaptationLevel,
       shouldShowHints,
       dropZoneTolerance: Math.max(20, adaptedSettings.dropZoneTolerance + toleranceAdjustment),
-      timeMultiplier: Math.max(0.5, Math.min(2.0, timeMultiplier))
+      timeMultiplier: Math.max(0.5, Math.min(2.0, timeMultiplier)),
     };
   }, [gameState, baseDifficultySettings, mode.showHints]);
 
@@ -123,28 +128,24 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
     const intensity = Math.abs(adaptationLevel);
 
     return (
-      <div className={`
+      <div
+        className={`
         fixed top-4 right-4 px-3 py-2 rounded-lg text-sm font-medium z-20
         transition-all duration-500 ${
           isEasier
             ? 'bg-green-100 text-green-800 border border-green-200'
             : 'bg-orange-100 text-orange-800 border border-orange-200'
         }
-      `}>
+      `}
+      >
         <div className="flex items-center gap-2">
-          <span className="text-lg">
-            {isEasier ? '😌' : '💪'}
-          </span>
-          <span>
-            {isEasier ? 'Difficulty Reduced' : 'Challenge Increased'}
-          </span>
+          <span className="text-lg">{isEasier ? '😌' : '💪'}</span>
+          <span>{isEasier ? 'Difficulty Reduced' : 'Challenge Increased'}</span>
           <div className="flex gap-1">
             {Array.from({ length: Math.ceil(intensity) }, (_, i) => (
               <div
                 key={i}
-                className={`w-2 h-2 rounded-full ${
-                  isEasier ? 'bg-green-400' : 'bg-orange-400'
-                }`}
+                className={`w-2 h-2 rounded-full ${isEasier ? 'bg-green-400' : 'bg-orange-400'}`}
               />
             ))}
           </div>
@@ -168,23 +169,17 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
 
         {/* County name labels */}
         {currentSettings.showCountyNames && (
-          <div className="county-names">
-            {/* This would render county name labels */}
-          </div>
+          <div className="county-names">{/* This would render county name labels */}</div>
         )}
 
         {/* Initial letters for medium difficulty */}
         {currentSettings.showInitials && !currentSettings.showCountyNames && (
-          <div className="county-initials">
-            {/* This would render county initial letters */}
-          </div>
+          <div className="county-initials">{/* This would render county initial letters */}</div>
         )}
 
         {/* Visual hint indicators */}
         {currentSettings.enableHints && (
-          <div className="hint-indicators">
-            {/* This would render hint visual indicators */}
-          </div>
+          <div className="hint-indicators">{/* This would render hint visual indicators */}</div>
         )}
 
         {/* Drop zone visual feedback */}
@@ -213,9 +208,7 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
       {renderDifficultyFeatures()}
 
       {/* Main game content */}
-      <div className="relative z-10">
-        {children}
-      </div>
+      <div className="relative z-10">{children}</div>
 
       {/* Performance analytics overlay (development only) */}
       {process.env.NODE_ENV === 'development' && (
@@ -224,8 +217,22 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
           <div>Drop Tolerance: {adaptiveDifficulty.dropZoneTolerance}px</div>
           <div>Hints Enabled: {adaptiveDifficulty.shouldShowHints ? 'Yes' : 'No'}</div>
           <div>Time Multiplier: {adaptiveDifficulty.timeMultiplier.toFixed(2)}x</div>
-          <div>Error Rate: {(gameState.placedCounties > 0 ? gameState.mistakes / (gameState.placedCounties + gameState.mistakes) * 100 : 0).toFixed(1)}%</div>
-          <div>Avg Time/County: {(gameState.placedCounties > 0 ? gameState.timeElapsed / gameState.placedCounties / 1000 : 0).toFixed(1)}s</div>
+          <div>
+            Error Rate:{' '}
+            {(gameState.placedCounties > 0
+              ? (gameState.mistakes / (gameState.placedCounties + gameState.mistakes)) * 100
+              : 0
+            ).toFixed(1)}
+            %
+          </div>
+          <div>
+            Avg Time/County:{' '}
+            {(gameState.placedCounties > 0
+              ? gameState.timeElapsed / gameState.placedCounties / 1000
+              : 0
+            ).toFixed(1)}
+            s
+          </div>
         </div>
       )}
     </div>
@@ -233,6 +240,7 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
 };
 
 // Hook for using difficulty settings in other components
+// eslint-disable-next-line react-refresh/only-export-components
 export const useDifficultySettings = (mode: GameModeConfiguration) => {
   return useMemo(() => {
     const baseSettings = getDifficultySettings(mode.difficulty);
@@ -244,23 +252,23 @@ export const useDifficultySettings = (mode: GameModeConfiguration) => {
       showCountyNames: mode.showCountyNames && baseSettings.showCountyNames,
       enableHints: mode.showHints && baseSettings.enableHints,
       rotationEnabled: mode.allowRotation && baseSettings.rotationEnabled,
-      scoreMultiplier: baseSettings.scoreMultiplier * mode.scoreMultiplier
+      scoreMultiplier: baseSettings.scoreMultiplier * mode.scoreMultiplier,
     };
   }, [mode]);
 };
 
 // Component for displaying difficulty information
-export const DifficultyInfo: React.FC<{ difficulty: DifficultyLevel; mode: GameModeConfiguration }> = ({
-  difficulty,
-  mode
-}) => {
+export const DifficultyInfo: React.FC<{
+  difficulty: DifficultyLevel;
+  mode: GameModeConfiguration;
+}> = ({ difficulty, mode }) => {
   const settings = useDifficultySettings(mode);
 
   const difficultyDescriptions = {
     [DifficultyLevel.EASY]: 'Large drop zones, county names visible, hints available',
     [DifficultyLevel.MEDIUM]: 'Medium drop zones, initials only, hints available',
     [DifficultyLevel.HARD]: 'Small drop zones, no labels, no hints, pieces may rotate',
-    [DifficultyLevel.EXPERT]: 'Precise placement required, rotated map, no assistance'
+    [DifficultyLevel.EXPERT]: 'Precise placement required, rotated map, no assistance',
   };
 
   return (
@@ -275,9 +283,7 @@ export const DifficultyInfo: React.FC<{ difficulty: DifficultyLevel; mode: GameM
         <h4 className="font-bold text-lg capitalize">{difficulty} Mode</h4>
       </div>
 
-      <p className="text-gray-600 text-sm mb-3">
-        {difficultyDescriptions[difficulty]}
-      </p>
+      <p className="text-gray-600 text-sm mb-3">{difficultyDescriptions[difficulty]}</p>
 
       <div className="grid grid-cols-2 gap-3 text-xs">
         <div className="flex justify-between">

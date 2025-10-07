@@ -104,7 +104,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
     height = 768,
     margin = { top: 20, right: 20, bottom: 20, left: 20 },
     initialProjection = 'albers',
-    preloadLevels = ['ultra-low', 'low']
+    preloadLevels = ['ultra-low', 'low'],
   } = options;
 
   // State
@@ -115,7 +115,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
     zoomLevel: 1,
     transform: null,
     counties: [],
-    geoData: null
+    geoData: null,
   });
 
   // Refs for utilities
@@ -127,7 +127,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
   useEffect(() => {
     const initializeMap = async () => {
       try {
-        setMapState(prev => ({ ...prev, isLoading: true, error: null }));
+        setMapState((prev) => ({ ...prev, isLoading: true, error: null }));
 
         // Initialize cache
         cacheRef.current = new GeoDataCache();
@@ -136,7 +136,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
         mapUtilsRef.current = new CaliforniaMapUtilities({
           width,
           height,
-          margin
+          margin,
         });
 
         // Set initial projection
@@ -146,23 +146,23 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
         await loadDetailLevel('low');
 
         // Preload other levels in background
-        preloadLevels.forEach(level => {
+        preloadLevels.forEach((level) => {
           if (level !== 'low') {
-            loadDetailLevel(level).catch(err => logger.warn(err));
+            loadDetailLevel(level).catch((err) => logger.warn(err));
           }
         });
-
       } catch (error) {
-        setMapState(prev => ({
+        setMapState((prev) => ({
           ...prev,
-          error: error instanceof Error ? error.message : 'Failed to initialize map'
+          error: error instanceof Error ? error.message : 'Failed to initialize map',
         }));
       } finally {
-        setMapState(prev => ({ ...prev, isLoading: false }));
+        setMapState((prev) => ({ ...prev, isLoading: false }));
       }
     };
 
     initializeMap();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, height, initialProjection]);
 
   // Load detail level
@@ -170,7 +170,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
     if (!cacheRef.current || !mapUtilsRef.current) return;
 
     try {
-      setMapState(prev => ({ ...prev, isLoading: true, error: null }));
+      setMapState((prev) => ({ ...prev, isLoading: true, error: null }));
 
       const data = await cacheRef.current.loadOptimizedData(level);
 
@@ -183,19 +183,18 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
       // Initialize collision detector
       collisionDetectorRef.current = mapUtilsRef.current.createCollisionDetector();
 
-      setMapState(prev => ({
+      setMapState((prev) => ({
         ...prev,
         currentDetailLevel: level,
         counties: data.lookup.counties,
         geoData: data.geoData.features,
-        isLoading: false
+        isLoading: false,
       }));
-
     } catch (error) {
-      setMapState(prev => ({
+      setMapState((prev) => ({
         ...prev,
         error: error instanceof Error ? error.message : 'Failed to load map data',
-        isLoading: false
+        isLoading: false,
       }));
     }
   }, []);
@@ -237,39 +236,51 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
   }, []);
 
   // Get county at point
-  const getCountyAtPoint = useCallback((point: [number, number]): CountyData | null => {
-    if (!mapUtilsRef.current) return null;
+  const getCountyAtPoint = useCallback(
+    (point: [number, number]): CountyData | null => {
+      if (!mapUtilsRef.current) return null;
 
-    const result = mapUtilsRef.current.getCountyAtPoint(point, mapState.transform);
-    if (!result) return null;
+      const result = mapUtilsRef.current.getCountyAtPoint(point, mapState.transform);
+      if (!result) return null;
 
-    // Convert to our CountyData format
-    const county = mapState.counties.find(c => c.id === result.id);
-    return county || null;
-  }, [mapState.counties, mapState.transform]);
+      // Convert to our CountyData format
+      const county = mapState.counties.find((c) => c.id === result.id);
+      return county || null;
+    },
+    [mapState.counties, mapState.transform]
+  );
 
   // Screen to geo coordinates
-  const screenToGeo = useCallback((screenPoint: [number, number]): [number, number] | null => {
-    if (!mapUtilsRef.current) return null;
-    return mapUtilsRef.current.screenToGeo(screenPoint, mapState.transform);
-  }, [mapState.transform]);
+  const screenToGeo = useCallback(
+    (screenPoint: [number, number]): [number, number] | null => {
+      if (!mapUtilsRef.current) return null;
+      return mapUtilsRef.current.screenToGeo(screenPoint, mapState.transform);
+    },
+    [mapState.transform]
+  );
 
   // Geo to screen coordinates
-  const geoToScreen = useCallback((geoPoint: [number, number]): [number, number] | null => {
-    if (!mapUtilsRef.current) return null;
-    return mapUtilsRef.current.geoToScreen(geoPoint, mapState.transform);
-  }, [mapState.transform]);
+  const geoToScreen = useCallback(
+    (geoPoint: [number, number]): [number, number] | null => {
+      if (!mapUtilsRef.current) return null;
+      return mapUtilsRef.current.geoToScreen(geoPoint, mapState.transform);
+    },
+    [mapState.transform]
+  );
 
   // Get optimal detail level for zoom
-  const getOptimalDetailLevel = useCallback((zoomLevel: number): 'ultra-low' | 'low' | 'medium' | 'high' => {
-    if (!mapUtilsRef.current) {
-      if (zoomLevel <= 5) return 'ultra-low';
-      if (zoomLevel <= 7) return 'low';
-      if (zoomLevel <= 9) return 'medium';
-      return 'high';
-    }
-    return mapUtilsRef.current.getOptimalDetailLevel(zoomLevel);
-  }, []);
+  const getOptimalDetailLevel = useCallback(
+    (zoomLevel: number): 'ultra-low' | 'low' | 'medium' | 'high' => {
+      if (!mapUtilsRef.current) {
+        if (zoomLevel <= 5) return 'ultra-low';
+        if (zoomLevel <= 7) return 'low';
+        if (zoomLevel <= 9) return 'medium';
+        return 'high';
+      }
+      return mapUtilsRef.current.getOptimalDetailLevel(zoomLevel);
+    },
+    []
+  );
 
   // Clear cache
   const clearCache = useCallback(() => {
@@ -290,7 +301,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
     screenToGeo,
     geoToScreen,
     getOptimalDetailLevel,
-    clearCache
+    clearCache,
   };
 }
 

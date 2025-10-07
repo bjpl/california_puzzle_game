@@ -11,19 +11,36 @@ export default function GameComplete() {
   // Play win sound when component mounts
   useEffect(() => {
     sound.playSound('win');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getGrade = () => {
     if (mistakes === GAME_GRADES.PERFECT.mistakeThreshold) {
-      return { grade: GAME_GRADES.PERFECT.label, emoji: GAME_GRADES.PERFECT.emoji, color: GAME_GRADES.PERFECT.color };
+      return {
+        grade: GAME_GRADES.PERFECT.label,
+        emoji: GAME_GRADES.PERFECT.emoji,
+        color: GAME_GRADES.PERFECT.color,
+      };
     }
     if (mistakes <= GAME_GRADES.EXCELLENT.mistakeThreshold) {
-      return { grade: GAME_GRADES.EXCELLENT.label, emoji: GAME_GRADES.EXCELLENT.emoji, color: GAME_GRADES.EXCELLENT.color };
+      return {
+        grade: GAME_GRADES.EXCELLENT.label,
+        emoji: GAME_GRADES.EXCELLENT.emoji,
+        color: GAME_GRADES.EXCELLENT.color,
+      };
     }
     if (mistakes <= GAME_GRADES.GOOD.mistakeThreshold) {
-      return { grade: GAME_GRADES.GOOD.label, emoji: GAME_GRADES.GOOD.emoji, color: GAME_GRADES.GOOD.color };
+      return {
+        grade: GAME_GRADES.GOOD.label,
+        emoji: GAME_GRADES.GOOD.emoji,
+        color: GAME_GRADES.GOOD.color,
+      };
     }
-    return { grade: GAME_GRADES.COMPLETE.label, emoji: GAME_GRADES.COMPLETE.emoji, color: GAME_GRADES.COMPLETE.color };
+    return {
+      grade: GAME_GRADES.COMPLETE.label,
+      emoji: GAME_GRADES.COMPLETE.emoji,
+      color: GAME_GRADES.COMPLETE.color,
+    };
   };
 
   const { grade, emoji, color } = getGrade();
@@ -45,23 +62,22 @@ export default function GameComplete() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Text color="secondary">Final Score</Text>
-                  <Heading level={2} size="section" className="text-green-600">{score}</Heading>
+                  <Heading level={2} size="section" className="text-green-600">
+                    {score}
+                  </Heading>
                 </div>
                 <div>
                   <Text color="secondary">Mistakes</Text>
-                  <Heading level={2} size="section" className="text-red-600">{mistakes}</Heading>
+                  <Heading level={2} size="section" className="text-red-600">
+                    {mistakes}
+                  </Heading>
                 </div>
               </div>
             </div>
           </Card>
 
           <div className="space-y-3">
-            <Button
-              variant="primary"
-              size="large"
-              fullWidth
-              onClick={resetGame}
-            >
+            <Button variant="primary" size="large" fullWidth onClick={resetGame}>
               Play Again
             </Button>
             <Button
@@ -75,11 +91,19 @@ export default function GameComplete() {
           </div>
 
           <div className="mt-6">
-            <Text size="sm" color="secondary" align="center">Share your achievement!</Text>
+            <Text size="sm" color="secondary" align="center">
+              Share your achievement!
+            </Text>
             <div className="flex justify-center gap-4 mt-2">
-              <span className="text-2xl cursor-pointer hover:scale-110 transition-transform">📧</span>
-              <span className="text-2xl cursor-pointer hover:scale-110 transition-transform">📱</span>
-              <span className="text-2xl cursor-pointer hover:scale-110 transition-transform">💬</span>
+              <span className="text-2xl cursor-pointer hover:scale-110 transition-transform">
+                📧
+              </span>
+              <span className="text-2xl cursor-pointer hover:scale-110 transition-transform">
+                📱
+              </span>
+              <span className="text-2xl cursor-pointer hover:scale-110 transition-transform">
+                💬
+              </span>
             </div>
           </div>
         </div>
