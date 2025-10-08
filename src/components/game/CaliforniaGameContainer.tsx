@@ -172,8 +172,8 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
           handleGameComplete();
         }, 500);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [_isGameActive, isPaused, placeCounty, checkAchievements, remainingCounties.length]
   );
 
@@ -219,8 +219,8 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
         currentRegion: region,
         gameStarted: false,
       }));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [isGameActive, resetGame]
   );
 
@@ -241,8 +241,8 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
       }));
 
       updateSettings({ difficulty });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [isGameActive, resetGame, updateSettings]
   );
 
