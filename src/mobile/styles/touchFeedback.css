@@ -1,0 +1,346 @@
+/**
+ * Touch Feedback Styles
+ *
+ * Hardware-accelerated animations for touch interactions
+ * - 60fps performance targets
+ * - Respects prefers-reduced-motion
+ * - GPU-accelerated transforms
+ * - Optimized for mobile devices
+ */
+
+/* ==============================================
+   TouchFeedback Component
+   ============================================== */
+
+.touch-feedback-container {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-feedback-ripple {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  /* Hardware acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* ==============================================
+   DragPreview Component
+   ============================================== */
+
+.drag-preview-overlay {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  /* Hardware acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.drag-preview-glow {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  /* Hardware acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+.drag-preview-main {
+  position: relative;
+  /* Hardware acceleration */
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.drag-preview-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.drag-preview-shape {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Hardware acceleration */
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.county-shape-svg {
+  width: 100%;
+  height: 100%;
+  color: rgb(99, 102, 241); /* Indigo-500 */
+}
+
+.drag-preview-label {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.drag-preview-main.near-snap {
+  /* Additional styling when near snap target */
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+}
+
+/* ==============================================
+   SnapGuides Component
+   ============================================== */
+
+.snap-guides-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  /* Hardware acceleration */
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.snap-guide {
+  position: absolute;
+  /* Hardware acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.snap-guide-glow {
+  position: absolute;
+  /* Hardware acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+.snap-guide-border {
+  position: absolute;
+  inset: 0;
+  transition: border-color 200ms ease;
+}
+
+.snap-guide-distance {
+  position: absolute;
+  /* Hardware acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+.snap-guide-label {
+  position: absolute;
+  /* Hardware acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* ==============================================
+   Animations
+   ============================================== */
+
+/* Pulsing animation for active snap guides */
+@keyframes snap-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1) translateZ(0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05) translateZ(0);
+  }
+}
+
+.snap-guide.active .snap-guide-glow {
+  animation: snap-pulse 1.5s ease-in-out infinite;
+}
+
+/* Ripple expand animation */
+@keyframes ripple-expand {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  to {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+  }
+}
+
+/* Shimmer effect for drag preview */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.drag-preview-shape::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* ==============================================
+   Accessibility - Reduced Motion
+   ============================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .touch-feedback-ripple,
+  .drag-preview-overlay,
+  .drag-preview-glow,
+  .snap-guide,
+  .snap-guide-glow,
+  .snap-guide-distance,
+  .snap-guide-label {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .drag-preview-shape::after {
+    animation: none !important;
+  }
+
+  /* Instant transitions for reduced motion */
+  .snap-guide-border {
+    transition: none !important;
+  }
+}
+
+/* ==============================================
+   Performance Optimizations
+   ============================================== */
+
+/* Prevent layout thrashing during animations */
+.touch-feedback-container,
+.drag-preview-overlay,
+.snap-guides-overlay {
+  contain: layout style paint;
+}
+
+/* Force GPU acceleration for critical elements */
+.touch-feedback-ripple,
+.drag-preview-main,
+.snap-guide {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Optimize compositing */
+.drag-preview-overlay,
+.snap-guides-overlay {
+  isolation: isolate;
+}
+
+/* ==============================================
+   Mobile-Specific Adjustments
+   ============================================== */
+
+@media (max-width: 768px) {
+  /* Larger touch targets on mobile */
+  .snap-guide-border {
+    border-width: 3px;
+  }
+
+  /* Larger distance indicators for readability */
+  .snap-guide-distance {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  /* Larger labels */
+  .snap-guide-label {
+    font-size: 16px;
+    padding: 6px 14px;
+  }
+
+  .drag-preview-label {
+    font-size: 16px;
+    padding: 8px 14px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 375px) {
+  .drag-preview-shape {
+    width: 70px;
+    height: 70px;
+  }
+
+  .county-shape-svg text {
+    font-size: 12px;
+  }
+}
+
+/* ==============================================
+   Dark Mode Support
+   ============================================== */
+
+@media (prefers-color-scheme: dark) {
+  .drag-preview-shape {
+    background: rgba(30, 30, 40, 0.95);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.4),
+      0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .snap-guide-border {
+    filter: brightness(1.2);
+  }
+}
+
+/* ==============================================
+   High Contrast Mode Support
+   ============================================== */
+
+@media (prefers-contrast: high) {
+  .snap-guide-border {
+    border-width: 3px;
+    border-style: solid;
+  }
+
+  .drag-preview-shape {
+    border: 2px solid currentColor;
+  }
+
+  .snap-guide-distance,
+  .snap-guide-label,
+  .drag-preview-label {
+    border: 1px solid currentColor;
+  }
+}
