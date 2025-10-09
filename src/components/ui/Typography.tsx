@@ -55,7 +55,7 @@ export const Heading: React.FC<HeadingProps> = ({
   truncate = false,
   clamp,
   className = '',
-  children
+  children,
 }) => {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
 
@@ -67,14 +67,12 @@ export const Heading: React.FC<HeadingProps> = ({
     `ca-text--weight-${weight}`,
     truncate && 'ca-text--truncate',
     clamp && `ca-text--clamp-${clamp}`,
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
-  return React.createElement(
-    Tag,
-    { className: headingClasses },
-    children
-  );
+  return React.createElement(Tag, { className: headingClasses }, children);
 };
 
 // Text Component
@@ -110,7 +108,7 @@ export const Text: React.FC<TextProps> = ({
   truncate = false,
   clamp,
   className = '',
-  children
+  children,
 }) => {
   const textClasses = [
     'ca-text',
@@ -121,16 +119,14 @@ export const Text: React.FC<TextProps> = ({
     `ca-text--leading-${leading}`,
     truncate && 'ca-text--truncate',
     clamp && `ca-text--clamp-${clamp}`,
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const Tag = as;
 
-  return (
-    <Tag className={textClasses}>
-      {children}
-    </Tag>
-  );
+  return <Tag className={textClasses}>{children}</Tag>;
 };
 
 // Code Component
@@ -165,13 +161,15 @@ export const Code: React.FC<CodeProps> = ({
   children,
   inline = true,
   language,
-  className = ''
+  className = '',
 }) => {
   const codeClasses = [
     inline ? 'ca-code--inline' : 'ca-code--block',
     language && `language-${language}`,
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   if (inline) {
     return <code className={codeClasses}>{children}</code>;
@@ -206,14 +204,40 @@ export interface LabelProps extends Omit<TextProps, 'as'> {
  * ```
  */
 export const Label: React.FC<LabelProps> = ({
+  htmlFor,
   required,
   children,
-  ...props
+  size = 'sm',
+  weight = 'medium',
+  color = 'primary',
+  align = 'left',
+  leading = 'normal',
+  truncate = false,
+  clamp,
+  className = '',
 }) => {
+  const labelClasses = [
+    'ca-text',
+    `ca-text--${size}`,
+    `ca-text--${color}`,
+    `ca-text--${align}`,
+    `ca-text--weight-${weight}`,
+    `ca-text--leading-${leading}`,
+    truncate && 'ca-text--truncate',
+    clamp && `ca-text--clamp-${clamp}`,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <Text as="label" size="sm" weight="medium" {...props}>
+    <label htmlFor={htmlFor} className={labelClasses}>
       {children}
-      {required && <span className="ca-label__required" aria-label="required">*</span>}
-    </Text>
+      {required && (
+        <span className="ca-label__required" aria-label="required">
+          *
+        </span>
+      )}
+    </label>
   );
 };

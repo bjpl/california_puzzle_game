@@ -15,7 +15,7 @@ describe('Card Component', () => {
     it('renders all variants correctly', () => {
       const variants = ['default', 'elevated', 'outlined', 'interactive'] as const;
 
-      variants.forEach(variant => {
+      variants.forEach((variant) => {
         const { unmount } = render(<Card variant={variant}>{variant}</Card>);
         const card = screen.getByText(variant).closest('.ca-card');
         expect(card).toHaveClass(`ca-card--${variant}`);
@@ -30,7 +30,11 @@ describe('Card Component', () => {
     });
 
     it('renders with subtitle', () => {
-      render(<Card title="Title" subtitle="Subtitle">Content</Card>);
+      render(
+        <Card title="Title" subtitle="Subtitle">
+          Content
+        </Card>
+      );
 
       expect(screen.getByText('Subtitle')).toBeInTheDocument();
     });
@@ -72,7 +76,11 @@ describe('Card Component', () => {
     });
 
     it('renders default header with title and subtitle', () => {
-      render(<Card title="Title" subtitle="Subtitle">Content</Card>);
+      render(
+        <Card title="Title" subtitle="Subtitle">
+          Content
+        </Card>
+      );
 
       const header = screen.getByRole('heading', { name: /title/i }).closest('.ca-card__header');
       expect(header).toBeInTheDocument();
@@ -80,7 +88,11 @@ describe('Card Component', () => {
     });
 
     it('renders region badge in header when region is provided', () => {
-      render(<Card title="Title" region="bay-area">Content</Card>);
+      render(
+        <Card title="Title" region="bay-area">
+          Content
+        </Card>
+      );
 
       expect(screen.getByText('Bay Area')).toBeInTheDocument();
     });
@@ -97,7 +109,7 @@ describe('Card Component', () => {
     it('renders metadata items', () => {
       const metadata = [
         { label: 'Population', value: '873,965' },
-        { label: 'Founded', value: 1850 }
+        { label: 'Founded', value: 1850 },
       ];
 
       render(<Card metadata={metadata}>Content</Card>);
@@ -191,7 +203,8 @@ describe('Card Component', () => {
       render(<CountyCard name="San Francisco" region="bay-area" seat="San Francisco" />);
 
       expect(screen.getByText('County Seat')).toBeInTheDocument();
-      expect(screen.getByText('San Francisco')).toBeInTheDocument();
+      // Multiple "San Francisco" elements exist (title + seat), so use getAllByText
+      expect(screen.getAllByText('San Francisco').length).toBeGreaterThanOrEqual(2);
     });
 
     it('renders with selected variant when selected', () => {
