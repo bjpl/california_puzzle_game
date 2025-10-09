@@ -53,105 +53,141 @@
 
 /* Color Variants */
 .ca-badge--default {
-  background-color: #F3F4F6;
-  color: #6B7280;
-  border-color: #E5E7EB;
+  background-color: var(--color-bg-tertiary, #f3f4f6);
+  color: var(--color-text-secondary, #6b7280);
+  border-color: var(--color-border-medium, #e5e7eb);
+}
+
+.dark .ca-badge--default {
+  background-color: var(--color-bg-tertiary, #2a2a2a);
+  color: var(--color-text-secondary, #9ca3af);
+  border-color: var(--color-border-medium, #374151);
 }
 
 .ca-badge--primary {
-  background-color: #DBEAFE;
-  color: #1E40AF;
-  border-color: #93C5FD;
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+.dark .ca-badge--primary {
+  background-color: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+  border-color: rgba(96, 165, 250, 0.3);
 }
 
 .ca-badge--success {
-  background-color: #D1FAE5;
-  color: #065F46;
-  border-color: #6EE7B7;
+  background-color: #d1fae5;
+  color: #065f46;
+  border-color: #6ee7b7;
+}
+
+.dark .ca-badge--success {
+  background-color: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.3);
 }
 
 .ca-badge--warning {
-  background-color: #FEF3C7;
-  color: #92400E;
-  border-color: #FCD34D;
+  background-color: #fef3c7;
+  color: #92400e;
+  border-color: #fcd34d;
+}
+
+.dark .ca-badge--warning {
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.3);
 }
 
 .ca-badge--danger {
-  background-color: #FEE2E2;
-  color: #991B1B;
-  border-color: #FCA5A5;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
+.dark .ca-badge--danger {
+  background-color: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
 }
 
 .ca-badge--info {
-  background-color: #DBEAFE;
-  color: #1E40AF;
-  border-color: #93C5FD;
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+.dark .ca-badge--info {
+  background-color: rgba(34, 211, 238, 0.15);
+  color: #22d3ee;
+  border-color: rgba(34, 211, 238, 0.3);
 }
 
 /* Region-Specific Colors */
 .ca-badge--region-bay-area {
   background-color: rgba(59, 130, 246, 0.1);
-  color: #2563EB;
+  color: #2563eb;
   border-color: rgba(59, 130, 246, 0.3);
 }
 
 .ca-badge--region-central-valley {
   background-color: rgba(34, 197, 94, 0.1);
-  color: #16A34A;
+  color: #16a34a;
   border-color: rgba(34, 197, 94, 0.3);
 }
 
 .ca-badge--region-gold-country {
   background-color: rgba(245, 158, 11, 0.1);
-  color: #D97706;
+  color: #d97706;
   border-color: rgba(245, 158, 11, 0.3);
 }
 
 .ca-badge--region-los-angeles {
   background-color: rgba(239, 68, 68, 0.1);
-  color: #DC2626;
+  color: #dc2626;
   border-color: rgba(239, 68, 68, 0.3);
 }
 
 .ca-badge--region-north-coast {
   background-color: rgba(20, 184, 166, 0.1);
-  color: #0D9488;
+  color: #0d9488;
   border-color: rgba(20, 184, 166, 0.3);
 }
 
 .ca-badge--region-northern {
   background-color: rgba(139, 92, 246, 0.1);
-  color: #7C3AED;
+  color: #7c3aed;
   border-color: rgba(139, 92, 246, 0.3);
 }
 
 .ca-badge--region-orange-county {
   background-color: rgba(249, 115, 22, 0.1);
-  color: #EA580C;
+  color: #ea580c;
   border-color: rgba(249, 115, 22, 0.3);
 }
 
 .ca-badge--region-sacramento {
   background-color: rgba(132, 204, 22, 0.1);
-  color: #65A30D;
+  color: #65a30d;
   border-color: rgba(132, 204, 22, 0.3);
 }
 
 .ca-badge--region-san-diego {
   background-color: rgba(236, 72, 153, 0.1);
-  color: #DB2777;
+  color: #db2777;
   border-color: rgba(236, 72, 153, 0.3);
 }
 
 .ca-badge--region-sierra {
   background-color: rgba(99, 102, 241, 0.1);
-  color: #4F46E5;
+  color: #4f46e5;
   border-color: rgba(99, 102, 241, 0.3);
 }
 
 .ca-badge--region-southern-california {
   background-color: rgba(244, 63, 94, 0.1);
-  color: #E11D48;
+  color: #e11d48;
   border-color: rgba(244, 63, 94, 0.3);
 }
 
@@ -165,7 +201,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

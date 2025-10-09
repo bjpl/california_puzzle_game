@@ -51,7 +51,7 @@ export default function StudyMode({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4">
           <div className="flex justify-between items-center">
@@ -73,14 +73,14 @@ export default function StudyMode({
         </div>
 
         {/* Region Filter */}
-        <div className="bg-gray-100 p-4 border-b">
+        <div className="bg-gray-100 dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedRegion('all')}
               className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
                 selectedRegion === 'all'
                   ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-200'
+                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               All Regions ({counties.length})
@@ -94,7 +94,7 @@ export default function StudyMode({
                   className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
                     selectedRegion === region
                       ? 'bg-blue-500 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-200'
+                      : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
                   {region} ({count})
@@ -107,9 +107,9 @@ export default function StudyMode({
         {/* Content */}
         <div className="flex h-[60vh]">
           {/* County List */}
-          <div className="w-1/2 overflow-y-auto border-r">
+          <div className="w-1/2 overflow-y-auto border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="p-4">
-              <h3 className="font-semibold text-gray-700 mb-3">
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">
                 {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
               </h3>
               <div className="grid grid-cols-2 gap-2">
@@ -135,10 +135,10 @@ export default function StudyMode({
           </div>
 
           {/* County Details */}
-          <div className="w-1/2 p-6 bg-gray-50">
+          <div className="w-1/2 p-6 bg-gray-50 dark:bg-gray-800">
             {selectedCounty ? (
               <div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
                   {selectedCounty.name} County
                 </h3>
                 <div
@@ -152,22 +152,26 @@ export default function StudyMode({
                 <div className="space-y-4">
                   {selectedCounty.capital && (
                     <div>
-                      <h4 className="font-semibold text-gray-700">County Seat</h4>
-                      <p className="text-gray-600">{selectedCounty.capital}</p>
+                      <h4 className="font-semibold text-gray-700 dark:text-gray-300">
+                        County Seat
+                      </h4>
+                      <p className="text-gray-600 dark:text-gray-400">{selectedCounty.capital}</p>
                     </div>
                   )}
 
                   {selectedCounty.population && (
                     <div>
-                      <h4 className="font-semibold text-gray-700">Population</h4>
-                      <p className="text-gray-600">{selectedCounty.population.toLocaleString()}</p>
+                      <h4 className="font-semibold text-gray-700 dark:text-gray-300">Population</h4>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {selectedCounty.population.toLocaleString()}
+                      </p>
                     </div>
                   )}
 
                   {selectedCounty.area && (
                     <div>
-                      <h4 className="font-semibold text-gray-700">Area</h4>
-                      <p className="text-gray-600">
+                      <h4 className="font-semibold text-gray-700 dark:text-gray-300">Area</h4>
+                      <p className="text-gray-600 dark:text-gray-400">
                         {selectedCounty.area.toLocaleString()} square miles
                       </p>
                     </div>
@@ -175,30 +179,34 @@ export default function StudyMode({
 
                   {selectedCounty.founded && (
                     <div>
-                      <h4 className="font-semibold text-gray-700">Founded</h4>
-                      <p className="text-gray-600">{selectedCounty.founded}</p>
+                      <h4 className="font-semibold text-gray-700 dark:text-gray-300">Founded</h4>
+                      <p className="text-gray-600 dark:text-gray-400">{selectedCounty.founded}</p>
                     </div>
                   )}
 
                   {selectedCounty.funFact && (
-                    <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <h4 className="font-semibold text-blue-900 mb-2">💡 Fun Fact</h4>
-                      <p className="text-blue-800">{selectedCounty.funFact}</p>
+                    <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                      <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
+                        💡 Fun Fact
+                      </h4>
+                      <p className="text-blue-800 dark:text-blue-200">{selectedCounty.funFact}</p>
                     </div>
                   )}
                 </div>
 
                 {/* Study Tips */}
-                <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <h4 className="font-semibold text-yellow-900 mb-2">📍 Location Tip</h4>
-                  <p className="text-yellow-800 text-sm">
+                <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-700">
+                  <h4 className="font-semibold text-yellow-900 dark:text-yellow-300 mb-2">
+                    📍 Location Tip
+                  </h4>
+                  <p className="text-yellow-800 dark:text-yellow-200 text-sm">
                     {selectedCounty.name} is located in {selectedCounty.region}. Try to remember its
                     position relative to other counties in the region!
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400">
+              <div className="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500">
                 <span className="text-6xl mb-4">📖</span>
                 <p className="text-lg font-medium">Select a county to study</p>
                 <p className="text-sm mt-2">Click on any county card to see details</p>
@@ -208,9 +216,9 @@ export default function StudyMode({
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-100 p-4 border-t">
+        <div className="bg-gray-100 dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Studying {filteredCounties.length} counties
               {selectedRegion !== 'all' && ` in ${selectedRegion}`}
             </p>

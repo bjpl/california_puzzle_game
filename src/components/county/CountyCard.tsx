@@ -19,11 +19,7 @@ interface CountyCardProps {
   className?: string;
 }
 
-export const CountyCard: React.FC<CountyCardProps> = ({
-  county,
-  onPlay,
-  className
-}) => {
+export const CountyCard: React.FC<CountyCardProps> = ({ county, onPlay, className }) => {
   const difficultyStars = Array.from({ length: 5 }, (_, i) => i < county.difficulty);
 
   const formatPopulation = (pop: number): string => {
@@ -42,10 +38,12 @@ export const CountyCard: React.FC<CountyCardProps> = ({
   return (
     <div
       className={clsx(
-        'group relative overflow-hidden bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 ease-out border border-ca-fog-200',
-        'hover:-translate-y-1 hover:border-ca-gold-300',
-        county.completed && 'ring-2 ring-ca-gold-300 bg-gradient-to-br from-ca-gold-50 to-white',
-        county.featured && 'ring-2 ring-ca-sunset-300 bg-gradient-to-br from-ca-sunset-50 to-white',
+        'group relative overflow-hidden bg-white dark:bg-gray-900 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 ease-out border border-ca-fog-200 dark:border-gray-700',
+        'hover:-translate-y-1 hover:border-ca-gold-300 dark:hover:border-ca-gold-400',
+        county.completed &&
+          'ring-2 ring-ca-gold-300 dark:ring-ca-gold-400 bg-gradient-to-br from-ca-gold-50 to-white dark:from-ca-gold-900/20 dark:to-gray-900',
+        county.featured &&
+          'ring-2 ring-ca-sunset-300 dark:ring-ca-sunset-400 bg-gradient-to-br from-ca-sunset-50 to-white dark:from-ca-sunset-900/20 dark:to-gray-900',
         className
       )}
     >
@@ -76,7 +74,7 @@ export const CountyCard: React.FC<CountyCardProps> = ({
 
         {/* Floating difficulty indicator */}
         <div className="absolute bottom-3 left-3">
-          <div className="flex items-center gap-1 px-2 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-xs font-medium text-ca-charcoal-700">
+          <div className="flex items-center gap-1 px-2 py-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-lg text-xs font-medium text-ca-charcoal-700 dark:text-gray-200">
             <span>Difficulty:</span>
             <div className="flex gap-0.5">
               {difficultyStars.map((filled, index) => (
@@ -96,23 +94,23 @@ export const CountyCard: React.FC<CountyCardProps> = ({
       {/* Card Content */}
       <div className="p-6">
         {/* County Name */}
-        <h3 className="text-xl font-bold text-ca-charcoal-700 mb-2 group-hover:text-ca-sunset-600 transition-colors duration-200">
+        <h3 className="text-xl font-bold text-ca-charcoal-700 dark:text-gray-200 mb-2 group-hover:text-ca-sunset-600 dark:group-hover:text-ca-sunset-400 transition-colors duration-200">
           {county.name}
         </h3>
 
         {/* Description */}
-        <p className="text-ca-slate-600 text-sm leading-relaxed mb-4 line-clamp-2">
+        <p className="text-ca-slate-600 dark:text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2">
           {county.description}
         </p>
 
         {/* County Stats */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-1.5 text-ca-gray-600">
+          <div className="flex items-center gap-1.5 text-ca-gray-600 dark:text-gray-400">
             <MapPin className="w-4 h-4" />
             <span className="text-sm font-medium">{formatArea(county.area)}</span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-ca-gray-600">
+          <div className="flex items-center gap-1.5 text-ca-gray-600 dark:text-gray-400">
             <Users className="w-4 h-4" />
             <span className="text-sm font-medium">{formatPopulation(county.population)}</span>
           </div>

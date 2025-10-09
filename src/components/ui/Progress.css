@@ -19,10 +19,14 @@
 
 /* Progress Track */
 .ca-progress__track {
-  background-color: #E5E7EB;
+  background-color: var(--color-border-medium, #e5e7eb);
   border-radius: 9999px;
   overflow: hidden;
   position: relative;
+}
+
+.dark .ca-progress__track {
+  background-color: var(--color-border-medium, #374151);
 }
 
 /* Progress Bar */
@@ -38,28 +42,43 @@
 
 /* Variant Colors */
 .ca-progress__bar--default {
-  background-color: #2563EB;
+  background-color: var(--color-primary, #2563eb);
+}
+
+.dark .ca-progress__bar--default {
+  background-color: var(--color-primary, #60a5fa);
 }
 
 .ca-progress__bar--success {
-  background-color: #10B981;
+  background-color: var(--color-success, #10b981);
+}
+
+.dark .ca-progress__bar--success {
+  background-color: var(--color-success, #34d399);
 }
 
 .ca-progress__bar--warning {
-  background-color: #F59E0B;
+  background-color: var(--color-warning, #f59e0b);
+}
+
+.dark .ca-progress__bar--warning {
+  background-color: var(--color-warning, #fbbf24);
 }
 
 .ca-progress__bar--danger {
-  background-color: #EF4444;
+  background-color: var(--color-error, #ef4444);
+}
+
+.dark .ca-progress__bar--danger {
+  background-color: var(--color-error, #f87171);
 }
 
 .ca-progress__bar--gradient {
-  background: linear-gradient(
-    90deg,
-    #3B82F6 0%,
-    #2563EB 50%,
-    #1D4ED8 100%
-  );
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+}
+
+.dark .ca-progress__bar--gradient {
+  background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
 }
 
 /* Animated State */
@@ -114,7 +133,7 @@
 
 .ca-progress__label {
   font-size: 0.875rem;
-  color: #4B5563;
+  color: var(--color-text-secondary, #4b5563);
   font-weight: 500;
 }
 
@@ -126,7 +145,7 @@
 
 .ca-progress__percentage {
   font-size: 0.875rem;
-  color: #6B7280;
+  color: var(--color-text-secondary, #6b7280);
   font-weight: 600;
 }
 
@@ -154,20 +173,30 @@
   width: 0.75rem;
   height: 0.75rem;
   border-radius: 9999px;
-  background-color: #D1D5DB;
-  border: 2px solid white;
+  background-color: var(--color-border-strong, #d1d5db);
+  border: 2px solid var(--color-bg-primary, white);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.dark .ca-game-progress__milestone-dot {
+  background-color: var(--color-border-strong, #4b5563);
+  border-color: var(--color-bg-primary, #121212);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
 .ca-game-progress__milestone-marker--achieved .ca-game-progress__milestone-dot {
-  background-color: #10B981;
+  background-color: var(--color-success, #10b981);
   transform: scale(1.2);
+}
+
+.dark .ca-game-progress__milestone-marker--achieved .ca-game-progress__milestone-dot {
+  background-color: var(--color-success, #34d399);
 }
 
 .ca-game-progress__milestone-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background: linear-gradient(135deg, #F59E0B, #D97706);
+  background: linear-gradient(135deg, #f59e0b, #d97706);
   color: white;
   font-size: 0.75rem;
   font-weight: 600;

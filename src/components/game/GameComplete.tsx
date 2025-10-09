@@ -46,18 +46,18 @@ export default function GameComplete() {
   const { grade, emoji, color } = getGrade();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-green-50">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800">
       <Card variant="elevated" className="max-w-lg w-full text-center">
         <div className="p-8">
           <div className="text-6xl mb-4">{emoji}</div>
           <Heading level={1} size="title" align="center" className={`mb-4 ${color}`}>
             {grade}
           </Heading>
-          <Text size="xl" align="center" className="text-gray-700 mb-6">
+          <Text size="xl" align="center" className="text-gray-700 dark:text-gray-300 mb-6">
             You've completed the California Counties Puzzle!
           </Text>
 
-          <Card variant="default" className="bg-gray-50 mb-6">
+          <Card variant="default" className="bg-gray-50 dark:bg-gray-800 mb-6">
             <div className="p-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>

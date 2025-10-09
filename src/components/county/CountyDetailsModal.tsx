@@ -17,7 +17,7 @@ export default function CountyDetailsModal({
   county,
   educationContent: _educationContent,
   memoryAid: _memoryAid,
-  onViewEducationalContent
+  onViewEducationalContent,
 }: CountyDetailsModalProps) {
   // Handle ESC key to close modal
   useEffect(() => {
@@ -68,8 +68,8 @@ export default function CountyDetailsModal({
 
       {/* Modal Content */}
       <div
-        className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden z-[10000]"
-        onClick={e => e.stopPropagation()}
+        className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden z-[10000]"
+        onClick={(e) => e.stopPropagation()}
         style={{
           animation: 'slideUp 0.3s ease-out',
           transform: 'translateY(0)',
@@ -79,29 +79,37 @@ export default function CountyDetailsModal({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 z-10 p-2.5 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md hover:shadow-lg transition-all duration-200"
+          className="absolute top-5 right-5 z-10 p-2.5 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 shadow-md hover:shadow-lg transition-all duration-200"
           aria-label="Close modal"
         >
-          <svg className="w-5 h-5 text-gray-700" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            className="w-5 h-5 text-gray-700 dark:text-gray-200"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2.5"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
 
         {/* Header with County Shape - Clean solid color */}
-        <div className="bg-blue-600 p-8 relative">
+        <div className="bg-blue-600 dark:bg-blue-700 p-8 relative">
           <div className="flex items-center gap-6 relative">
-            <div className="bg-white p-4 rounded-2xl shadow-lg">
-              <CountyShapeDisplay
-                countyId={county.id}
-                size={90}
-                className="flex-shrink-0"
-              />
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg">
+              <CountyShapeDisplay countyId={county.id} size={90} className="flex-shrink-0" />
             </div>
             <div className="flex-1">
-              <h2 className="text-4xl font-bold mb-2 text-white">{county.name}</h2>
-              <p className="text-blue-100 text-xl">{county.region}</p>
+              <h2 className="text-4xl font-bold mb-2 text-white dark:text-gray-100">
+                {county.name}
+              </h2>
+              <p className="text-blue-100 dark:text-blue-200 text-xl">{county.region}</p>
               {county.id && (
-                <p className="text-blue-200 text-sm mt-2 font-mono">ID: {county.id}</p>
+                <p className="text-blue-200 dark:text-blue-300 text-sm mt-2 font-mono">
+                  ID: {county.id}
+                </p>
               )}
             </div>
           </div>
@@ -112,33 +120,41 @@ export default function CountyDetailsModal({
           {/* Key Information Grid - Consistent color scheme */}
           <div className="grid grid-cols-2 gap-4">
             {/* County Seat - Blue theme */}
-            <div className="bg-blue-50 p-5 rounded-xl border border-blue-200">
-              <div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2">County Seat</div>
-              <div className="text-2xl font-bold text-blue-900">
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-xl border border-blue-200 dark:border-blue-800">
+              <div className="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">
+                County Seat
+              </div>
+              <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                 {county.capital || county.countySeat || 'N/A'}
               </div>
             </div>
 
             {/* Population - Neutral gray */}
-            <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-              <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Population</div>
-              <div className="text-2xl font-bold text-gray-900">
+            <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700">
+              <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                Population
+              </div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {county.population ? county.population.toLocaleString() : 'N/A'}
               </div>
             </div>
 
             {/* Area - Green theme */}
-            <div className="bg-green-50 p-5 rounded-xl border border-green-200">
-              <div className="text-xs font-medium text-green-600 uppercase tracking-wider mb-2">Area</div>
-              <div className="text-2xl font-bold text-green-900">
+            <div className="bg-green-50 dark:bg-green-900/20 p-5 rounded-xl border border-green-200 dark:border-green-800">
+              <div className="text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wider mb-2">
+                Area
+              </div>
+              <div className="text-2xl font-bold text-green-900 dark:text-green-100">
                 {county.area ? `${county.area.toLocaleString()} sq mi` : 'N/A'}
               </div>
             </div>
 
             {/* Established - Amber/warm theme */}
-            <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
-              <div className="text-xs font-medium text-amber-700 uppercase tracking-wider mb-2">Established</div>
-              <div className="text-2xl font-bold text-amber-900">
+            <div className="bg-amber-50 dark:bg-amber-900/20 p-5 rounded-xl border border-amber-200 dark:border-amber-800">
+              <div className="text-xs font-medium text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-2">
+                Established
+              </div>
+              <div className="text-2xl font-bold text-amber-900 dark:text-amber-100">
                 {county.founded || county.established || 'N/A'}
               </div>
             </div>
@@ -147,14 +163,17 @@ export default function CountyDetailsModal({
           {/* Fun Facts - Clean presentation */}
           {county.funFacts && county.funFacts.length > 0 && (
             <div className="relative">
-              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
                 <span>🎉</span> Fun Facts
               </h3>
               <div className="space-y-2">
                 {county.funFacts.slice(0, 3).map((fact: string, idx: number) => (
-                  <div key={idx} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <span className="text-blue-600 mt-0.5">•</span>
-                    <span className="text-gray-700 leading-relaxed">{fact}</span>
+                  <div
+                    key={idx}
+                    className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                  >
+                    <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
+                    <span className="text-gray-700 dark:text-gray-300 leading-relaxed">{fact}</span>
                   </div>
                 ))}
               </div>
@@ -164,12 +183,15 @@ export default function CountyDetailsModal({
           {/* Natural Features - Simple chips */}
           {county.naturalFeatures && county.naturalFeatures.length > 0 && (
             <div className="relative">
-              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
                 <span>🏔️</span> Natural Features
               </h3>
               <div className="flex flex-wrap gap-2">
                 {county.naturalFeatures.map((feature: string, idx: number) => (
-                  <span key={idx} className="px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-sm font-medium border border-green-200">
+                  <span
+                    key={idx}
+                    className="px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium border border-green-200 dark:border-green-700"
+                  >
                     {feature}
                   </span>
                 ))}
@@ -180,12 +202,15 @@ export default function CountyDetailsModal({
           {/* Economic Focus - Simple chips */}
           {county.economicFocus && county.economicFocus.length > 0 && (
             <div className="relative">
-              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
                 <span>💼</span> Economic Focus
               </h3>
               <div className="flex flex-wrap gap-2">
                 {county.economicFocus.map((focus: string, idx: number) => (
-                  <span key={idx} className="px-3 py-1.5 bg-purple-100 text-purple-800 rounded-full text-sm font-medium border border-purple-200">
+                  <span
+                    key={idx}
+                    className="px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 rounded-full text-sm font-medium border border-purple-200 dark:border-purple-700"
+                  >
                     {focus}
                   </span>
                 ))}
@@ -195,10 +220,10 @@ export default function CountyDetailsModal({
 
           {/* Educational Content Button - Simple design */}
           {onViewEducationalContent && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={onViewEducationalContent}
-                className="w-full py-4 px-6 bg-blue-600 text-white rounded-xl font-semibold text-lg hover:bg-blue-700 transition-colors duration-200"
+                className="w-full py-4 px-6 bg-blue-600 dark:bg-blue-700 text-white rounded-xl font-semibold text-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200"
               >
                 <span className="flex items-center justify-center gap-3">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -244,13 +269,25 @@ export default function CountyDetailsModal({
           border-radius: 4px;
         }
 
+        .dark .overflow-y-auto::-webkit-scrollbar-track {
+          background: #374151;
+        }
+
         .overflow-y-auto::-webkit-scrollbar-thumb {
           background: #cbd5e1;
           border-radius: 4px;
         }
 
+        .dark .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: #4b5563;
+        }
+
         .overflow-y-auto::-webkit-scrollbar-thumb:hover {
           background: #94a3b8;
+        }
+
+        .dark .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+          background: #6b7280;
         }
       `}</style>
     </div>,

@@ -1,7 +1,7 @@
 /* California Counties Design System - Card Component */
 
 .ca-card {
-  background: white;
+  background: var(--color-bg-secondary, white);
   border-radius: 0.5rem;
   overflow: hidden;
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -9,28 +9,61 @@
   flex-direction: column;
 }
 
+.dark .ca-card {
+  background: var(--color-bg-secondary, #1e1e1e);
+}
+
 /* Variants */
 .ca-card--default {
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border-medium, #e5e7eb);
+}
+
+.dark .ca-card--default {
+  border-color: var(--color-border-medium, #374151);
 }
 
 .ca-card--elevated {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
   border: 1px solid transparent;
 }
 
+.dark .ca-card--elevated {
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  background: var(--color-bg-tertiary, #2a2a2a);
+}
+
 .ca-card--outlined {
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--color-border-medium, #e5e7eb);
+}
+
+.dark .ca-card--outlined {
+  border-color: var(--color-border-strong, #4b5563);
 }
 
 .ca-card--interactive {
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border-medium, #e5e7eb);
   cursor: pointer;
+}
+
+.dark .ca-card--interactive {
+  border-color: var(--color-border-medium, #374151);
 }
 
 .ca-card--interactive:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.dark .ca-card--interactive:hover {
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.4),
+    0 4px 6px -4px rgba(0, 0, 0, 0.4);
 }
 
 /* Clickable State */
@@ -40,7 +73,9 @@
 
 .ca-card--clickable:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 
 .ca-card--clickable:active {
@@ -49,54 +84,58 @@
 
 /* Region Accent Colors */
 .ca-card--region-bay-area {
-  border-left: 4px solid #3B82F6;
+  border-left: 4px solid #3b82f6;
 }
 
 .ca-card--region-central-valley {
-  border-left: 4px solid #22C55E;
+  border-left: 4px solid #22c55e;
 }
 
 .ca-card--region-gold-country {
-  border-left: 4px solid #F59E0B;
+  border-left: 4px solid #f59e0b;
 }
 
 .ca-card--region-los-angeles {
-  border-left: 4px solid #EF4444;
+  border-left: 4px solid #ef4444;
 }
 
 .ca-card--region-north-coast {
-  border-left: 4px solid #14B8A6;
+  border-left: 4px solid #14b8a6;
 }
 
 .ca-card--region-northern {
-  border-left: 4px solid #8B5CF6;
+  border-left: 4px solid #8b5cf6;
 }
 
 .ca-card--region-orange-county {
-  border-left: 4px solid #F97316;
+  border-left: 4px solid #f97316;
 }
 
 .ca-card--region-sacramento {
-  border-left: 4px solid #84CC16;
+  border-left: 4px solid #84cc16;
 }
 
 .ca-card--region-san-diego {
-  border-left: 4px solid #EC4899;
+  border-left: 4px solid #ec4899;
 }
 
 .ca-card--region-sierra {
-  border-left: 4px solid #6366F1;
+  border-left: 4px solid #6366f1;
 }
 
 .ca-card--region-southern-california {
-  border-left: 4px solid #F43F5E;
+  border-left: 4px solid #f43f5e;
 }
 
 /* Card Sections */
 .ca-card__media {
   width: 100%;
   overflow: hidden;
-  background: #F9FAFB;
+  background: var(--color-bg-tertiary, #f9fafb);
+}
+
+.dark .ca-card__media {
+  background: var(--color-bg-tertiary, #2a2a2a);
 }
 
 .ca-card__media img {
@@ -107,11 +146,15 @@
 
 .ca-card__header {
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid #F3F4F6;
+  border-bottom: 1px solid var(--color-border-light, #f3f4f6);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
+}
+
+.dark .ca-card__header {
+  border-bottom-color: var(--color-border-light, #2a2a2a);
 }
 
 .ca-card__header-content {
@@ -122,7 +165,7 @@
 .ca-card__title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary, #111827);
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -131,7 +174,7 @@
 
 .ca-card__subtitle {
   font-size: 0.875rem;
-  color: #6B7280;
+  color: var(--color-text-secondary, #6b7280);
   margin: 0.25rem 0 0 0;
 }
 
@@ -143,7 +186,7 @@
 .ca-card__description {
   font-size: 0.9375rem;
   line-height: 1.6;
-  color: #4B5563;
+  color: var(--color-text-secondary, #4b5563);
   margin: 0 0 1rem 0;
 }
 
@@ -163,7 +206,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #F9FAFB;
+  border-bottom: 1px solid var(--color-border-light, #f9fafb);
+}
+
+.dark .ca-card__metadata-item {
+  border-bottom-color: var(--color-border-light, #2a2a2a);
 }
 
 .ca-card__metadata-item:last-child {
@@ -172,30 +219,45 @@
 
 .ca-card__metadata-label {
   font-size: 0.875rem;
-  color: #6B7280;
+  color: var(--color-text-secondary, #6b7280);
   font-weight: 500;
 }
 
 .ca-card__metadata-value {
   font-size: 0.875rem;
-  color: #111827;
+  color: var(--color-text-primary, #111827);
   font-weight: 600;
   margin: 0;
 }
 
 .ca-card__footer {
   padding: 1rem 1.25rem;
-  border-top: 1px solid #F3F4F6;
-  background: #FAFAFA;
+  border-top: 1px solid var(--color-border-light, #f3f4f6);
+  background: var(--color-bg-tertiary, #fafafa);
+}
+
+.dark .ca-card__footer {
+  border-top-color: var(--color-border-light, #2a2a2a);
+  background: var(--color-bg-tertiary, #2a2a2a);
 }
 
 /* County Card Specific Styles */
 .ca-county-card--selected {
-  border: 2px solid #2563EB;
+  border: 2px solid var(--color-primary, #2563eb);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+.dark .ca-county-card--selected {
+  border-color: var(--color-primary, #60a5fa);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
 .ca-county-card--highlighted {
-  background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%);
-  border-color: #FCD34D;
+  background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+  border-color: var(--color-warning, #fcd34d);
+}
+
+.dark .ca-county-card--highlighted {
+  background: linear-gradient(135deg, #78350f 0%, #451a03 100%);
+  border-color: var(--color-warning, #fbbf24);
 }

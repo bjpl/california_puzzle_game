@@ -138,7 +138,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
     <div
       className={`
         relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200
-        ${achievement.isUnlocked ? getRarityBg(achievement.rarity) : 'bg-gray-50 border-gray-200'}
+        ${achievement.isUnlocked ? getRarityBg(achievement.rarity) : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'}
         hover:shadow-lg hover:scale-105
         ${achievement.isUnlocked ? 'opacity-100' : 'opacity-60'}
       `}
@@ -163,8 +163,12 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
 
       {/* Achievement Info */}
       <div className="text-center">
-        <h3 className="font-bold text-sm mb-1 line-clamp-1">{achievement.name}</h3>
-        <p className="text-xs text-gray-600 mb-2 line-clamp-2">{achievement.description}</p>
+        <h3 className="font-bold text-sm mb-1 line-clamp-1 dark:text-gray-200">
+          {achievement.name}
+        </h3>
+        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
+          {achievement.description}
+        </p>
 
         {/* Points */}
         <div className="flex items-center justify-center space-x-1 mb-2">
@@ -174,7 +178,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
 
         {/* Progress Bar */}
         {!achievement.isUnlocked && achievement.progress > 0 && (
-          <div className="w-full bg-gray-200 rounded-full h-1.5">
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
             <div
               className={`h-1.5 rounded-full transition-all duration-300 ${getProgressColor(achievement.progress)}`}
               style={{ width: `${achievement.progress * 100}%` }}
@@ -187,7 +191,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
 
   const AchievementDetail: React.FC<{ achievement: AchievementDefinition }> = ({ achievement }) => (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg max-w-md w-full max-h-96 overflow-y-auto">
+      <div className="bg-white dark:bg-gray-900 rounded-lg max-w-md w-full max-h-96 overflow-y-auto">
         {/* Header */}
         <div className={`p-6 ${getRarityBg(achievement.rarity)} rounded-t-lg`}>
           <div className="flex justify-between items-start">
@@ -202,7 +206,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
             </div>
             <button
               onClick={() => setSelectedAchievement(null)}
-              className="text-gray-500 hover:text-gray-700 text-xl"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-xl"
             >
               ×
             </button>
@@ -211,7 +215,7 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
 
         {/* Content */}
         <div className="p-6">
-          <p className="text-gray-700 mb-4">{achievement.description}</p>
+          <p className="text-gray-700 dark:text-gray-300 mb-4">{achievement.description}</p>
 
           {/* Status */}
           <div className="mb-4">
@@ -228,10 +232,12 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
             ) : (
               <div>
                 <div className="flex items-center justify-between text-sm mb-1">
-                  <span className="text-gray-600">Progress</span>
-                  <span className="font-medium">{Math.round(achievement.progress * 100)}%</span>
+                  <span className="text-gray-600 dark:text-gray-400">Progress</span>
+                  <span className="font-medium dark:text-gray-200">
+                    {Math.round(achievement.progress * 100)}%
+                  </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(achievement.progress)}`}
                     style={{ width: `${achievement.progress * 100}%` }}
@@ -244,14 +250,16 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
           {/* Requirements */}
           {achievement.requirements && achievement.requirements.length > 0 && (
             <div>
-              <h4 className="font-medium mb-2">Requirements:</h4>
+              <h4 className="font-medium mb-2 dark:text-gray-200">Requirements:</h4>
               <ul className="space-y-2">
                 {achievement.requirements.map((req, index) => (
                   <li key={index} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">{req.description}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{req.description}</span>
                     <span
                       className={`font-medium ${
-                        req.current >= req.threshold ? 'text-green-600' : 'text-gray-400'
+                        req.current >= req.threshold
+                          ? 'text-green-600 dark:text-green-400'
+                          : 'text-gray-400 dark:text-gray-500'
                       }`}
                     >
                       {req.current}/{req.threshold}
@@ -263,9 +271,12 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
           )}
 
           {/* Category */}
-          <div className="mt-4 pt-4 border-t">
-            <div className="text-sm text-gray-600">
-              Category: <span className="font-medium capitalize">{achievement.category}</span>
+          <div className="mt-4 pt-4 border-t dark:border-gray-700">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Category:{' '}
+              <span className="font-medium capitalize dark:text-gray-200">
+                {achievement.category}
+              </span>
             </div>
           </div>
         </div>
@@ -274,13 +285,16 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
   );
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg ${className}`}>
+    <div className={`bg-white dark:bg-gray-900 rounded-lg shadow-lg ${className}`}>
       {/* Header */}
-      <div className="border-b p-6">
+      <div className="border-b dark:border-gray-700 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Achievement Gallery</h2>
+          <h2 className="text-2xl font-bold dark:text-white">Achievement Gallery</h2>
           {onClose && (
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl">
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-xl"
+            >
               ×
             </button>
           )}
@@ -292,23 +306,25 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
             <div className="text-2xl font-bold text-blue-600">
               {Math.round(completionPercentage)}%
             </div>
-            <div className="text-sm text-gray-500">Complete</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Complete</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">{totalPoints}</div>
-            <div className="text-sm text-gray-500">Total Points</div>
+            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+              {totalPoints}
+            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Total Points</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
               {achievements.filter((a) => a.isUnlocked).length}
             </div>
-            <div className="text-sm text-gray-500">Unlocked</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Unlocked</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-orange-600">
+            <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
               {achievements.filter((a) => !a.isUnlocked && a.progress > 0).length}
             </div>
-            <div className="text-sm text-gray-500">In Progress</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">In Progress</div>
           </div>
         </div>
 
@@ -319,13 +335,13 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
             placeholder="Search achievements..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           />
         </div>
       </div>
 
       {/* Filters */}
-      <div className="border-b p-4">
+      <div className="border-b dark:border-gray-700 p-4">
         <div className="flex flex-wrap gap-2">
           {filters.map((filter) => (
             <button
@@ -333,8 +349,8 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
               onClick={() => setSelectedFilter(filter.id as FilterType)}
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 selectedFilter === filter.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-blue-600 dark:bg-blue-500 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
               }`}
             >
               <span className="mr-1">{filter.icon}</span>
@@ -353,9 +369,9 @@ const AchievementGallery: React.FC<AchievementGalleryProps> = ({ className = '',
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
             <div className="text-4xl mb-4">🔍</div>
-            <div className="text-lg mb-2">No achievements found</div>
+            <div className="text-lg mb-2 dark:text-gray-300">No achievements found</div>
             <div className="text-sm">Try adjusting your search or filter</div>
           </div>
         )}
