@@ -5,18 +5,76 @@
  * Import mobile features from this single entry point.
  */
 
-// Components
+// ========================================
+// COMPONENTS
+// ========================================
+
+// Bottom Sheet
 export { BottomSheet, BottomSheetState } from './components/BottomSheet';
 export type { BottomSheetProps } from './components/BottomSheet';
 
-// Hooks
+// Layout Components
+export { MobilePortraitLayout } from './components/MobilePortraitLayout';
+export type { MobilePortraitLayoutProps, CountyItem } from './components/MobilePortraitLayout';
+
+export { MobileLandscapeLayout } from './components/MobileLandscapeLayout';
+export type { MobileLandscapeLayoutProps } from './components/MobileLandscapeLayout';
+
+export { MobileLayoutWrapper, LayoutMode } from './components/MobileLayoutWrapper';
+export type { MobileLayoutWrapperProps } from './components/MobileLayoutWrapper';
+
+// Touch Interaction Components
+export { TouchCountyDrag } from './components/TouchCountyDrag';
+export type { TouchCountyDragProps } from './components/TouchCountyDrag';
+
+// Touch Feedback Components
+export { TouchFeedback, useTouchFeedback } from './components/TouchFeedback';
+export type { TouchFeedbackProps, RippleOptions } from './components/TouchFeedback';
+
+export { DragPreview, useDragPreview } from './components/DragPreview';
+export type { DragPreviewProps, DragPreviewState } from './components/DragPreview';
+
+export { SnapGuides, useSnapGuides } from './components/SnapGuides';
+export type { SnapGuidesProps, SnapTarget, SnapState } from './components/SnapGuides';
+
+// Tutorial Component
+export { GestureTutorial, TutorialStep } from './components/GestureTutorial';
+export type { GestureTutorialProps } from './components/GestureTutorial';
+
+// ========================================
+// HOOKS
+// ========================================
+
 export { useMediaQuery, useMediaQueries } from './hooks/useMediaQuery';
 export { useDeviceInfo } from './hooks/useDeviceInfo';
 export type { DeviceInfo } from './hooks/useDeviceInfo';
 export { useHaptic, HAPTIC_PATTERNS } from './hooks/useHaptic';
 export type { HapticSettings } from './hooks/useHaptic';
 
-// Configuration
+// Gesture Detection Hooks
+export {
+  useGestureDetection,
+  calculateDistance,
+  calculateCenterPoint,
+  touchListToPoints,
+} from './hooks/useGestureDetection';
+export type {
+  TouchPoint,
+  GestureState,
+  TapGesture,
+  SwipeGesture,
+  PinchGesture,
+  GestureResult,
+  GestureDetectionConfig,
+} from './hooks/useGestureDetection';
+
+export { usePinchZoom } from './hooks/usePinchZoom';
+export type { PinchZoomState, PinchZoomConfig } from './hooks/usePinchZoom';
+
+// ========================================
+// CONFIGURATION
+// ========================================
+
 export {
   BREAKPOINTS,
   MEDIA_QUERIES,
@@ -55,7 +113,10 @@ export {
 } from './config/touchSensors';
 export type { DragCancelConditions } from './config/touchSensors';
 
-// Utilities
+// ========================================
+// UTILITIES
+// ========================================
+
 export {
   GeodetaLevel,
   ConnectionType,

@@ -1,0 +1,522 @@
+/**
+ * Mobile CSS Utilities
+ *
+ * Utility classes for mobile-optimized layouts and interactions.
+ * Follows mobile-first design principles.
+ */
+
+/* ========================================
+   SAFE AREA UTILITIES
+   ======================================== */
+
+.safe-area-inset-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-inset-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-inset-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+.safe-area-inset-all {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ========================================
+   TOUCH TARGET UTILITIES
+   ======================================== */
+
+/* WCAG AAA minimum (44px) */
+.touch-target-aaa {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Optimal size (48px) */
+.touch-target-optimal {
+  min-width: 48px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Large size (56px) */
+.touch-target-large {
+  min-width: 56px;
+  min-height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Floating Action Button (64px) */
+.touch-target-fab {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ========================================
+   LAYOUT UTILITIES
+   ======================================== */
+
+/* Prevent scroll (for drag/modal) */
+.prevent-scroll {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* Horizontal scroll container */
+.scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+  scrollbar-width: thin;
+}
+
+/* Vertical scroll container */
+.scroll-y {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+/* Hide scrollbars */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Snap scroll (for galleries) */
+.snap-x {
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
+.snap-y {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.snap-center {
+  scroll-snap-align: center;
+}
+
+.snap-start {
+  scroll-snap-align: start;
+}
+
+/* ========================================
+   MOBILE TYPOGRAPHY
+   ======================================== */
+
+.text-mobile-xs {
+  font-size: clamp(10px, 3vw, 12px);
+}
+
+.text-mobile-sm {
+  font-size: clamp(12px, 3.5vw, 14px);
+}
+
+.text-mobile-base {
+  font-size: clamp(14px, 4vw, 16px);
+}
+
+.text-mobile-lg {
+  font-size: clamp(18px, 5vw, 20px);
+}
+
+.text-mobile-title {
+  font-size: clamp(22px, 6vw, 24px);
+}
+
+.text-mobile-heading {
+  font-size: clamp(26px, 8vw, 32px);
+}
+
+/* ========================================
+   TOUCH INTERACTION STATES
+   ======================================== */
+
+/* Active state for touch */
+.touch-active {
+  opacity: 0.7;
+  transform: scale(0.97);
+  transition: all 0.1s ease;
+}
+
+/* Pressed state (press-and-hold) */
+.touch-pressed {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+/* Dragging state */
+.touch-dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Prevent text selection during touch */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Disable touch callout (iOS) */
+.no-callout {
+  -webkit-touch-callout: none;
+}
+
+/* ========================================
+   ORIENTATION UTILITIES
+   ======================================== */
+
+/* Portrait only */
+@media (orientation: portrait) {
+  .portrait-only {
+    display: block;
+  }
+  .landscape-only {
+    display: none;
+  }
+}
+
+/* Landscape only */
+@media (orientation: landscape) {
+  .portrait-only {
+    display: none;
+  }
+  .landscape-only {
+    display: block;
+  }
+}
+
+/* ========================================
+   VIEWPORT UTILITIES
+   ======================================== */
+
+.vh-10 {
+  height: 10vh;
+}
+.vh-20 {
+  height: 20vh;
+}
+.vh-30 {
+  height: 30vh;
+}
+.vh-40 {
+  height: 40vh;
+}
+.vh-50 {
+  height: 50vh;
+}
+.vh-60 {
+  height: 60vh;
+}
+.vh-70 {
+  height: 70vh;
+}
+.vh-80 {
+  height: 80vh;
+}
+.vh-90 {
+  height: 90vh;
+}
+.vh-100 {
+  height: 100vh;
+}
+
+.vw-30 {
+  width: 30vw;
+}
+.vw-70 {
+  width: 70vw;
+}
+.vw-100 {
+  width: 100vw;
+}
+
+/* ========================================
+   MOBILE SPACING
+   ======================================== */
+
+/* Compact spacing for small screens */
+@media (max-width: 374px) {
+  .mobile-p-2 {
+    padding: 8px;
+  }
+  .mobile-p-4 {
+    padding: 16px;
+  }
+  .mobile-gap-2 {
+    gap: 8px;
+  }
+  .mobile-gap-4 {
+    gap: 16px;
+  }
+}
+
+/* Standard spacing for medium screens */
+@media (min-width: 375px) {
+  .mobile-p-2 {
+    padding: 12px;
+  }
+  .mobile-p-4 {
+    padding: 24px;
+  }
+  .mobile-gap-2 {
+    gap: 12px;
+  }
+  .mobile-gap-4 {
+    gap: 24px;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY UTILITIES
+   ======================================== */
+
+/* Screen reader only */
+.sr-only-mobile {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible styles */
+.focus-ring-mobile:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ========================================
+   PERFORMANCE UTILITIES
+   ======================================== */
+
+/* GPU acceleration */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Contain paint */
+.contain-paint {
+  contain: paint;
+}
+
+/* Contain layout */
+.contain-layout {
+  contain: layout;
+}
+
+/* Contain all */
+.contain-strict {
+  contain: strict;
+}
+
+/* ========================================
+   REDUCED MOTION OVERRIDES
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable transform animations */
+  .reduce-motion-safe {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ========================================
+   DARK MODE UTILITIES
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  .dark-bg {
+    background-color: #1f2937;
+  }
+
+  .dark-text {
+    color: #f3f4f6;
+  }
+
+  .dark-border {
+    border-color: #374151;
+  }
+}
+
+/* ========================================
+   MOBILE GRID LAYOUTS
+   ======================================== */
+
+.mobile-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.mobile-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 374px) {
+  .mobile-grid-auto {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (min-width: 375px) and (max-width: 767px) {
+  .mobile-grid-auto {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-grid-auto {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
+/* ========================================
+   MOBILE FLEXBOX UTILITIES
+   ======================================== */
+
+.flex-column-mobile {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row-mobile {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-center-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between-mobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ========================================
+   Z-INDEX SCALE (Mobile Specific)
+   ======================================== */
+
+.z-bottom-sheet {
+  z-index: 999;
+}
+
+.z-modal {
+  z-index: 1000;
+}
+
+.z-tutorial {
+  z-index: 9999;
+}
+
+.z-toast {
+  z-index: 10000;
+}
+
+/* ========================================
+   MOBILE ANIMATIONS
+   ======================================== */
+
+.fade-in-mobile {
+  animation: fadeIn 250ms ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.slide-up-mobile {
+  animation: slideUp 300ms ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.scale-in-mobile {
+  animation: scaleIn 200ms ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
