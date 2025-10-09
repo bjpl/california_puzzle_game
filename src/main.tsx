@@ -6,7 +6,7 @@ import { preloadCaliforniaGeoData } from './utils/geoDataCache';
 import { registerServiceWorker, prefetchGeodata } from './utils/sw-registration';
 import { initializeThemeSync } from './stores/themeStore';
 
-// Global styles
+// Global styles with dark mode support
 const globalStyles = `
 * {
   box-sizing: border-box;
@@ -16,6 +16,9 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100%;
+  background-color: var(--color-bg-primary, #ffffff);
+  color: var(--color-text-primary, #111827);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -29,16 +32,16 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--color-bg-secondary, #f1f1f1);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: var(--color-border-strong, #c1c1c1);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: var(--color-secondary, #a1a1a1);
 }
 
 /* Smooth scrolling */
@@ -55,7 +58,7 @@ button {
 }
 
 button:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--color-border-focus, #3b82f6);
   outline-offset: 2px;
 }
 
@@ -235,8 +238,15 @@ button:focus {
 
 /* Focus management for keyboard navigation */
 .focusable:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--color-border-focus, #3b82f6);
   outline-offset: 2px;
+}
+
+/* Smooth theme transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
 }
 
 /* Print styles */

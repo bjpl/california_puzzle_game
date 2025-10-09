@@ -4,12 +4,28 @@ import { useGame } from '../../context/GameContext';
 import { soundManager } from '../../utils/simpleSoundManager';
 import { gameLogger } from '../../utils/logger';
 import { Heading, Text, Badge, Progress } from '../ui';
+import { SimpleThemeToggle } from '../ui/ThemeToggle';
 import HintModal from '../game/modals/HintModal';
 import EnhancedStudyMode from '../study/EnhancedStudyMode';
 import { UI_CONFIG, GAME_CONFIG } from '@/constants';
 
 export default function GameHeader() {
-  const { score, mistakes, placedCounties, counties, resetGame, timerState, timerStarted: _timerStarted, pauseGame, resumeGame, isGameStarted: _isGameStarted, isPaused, hints, useHint: requestHint, currentCounty } = useGame();
+  const {
+    score,
+    mistakes,
+    placedCounties,
+    counties,
+    resetGame,
+    timerState,
+    timerStarted: _timerStarted,
+    pauseGame,
+    resumeGame,
+    isGameStarted: _isGameStarted,
+    isPaused,
+    hints,
+    useHint: requestHint,
+    currentCounty,
+  } = useGame();
   const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
   const [showHintModal, setShowHintModal] = useState(false);
   const [showStudyMode, setShowStudyMode] = useState(false);
@@ -48,9 +64,9 @@ export default function GameHeader() {
       const currentAttempts = countyHintAttempts[countyName] || 0;
       const newAttempts = currentAttempts + 1;
 
-      setCountyHintAttempts(prev => ({
+      setCountyHintAttempts((prev) => ({
         ...prev,
-        [countyName]: newAttempts
+        [countyName]: newAttempts,
       }));
 
       // Determine hint level based on attempts
@@ -72,7 +88,7 @@ export default function GameHeader() {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-4">
+    <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-4">
       {/* Top Section - Title and Current Selection */}
       <div className="flex justify-between items-start mb-4">
         <div className="flex flex-col">
@@ -80,13 +96,19 @@ export default function GameHeader() {
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
               <span className="text-white text-sm">CA</span>
             </div>
-            <Heading level={1} size="section" className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <Heading
+              level={1}
+              size="section"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent"
+            >
               California Counties Puzzle
             </Heading>
           </div>
           {currentCounty && (
             <div className="flex items-center gap-2 ml-10">
-              <Text size="xs" color="secondary">Now placing:</Text>
+              <Text size="xs" color="secondary">
+                Now placing:
+              </Text>
               <Badge variant="info" size="medium">
                 {currentCounty.name}
               </Badge>
@@ -96,6 +118,8 @@ export default function GameHeader() {
 
         {/* Action Buttons Group */}
         <div className="flex items-center gap-2">
+          <SimpleThemeToggle size="medium" />
+
           <button
             onClick={() => {
               setShowStudyMode(true);
@@ -139,9 +163,17 @@ export default function GameHeader() {
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               {soundEnabled ? (
-                <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z"
+                  clipRule="evenodd"
+                />
               ) : (
-                <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
               )}
             </svg>
           </button>
@@ -158,9 +190,17 @@ export default function GameHeader() {
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               {isPaused ? (
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                  clipRule="evenodd"
+                />
               ) : (
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
               )}
             </svg>
           </button>
@@ -172,7 +212,11 @@ export default function GameHeader() {
             aria-label="Reset game and start over"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                clipRule="evenodd"
+              />
             </svg>
           </button>
         </div>
@@ -190,12 +234,14 @@ export default function GameHeader() {
 
         {/* Timer */}
         <div className="flex items-center gap-2">
-          <div className={`w-auto min-w-[3.5rem] px-2 h-8 rounded-lg flex items-center justify-center transition-all ${
-            !timerStarted ? 'bg-gray-100 border border-gray-300' : 'bg-purple-100'
-          }`}>
-            <span className={`text-xs font-bold ${
-              !timerStarted ? 'text-gray-400' : 'text-purple-600'
-            }`}>
+          <div
+            className={`w-auto min-w-[3.5rem] px-2 h-8 rounded-lg flex items-center justify-center transition-all ${
+              !timerStarted ? 'bg-gray-100 border border-gray-300' : 'bg-purple-100'
+            }`}
+          >
+            <span
+              className={`text-xs font-bold ${!timerStarted ? 'text-gray-400' : 'text-purple-600'}`}
+            >
               {!timerStarted ? 'Ready' : formatTime(timerState.elapsed)}
             </span>
           </div>
@@ -206,7 +252,9 @@ export default function GameHeader() {
 
         {/* Progress */}
         <div className="flex items-center gap-2 flex-1">
-          <Text size="xs" color="secondary">Progress</Text>
+          <Text size="xs" color="secondary">
+            Progress
+          </Text>
           <div className="flex-1">
             <Progress
               value={placedCounties.size}
@@ -216,7 +264,9 @@ export default function GameHeader() {
               animated
             />
           </div>
-          <Text size="xs" weight="bold" className="text-gray-700">{progress}%</Text>
+          <Text size="xs" weight="bold" className="text-gray-700">
+            {progress}%
+          </Text>
         </div>
 
         {/* Mistakes */}
@@ -229,30 +279,32 @@ export default function GameHeader() {
       </div>
 
       {/* Render HintModal via Portal to ensure it's on top */}
-      {typeof document !== 'undefined' && createPortal(
-        <HintModal
-          isOpen={showHintModal}
-          onClose={() => setShowHintModal(false)}
-          county={currentCounty}
-          hintLevel={hintLevel}
-        />,
-        document.body
-      )}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <HintModal
+            isOpen={showHintModal}
+            onClose={() => setShowHintModal(false)}
+            county={currentCounty}
+            hintLevel={hintLevel}
+          />,
+          document.body
+        )}
 
       {/* Render Study Mode Modal with Portal to ensure it appears above game */}
-      {showStudyMode && createPortal(
-        <EnhancedStudyMode
-          onClose={() => {
-            setShowStudyMode(false);
-            resumeGame(); // Resume game when closing study mode
-          }}
-          onStartGame={() => {
-            setShowStudyMode(false);
-            resumeGame();
-          }}
-        />,
-        document.body
-      )}
+      {showStudyMode &&
+        createPortal(
+          <EnhancedStudyMode
+            onClose={() => {
+              setShowStudyMode(false);
+              resumeGame(); // Resume game when closing study mode
+            }}
+            onStartGame={() => {
+              setShowStudyMode(false);
+              resumeGame();
+            }}
+          />,
+          document.body
+        )}
     </div>
   );
 }
