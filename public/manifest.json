@@ -1,0 +1,95 @@
+{
+  "name": "California Counties Puzzle Game",
+  "short_name": "CA Puzzle",
+  "description": "Educational geography game - Learn California's 58 counties through interactive drag-and-drop puzzles",
+  "start_url": "/california_puzzle_game/",
+  "scope": "/california_puzzle_game/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#1e40af",
+  "categories": ["education", "games", "geography"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/california_puzzle_game/california-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/california_puzzle_game/california-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/california_puzzle_game/california-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/california_puzzle_game/california-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/california_puzzle_game/screenshots/gameplay-mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Gameplay on mobile"
+    },
+    {
+      "src": "/california_puzzle_game/screenshots/gameplay-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Gameplay on desktop"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Play Game",
+      "short_name": "Play",
+      "description": "Start a new game",
+      "url": "/california_puzzle_game/?mode=play",
+      "icons": [
+        {
+          "src": "/california_puzzle_game/california-icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Study Mode",
+      "short_name": "Study",
+      "description": "Learn about California counties",
+      "url": "/california_puzzle_game/?mode=study",
+      "icons": [
+        {
+          "src": "/california_puzzle_game/california-icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "share_target": {
+    "action": "/california_puzzle_game/share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

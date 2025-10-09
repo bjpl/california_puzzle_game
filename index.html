@@ -24,8 +24,11 @@
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#3b82f6" />
-    <link rel="apple-touch-icon" href="/california-icon.svg" />
-    <link rel="manifest" href="/manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="CA Puzzle" />
+    <link rel="apple-touch-icon" href="/california_puzzle_game/california-icon.svg" />
+    <link rel="manifest" href="/california_puzzle_game/manifest.json" />
 
     <!-- Preload critical resources -->
     <!-- GeoJSON files are loaded dynamically via code splitting -->
@@ -180,21 +183,8 @@
     <!-- Main App Script -->
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Service Worker Registration -->
-    <script>
-      // Service worker disabled for now - can be enabled when sw.js is created
-      // if ('serviceWorker' in navigator) {
-      //   window.addEventListener('load', () => {
-      //     navigator.serviceWorker.register('/sw.js')
-      //       .then((registration) => {
-      //         console.log('SW registered: ', registration);
-      //       })
-      //       .catch((registrationError) => {
-      //         console.log('SW registration failed: ', registrationError);
-      //       });
-      //   });
-      // }
-    </script>
+    <!-- Service Worker is registered from main.tsx in production builds -->
+    <!-- This ensures proper timing and error handling with app lifecycle -->
 
     <!-- Analytics placeholder -->
     <!-- Add your analytics code here -->

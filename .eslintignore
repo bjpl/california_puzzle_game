@@ -1,0 +1,17 @@
+# ESLint Ignore Rules
+# Exclude files that don't follow standard app linting rules
+
+# Service Worker - runs in WorkerGlobalScope with different globals
+public/sw.js
+
+# Build output
+dist/
+
+# Node modules
+node_modules/
+
+# Test coverage
+coverage/
+
+# Generated files
+*.config.js

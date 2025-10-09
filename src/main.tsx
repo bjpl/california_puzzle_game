@@ -1,8 +1,9 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import { reportWebVitals } from './utils/webVitals'
-import { preloadCaliforniaGeoData } from './utils/geoDataCache'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { reportWebVitals } from './utils/webVitals';
+import { preloadCaliforniaGeoData } from './utils/geoDataCache';
+import { registerServiceWorker, prefetchGeodata } from './utils/sw-registration';
 
 // Global styles
 const globalStyles = `
@@ -261,8 +262,8 @@ document.head.appendChild(styleSheet);
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
 
 // Start Web Vitals monitoring in production
 if (import.meta.env.PROD) {
@@ -280,4 +281,21 @@ if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
 } else {
   // Fallback for browsers without requestIdleCallback
   setTimeout(preloadCaliforniaGeoData, 1000);
+}
+
+// Register Service Worker for PWA functionality
+if (import.meta.env.PROD) {
+  // Only register SW in production (GitHub Pages deployment)
+  window.addEventListener('load', async () => {
+    const status = await registerServiceWorker();
+
+    if (status.registered) {
+      // PWA registration successful - offline gameplay enabled
+      // Prefetch medium geodata for better offline experience
+      requestIdleCallback(() => {
+        prefetchGeodata(['medium']);
+      });
+    }
+    // Registration status is logged by sw-registration utility
+  });
 }
