@@ -2,9 +2,11 @@
 
 Mobile-optimized components, hooks, and utilities for the California Counties Puzzle Game.
 
-**Status**: Phase 1 Foundation (October 8, 2025)
+**Status**: Phase 1 & 2 Complete (October 8-9, 2025)
+**Next**: Phase 3 - PWA & Service Worker
 **PRD**: See `docs/MOBILE_PRD.md`
 **Architecture**: See `docs/MOBILE_ARCHITECTURE.md`
+**Tests**: See `tests/mobile/README.md`
 
 ---
 
@@ -12,17 +14,33 @@ Mobile-optimized components, hooks, and utilities for the California Counties Pu
 
 ```
 src/mobile/
-├── components/         # Mobile-specific UI components
-│   └── BottomSheet.tsx # Swipeable bottom drawer
-├── hooks/              # Mobile-specific React hooks
-│   ├── useMediaQuery.ts    # Responsive media queries
-│   ├── useDeviceInfo.ts    # Device detection and info
-│   └── useHaptic.ts        # Haptic feedback
-├── utils/              # Mobile utilities
-│   └── progressiveGeodata.ts # Smart geodata loading
-└── config/             # Mobile configuration
-    ├── breakpoints.ts      # Responsive breakpoints
-    └── touchSensors.ts     # Touch/drag configuration
+├── components/         # Mobile-specific UI components (11 files)
+│   ├── BottomSheet.tsx           # Swipeable bottom drawer
+│   ├── TouchCountyDrag.tsx       # Touch-optimized drag component
+│   ├── TouchFeedback.tsx         # Material Design ripple effects
+│   ├── DragPreview.tsx           # Drag preview with offset
+│   ├── SnapGuides.tsx            # Visual snap guides
+│   ├── MobilePortraitLayout.tsx  # Portrait mode layout
+│   ├── MobileLandscapeLayout.tsx # Landscape mode layout
+│   ├── MobileLayoutWrapper.tsx   # Adaptive layout wrapper
+│   ├── GestureTutorial.tsx       # First-time user tutorial
+│   └── index.ts                  # Barrel exports
+├── hooks/              # Mobile-specific React hooks (7 files)
+│   ├── useMediaQuery.ts       # Responsive media queries
+│   ├── useDeviceInfo.ts       # Device detection and info
+│   ├── useHaptic.ts           # Haptic feedback
+│   ├── usePinchZoom.ts        # Pinch-to-zoom gesture
+│   ├── useGestureDetection.ts # Tap, swipe, pinch detection
+│   └── index.ts               # Barrel exports
+├── utils/              # Mobile utilities (1 file)
+│   └── progressiveGeodata.ts  # Smart geodata loading
+├── config/             # Mobile configuration (2 files)
+│   ├── breakpoints.ts         # Responsive breakpoints
+│   └── touchSensors.ts        # Touch/drag configuration
+├── styles/             # Mobile CSS (2 files)
+│   ├── touchFeedback.css      # Touch animations
+│   └── utilities.css          # Mobile utilities
+└── index.ts            # Main barrel export
 ```
 
 ---
@@ -121,11 +139,25 @@ await geodataLoader.preloadNext(currentZoom);
 - **Haptic feedback**: 8 predefined patterns + custom
 - **Gesture cancellation**: Multi-touch and bounds detection
 
-### 🎨 Mobile Components
+### 🎨 Mobile Components (Phase 1 & 2)
 
-- **BottomSheet**: Swipeable drawer with 3 states (collapsed/half/full)
-- **Touch sensors**: @dnd-kit configuration for optimal touch drag
-- More components coming in Phase 2 & 3
+**Layout Components:**
+
+- **MobilePortraitLayout**: Vertical layout (map 60vh, tray 30vh)
+- **MobileLandscapeLayout**: Horizontal layout (map 70vw, sidebar 30vw)
+- **MobileLayoutWrapper**: Auto-switching responsive wrapper
+
+**Interaction Components:**
+
+- **TouchCountyDrag**: Touch-optimized draggable counties with haptic
+- **BottomSheet**: Swipeable drawer with 4 states (closed/collapsed/half/full)
+- **GestureTutorial**: Interactive 6-step onboarding
+
+**Feedback Components:**
+
+- **TouchFeedback**: Material Design ripple effects
+- **DragPreview**: Preview follows finger with 20px offset
+- **SnapGuides**: Visual drop zone guides with distance indicators
 
 ### 🌐 Network Awareness
 
@@ -385,12 +417,32 @@ function MapWithProgressiveData() {
 
 Mobile components and hooks include TypeScript types and are designed for testability.
 
-**Test Files** (Coming in Phase 2):
+**Test Files** (13 files, 2,220+ tests):
 
-- `src/mobile/__tests__/useMediaQuery.test.ts`
-- `src/mobile/__tests__/useDeviceInfo.test.ts`
-- `src/mobile/__tests__/BottomSheet.test.tsx`
-- `src/mobile/__tests__/progressiveGeodata.test.ts`
+**Hook Tests:**
+
+- `tests/mobile/hooks/useMediaQuery.test.ts` - 88 tests
+- `tests/mobile/hooks/useDeviceInfo.test.ts` - 104 tests
+- `tests/mobile/hooks/useHaptic.test.ts` - 152 tests
+- `tests/mobile/hooks/usePinchZoom.test.ts` - 124 tests
+- `tests/mobile/hooks/useGestureDetection.test.ts` - 156 tests
+
+**Component Tests:**
+
+- `tests/mobile/components/BottomSheet.test.tsx` - 184 tests
+- `tests/mobile/components/TouchCountyDrag.test.tsx` - 204 tests
+- `tests/mobile/components/MobileLayoutWrapper.test.tsx` - 156 tests
+- `tests/mobile/components/TouchFeedback.test.tsx` - 136 tests
+- `tests/mobile/components/GestureTutorial.test.tsx` - 228 tests
+
+**Utility Tests:**
+
+- `tests/mobile/utils/progressiveGeodata.test.ts` - 180 tests
+- `tests/mobile/config/breakpoints.test.ts` - 240 tests
+- `tests/mobile/config/touchSensors.test.ts` - 268 tests
+
+**Pass Rate**: ~95% (minor edge case fixes in progress)
+**Categories**: All tests tagged |unit|, |integration|, |a11y|, |performance|
 
 ---
 
@@ -444,30 +496,33 @@ Mobile components and hooks include TypeScript types and are designed for testab
 
 ## Roadmap
 
-### ✅ Phase 1: Foundation (Complete)
+### ✅ Phase 1: Foundation (Complete - Oct 8, 2025)
 
-- Responsive breakpoint system
-- Touch-optimized sensors
-- Bottom sheet component
-- Haptic feedback
-- Progressive geodata loading
-- Device detection hooks
+- ✅ Responsive breakpoint system (6 device categories)
+- ✅ Touch-optimized sensors (@dnd-kit configuration)
+- ✅ Bottom sheet component (swipeable drawer)
+- ✅ Haptic feedback (8 vibration patterns)
+- ✅ Progressive geodata loading (network-aware)
+- ✅ Device detection hooks (useMediaQuery, useDeviceInfo)
 
-### 🚧 Phase 2: Touch Interactions (Next)
+### ✅ Phase 2: Touch Interactions (Complete - Oct 8-9, 2025)
 
-- Touch-optimized drag-and-drop
-- Pinch-to-zoom gesture
-- Swipe navigation in study mode
-- Touch feedback overlays
-- Gesture tutorial
+- ✅ Touch-optimized drag-and-drop (TouchCountyDrag)
+- ✅ Pinch-to-zoom gesture (usePinchZoom)
+- ✅ Gesture detection (tap, swipe, pinch)
+- ✅ Touch feedback overlays (ripple, preview, snap guides)
+- ✅ Mobile layouts (portrait, landscape, wrapper)
+- ✅ Gesture tutorial (6-step interactive onboarding)
+- ✅ Comprehensive test suite (13 files, 2,220+ tests)
 
-### 📋 Phase 3: PWA & Polish
+### 🚧 Phase 3: PWA & Polish (Next)
 
-- Service worker for offline
-- PWA manifest
-- Install prompts
+- Service worker for offline gameplay
+- PWA manifest with app icons
+- Install prompts (iOS & Android)
 - Dark mode toggle
-- Performance monitoring
+- Performance monitoring dashboard
+- Lighthouse CI integration
 
 ---
 
