@@ -4,6 +4,7 @@ import App from './App';
 import { reportWebVitals } from './utils/webVitals';
 import { preloadCaliforniaGeoData } from './utils/geoDataCache';
 import { registerServiceWorker, prefetchGeodata } from './utils/sw-registration';
+import { initializeThemeSync } from './stores/themeStore';
 
 // Global styles
 const globalStyles = `
@@ -257,6 +258,9 @@ button:focus {
 const styleSheet = document.createElement('style');
 styleSheet.textContent = globalStyles;
 document.head.appendChild(styleSheet);
+
+// Initialize theme BEFORE React renders (prevents FOUC)
+initializeThemeSync();
 
 // Render app
 ReactDOM.createRoot(document.getElementById('root')!).render(
