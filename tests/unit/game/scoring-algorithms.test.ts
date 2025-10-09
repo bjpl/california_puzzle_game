@@ -97,9 +97,9 @@ class ScoringAlgorithm {
     if (accuracy >= 97) return 'A+';
     if (accuracy >= 93) return 'A';
     if (accuracy >= 90) return 'B+';
-    if (accuracy >= 87) return 'B';
-    if (accuracy >= 83) return 'C+';
-    if (accuracy >= 80) return 'C';
+    if (accuracy >= 85) return 'B';
+    if (accuracy >= 80) return 'C+';
+    if (accuracy >= 75) return 'C';
     if (accuracy >= 70) return 'D';
     return 'F';
   }

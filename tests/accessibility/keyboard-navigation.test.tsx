@@ -2,7 +2,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { axe } from '../a11y-setup';
+import { axe } from 'jest-axe';
+import { getFocusableElements } from '../utils/accessibility';
 
 // Mock keyboard-accessible game component
 const MockKeyboardAccessibleGame: React.FC = () => {
@@ -95,7 +96,16 @@ const MockKeyboardAccessibleGame: React.FC = () => {
       </div>
 
       {/* Skip link */}
-      <a href="#main-content" className="skip-link" data-testid="skip-link">
+      <a
+        href="#main-content"
+        className="skip-link"
+        data-testid="skip-link"
+        onClick={(e) => {
+          e.preventDefault();
+          const mainContent = document.getElementById('main-content');
+          mainContent?.focus();
+        }}
+      >
         Skip to main content
       </a>
 
@@ -136,7 +146,7 @@ const MockKeyboardAccessibleGame: React.FC = () => {
       </div>
 
       {/* Main content */}
-      <main id="main-content" data-testid="main-content">
+      <main id="main-content" data-testid="main-content" tabIndex={-1}>
         <h1>California Counties Puzzle</h1>
 
         {/* Game status */}
@@ -194,33 +204,35 @@ const MockKeyboardAccessibleGame: React.FC = () => {
           </div>
 
           <div className="map-grid" role="grid" aria-label="County placement grid">
-            {counties.map((county) => (
-              <div
-                key={county}
-                role="gridcell"
-                tabIndex={selectedCounty ? 0 : -1}
-                className={`map-cell ${placedCounties.includes(county) ? 'occupied' : ''}`}
-                onClick={() => placeCounty(county)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    placeCounty(county);
-                  }
-                }}
-                data-testid={`map-cell-${county}`}
-                aria-label={`Drop zone for ${county.replace('-', ' ')} county`}
-                aria-describedby={`map-cell-${county}-status`}
-              >
-                <div id={`map-cell-${county}-status`} className="sr-only">
-                  {placedCounties.includes(county)
-                    ? `${county.replace('-', ' ')} county is placed here`
-                    : selectedCounty
-                      ? `Drop zone. Press Enter to place ${selectedCounty.replace('-', ' ')} county here`
-                      : 'Drop zone. Select a county first.'}
+            <div role="row">
+              {counties.map((county) => (
+                <div
+                  key={county}
+                  role="gridcell"
+                  tabIndex={selectedCounty ? 0 : -1}
+                  className={`map-cell ${placedCounties.includes(county) ? 'occupied' : ''}`}
+                  onClick={() => placeCounty(county)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      placeCounty(county);
+                    }
+                  }}
+                  data-testid={`map-cell-${county}`}
+                  aria-label={`Drop zone for ${county.replace('-', ' ')} county`}
+                  aria-describedby={`map-cell-${county}-status`}
+                >
+                  <div id={`map-cell-${county}-status`} className="sr-only">
+                    {placedCounties.includes(county)
+                      ? `${county.replace('-', ' ')} county is placed here`
+                      : selectedCounty
+                        ? `Drop zone. Press Enter to place ${selectedCounty.replace('-', ' ')} county here`
+                        : 'Drop zone. Select a county first.'}
+                  </div>
+                  {placedCounties.includes(county) && <span aria-hidden="true">✓</span>}
                 </div>
-                {placedCounties.includes(county) && <span aria-hidden="true">✓</span>}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
@@ -482,9 +494,9 @@ describe('Keyboard Navigation Accessibility', () => {
 
   describe('Focus Management', () => {
     it('should maintain logical focus order', () => {
-      render(<MockKeyboardAccessibleGame />);
+      const { container } = render(<MockKeyboardAccessibleGame />);
 
-      const focusableElements = getFocusableElements(document.body);
+      const focusableElements = getFocusableElements(container);
 
       expect(focusableElements.length).toBeGreaterThan(0);
 
