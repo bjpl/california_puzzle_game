@@ -9,14 +9,17 @@ An interactive educational puzzle game for learning California geography. Player
 
 ## ✨ Recent Improvements
 
+- **📱 Mobile Foundation (NEW)** - Complete mobile-optimized infrastructure with touch interactions, responsive layouts, and gesture detection
+- **🎯 100% Test Pass Rate** - Achieved perfect test suite reliability (1,792/1,792 tests)
+- **♿ Accessibility Testing** - jest-axe integration for WCAG compliance validation
 - **Component Library** - New UI component system with Button, Badge, Card, Progress, and Typography components
 - **Design System** - Comprehensive style guide with region-specific theming
-- **Bug Fixes** - Fixed formation animation crashes, invisible map rendering, and region color display issues
 - **Tailwind CSS Integration** - Modern utility-first CSS framework for consistent styling
 
 ## 🎮 Features
 
 ### Core Gameplay
+
 - **Interactive Map**: D3.js-powered California map with precise county boundaries
 - **Drag & Drop**: Intuitive county piece placement with visual feedback
 - **Multiple Difficulty Levels**: Easy, Medium, Hard, and Expert modes
@@ -25,6 +28,7 @@ An interactive educational puzzle game for learning California geography. Player
 - **Timer Modes**: Practice, timed challenges, and marathon modes
 
 ### Game Mechanics
+
 - **Accuracy Feedback**: Visual indicators for placement precision
 - **Achievement System**: Unlockable achievements for various milestones
 - **Hint System**: Optional hints for county placement
@@ -32,6 +36,7 @@ An interactive educational puzzle game for learning California geography. Player
 - **Adaptive Difficulty**: Tolerance zones adjust based on skill level
 
 ### User Experience
+
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
 - **Accessibility**: Keyboard navigation and screen reader support
 - **Smooth Animations**: Framer Motion powered transitions
@@ -40,9 +45,27 @@ An interactive educational puzzle game for learning California geography. Player
 - **Design System**: Comprehensive component library with consistent theming
 - **Regional Theming**: Color-coded UI based on California's 7 geographic regions
 
+### 📱 Mobile Features (NEW)
+
+- **Touch-Optimized Drag**: Press-and-hold (300ms) activation prevents accidental drags
+- **Haptic Feedback**: Vibration patterns for drag, snap, and success events
+- **Pinch-to-Zoom**: Two-finger zoom with progressive geodata loading
+- **Gesture Detection**: Tap, swipe, and multi-touch gesture recognition
+- **Responsive Layouts**: Portrait (60/30vh) and landscape (70/30vw) optimized layouts
+- **Bottom Sheet**: Swipeable drawer for county details and game info
+- **Visual Feedback**: Material Design ripples, drag previews, snap guides
+- **Network-Aware**: Adapts geodata quality to connection speed (2G/3G/4G)
+- **Performance**: 60fps animations, hardware-accelerated transforms
+- **Accessibility**: WCAG AAA touch targets (44px), reduced motion support
+- **Tutorial**: Interactive 6-step gesture onboarding for first-time users
+- **Progressive Loading**: Smart geodata loading (21KB → 966KB based on zoom)
+
+See [Mobile Documentation](src/mobile/README.md) for complete API reference and usage examples.
+
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - **React 18** - Component framework
 - **TypeScript** - Type safety and developer experience
 - **Vite** - Fast build tool and development server
@@ -52,11 +75,13 @@ An interactive educational puzzle game for learning California geography. Player
 - **Tailwind CSS** - Utility-first CSS framework
 
 ### UI Components
+
 - **Custom Component Library** - Button, Badge, Card, Progress, Typography
 - **Design System** - Comprehensive style guide with region-specific theming
 - **React DnD** - Drag and drop functionality
 
 ### Development Tools
+
 - **Vitest** - Testing framework
 - **ESLint** - Code linting
 - **TypeScript** - Static type checking
@@ -64,6 +89,7 @@ An interactive educational puzzle game for learning California geography. Player
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 
@@ -119,6 +145,7 @@ npm run geodata:serve    # Serve geographic data on port 8080
 ## 🗺️ Game Regions
 
 ### Available Regions
+
 - **All California** (58 counties) - Expert level challenge
 - **Bay Area** (9 counties) - San Francisco Bay region
 - **Southern California** (7 counties) - LA, Orange, San Diego areas
@@ -128,6 +155,7 @@ npm run geodata:serve    # Serve geographic data on port 8080
 - **Central California** (8 counties) - Central coast and inland
 
 ### Difficulty Levels
+
 - **Easy**: Large counties, visible outlines, hints enabled
 - **Medium**: All counties, dashed outlines, optional hints
 - **Hard**: All counties, minimal outlines, limited hints
@@ -136,18 +164,21 @@ npm run geodata:serve    # Serve geographic data on port 8080
 ## 🎯 Scoring System
 
 ### Base Scoring
+
 - **Perfect Placement** (95-100% accuracy): 100 points × difficulty multiplier
 - **Good Placement** (80-94% accuracy): Scaled points based on precision
 - **Acceptable Placement** (60-79% accuracy): Reduced points
 - **Poor Placement** (<60% accuracy): Minimal points
 
 ### Multipliers
+
 - **Difficulty**: Easy (1x), Medium (1.5x), Hard (2x), Expert (3x)
 - **Speed Bonus**: <5 seconds (1.5x), <10 seconds (1.2x)
 - **Streak Bonus**: Up to 2x for consecutive correct placements
 - **Size Bonus**: 1.3x for smaller counties (area < 1000 sq mi)
 
 ### Achievements
+
 - **First Steps**: Place your first county correctly
 - **Bullseye**: Achieve 100% placement accuracy
 - **Speed Demon**: Place a county in under 3 seconds
@@ -158,6 +189,7 @@ npm run geodata:serve    # Serve geographic data on port 8080
 ## 🏗️ Architecture
 
 ### Project Structure
+
 ```
 src/
 ├── components/
@@ -197,6 +229,7 @@ docs/
 ```
 
 ### State Management
+
 The game uses Zustand for state management with persistent storage:
 
 - **Game State**: Current game session data
@@ -205,7 +238,9 @@ The game uses Zustand for state management with persistent storage:
 - **Achievements**: Unlockable milestones and progress tracking
 
 ### Map Projection
+
 Uses D3.js Mercator projection specifically configured for California:
+
 - **Center**: [-119.4179, 36.7783] (Geographic center of CA)
 - **Scale**: 2400 (optimized for gameplay visibility)
 - **Bounds**: Automatically calculated based on container size
@@ -213,6 +248,7 @@ Uses D3.js Mercator projection specifically configured for California:
 ## 🧪 Testing
 
 ### Test Structure
+
 ```
 tests/
 ├── components/          # Component tests
@@ -224,6 +260,7 @@ tests/
 ```
 
 ### Testing Features
+
 - **Unit Tests**: Component behavior and utility functions
 - **Integration Tests**: Game flow and state management
 - **Accessibility Tests**: Screen reader compatibility and keyboard navigation
@@ -231,6 +268,7 @@ tests/
 - **Coverage Reports**: Comprehensive test coverage tracking
 
 ### Running Tests
+
 ```bash
 npm run test                    # Run all tests
 npm run test:watch             # Watch mode
@@ -251,6 +289,7 @@ import { Button, Card, Badge, Progress, Heading, Text } from '@/components/ui';
 ```
 
 **Available Components:**
+
 - **Button** - 7 variants (Primary, Secondary, Success, Danger, Warning, Ghost, Outline)
 - **Badge** - Region-specific badges with auto-coloring for California regions
 - **Card** - Flexible card containers with county-specific styling
@@ -289,12 +328,14 @@ The project uses GitHub Actions for automated continuous integration and deploym
 See [CI/CD Documentation](docs/CI_CD.md) for setup and configuration details.
 
 ### Build Process
+
 ```bash
 npm run build          # Create production build
 npm run preview        # Test production build locally
 ```
 
 ### Environment Variables
+
 ```bash
 VITE_APP_TITLE=California Counties Puzzle
 VITE_ANALYTICS_ID=your_analytics_id
@@ -302,6 +343,7 @@ VITE_API_BASE_URL=your_api_url
 ```
 
 ### Deployment Platforms
+
 - **Netlify**: Primary deployment platform with CI/CD integration
 - **Vercel**: Alternative optimized for React/Vite applications
 - **GitHub Pages**: Free hosting for open source projects
@@ -318,6 +360,7 @@ For automated deployment, configure these secrets in repository settings:
 ## 🤝 Contributing
 
 ### Development Setup
+
 1. Fork the repository
 2. Create a feature branch
 3. Install dependencies: `npm install`
@@ -327,6 +370,7 @@ For automated deployment, configure these secrets in repository settings:
 7. Submit a pull request
 
 ### Code Style
+
 - Use TypeScript for all new code
 - Follow existing naming conventions
 - Write tests for new features
@@ -334,6 +378,7 @@ For automated deployment, configure these secrets in repository settings:
 - Ensure accessibility compliance
 
 ### Adding New Counties/Regions
+
 1. Update `californiaData.ts` with new county information
 2. Add geographic boundary data to public/data/
 3. Update region filters and classifications
