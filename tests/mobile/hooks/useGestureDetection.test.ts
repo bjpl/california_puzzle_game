@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 /**
  * |unit| |integration| |a11y| |performance|
  * useGestureDetection Hook Tests
@@ -16,7 +15,6 @@ import {
   calculateCenterPoint,
   touchListToPoints,
   type GestureResult,
-  type TapGesture,
   type SwipeGesture,
 } from '@/mobile/hooks/useGestureDetection';
 import { SwipeDirection } from '@/mobile/config/touchSensors';
@@ -750,7 +748,7 @@ describe('|performance| useGestureDetection Performance', () => {
 
     const { unmount } = renderHook(() => useGestureDetection({ enableLongPress: true }));
 
-    const touchStart = createTouchEvent('touchstart', [createTouch(0, 100, 100)]);
+    const _touchStart = createTouchEvent('touchstart', [createTouch(0, 100, 100)]);
 
     act(() => {
       unmount();

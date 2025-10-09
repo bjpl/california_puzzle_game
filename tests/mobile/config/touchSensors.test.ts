@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 /**
  * |unit| |integration| |accessibility| |performance|
  * Touch Sensors Configuration Tests
@@ -7,7 +6,7 @@
  * for mobile drag-and-drop interactions.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   TOUCH_SENSOR_OPTIONS,
   POINTER_SENSOR_OPTIONS,

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 /**
  * |unit| |integration| |a11y| |performance|
  * usePinchZoom Hook Tests
@@ -7,7 +6,7 @@
  * Tests two-finger pinch detection, scale calculation, geodata loading, and zoom controls.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { act } from 'react';
 import { usePinchZoom } from '@/mobile/hooks/usePinchZoom';

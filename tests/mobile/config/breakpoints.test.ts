@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 /**
  * |unit| |integration| |accessibility| |performance|
  * Mobile Breakpoints Configuration Tests

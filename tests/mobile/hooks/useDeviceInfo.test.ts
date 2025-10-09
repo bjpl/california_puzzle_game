@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 /**
  * |unit| |integration| |a11y| |performance|
  * useDeviceInfo Hook Tests

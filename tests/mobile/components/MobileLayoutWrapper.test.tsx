@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 /**
  * |unit|integration|accessibility|performance|
  * Mobile Layout Wrapper Component Tests
@@ -38,14 +37,18 @@ vi.mock('@/mobile/hooks/useDeviceInfo', () => ({
 
 // Mock layout components
 vi.mock('@/mobile/components/MobilePortraitLayout', () => ({
-  MobilePortraitLayout: ({ children, 'data-testid': testId }: any) => (
-    <div data-testid={testId || 'mobile-portrait-layout'}>{children}</div>
+  MobilePortraitLayout: ({ children, 'data-testid': testId }: Record<string, unknown>) => (
+    <div data-testid={(testId as string) || 'mobile-portrait-layout'}>
+      {children as React.ReactNode}
+    </div>
   ),
 }));
 
 vi.mock('@/mobile/components/MobileLandscapeLayout', () => ({
-  MobileLandscapeLayout: ({ children, 'data-testid': testId }: any) => (
-    <div data-testid={testId || 'mobile-landscape-layout'}>{children}</div>
+  MobileLandscapeLayout: ({ children, 'data-testid': testId }: Record<string, unknown>) => (
+    <div data-testid={(testId as string) || 'mobile-landscape-layout'}>
+      {children as React.ReactNode}
+    </div>
   ),
 }));
 
@@ -685,7 +688,7 @@ describe('MobileLayoutWrapper Component', () => {
       render(
         <MobileLayoutWrapper
           mapComponent={mockMapComponent}
-          counties={undefined as any}
+          counties={undefined as unknown as County[]}
           onCountySelect={mockOnCountySelect}
         />
       );
