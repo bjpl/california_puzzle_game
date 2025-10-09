@@ -23,6 +23,7 @@ exports[`Typography Components > Snapshot Testing > matches snapshot for heading
 exports[`Typography Components > Snapshot Testing > matches snapshot for label 1`] = `
 <label
   class="ca-text ca-text--sm ca-text--primary ca-text--left ca-text--weight-medium ca-text--leading-normal"
+  for="test"
 >
   Required Label
   <span
