@@ -64,17 +64,17 @@ function CountyDropZone({
   if (isPlaced) {
     fillColor = '#10b981'; // Green when placed
     strokeColor = '#047857'; // Darker green stroke
-    strokeWidth = '2';
-    fillOpacity = 0.98; // Nearly opaque when placed
+    strokeWidth = '2.5';
+    fillOpacity = 1;
   } else if (isDragging && isOver) {
-    fillColor = '#fde68a'; // Softer yellow when hovering over during drag
-    strokeColor = '#f59e0b'; // Amber/orange stroke - PROMINENT
-    strokeWidth = '3'; // Thicker stroke for visibility
-    fillOpacity = 0.95; // More visible when hovering
+    fillColor = '#fef3c7'; // Light yellow fill when hovering during drag
+    strokeColor = '#ea580c'; // BRIGHT ORANGE stroke - very visible
+    strokeWidth = '4'; // Extra thick for maximum visibility
+    fillOpacity = 0.8; // Semi-transparent so you can see through
   } else if (isHovered) {
-    fillOpacity = 0.9; // Brighten on hover
-    strokeColor = '#3b82f6'; // Blue stroke
-    strokeWidth = '2';
+    fillOpacity = 1;
+    strokeColor = '#d1d5db'; // Keep default gray
+    strokeWidth = '1.5';
   }
 
   // Calculate optimal text color based on background
@@ -224,19 +224,12 @@ function CountyDropZone({
         fillOpacity={fillOpacity}
         stroke={strokeColor}
         strokeWidth={strokeWidth}
-        strokeLinejoin="miter"
-        strokeLinecap="square"
-        vectorEffect="non-scaling-stroke"
-        className="transition-all duration-200 hover:opacity-90"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        className="county-drop-zone"
         style={{
-          cursor: isPlaced ? 'pointer' : 'pointer',
-          filter:
-            isDragging && isOver
-              ? 'drop-shadow(0 4px 10px rgba(245, 158, 11, 0.4))'
-              : isPlaced
-                ? 'drop-shadow(0 2px 4px rgba(16, 185, 129, 0.2))'
-                : 'none',
-          opacity: 1,
+          cursor: 'pointer',
+          transition: 'all 0.15s ease',
         }}
         onMouseEnter={() => {
           setIsHovered(true);

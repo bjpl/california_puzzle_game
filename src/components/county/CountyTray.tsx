@@ -84,24 +84,26 @@ export default function CountyTray() {
   );
 
   return (
-    <Card variant="elevated" className="h-[30vh] lg:h-[520px] overflow-hidden p-2 flex flex-col">
+    <Card variant="elevated" className="h-[30vh] lg:h-[520px] p-2 flex flex-col">
       <Heading
         level={2}
         size="label"
-        className="text-gray-800 dark:text-gray-200 mb-1 flex-shrink-0"
+        className="text-gray-800 dark:text-gray-200 mb-2 flex-shrink-0"
       >
         Counties ({counties.length})
       </Heading>
-      <div
-        className="space-y-0.5 flex-1 overflow-y-auto overflow-x-hidden pr-1"
-        style={{ WebkitOverflowScrolling: 'touch' }}
-      >
+      <div className="flex-1 overflow-y-auto overflow-x-hidden pr-1 space-y-1">
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
-          <div key={region}>
-            <Text size="xs" weight="semibold" color="secondary" className="mt-1 mb-0.5">
+          <div key={region} className="mb-2">
+            <Text
+              size="xs"
+              weight="semibold"
+              color="secondary"
+              className="mb-1 sticky top-0 bg-white dark:bg-gray-800 py-0.5"
+            >
               {region}
             </Text>
-            <div className="grid grid-cols-2 gap-0.5">
+            <div className="grid grid-cols-2 gap-1">
               {regionCounties.map((county) => (
                 <DraggableCounty key={county.id} county={county} />
               ))}
