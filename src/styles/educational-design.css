@@ -12,13 +12,13 @@
 /* AUTHENTIC CALIFORNIA EDUCATIONAL COLORS */
 :root {
   /* Real California landscape colors - no neon, no purple tech nonsense */
-  --ca-navy: #1e3a5f;           /* Deep ocean blue, trustworthy */
-  --ca-forest: #2d5016;        /* Redwood forest green */
-  --ca-sand: #e6d5b8;          /* Beach sand, warm neutral */
-  --ca-clay: #b85c38;          /* Terra cotta, earthy */
-  --ca-granite: #8c8c8c;       /* Sierra granite gray */
-  --ca-sky: #87ceeb;           /* Clear California sky */
-  --ca-gold: #daa520;          /* Actual gold, not neon yellow */
+  --ca-navy: #1e3a5f; /* Deep ocean blue, trustworthy */
+  --ca-forest: #2d5016; /* Redwood forest green */
+  --ca-sand: #e6d5b8; /* Beach sand, warm neutral */
+  --ca-clay: #b85c38; /* Terra cotta, earthy */
+  --ca-granite: #8c8c8c; /* Sierra granite gray */
+  --ca-sky: #87ceeb; /* Clear California sky */
+  --ca-gold: #daa520; /* Actual gold, not neon yellow */
 
   /* Educational neutrals - like textbooks and classrooms */
   --paper-white: #fefefe;
@@ -27,22 +27,22 @@
   --eraser-pink: #f5f5f5;
 
   /* Semantic colors for learning */
-  --correct-green: #28a745;    /* Clear success, not neon */
-  --warning-amber: #dc7633;    /* Amber warning, not aggressive */
-  --info-blue: #17a2b8;       /* Information blue */
-  --error-red: #dc3545;       /* Clear error state */
+  --correct-green: #28a745; /* Clear success, not neon */
+  --warning-amber: #dc7633; /* Amber warning, not aggressive */
+  --info-blue: #17a2b8; /* Information blue */
+  --error-red: #dc3545; /* Clear error state */
 
   /* Typography */
-  --font-serif: 'Source Serif Pro', Georgia, serif;  /* Academic serif */
-  --font-sans: 'Inter', system-ui, sans-serif;       /* Clean sans */
+  --font-serif: 'Source Serif Pro', Georgia, serif; /* Academic serif */
+  --font-sans: 'Inter', system-ui, sans-serif; /* Clean sans */
 
   /* Academic spacing - based on book/paper design */
-  --space-xs: 0.25rem;   /* 4px */
-  --space-sm: 0.5rem;    /* 8px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
-  --space-2xl: 3rem;     /* 48px */
+  --space-xs: 0.25rem; /* 4px */
+  --space-sm: 0.5rem; /* 8px */
+  --space-md: 1rem; /* 16px */
+  --space-lg: 1.5rem; /* 24px */
+  --space-xl: 2rem; /* 32px */
+  --space-2xl: 3rem; /* 48px */
 
   /* Realistic shadows - like paper on desk */
   --paper-shadow: 0 2px 4px rgba(44, 44, 44, 0.1);
@@ -50,8 +50,8 @@
   --deep-shadow: 0 8px 16px rgba(44, 44, 44, 0.15);
 
   /* Border radius - subtle, not over-designed */
-  --radius: 0.375rem;     /* 6px - like rounded paper corners */
-  --radius-lg: 0.5rem;   /* 8px */
+  --radius: 0.375rem; /* 6px - like rounded paper corners */
+  --radius-lg: 0.5rem; /* 8px */
 }
 
 /* BASE LAYER - Clean, educational foundation */
@@ -68,28 +68,45 @@
     font-family: var(--font-sans);
     font-size: 1rem;
     line-height: 1.6;
-    color: var(--ink-black);
-    background-color: var(--paper-white);
+    /* Use theme colors instead of hardcoded educational colors */
+    color: var(--color-text-primary, var(--ink-black));
+    background-color: var(--color-bg-primary, var(--paper-white));
     -webkit-font-smoothing: antialiased;
   }
 
   /* Typography hierarchy - academic and readable */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-serif);
     font-weight: 600;
     line-height: 1.2;
-    color: var(--ca-navy);
+    /* Use theme colors for headings */
+    color: var(--color-text-primary, var(--ca-navy));
     margin-bottom: var(--space-md);
   }
 
-  h1 { font-size: 2.25rem; font-weight: 700; }  /* Page titles */
-  h2 { font-size: 1.875rem; }                   /* Section headers */
-  h3 { font-size: 1.5rem; }                     /* Subsections */
-  h4 { font-size: 1.25rem; }                    /* Small headers */
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+  } /* Page titles */
+  h2 {
+    font-size: 1.875rem;
+  } /* Section headers */
+  h3 {
+    font-size: 1.5rem;
+  } /* Subsections */
+  h4 {
+    font-size: 1.25rem;
+  } /* Small headers */
 
   p {
     margin-bottom: var(--space-md);
-    color: var(--ink-black);
+    /* Use theme colors for paragraphs */
+    color: var(--color-text-primary, var(--ink-black));
   }
 
   a {
@@ -114,7 +131,6 @@
 
 /* COMPONENT LAYER - Educational components that actually serve learning */
 @layer components {
-
   /* Educational Card - like flashcards or textbook boxes */
   .edu-card {
     background: var(--paper-white);
@@ -362,7 +378,6 @@
 
 /* UTILITY LAYER - Minimal, purposeful utilities */
 @layer utilities {
-
   /* Text utilities - educational hierarchy */
   .text-title {
     font-family: var(--font-serif);
@@ -385,15 +400,31 @@
   }
 
   /* Status colors - clear educational feedback */
-  .text-correct { color: var(--correct-green); }
-  .text-warning { color: var(--warning-amber); }
-  .text-error { color: var(--error-red); }
-  .text-info { color: var(--info-blue); }
+  .text-correct {
+    color: var(--correct-green);
+  }
+  .text-warning {
+    color: var(--warning-amber);
+  }
+  .text-error {
+    color: var(--error-red);
+  }
+  .text-info {
+    color: var(--info-blue);
+  }
 
-  .bg-correct { background-color: rgba(40, 167, 69, 0.1); }
-  .bg-warning { background-color: rgba(220, 118, 51, 0.1); }
-  .bg-error { background-color: rgba(220, 53, 69, 0.1); }
-  .bg-info { background-color: rgba(23, 162, 184, 0.1); }
+  .bg-correct {
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+  .bg-warning {
+    background-color: rgba(220, 118, 51, 0.1);
+  }
+  .bg-error {
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+  .bg-info {
+    background-color: rgba(23, 162, 184, 0.1);
+  }
 
   /* Spacing utilities that make sense */
   .space-educational > * + * {
@@ -406,8 +437,14 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* Responsive utilities */
