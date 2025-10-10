@@ -43,7 +43,7 @@ export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
       // Initial state
-      mode: 'system', // Default to system preference
+      mode: 'light', // Default to light mode (user can change to dark/system)
       resolvedTheme: 'light', // Will be updated by initializeTheme
       initialized: false,
 
@@ -213,7 +213,7 @@ export function initializeThemeSync(): void {
   // Read from localStorage directly (before Zustand hydrates)
   // eslint-disable-next-line no-restricted-globals
   const stored = localStorage.getItem('theme-storage');
-  const mode: ThemeMode = stored ? JSON.parse(stored).state?.mode || 'system' : 'system';
+  const mode: ThemeMode = stored ? JSON.parse(stored).state?.mode || 'light' : 'light';
 
   const resolvedTheme = mode === 'system' ? getSystemTheme() : mode;
 
