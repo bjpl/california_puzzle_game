@@ -310,8 +310,8 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   if (!geoData || !bounds) {
     mapLogger.debug('⏳ Map loading state - geoData:', !!geoData, 'bounds:', !!bounds);
     return (
-      <div className="w-full h-full flex items-center justify-center bg-blue-50">
-        <div className="text-gray-700 animate-pulse text-lg font-semibold">
+      <div className="w-full h-full flex items-center justify-center bg-blue-50 dark:bg-gray-800">
+        <div className="text-gray-700 dark:text-gray-300 animate-pulse text-lg font-semibold">
           Loading California map...
         </div>
       </div>
@@ -377,10 +377,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   };
 
   return (
-    <div
-      className="w-full h-full relative flex items-center justify-center"
-      style={{ backgroundColor: '#fefefe' }}
-    >
+    <div className="w-full h-full relative flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       {/* Zoom Controls - Clean educational styling */}
       <div className="map-controls">
         <button
