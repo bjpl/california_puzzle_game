@@ -84,11 +84,18 @@ export default function CountyTray() {
   );
 
   return (
-    <Card variant="elevated" className="h-[30vh] lg:h-[520px] overflow-hidden p-2">
-      <Heading level={2} size="label" className="text-gray-800 dark:text-gray-200 mb-1">
+    <Card variant="elevated" className="h-[30vh] lg:h-[520px] overflow-hidden p-2 flex flex-col">
+      <Heading
+        level={2}
+        size="label"
+        className="text-gray-800 dark:text-gray-200 mb-1 flex-shrink-0"
+      >
         Counties ({counties.length})
       </Heading>
-      <div className="space-y-0.5 max-h-[calc(30vh-60px)] lg:max-h-[490px] overflow-y-auto overflow-x-hidden pr-1">
+      <div
+        className="space-y-0.5 flex-1 overflow-y-auto overflow-x-hidden pr-1"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
           <div key={region}>
             <Text size="xs" weight="semibold" color="secondary" className="mt-1 mb-0.5">
