@@ -17,7 +17,7 @@ export default function GameHeader() {
     counties,
     resetGame,
     timerState,
-    timerStarted: _timerStarted,
+    timerStarted,
     pauseGame,
     resumeGame,
     isGameStarted: _isGameStarted,
