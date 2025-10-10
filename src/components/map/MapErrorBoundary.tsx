@@ -29,10 +29,10 @@ export function MapErrorBoundary({ children }: Props) {
 
 function MapErrorFallback() {
   return (
-    <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
+    <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-red-50 dark:bg-red-900/20 rounded-lg border-2 border-red-300 dark:border-red-700">
       <div className="text-center p-6">
         <svg
-          className="w-16 h-16 mx-auto text-gray-400"
+          className="w-16 h-16 mx-auto text-red-400 dark:text-red-500"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -41,19 +41,21 @@ function MapErrorFallback() {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
           />
         </svg>
-        <h3 className="mt-4 text-lg font-medium text-gray-900">Map failed to load</h3>
-        <p className="mt-2 text-sm text-gray-600">
-          There was a problem rendering the California map.
+        <h3 className="mt-4 text-xl font-bold text-red-900 dark:text-red-100">
+          MAP ERROR - Please screenshot this!
+        </h3>
+        <p className="mt-2 text-sm text-red-700 dark:text-red-300">
+          There was a problem rendering the California map on mobile.
         </p>
-        <p className="mt-1 text-xs text-gray-500">
-          Please try reloading the page.
+        <p className="mt-1 text-xs text-red-600 dark:text-red-400 font-mono bg-white dark:bg-gray-900 p-2 rounded">
+          Check browser console (F12) for errors
         </p>
         <button
           onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="mt-4 px-6 py-3 bg-red-600 dark:bg-red-700 text-white rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-colors font-medium"
         >
           Reload Page
         </button>
