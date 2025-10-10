@@ -131,10 +131,22 @@
   border-color: rgba(59, 130, 246, 0.3);
 }
 
+.dark .ca-badge--region-bay-area {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
 .ca-badge--region-central-valley {
   background-color: rgba(34, 197, 94, 0.1);
   color: #16a34a;
   border-color: rgba(34, 197, 94, 0.3);
+}
+
+.dark .ca-badge--region-central-valley {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #34d399;
+  border-color: rgba(34, 197, 94, 0.4);
 }
 
 .ca-badge--region-gold-country {
@@ -143,10 +155,22 @@
   border-color: rgba(245, 158, 11, 0.3);
 }
 
+.dark .ca-badge--region-gold-country {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
 .ca-badge--region-los-angeles {
   background-color: rgba(239, 68, 68, 0.1);
   color: #dc2626;
   border-color: rgba(239, 68, 68, 0.3);
+}
+
+.dark .ca-badge--region-los-angeles {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .ca-badge--region-north-coast {
@@ -155,10 +179,22 @@
   border-color: rgba(20, 184, 166, 0.3);
 }
 
+.dark .ca-badge--region-north-coast {
+  background-color: rgba(20, 184, 166, 0.2);
+  color: #5eead4;
+  border-color: rgba(20, 184, 166, 0.4);
+}
+
 .ca-badge--region-northern {
   background-color: rgba(139, 92, 246, 0.1);
   color: #7c3aed;
   border-color: rgba(139, 92, 246, 0.3);
+}
+
+.dark .ca-badge--region-northern {
+  background-color: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+  border-color: rgba(139, 92, 246, 0.4);
 }
 
 .ca-badge--region-orange-county {
@@ -167,10 +203,22 @@
   border-color: rgba(249, 115, 22, 0.3);
 }
 
+.dark .ca-badge--region-orange-county {
+  background-color: rgba(249, 115, 22, 0.2);
+  color: #fb923c;
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
 .ca-badge--region-sacramento {
   background-color: rgba(132, 204, 22, 0.1);
   color: #65a30d;
   border-color: rgba(132, 204, 22, 0.3);
+}
+
+.dark .ca-badge--region-sacramento {
+  background-color: rgba(132, 204, 22, 0.2);
+  color: #a3e635;
+  border-color: rgba(132, 204, 22, 0.4);
 }
 
 .ca-badge--region-san-diego {
@@ -179,16 +227,34 @@
   border-color: rgba(236, 72, 153, 0.3);
 }
 
+.dark .ca-badge--region-san-diego {
+  background-color: rgba(236, 72, 153, 0.2);
+  color: #f472b6;
+  border-color: rgba(236, 72, 153, 0.4);
+}
+
 .ca-badge--region-sierra {
   background-color: rgba(99, 102, 241, 0.1);
   color: #4f46e5;
   border-color: rgba(99, 102, 241, 0.3);
 }
 
+.dark .ca-badge--region-sierra {
+  background-color: rgba(99, 102, 241, 0.2);
+  color: #818cf8;
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
 .ca-badge--region-southern-california {
   background-color: rgba(244, 63, 94, 0.1);
   color: #e11d48;
   border-color: rgba(244, 63, 94, 0.3);
+}
+
+.dark .ca-badge--region-southern-california {
+  background-color: rgba(244, 63, 94, 0.2);
+  color: #fb7185;
+  border-color: rgba(244, 63, 94, 0.4);
 }
 
 /* Dot Indicator */
