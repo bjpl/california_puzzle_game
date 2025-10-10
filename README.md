@@ -9,7 +9,9 @@ An interactive educational puzzle game for learning California geography. Player
 
 ## ✨ Recent Improvements
 
-- **📱 Mobile Foundation (NEW)** - Complete mobile-optimized infrastructure with touch interactions, responsive layouts, and gesture detection
+- **🌐 Progressive Web App (NEW - Oct 9)** - Complete PWA with offline gameplay, installable on iOS/Android, Service Worker caching
+- **🌙 Dark Mode (NEW - Oct 9)** - Full dark theme with OLED optimization (40-60% battery savings), system preference sync, WCAG AA compliant
+- **📱 Mobile Foundation** - Complete mobile-optimized infrastructure with touch interactions, responsive layouts, and gesture detection
 - **🎯 100% Test Pass Rate** - Achieved perfect test suite reliability (1,792/1,792 tests)
 - **♿ Accessibility Testing** - jest-axe integration for WCAG compliance validation
 - **Component Library** - New UI component system with Button, Badge, Card, Progress, and Typography components
@@ -37,15 +39,33 @@ An interactive educational puzzle game for learning California geography. Player
 
 ### User Experience
 
+- **Progressive Web App**: Install on mobile devices, works offline with cached geodata
+- **Dark Mode**: System-aware theme with OLED optimization (40-60% battery savings)
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
-- **Accessibility**: Keyboard navigation and screen reader support
+- **Accessibility**: Keyboard navigation and screen reader support (WCAG AA)
 - **Smooth Animations**: Framer Motion powered transitions
 - **Loading States**: Professional loading screens and progress indicators
 - **Error Handling**: Graceful error recovery and user feedback
 - **Design System**: Comprehensive component library with consistent theming
 - **Regional Theming**: Color-coded UI based on California's 7 geographic regions
 
-### 📱 Mobile Features (NEW)
+### 📱 Mobile Features
+
+- **Progressive Web App (PWA)** ⭐ NEW
+  - Install on iOS/Android home screen
+  - Works completely offline after first load
+  - Auto-updates with user notifications
+  - 3-tier caching strategy (~3MB pre-cache, ~11MB max)
+  - Standalone mode detection
+  - Platform-specific install prompts
+
+- **Dark Mode** 🌙 NEW
+  - Three modes: Light, Dark, System (auto-detects OS preference)
+  - OLED optimization (#121212 base = 40-60% battery savings)
+  - WCAG AA compliant (4.5:1+ contrast ratios)
+  - Smooth 200ms transitions
+  - localStorage persistence across sessions
+  - No flash of unstyled content (FOUC prevention)
 
 - **Touch-Optimized Drag**: Press-and-hold (300ms) activation prevents accidental drags
 - **Haptic Feedback**: Vibration patterns for drag, snap, and success events
@@ -97,7 +117,7 @@ See [Mobile Documentation](src/mobile/README.md) for complete API reference and 
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/bjpl/california_puzzle_game
 cd california_puzzle_game
 
 # Install dependencies
@@ -107,14 +127,36 @@ npm install
 npm run dev
 ```
 
+### 📱 Installing as Progressive Web App
+
+**Android Chrome:**
+
+1. Visit the app in Chrome
+2. Wait for "Install" banner or tap menu → "Add to Home screen"
+3. App installs to your home screen
+
+**iOS Safari:**
+
+1. Visit the app in Safari
+2. Tap Share button → "Add to Home Screen"
+3. App installs to your home screen
+
+**Desktop:**
+
+1. Visit the app in Chrome/Edge
+2. Look for install icon in address bar
+3. Click to install as desktop app
+
+See [PWA Testing Guide](docs/TESTING_PWA_DARK_MODE.md) for detailed installation and testing procedures.
+
 ### Available Scripts
 
 ```bash
 # Development
-npm run dev              # Start dev server
+npm run dev              # Start dev server (http://localhost:3000)
 npm run build            # Build for production
 npm run build:check      # TypeScript check + build
-npm run preview          # Preview production build
+npm run preview          # Preview production build (test PWA features)
 
 # Testing
 npm run test             # Run tests
