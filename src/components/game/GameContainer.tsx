@@ -197,53 +197,58 @@ export default function GameContainer() {
   }
 
   return (
-    <div className="container mx-auto p-2 max-w-7xl">
-      <GameHeader />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto p-2 max-w-7xl">
+        <GameHeader />
 
-      {/* Regions Panel */}
-      <RegionsPanel />
+        {/* Regions Panel */}
+        <RegionsPanel />
 
-      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
-          {/* County Tray */}
-          <div className="lg:col-span-1">
-            <CountyTray />
-          </div>
+        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
+            {/* County Tray */}
+            <div className="lg:col-span-1">
+              <CountyTray />
+            </div>
 
-          {/* Map - Using simplified version for better rendering */}
-          <div className="lg:col-span-3">
-            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 border border-gray-100 dark:border-gray-800 h-[60vh] lg:h-[520px]">
-              <MapErrorBoundary>
-                <CaliforniaMapSimple isDragging={isDragging} />
-              </MapErrorBoundary>
+            {/* Map - Using simplified version for better rendering */}
+            <div className="lg:col-span-3">
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 border border-gray-100 dark:border-gray-800 h-[60vh] lg:h-[520px]">
+                <MapErrorBoundary>
+                  <CaliforniaMapSimple isDragging={isDragging} />
+                </MapErrorBoundary>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Drag Overlay - This renders the dragged item outside of its container */}
-        <DragOverlay dropAnimation={null}>
-          {activeCounty ? (
-            <div
-              className="px-1 py-0 bg-yellow-100 dark:bg-yellow-800/80 border border-yellow-400 dark:border-yellow-600 rounded shadow-md cursor-grabbing pointer-events-none"
-              style={{ fontSize: '11px' }}
-            >
-              <span className="font-semibold text-gray-700 dark:text-gray-200">
-                {activeCounty.name}
-              </span>
-            </div>
-          ) : null}
-        </DragOverlay>
-      </DndContext>
-      {/* Render Study Mode with Portal to ensure it appears above everything */}
-      {showStudyMode &&
-        createPortal(
-          <StudyErrorBoundary>
-            <Suspense fallback={<LoadingSpinner message="Loading Study Mode..." />}>
-              <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />
-            </Suspense>
-          </StudyErrorBoundary>,
-          document.body
-        )}
+          {/* Drag Overlay - This renders the dragged item outside of its container */}
+          <DragOverlay dropAnimation={null}>
+            {activeCounty ? (
+              <div
+                className="px-1 py-0 bg-yellow-100 dark:bg-yellow-800/80 border border-yellow-400 dark:border-yellow-600 rounded shadow-md cursor-grabbing pointer-events-none"
+                style={{ fontSize: '11px' }}
+              >
+                <span className="font-semibold text-gray-700 dark:text-gray-200">
+                  {activeCounty.name}
+                </span>
+              </div>
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+        {/* Render Study Mode with Portal to ensure it appears above everything */}
+        {showStudyMode &&
+          createPortal(
+            <StudyErrorBoundary>
+              <Suspense fallback={<LoadingSpinner message="Loading Study Mode..." />}>
+                <EnhancedStudyMode
+                  onClose={() => setShowStudyMode(false)}
+                  onStartGame={startGame}
+                />
+              </Suspense>
+            </StudyErrorBoundary>,
+            document.body
+          )}
+      </div>
     </div>
   );
 }
