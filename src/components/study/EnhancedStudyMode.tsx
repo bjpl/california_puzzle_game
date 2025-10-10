@@ -592,8 +592,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
       >
         {viewMode === 'explore' && (
           <>
-            {/* County List - Optimized Width */}
-            <div className="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-[280px] max-w-[400px] border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto">
+            {/* County List - Responsive: Hidden on mobile when county selected */}
+            <div
+              className={`${selectedCounty ? 'hidden md:block' : 'block'} w-full md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-[280px] max-w-[400px] border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto`}
+            >
               <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 z-10">
                 <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">
                   {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
@@ -636,9 +638,30 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
               </div>
             </div>
 
-            {/* County Details - Expanded Layout */}
-            <div className="flex-1 flex flex-col bg-gray-50 dark:bg-gray-800">
-              <div className="flex-1 p-8 overflow-y-auto max-w-6xl mx-auto w-full">
+            {/* County Details - Responsive: Shows on mobile when county selected */}
+            <div
+              className={`${selectedCounty ? 'block' : 'hidden md:block'} flex-1 flex flex-col bg-gray-50 dark:bg-gray-800`}
+            >
+              {/* Mobile Back Button */}
+              {selectedCounty && (
+                <div className="md:hidden sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 z-10">
+                  <button
+                    onClick={() => setSelectedCounty(null)}
+                    className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                    <span>Back to County List</span>
+                  </button>
+                </div>
+              )}
+              <div className="flex-1 p-4 md:p-8 overflow-y-auto max-w-6xl mx-auto w-full">
                 {selectedCounty ? (
                   <div>
                     {/* County Header - Enhanced */}
@@ -705,50 +728,62 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                       {contentTab === 'overview' && (
                         <>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 shadow-sm">
-                              <h4 className="font-bold text-blue-900 mb-4 text-lg flex items-center gap-2">
+                            <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-700 shadow-sm">
+                              <h4 className="font-bold text-blue-900 dark:text-blue-100 mb-4 text-lg flex items-center gap-2">
                                 <span className="text-2xl">📊</span> Quick Facts
                               </h4>
-                              <div className="space-y-1 text-sm text-gray-700">
+                              <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                                 <div>
-                                  <strong className="text-gray-900">County Seat:</strong>{' '}
-                                  <span className="text-gray-700">
+                                  <strong className="text-gray-900 dark:text-gray-100">
+                                    County Seat:
+                                  </strong>{' '}
+                                  <span className="text-gray-700 dark:text-gray-300">
                                     {selectedCounty?.capital || selectedCounty?.countySeat || 'N/A'}
                                   </span>
                                 </div>
                                 <div>
-                                  <strong className="text-gray-900">Population:</strong>{' '}
-                                  <span className="text-gray-700">
+                                  <strong className="text-gray-900 dark:text-gray-100">
+                                    Population:
+                                  </strong>{' '}
+                                  <span className="text-gray-700 dark:text-gray-300">
                                     {selectedCounty?.population
                                       ? selectedCounty.population.toLocaleString()
                                       : 'N/A'}
                                   </span>
                                 </div>
                                 <div>
-                                  <strong className="text-gray-900">Area:</strong>{' '}
-                                  <span className="text-gray-700">
+                                  <strong className="text-gray-900 dark:text-gray-100">
+                                    Area:
+                                  </strong>{' '}
+                                  <span className="text-gray-700 dark:text-gray-300">
                                     {selectedCounty?.area
                                       ? `${selectedCounty.area.toLocaleString()} sq mi`
                                       : 'N/A'}
                                   </span>
                                 </div>
                                 <div>
-                                  <strong className="text-gray-900">Established:</strong>{' '}
-                                  <span className="text-gray-700">
+                                  <strong className="text-gray-900 dark:text-gray-100">
+                                    Established:
+                                  </strong>{' '}
+                                  <span className="text-gray-700 dark:text-gray-300">
                                     {selectedCounty?.founded ||
                                       selectedCounty?.established ||
                                       'N/A'}
                                   </span>
                                 </div>
                                 <div>
-                                  <strong className="text-gray-900">Region:</strong>{' '}
-                                  <span className="text-gray-700">
+                                  <strong className="text-gray-900 dark:text-gray-100">
+                                    Region:
+                                  </strong>{' '}
+                                  <span className="text-gray-700 dark:text-gray-300">
                                     {selectedCounty?.region || 'N/A'}
                                   </span>
                                 </div>
                                 <div>
-                                  <strong className="text-gray-900">Difficulty:</strong>{' '}
-                                  <span className="text-gray-700">
+                                  <strong className="text-gray-900 dark:text-gray-100">
+                                    Difficulty:
+                                  </strong>{' '}
+                                  <span className="text-gray-700 dark:text-gray-300">
                                     {selectedCounty?.difficulty
                                       ? selectedCounty.difficulty.charAt(0).toUpperCase() +
                                         selectedCounty.difficulty.slice(1)
@@ -757,12 +792,12 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                                 </div>
                               </div>
                             </div>
-                            <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 shadow-sm">
-                              <h4 className="font-bold text-green-900 mb-4 text-lg flex items-center gap-2">
+                            <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-700 shadow-sm">
+                              <h4 className="font-bold text-green-900 dark:text-green-100 mb-4 text-lg flex items-center gap-2">
                                 <span className="text-2xl">🎉</span> Fun Facts
                               </h4>
                               {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 ? (
-                                <ul className="text-sm text-green-800 space-y-1">
+                                <ul className="text-sm text-green-800 dark:text-green-200 space-y-1">
                                   {selectedCounty.funFacts
                                     .slice(0, 3)
                                     .map((fact: string, idx: number) => (
@@ -786,11 +821,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                             <div className="grid grid-cols-2 gap-4">
                               {selectedCounty.naturalFeatures &&
                                 selectedCounty.naturalFeatures.length > 0 && (
-                                  <div className="p-4 bg-cyan-50 rounded-lg">
-                                    <h4 className="font-semibold text-cyan-900 mb-2">
+                                  <div className="p-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border border-cyan-200 dark:border-cyan-700">
+                                    <h4 className="font-semibold text-cyan-900 dark:text-cyan-100 mb-2">
                                       🏔️ Natural Features
                                     </h4>
-                                    <ul className="text-sm text-cyan-800 space-y-1">
+                                    <ul className="text-sm text-cyan-800 dark:text-cyan-200 space-y-1">
                                       {selectedCounty.naturalFeatures
                                         .slice(0, 3)
                                         .map((feature: string, idx: number) => (
@@ -801,11 +836,11 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                                 )}
                               {selectedCounty.economicFocus &&
                                 selectedCounty.economicFocus.length > 0 && (
-                                  <div className="p-4 bg-purple-50 rounded-lg">
-                                    <h4 className="font-semibold text-purple-900 mb-2">
+                                  <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
+                                    <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-2">
                                       💼 Economic Focus
                                     </h4>
-                                    <ul className="text-sm text-purple-800 space-y-1">
+                                    <ul className="text-sm text-purple-800 dark:text-purple-200 space-y-1">
                                       {selectedCounty.economicFocus
                                         .slice(0, 3)
                                         .map((focus: string, idx: number) => (
@@ -818,19 +853,19 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                           )}
                           {educationContent && (
                             <>
-                              <div className="p-4 bg-yellow-50 rounded-lg">
-                                <h4 className="font-semibold text-gray-700 mb-2">
+                              <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-700">
+                                <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">
                                   Historical Context
                                 </h4>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-gray-600 dark:text-gray-300">
                                   {educationContent.historicalContext}
                                 </p>
                               </div>
-                              <div className="p-4 bg-indigo-50 rounded-lg">
-                                <h4 className="font-semibold text-gray-700 mb-2">
+                              <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-200 dark:border-indigo-700">
+                                <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">
                                   Economic Importance
                                 </h4>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-gray-600 dark:text-gray-300">
                                   {educationContent.economicImportance}
                                 </p>
                               </div>
@@ -844,7 +879,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                                       (attraction: string, idx: number) => (
                                         <span
                                           key={idx}
-                                          className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm"
+                                          className="px-3 py-1 bg-purple-100 dark:bg-purple-800/50 text-purple-800 dark:text-purple-200 rounded-full text-sm"
                                         >
                                           {attraction}
                                         </span>
@@ -860,8 +895,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
                       {contentTab === 'history' && (
                         <div>
-                          <h4 className="font-semibold text-gray-700 mb-3">Historical Context</h4>
-                          <p className="text-gray-600 leading-relaxed mb-4">
+                          <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3">
+                            Historical Context
+                          </h4>
+                          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
                             {educationContent?.historicalContext ||
                               'No historical context available.'}
                           </p>
@@ -912,13 +949,17 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
                       {contentTab === 'culture' && (
                         <div>
-                          <h4 className="font-semibold text-gray-700 mb-3">Cultural Heritage</h4>
-                          <p className="text-gray-600 leading-relaxed mb-4">
+                          <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3">
+                            Cultural Heritage
+                          </h4>
+                          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
                             {educationContent?.culturalHeritage ||
                               'No cultural heritage data available.'}
                           </p>
-                          <h4 className="font-semibold text-gray-700 mb-3 mt-6">Unique Features</h4>
-                          <p className="text-gray-600 leading-relaxed">
+                          <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3 mt-6">
+                            Unique Features
+                          </h4>
+                          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                             {educationContent?.uniqueFeatures ||
                               'No unique features data available.'}
                           </p>
@@ -927,23 +968,27 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
                       {contentTab === 'geography' && (
                         <div>
-                          <h4 className="font-semibold text-gray-700 mb-3">
+                          <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3">
                             Geographical Significance
                           </h4>
-                          <p className="text-gray-600 leading-relaxed mb-4">
+                          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
                             {educationContent?.geographicalSignificance ||
                               'No geographical data available.'}
                           </p>
                           <div className="grid grid-cols-2 gap-4 mt-4">
-                            <div className="p-3 bg-gray-100 rounded-lg">
-                              <h5 className="font-medium text-gray-700 mb-1">Climate</h5>
-                              <p className="text-sm text-gray-600">
+                            <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                              <h5 className="font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                Climate
+                              </h5>
+                              <p className="text-sm text-gray-600 dark:text-gray-300">
                                 {educationContent?.specificData?.climate || 'N/A'}
                               </p>
                             </div>
-                            <div className="p-3 bg-gray-100 rounded-lg">
-                              <h5 className="font-medium text-gray-700 mb-1">Elevation</h5>
-                              <p className="text-sm text-gray-600">
+                            <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                              <h5 className="font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                Elevation
+                              </h5>
+                              <p className="text-sm text-gray-600 dark:text-gray-300">
                                 {educationContent?.specificData?.elevation || 'N/A'}
                               </p>
                             </div>
@@ -953,7 +998,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
                       {contentTab === 'memory' && memoryAid && (
                         <div>
-                          <h4 className="font-semibold text-gray-700 mb-3">Memory Aids</h4>
+                          <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3">
+                            Memory Aids
+                          </h4>
                           <div className="space-y-4">
                             <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                               <h5 className="font-medium text-yellow-900 mb-2">
@@ -1035,8 +1082,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                     )}
 
                     {/* Related Counties */}
-                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold text-gray-700 mb-3">
+                    <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                      <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-3">
                         🔗 Related Counties to Study
                       </h4>
                       <div className="flex flex-wrap gap-2">
