@@ -1,6 +1,14 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
-import { DndContext, DragEndEvent, DragStartEvent, DragOverlay, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+  useSensor,
+  useSensors,
+  PointerSensor,
+} from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { Button, Card, Heading, Text } from '../ui';
@@ -29,7 +37,7 @@ export default function GameContainer() {
     clearCurrentCounty,
     currentCounty: _currentCounty,
     counties,
-    placedCounties
+    placedCounties,
   } = useGame();
 
   const [isDragging, setIsDragging] = useState(false);
@@ -73,7 +81,7 @@ export default function GameContainer() {
 
   const handleDragStart = (event: DragStartEvent) => {
     const countyId = event.active.id as string;
-    const county = counties.find(c => c.id === countyId);
+    const county = counties.find((c) => c.id === countyId);
     if (county && !placedCounties.has(countyId)) {
       selectCounty(county);
       setActiveCounty(county);
@@ -118,60 +126,68 @@ export default function GameContainer() {
           </StudyErrorBoundary>
         )}
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <Card variant="elevated" className="max-w-2xl w-full text-center">
-          <div className="p-8">
-            <Heading level={1} size="display" align="center" className="text-blue-900 mb-4">
-              🗺️ California Counties Explorer
-            </Heading>
-            <Text size="lg" color="secondary" align="center" className="mb-8">
-              Discover California's geography through interactive exploration and learning
-            </Text>
-            <div className="space-y-4 text-left mb-8">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">📍</span>
-                <div>
-                  <Heading level={3} size="label" weight="semibold">Interactive Learning</Heading>
-                  <Text color="secondary">Explore each county's unique location by placing them on the map</Text>
+          <Card variant="elevated" className="max-w-2xl w-full text-center">
+            <div className="p-8">
+              <Heading level={1} size="display" align="center" className="text-blue-900 mb-4">
+                🗺️ California Counties Explorer
+              </Heading>
+              <Text size="lg" color="secondary" align="center" className="mb-8">
+                Discover California's geography through interactive exploration and learning
+              </Text>
+              <div className="space-y-4 text-left mb-8">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">📍</span>
+                  <div>
+                    <Heading level={3} size="label" weight="semibold">
+                      Interactive Learning
+                    </Heading>
+                    <Text color="secondary">
+                      Explore each county's unique location by placing them on the map
+                    </Text>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🌟</span>
+                  <div>
+                    <Heading level={3} size="label" weight="semibold">
+                      Build Knowledge
+                    </Heading>
+                    <Text color="secondary">
+                      Learn about California's diverse regions and county boundaries
+                    </Text>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🎓</span>
+                  <div>
+                    <Heading level={3} size="label" weight="semibold">
+                      Master Geography
+                    </Heading>
+                    <Text color="secondary">
+                      Develop a deep understanding of California's 58 counties
+                    </Text>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🌟</span>
-                <div>
-                  <Heading level={3} size="label" weight="semibold">Build Knowledge</Heading>
-                  <Text color="secondary">Learn about California's diverse regions and county boundaries</Text>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🎓</span>
-                <div>
-                  <Heading level={3} size="label" weight="semibold">Master Geography</Heading>
-                  <Text color="secondary">Develop a deep understanding of California's 58 counties</Text>
-                </div>
+              <div className="flex gap-4 justify-center">
+                <Button variant="primary" size="large" onClick={startGame}>
+                  Begin Exploration
+                </Button>
+                <Button
+                  variant="primary"
+                  size="large"
+                  onClick={() => setShowStudyMode(true)}
+                  onMouseEnter={prefetchStudyMode}
+                  onFocus={prefetchStudyMode}
+                  icon={<span>📚</span>}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  Study Mode
+                </Button>
               </div>
             </div>
-            <div className="flex gap-4 justify-center">
-              <Button
-                variant="primary"
-                size="large"
-                onClick={startGame}
-              >
-                Begin Exploration
-              </Button>
-              <Button
-                variant="primary"
-                size="large"
-                onClick={() => setShowStudyMode(true)}
-                onMouseEnter={prefetchStudyMode}
-                onFocus={prefetchStudyMode}
-                icon={<span>📚</span>}
-                className="bg-purple-600 hover:bg-purple-700"
-              >
-                Study Mode
-              </Button>
-            </div>
-          </div>
-        </Card>
-      </div>
+          </Card>
+        </div>
       </>
     );
   }
@@ -187,11 +203,7 @@ export default function GameContainer() {
       {/* Regions Panel */}
       <RegionsPanel />
 
-      <DndContext
-        sensors={sensors}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           {/* County Tray */}
           <div className="lg:col-span-1">
@@ -200,7 +212,10 @@ export default function GameContainer() {
 
           {/* Map - Using simplified version for better rendering */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-lg p-4" style={{ height: `${GAME_CONFIG.GAME_CONTAINER_HEIGHT}px` }}>
+            <div
+              className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 border border-gray-100 dark:border-gray-800"
+              style={{ height: `${GAME_CONFIG.GAME_CONTAINER_HEIGHT}px` }}
+            >
               <MapErrorBoundary>
                 <CaliforniaMapSimple isDragging={isDragging} />
               </MapErrorBoundary>
@@ -211,21 +226,27 @@ export default function GameContainer() {
         {/* Drag Overlay - This renders the dragged item outside of its container */}
         <DragOverlay dropAnimation={null}>
           {activeCounty ? (
-            <div className="px-1 py-0 bg-yellow-100 border border-yellow-400 rounded shadow-md cursor-grabbing pointer-events-none" style={{ fontSize: '11px' }}>
-              <span className="font-semibold text-gray-700">{activeCounty.name}</span>
+            <div
+              className="px-1 py-0 bg-yellow-100 dark:bg-yellow-800/80 border border-yellow-400 dark:border-yellow-600 rounded shadow-md cursor-grabbing pointer-events-none"
+              style={{ fontSize: '11px' }}
+            >
+              <span className="font-semibold text-gray-700 dark:text-gray-200">
+                {activeCounty.name}
+              </span>
             </div>
           ) : null}
         </DragOverlay>
       </DndContext>
       {/* Render Study Mode with Portal to ensure it appears above everything */}
-      {showStudyMode && createPortal(
-        <StudyErrorBoundary>
-          <Suspense fallback={<LoadingSpinner message="Loading Study Mode..." />}>
-            <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />
-          </Suspense>
-        </StudyErrorBoundary>,
-        document.body
-      )}
+      {showStudyMode &&
+        createPortal(
+          <StudyErrorBoundary>
+            <Suspense fallback={<LoadingSpinner message="Loading Study Mode..." />}>
+              <EnhancedStudyMode onClose={() => setShowStudyMode(false)} onStartGame={startGame} />
+            </Suspense>
+          </StudyErrorBoundary>,
+          document.body
+        )}
     </div>
   );
 }

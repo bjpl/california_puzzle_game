@@ -5,13 +5,10 @@ export default function RegionsPanel() {
   const { showRegions, toggleShowRegions } = useGame();
 
   // Use centralized color configuration with proper light colors
-  const regions = Object.keys(REGION_COLORS).map(regionName => {
+  const regions = Object.keys(REGION_COLORS).map((regionName) => {
     const colorConfig = getRegionColor(regionName);
     // Abbreviate names for display
-    let displayName = regionName
-      .replace('California', '')
-      .replace('Central ', '')
-      .trim();
+    let displayName = regionName.replace('California', '').replace('Central ', '').trim();
 
     if (displayName === 'Southern') displayName = 'Southern';
     if (displayName === 'Northern') displayName = 'Northern';
@@ -22,7 +19,7 @@ export default function RegionsPanel() {
       name: regionName,
       displayName,
       color: colorConfig.hex,
-      bgColor: colorConfig.hexLight // Use proper light hex color
+      bgColor: colorConfig.hexLight, // Use proper light hex color
     };
   });
 
@@ -38,37 +35,35 @@ export default function RegionsPanel() {
         }`}
       >
         <span className="text-xl">🗺️</span>
-        <span className="flex-1 text-left">
-          {showRegions ? 'Hide Regions' : 'Show Regions'}
-        </span>
+        <span className="flex-1 text-left">{showRegions ? 'Hide Regions' : 'Show Regions'}</span>
       </button>
 
       {/* Regions Panel - Only show when active */}
       {showRegions && (
-        <div className="mt-3 bg-white rounded-2xl shadow-xl p-4 animate-fade-in">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
+        <div className="mt-3 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 border border-gray-100 dark:border-gray-700 animate-fade-in">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
             Regions of California:
           </h3>
 
           <div className="grid grid-cols-2 gap-2">
-            {regions.map(region => (
+            {regions.map((region) => (
               <div
                 key={region.name}
-                className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 <div
-                  className="w-5 h-5 rounded border border-gray-400"
+                  className="w-5 h-5 rounded border border-gray-400 dark:border-gray-500"
                   style={{ backgroundColor: region.bgColor }}
                 />
-                <span className="text-xs font-medium text-gray-700">
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                   {region.displayName}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="mt-3 pt-3 border-t border-gray-200">
-            <p className="text-xs text-gray-500 italic">
+          <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-gray-500 dark:text-gray-400 italic">
               Counties are colored by their geographic region to help you learn patterns
             </p>
           </div>
