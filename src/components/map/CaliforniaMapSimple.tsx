@@ -64,17 +64,17 @@ function CountyDropZone({
   if (isPlaced) {
     fillColor = '#10b981'; // Green when placed
     strokeColor = '#047857'; // Darker green stroke
-    strokeWidth = '1';
+    strokeWidth = '2';
     fillOpacity = 0.98; // Nearly opaque when placed
   } else if (isDragging && isOver) {
     fillColor = '#fde68a'; // Softer yellow when hovering over during drag
-    strokeColor = '#f59e0b'; // Amber stroke
-    strokeWidth = '1.5';
-    fillOpacity = 0.9; // More visible when hovering
+    strokeColor = '#f59e0b'; // Amber/orange stroke - PROMINENT
+    strokeWidth = '3'; // Thicker stroke for visibility
+    fillOpacity = 0.95; // More visible when hovering
   } else if (isHovered) {
     fillOpacity = 0.9; // Brighten on hover
-    strokeColor = '#FFFFFF';
-    strokeWidth = '2.5';
+    strokeColor = '#3b82f6'; // Blue stroke
+    strokeWidth = '2';
   }
 
   // Calculate optimal text color based on background
@@ -223,17 +223,18 @@ function CountyDropZone({
         fill={fillColor}
         fillOpacity={fillOpacity}
         stroke={strokeColor}
-        strokeWidth={isDragging && isOver ? '1.5' : strokeWidth}
-        strokeLinejoin="round"
-        strokeLinecap="round"
+        strokeWidth={strokeWidth}
+        strokeLinejoin="miter"
+        strokeLinecap="square"
+        vectorEffect="non-scaling-stroke"
         className="transition-all duration-200 hover:opacity-90"
         style={{
           cursor: isPlaced ? 'pointer' : 'pointer',
           filter:
             isDragging && isOver
-              ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'
+              ? 'drop-shadow(0 4px 10px rgba(245, 158, 11, 0.4))'
               : isPlaced
-                ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))'
+                ? 'drop-shadow(0 2px 4px rgba(16, 185, 129, 0.2))'
                 : 'none',
           opacity: 1,
         }}
