@@ -146,24 +146,29 @@ self.addEventListener('fetch', (event) => {
  * PATTERN: Cache-first with network fallback and background update
  */
 async function cacheFirst(request, cacheName) {
-  const cache = await caches.open(cacheName);
-  const cached = await cache.match(request);
+  try {
+    const cache = await caches.open(cacheName);
+    const cached = await cache.match(request);
 
-  if (cached) {
-    console.log('[SW] Cache hit:', request.url);
+    if (cached) {
+      console.log('[SW] Cache hit:', request.url);
 
-    // Background update for stale content (stale-while-revalidate)
-    fetch(request)
-      .then((response) => {
-        if (response && response.status === 200) {
-          cache.put(request, response.clone());
-        }
-      })
-      .catch(() => {
-        // Ignore network errors during background update
-      });
+      // Background update for stale content (stale-while-revalidate)
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            cache.put(request, response.clone());
+          }
+        })
+        .catch(() => {
+          // Ignore network errors during background update
+        });
 
-    return cached;
+      return cached;
+    }
+  } catch (error) {
+    console.error('[SW] Cache read error:', error);
+    // Fall through to network fetch
   }
 
   console.log('[SW] Cache miss, fetching:', request.url);
@@ -172,14 +177,20 @@ async function cacheFirst(request, cacheName) {
     const response = await fetch(request);
 
     if (response && response.status === 200) {
-      // Cache size check before storing
-      const contentLength = response.headers.get('content-length');
-      const maxSize = cacheName === GEODATA_CACHE ? MAX_GEODATA_CACHE_SIZE : MAX_RUNTIME_CACHE_SIZE;
+      try {
+        const cache = await caches.open(cacheName);
+        // Cache size check before storing
+        const contentLength = response.headers.get('content-length');
+        const maxSize = cacheName === GEODATA_CACHE ? MAX_GEODATA_CACHE_SIZE : MAX_RUNTIME_CACHE_SIZE;
 
-      if (!contentLength || parseInt(contentLength) < maxSize) {
-        cache.put(request, response.clone());
-      } else {
-        console.warn('[SW] Response too large to cache:', request.url, contentLength);
+        if (!contentLength || parseInt(contentLength) < maxSize) {
+          await cache.put(request, response.clone());
+        } else {
+          console.warn('[SW] Response too large to cache:', request.url, contentLength);
+        }
+      } catch (cacheError) {
+        console.error('[SW] Failed to cache response:', cacheError);
+        // Continue anyway - return the response even if caching fails
       }
     }
 
@@ -188,11 +199,17 @@ async function cacheFirst(request, cacheName) {
     console.error('[SW] Network failed, no cache available:', request.url, error);
 
     // Return offline fallback page if available
-    const offlineFallback = await cache.match(`${BASE_PATH}/offline.html`);
-    if (offlineFallback) {
-      return offlineFallback;
+    try {
+      const cache = await caches.open(cacheName);
+      const offlineFallback = await cache.match(`${BASE_PATH}/offline.html`);
+      if (offlineFallback) {
+        return offlineFallback;
+      }
+    } catch (fallbackError) {
+      console.error('[SW] Failed to retrieve offline fallback:', fallbackError);
     }
 
+    // If all else fails, throw to let browser handle it
     throw error;
   }
 }
