@@ -8,6 +8,7 @@ import {
   useSensor,
   useSensors,
   PointerSensor,
+  closestCenter,
 } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
@@ -204,7 +205,12 @@ export default function GameContainer() {
         {/* Regions Panel */}
         <RegionsPanel />
 
-        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <DndContext
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          collisionDetection={closestCenter}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
             {/* County Tray */}
             <div className="lg:col-span-1">

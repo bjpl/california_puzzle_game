@@ -48,6 +48,9 @@ function CountyDropZone({
 
   const { isOver, setNodeRef } = useDroppable({
     id: countyId,
+    data: {
+      accepts: ['county'], // Only accept county droppables
+    },
   });
 
   // Use centralized color configuration for consistency
