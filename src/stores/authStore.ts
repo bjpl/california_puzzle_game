@@ -14,6 +14,8 @@ import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { supabase } from '../lib/supabase';
 import { logger } from '../utils/logger';
+import { syncManager } from '../lib/syncManager';
+import { storeIntegration } from '../lib/storeIntegration';
 import type { AuthStore, AuthState } from '../types/auth';
 import type { AuthError } from '@supabase/supabase-js';
 
@@ -88,6 +90,18 @@ export const useAuthStore = create<AuthStore>()(
               isLoading: false,
               initialized: true,
             });
+
+            // Initialize sync manager and store integration after successful authentication
+            if (data.user?.id) {
+              try {
+                await syncManager.initialize(data.user.id);
+                await storeIntegration.initialize(data.user.id);
+                logger.info('[Auth] Sync manager and store integration initialized for user:', data.user.id);
+              } catch (syncError) {
+                logger.error('[Auth] Failed to initialize sync:', syncError);
+                // Don't fail auth if sync initialization fails
+              }
+            }
           } catch (error) {
             logger.error('[Auth] Anonymous sign-in exception:', error);
             set({
@@ -126,6 +140,16 @@ export const useAuthStore = create<AuthStore>()(
             }
 
             logger.info('[Auth] Sign-out successful');
+
+            // Shutdown store integration and sync manager before clearing auth state
+            try {
+              await storeIntegration.shutdown();
+              await syncManager.shutdown();
+              logger.info('[Auth] Store integration and sync manager shut down');
+            } catch (syncError) {
+              logger.error('[Auth] Failed to shutdown sync:', syncError);
+              // Continue with sign-out even if sync shutdown fails
+            }
 
             set({
               user: null,
@@ -236,6 +260,18 @@ export const useAuthStore = create<AuthStore>()(
                 isLoading: false,
                 initialized: true,
               });
+
+              // Initialize sync manager and store integration for restored session
+              if (data.session.user.id) {
+                try {
+                  await syncManager.initialize(data.session.user.id);
+                  await storeIntegration.initialize(data.session.user.id);
+                  logger.info('[Auth] Sync and store integration initialized for restored session:', data.session.user.id);
+                } catch (syncError) {
+                  logger.error('[Auth] Failed to initialize sync for restored session:', syncError);
+                  // Don't fail auth if sync initialization fails
+                }
+              }
             } else {
               logger.info('[Auth] No existing session, signing in anonymously...');
 
@@ -319,7 +355,7 @@ export const useAuthStore = create<AuthStore>()(
 export function setupAuthListeners(): void {
   logger.info('[Auth] Setting up auth state listeners...');
 
-  supabase.auth.onAuthStateChange((event, session) => {
+  supabase.auth.onAuthStateChange(async (event, session) => {
     logger.info('[Auth] Auth state changed:', event, {
       hasSession: !!session,
       userId: session?.user?.id,
@@ -337,9 +373,29 @@ export function setupAuthListeners(): void {
           session: session,
           error: null,
         });
+
+        // Initialize sync and store integration if user just signed in
+        if (event === 'SIGNED_IN' && session?.user?.id) {
+          try {
+            await syncManager.initialize(session.user.id);
+            await storeIntegration.initialize(session.user.id);
+            logger.info('[Auth] Sync and store integration initialized on auth state change:', session.user.id);
+          } catch (syncError) {
+            logger.error('[Auth] Failed to initialize sync on auth state change:', syncError);
+          }
+        }
         break;
 
       case 'SIGNED_OUT':
+        // Shutdown store integration and sync manager before clearing auth state
+        try {
+          await storeIntegration.shutdown();
+          await syncManager.shutdown();
+          logger.info('[Auth] Store integration and sync shut down on auth state change');
+        } catch (syncError) {
+          logger.error('[Auth] Failed to shutdown sync on auth state change:', syncError);
+        }
+
         store.setLoading(false);
         useAuthStore.setState({
           user: null,
