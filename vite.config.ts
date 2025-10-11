@@ -50,6 +50,7 @@ export default defineConfig({
           'vendor-ui': ['@dnd-kit/core', 'lucide-react', 'framer-motion'],
           'vendor-geo': ['d3', 'd3-geo', 'd3-selection', 'd3-zoom', 'd3-drag'],
           'vendor-storage': ['zustand'],
+          'vendor-supabase': ['@supabase/supabase-js'],
 
           // Feature chunks - Large components
           'map-components': [

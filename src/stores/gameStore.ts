@@ -31,6 +31,9 @@ interface GameStore extends GameState {
   availableModes: GameModeConfiguration[];
   gestureState: GestureState;
 
+  // User tracking (for auth integration)
+  userId: string | null;
+
   // Actions
   startGame: (region?: CaliforniaRegion, difficulty?: DifficultyLevel) => void;
   startGameWithMode: (mode: GameModeConfiguration) => void;
@@ -38,6 +41,9 @@ interface GameStore extends GameState {
   resumeGame: () => void;
   endGame: () => void;
   resetGame: () => void;
+
+  // User management
+  setUserId: (userId: string | null) => void;
 
   // Mode Management
   setCurrentMode: (mode: GameModeConfiguration) => void;
@@ -276,6 +282,7 @@ export const useGameStore = create<GameStore>()(
           strugglingCounties: [],
           autoSuggestEnabled: true,
         },
+        userId: null, // Will be set by auth integration
 
         // Game control actions
         startGame: (region = CaliforniaRegion.BAY_AREA, difficulty = DifficultyLevel.EASY) => {
@@ -849,6 +856,11 @@ export const useGameStore = create<GameStore>()(
             gestureState: { ...state.gestureState, pan },
           }));
         },
+
+        // User management
+        setUserId: (userId: string | null) => {
+          set({ userId });
+        },
       }),
       {
         name: 'california-puzzle-game',
@@ -857,6 +869,7 @@ export const useGameStore = create<GameStore>()(
           stats: state.stats,
           achievements: state.achievements,
           gestureState: state.gestureState,
+          userId: state.userId, // Persist user ID
         }),
       }
     ),

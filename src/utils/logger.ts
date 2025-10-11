@@ -49,9 +49,9 @@ class Logger {
    * Debug logs - only shown in development
    * Use for verbose logging during development
    */
-  debug(message: string, ...args: Record<string, unknown>[]): void {
+  debug(message: string, ...args: unknown[]): void {
     if (this.shouldLog('debug')) {
-      logger.debug(`[DEBUG] ${this.formatMessage(message)}`, ...args);
+      console.debug(`[DEBUG] ${this.formatMessage(message)}`, ...args);
     }
   }
 
@@ -59,9 +59,9 @@ class Logger {
    * Info logs - shown in all environments
    * Use for important application events
    */
-  info(message: string, ...args: Record<string, unknown>[]): void {
+  info(message: string, ...args: unknown[]): void {
     if (this.shouldLog('info')) {
-      logger.info(`[INFO] ${this.formatMessage(message)}`, ...args);
+      console.info(`[INFO] ${this.formatMessage(message)}`, ...args);
     }
   }
 
@@ -69,9 +69,9 @@ class Logger {
    * Warning logs - shown in all environments
    * Use for recoverable errors or deprecated features
    */
-  warn(message: string, ...args: Record<string, unknown>[]): void {
+  warn(message: string, ...args: unknown[]): void {
     if (this.shouldLog('warn')) {
-      logger.warn(`[WARN] ${this.formatMessage(message)}`, ...args);
+      console.warn(`[WARN] ${this.formatMessage(message)}`, ...args);
     }
   }
 
@@ -79,8 +79,8 @@ class Logger {
    * Error logs - always shown
    * Use for critical errors that need attention
    */
-  error(message: string, ...args: Record<string, unknown>[]): void {
-    logger.error(`[ERROR] ${this.formatMessage(message)}`, ...args);
+  error(message: string, ...args: unknown[]): void {
+    console.error(`[ERROR] ${this.formatMessage(message)}`, ...args);
   }
 
   /**
