@@ -53,6 +53,38 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['user_progress']['Row'], 'id' | 'created_at'>;
         Update: Partial<Database['public']['Tables']['user_progress']['Insert']>;
       };
+      game_settings: {
+        Row: {
+          id: string;
+          user_id: string;
+          difficulty: string;
+          region: string;
+          show_hints: boolean;
+          enable_timer: boolean;
+          sound_enabled: boolean;
+          animations_enabled: boolean;
+          auto_advance: boolean;
+          master_volume: number;
+          effects_volume: number;
+          music_volume: number;
+          muted: boolean;
+          enable_background_music: boolean;
+          enable_click_sounds: boolean;
+          enable_game_sounds: boolean;
+          enable_achievement_sounds: boolean;
+          max_hints_per_level: number;
+          hint_cooldown_ms: number;
+          score_penalty_per_hint: number;
+          free_hints_allowed: number;
+          auto_suggest_threshold: number;
+          enable_visual_indicators: boolean;
+          enable_educational_hints: boolean;
+          updated_at: string;
+          created_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['game_settings']['Row'], 'id' | 'created_at'>;
+        Update: Partial<Database['public']['Tables']['game_settings']['Insert']>;
+      };
     };
   };
 }
