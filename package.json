@@ -122,5 +122,8 @@
     "*.{css,md,json}": [
       "prettier --write"
     ]
+  },
+  "optionalDependencies": {
+    "@sentry/react": "^10.19.0"
   }
 }
