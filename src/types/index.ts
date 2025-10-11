@@ -9,6 +9,15 @@ export interface County {
   geometry: GeoJSON.Geometry;
   centroid: [number, number];
   difficulty: DifficultyLevel;
+  // Extended properties for county details
+  capital?: string;
+  countySeat?: string;
+  founded?: number;
+  established?: string;
+  funFact?: string;
+  funFacts?: string[];
+  naturalFeatures?: string[];
+  economicFocus?: string[];
 }
 
 export interface CountyPiece extends County {
@@ -243,6 +252,13 @@ export interface ZoomState {
   translateY: number;
   minScale: number;
   maxScale: number;
+}
+
+export interface GestureState {
+  rotation: number; // Map rotation in degrees
+  zoom: number; // Current zoom level (1x - 3x)
+  pan: { x: number; y: number }; // Pan offset
+  gestureEnabled: boolean; // Whether gestures are enabled
 }
 
 // Component prop types

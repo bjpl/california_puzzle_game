@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react';
 import { useGame } from '../../context/GameContext';
 
-export default function StudyMode({
+const StudyMode = memo(({
   onClose,
   focusCounty,
 }: {
   onClose: () => void;
   focusCounty?: Record<string, unknown>;
-}) {
+}) => {
   const { counties } = useGame();
   const [selectedRegion, setSelectedRegion] = useState<string>(
     focusCounty ? focusCounty.region : 'all'
@@ -29,25 +29,48 @@ export default function StudyMode({
     }
   }, [focusCounty]);
 
-  // Get unique regions
-  const regions = Array.from(new Set(counties.map((c) => c.region))).sort();
+  // Memoize unique regions
+  const regions = useMemo(
+    () => Array.from(new Set(counties.map((c) => c.region))).sort(),
+    [counties]
+  );
 
-  // Filter counties by region
-  const filteredCounties =
-    selectedRegion === 'all' ? counties : counties.filter((c) => c.region === selectedRegion);
+  // Memoize filtered counties
+  const filteredCounties = useMemo(
+    () => (selectedRegion === 'all' ? counties : counties.filter((c) => c.region === selectedRegion)),
+    [selectedRegion, counties]
+  );
 
-  // Sort counties alphabetically
-  const sortedCounties = [...filteredCounties].sort((a, b) => a.name.localeCompare(b.name));
+  // Memoize sorted counties
+  const sortedCounties = useMemo(
+    () => [...filteredCounties].sort((a, b) => a.name.localeCompare(b.name)),
+    [filteredCounties]
+  );
 
-  const regionColors: { [key: string]: string } = {
-    'Southern California': 'bg-red-50 border-red-400 text-red-900',
-    'Bay Area': 'bg-blue-50 border-blue-400 text-blue-900',
-    'Central Valley': 'bg-green-50 border-green-400 text-green-900',
-    'Central Coast': 'bg-purple-50 border-purple-400 text-purple-900',
-    'Northern California': 'bg-orange-50 border-orange-400 text-orange-900',
-    'Sierra Nevada': 'bg-yellow-50 border-yellow-400 text-yellow-900',
-    'North Coast': 'bg-teal-50 border-teal-400 text-teal-900',
-  };
+  // Memoize region colors (static, but good practice)
+  const regionColors: { [key: string]: string } = useMemo(
+    () => ({
+      'Southern California': 'bg-red-50 border-red-400 text-red-900',
+      'Bay Area': 'bg-blue-50 border-blue-400 text-blue-900',
+      'Central Valley': 'bg-green-50 border-green-400 text-green-900',
+      'Central Coast': 'bg-purple-50 border-purple-400 text-purple-900',
+      'Northern California': 'bg-orange-50 border-orange-400 text-orange-900',
+      'Sierra Nevada': 'bg-yellow-50 border-yellow-400 text-yellow-900',
+      'North Coast': 'bg-teal-50 border-teal-400 text-teal-900',
+    }),
+    []
+  );
+
+  // Memoize handlers
+  const handleRegionSelect = useCallback(
+    (region: string) => setSelectedRegion(region),
+    []
+  );
+
+  const handleCountySelect = useCallback(
+    (county: Record<string, unknown>) => setSelectedCounty(county),
+    []
+  );
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -76,7 +99,7 @@ export default function StudyMode({
         <div className="bg-gray-100 dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => setSelectedRegion('all')}
+              onClick={() => handleRegionSelect('all')}
               className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
                 selectedRegion === 'all'
                   ? 'bg-blue-500 text-white'
@@ -90,7 +113,7 @@ export default function StudyMode({
               return (
                 <button
                   key={region}
-                  onClick={() => setSelectedRegion(region)}
+                  onClick={() => handleRegionSelect(region)}
                   className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
                     selectedRegion === region
                       ? 'bg-blue-500 text-white'
@@ -120,7 +143,7 @@ export default function StudyMode({
                     <button
                       key={county.id}
                       ref={focusCounty && county.id === focusCounty.id ? focusCountyRef : null}
-                      onClick={() => setSelectedCounty(county)}
+                      onClick={() => handleCountySelect(county)}
                       className={`p-2 border rounded-lg text-left hover:shadow-md transition-all ${
                         selectedCounty?.id === county.id ? 'ring-2 ring-blue-500 shadow-md' : ''
                       } ${colorClass}`}
@@ -233,4 +256,8 @@ export default function StudyMode({
       </div>
     </div>
   );
-}
+});
+
+StudyMode.displayName = 'StudyMode';
+
+export default StudyMode;

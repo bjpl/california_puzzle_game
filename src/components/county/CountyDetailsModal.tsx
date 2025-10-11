@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import CountyShapeDisplay from '../county/CountyShapeDisplay';
+import { County } from '../../types';
 
 interface CountyDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  county: Record<string, unknown>;
+  county: County;
   educationContent?: Record<string, unknown>;
   memoryAid?: Record<string, unknown>;
   onViewEducationalContent?: () => void;
@@ -238,7 +239,7 @@ export default function CountyDetailsModal({
       </div>
 
       {/* Animation Styles */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from {
             opacity: 0;

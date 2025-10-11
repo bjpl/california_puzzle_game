@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import { clsx } from 'clsx';
 import { MapPin, Users, Star, Play } from 'lucide-react';
-import { CaliforniaButton } from './CaliforniaButton';
+import { CaliforniaButton } from '../ui/CaliforniaButton';
 
 interface CountyCardProps {
   county: {
@@ -19,21 +19,38 @@ interface CountyCardProps {
   className?: string;
 }
 
-export const CountyCard: React.FC<CountyCardProps> = ({ county, onPlay, className }) => {
-  const difficultyStars = Array.from({ length: 5 }, (_, i) => i < county.difficulty);
+// Memoized formatting functions
+const formatPopulation = (pop: number): string => {
+  if (pop >= 1000000) {
+    return `${(pop / 1000000).toFixed(1)}M`;
+  } else if (pop >= 1000) {
+    return `${(pop / 1000).toFixed(0)}K`;
+  }
+  return pop.toString();
+};
 
-  const formatPopulation = (pop: number): string => {
-    if (pop >= 1000000) {
-      return `${(pop / 1000000).toFixed(1)}M`;
-    } else if (pop >= 1000) {
-      return `${(pop / 1000).toFixed(0)}K`;
-    }
-    return pop.toString();
-  };
+const formatArea = (area: number): string => {
+  return `${area.toLocaleString()} sq mi`;
+};
 
-  const formatArea = (area: number): string => {
-    return `${area.toLocaleString()} sq mi`;
-  };
+const CountyCardComponent: React.FC<CountyCardProps> = ({ county, onPlay, className }) => {
+  // Memoize expensive calculations
+  const difficultyStars = useMemo(
+    () => Array.from({ length: 5 }, (_, i) => i < county.difficulty),
+    [county.difficulty]
+  );
+
+  const formattedPopulation = useMemo(
+    () => formatPopulation(county.population),
+    [county.population]
+  );
+
+  const formattedArea = useMemo(() => formatArea(county.area), [county.area]);
+
+  // Memoize click handler
+  const handlePlay = useCallback(() => {
+    onPlay?.(county.id);
+  }, [onPlay, county.id]);
 
   return (
     <div
@@ -107,12 +124,12 @@ export const CountyCard: React.FC<CountyCardProps> = ({ county, onPlay, classNam
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-1.5 text-ca-gray-600 dark:text-gray-400">
             <MapPin className="w-4 h-4" />
-            <span className="text-sm font-medium">{formatArea(county.area)}</span>
+            <span className="text-sm font-medium">{formattedArea}</span>
           </div>
 
           <div className="flex items-center gap-1.5 text-ca-gray-600 dark:text-gray-400">
             <Users className="w-4 h-4" />
-            <span className="text-sm font-medium">{formatPopulation(county.population)}</span>
+            <span className="text-sm font-medium">{formattedPopulation}</span>
           </div>
         </div>
 
@@ -122,7 +139,7 @@ export const CountyCard: React.FC<CountyCardProps> = ({ county, onPlay, classNam
           size="md"
           icon={Play}
           className="w-full"
-          onClick={() => onPlay?.(county.id)}
+          onClick={handlePlay}
         >
           {county.completed ? 'Play Again' : 'Start Puzzle'}
         </CaliforniaButton>
@@ -142,5 +159,18 @@ export const CountyCard: React.FC<CountyCardProps> = ({ county, onPlay, classNam
     </div>
   );
 };
+
+// Export memoized component with custom comparison
+export const CountyCard = memo(CountyCardComponent, (prevProps, nextProps) => {
+  // Custom comparison to prevent unnecessary re-renders
+  return (
+    prevProps.county.id === nextProps.county.id &&
+    prevProps.county.completed === nextProps.county.completed &&
+    prevProps.county.featured === nextProps.county.featured &&
+    prevProps.className === nextProps.className
+  );
+});
+
+CountyCard.displayName = 'CountyCard';
 
 export default CountyCard;

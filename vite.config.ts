@@ -40,6 +40,9 @@ export default defineConfig({
     sourcemap: true,
     chunkSizeWarningLimit: 500, // Set to 500kb
     rollupOptions: {
+      external: [
+        '@sentry/react', // Make Sentry optional - only loaded if DSN provided
+      ],
       output: {
         manualChunks: {
           // Vendor chunks - Core libraries

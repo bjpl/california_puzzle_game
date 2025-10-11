@@ -20,6 +20,7 @@ import {
   HintConfiguration as _HintConfiguration,
   HintType,
   StruggleData,
+  GestureState,
 } from '@/types';
 import { GAME_MODES, getModeById as _getModeById, getDifficultySettings } from '@/config/gameModes';
 
@@ -28,6 +29,7 @@ interface GameStore extends GameState {
   settings: GameSettings;
   stats: GameStats;
   availableModes: GameModeConfiguration[];
+  gestureState: GestureState;
 
   // Actions
   startGame: (region?: CaliforniaRegion, difficulty?: DifficultyLevel) => void;
@@ -83,6 +85,13 @@ interface GameStore extends GameState {
   toggleMute: () => void;
   startBackgroundMusic: () => void;
   stopBackgroundMusic: () => void;
+
+  // Gesture management
+  updateGestureState: (updates: Partial<GestureState>) => void;
+  resetGestureState: () => void;
+  setMapRotation: (rotation: number) => void;
+  setMapZoom: (zoom: number) => void;
+  setMapPan: (pan: { x: number; y: number }) => void;
 }
 
 const defaultSoundSettings: SoundSettings = {
@@ -251,6 +260,12 @@ export const useGameStore = create<GameStore>()(
         settings: defaultSettings,
         stats: defaultStats,
         availableModes: GAME_MODES,
+        gestureState: {
+          rotation: 0,
+          zoom: 1,
+          pan: { x: 0, y: 0 },
+          gestureEnabled: true,
+        },
         hintSystem: {
           availableHints: 3,
           usedHints: 0,
@@ -798,6 +813,42 @@ export const useGameStore = create<GameStore>()(
         stopBackgroundMusic: () => {
           soundManager.stopBackgroundMusic();
         },
+
+        // Gesture management
+        updateGestureState: (updates: Partial<GestureState>) => {
+          set((state) => ({
+            gestureState: { ...state.gestureState, ...updates },
+          }));
+        },
+
+        resetGestureState: () => {
+          set({
+            gestureState: {
+              rotation: 0,
+              zoom: 1,
+              pan: { x: 0, y: 0 },
+              gestureEnabled: true,
+            },
+          });
+        },
+
+        setMapRotation: (rotation: number) => {
+          set((state) => ({
+            gestureState: { ...state.gestureState, rotation },
+          }));
+        },
+
+        setMapZoom: (zoom: number) => {
+          set((state) => ({
+            gestureState: { ...state.gestureState, zoom },
+          }));
+        },
+
+        setMapPan: (pan: { x: number; y: number }) => {
+          set((state) => ({
+            gestureState: { ...state.gestureState, pan },
+          }));
+        },
       }),
       {
         name: 'california-puzzle-game',
@@ -805,6 +856,7 @@ export const useGameStore = create<GameStore>()(
           settings: state.settings,
           stats: state.stats,
           achievements: state.achievements,
+          gestureState: state.gestureState,
         }),
       }
     ),

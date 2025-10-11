@@ -1,10 +1,13 @@
+import { memo, useMemo, useCallback } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { getRegionColor } from '../../config/regionColors';
 import { Badge, Heading, Text, Card } from '../ui';
+import { County } from '../../types';
 
-function DraggableCounty({ county }: { county: Record<string, unknown> }) {
+// Memoized draggable county component
+const DraggableCounty = memo(({ county }: { county: County }) => {
   const { placedCounties, selectCounty, currentCounty } = useGame();
   const sound = useSoundEffect();
   const isPlaced = placedCounties.has(county.id);
@@ -30,8 +33,26 @@ function DraggableCounty({ county }: { county: Record<string, unknown> }) {
     : undefined;
 
   // Use centralized color configuration
-  const regionColor = getRegionColor(county.region);
-  const _colorClass = `${regionColor.tailwindLight} ${regionColor.tailwindLightBorder}`;
+  const _regionColor = getRegionColor(county.region);
+
+  // Memoize click handler
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (!isPlaced && !isSelected) {
+        sound.playSound('pickup', 0.5);
+        selectCounty(county);
+      }
+    },
+    [isPlaced, isSelected, sound, selectCounty, county]
+  );
+
+  // Memoize title
+  const title = useMemo(
+    () =>
+      `${county.name} - ${county.region}${isSelected ? ' (Selected - Use hint or drag to map)' : ' (Click to select)'}`,
+    [county.name, county.region, isSelected]
+  );
 
   if (isPlaced) {
     return (
@@ -47,14 +68,8 @@ function DraggableCounty({ county }: { county: Record<string, unknown> }) {
       style={style}
       {...listeners}
       {...attributes}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (!isPlaced && !isSelected) {
-          sound.playSound('pickup', 0.5);
-          selectCounty(county);
-        }
-      }}
-      title={`${county.name} - ${county.region}${isSelected ? ' (Selected - Use hint or drag to map)' : ' (Click to select)'}`}
+      onClick={handleClick}
+      title={title}
     >
       <Badge
         region={county.region}
@@ -68,19 +83,28 @@ function DraggableCounty({ county }: { county: Record<string, unknown> }) {
       </Badge>
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison for better performance
+  return prevProps.county.id === nextProps.county.id;
+});
 
-export default function CountyTray() {
+DraggableCounty.displayName = 'DraggableCounty';
+
+const CountyTray = memo(() => {
   const { counties } = useGame();
 
-  // Group counties by region for better organization
-  const countiesByRegion = counties.reduce(
-    (acc, county) => {
-      if (!acc[county.region]) acc[county.region] = [];
-      acc[county.region].push(county);
-      return acc;
-    },
-    {} as Record<string, typeof counties>
+  // Memoize grouped counties to prevent recalculation
+  const countiesByRegion = useMemo(
+    () =>
+      counties.reduce(
+        (acc, county) => {
+          if (!acc[county.region]) acc[county.region] = [];
+          acc[county.region].push(county);
+          return acc;
+        },
+        {} as Record<string, County[]>
+      ),
+    [counties]
   );
 
   return (
@@ -113,4 +137,8 @@ export default function CountyTray() {
       </div>
     </Card>
   );
-}
+});
+
+CountyTray.displayName = 'CountyTray';
+
+export default CountyTray;
