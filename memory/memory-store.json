@@ -14,5 +14,13 @@
       "namespace": "swarm",
       "timestamp": 1760212629328
     }
+  ],
+  "california-puzzle-supabase": [
+    {
+      "key": "swarm/architecture/supabase-design",
+      "value": "Supabase Integration Architecture completed. Key decisions: 1) Anonymous-first authentication, 2) Progressive enhancement (Supabase optional), 3) Offline-first with localStorage primary, 4) Last-write-wins conflict resolution, 5) Non-blocking background sync. Full architecture document: docs/architecture/SUPABASE_INTEGRATION_ARCHITECTURE.md. Ready for implementation phase.",
+      "namespace": "california-puzzle-supabase",
+      "timestamp": 1760221522141
+    }
   ]
 }

@@ -95,7 +95,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
 
   // Start new game
   const handleStartGame = useCallback(() => {
-    const _countyPieces = initializeCountyPieces();
+    initializeCountyPieces();
 
     startGame(containerState.currentRegion, containerState.currentDifficulty);
 
@@ -107,7 +107,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
     }));
 
     // Start timer for timed modes
-    if (settings.enableTimer && containerState.gameMode !== GameMode.PRACTICE) {
+    if (_settings.enableTimer && containerState.gameMode !== GameMode.PRACTICE) {
       timerRef.current = setInterval(() => {
         updateTimer(100); // Update every 100ms for smooth timer
       }, 100);
@@ -117,7 +117,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
     containerState.currentRegion,
     containerState.currentDifficulty,
     containerState.gameMode,
-    settings.enableTimer,
+    _settings.enableTimer,
     startGame,
     updateTimer,
     initializeCountyPieces,
@@ -193,7 +193,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
     }
 
     if (onGameComplete) {
-      onGameComplete(score, stats);
+      onGameComplete(_score, _stats);
     }
 
     setContainerState((prev) => ({
@@ -201,12 +201,12 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
       gameStarted: false,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [endGame, score, stats, onGameComplete]);
+  }, [endGame, _score, _stats, onGameComplete]);
 
   // Handle region change
   const handleRegionChange = useCallback(
     (region: CaliforniaRegion) => {
-      if (isGameActive) {
+      if (_isGameActive) {
         // Confirm region change during active game
         const confirm = window.confirm('Changing region will end the current game. Continue?');
         if (!confirm) return;
@@ -221,13 +221,13 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
       }));
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isGameActive, resetGame]
+    [_isGameActive, resetGame]
   );
 
   // Handle difficulty change
   const handleDifficultyChange = useCallback(
     (difficulty: DifficultyLevel) => {
-      if (isGameActive) {
+      if (_isGameActive) {
         const confirm = window.confirm('Changing difficulty will end the current game. Continue?');
         if (!confirm) return;
 
@@ -243,15 +243,16 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
       updateSettings({ difficulty });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isGameActive, resetGame, updateSettings]
+    [_isGameActive, resetGame, updateSettings]
   );
 
   // Handle hint request
   const handleUseHint = useCallback(() => {
     if (remainingCounties.length > 0) {
-      requestHint();
+      const nextCounty = remainingCounties[0];
+      requestHint('visual', nextCounty.id);
     }
-  }, [remainingCounties.length, requestHint]);
+  }, [remainingCounties, requestHint]);
 
   // Format time display
   const formatTime = (milliseconds: number): string => {
@@ -264,7 +265,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
   // Calculate game progress percentage
   const getProgressPercentage = (): number => {
     const total = availableCounties.length;
-    const placed = placedCounties.length;
+    const placed = _placedCounties.length;
     return total > 0 ? (placed / total) * 100 : 0;
   };
 
@@ -318,16 +319,16 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
           <div className="stat-item">
             <div style={{ fontSize: '12px', color: '#6b7280', textAlign: 'center' }}>Score</div>
             <div style={{ fontSize: '18px', fontWeight: '600', color: '#111827' }}>
-              {score.toLocaleString()}
+              {_score.toLocaleString()}
             </div>
           </div>
 
           {/* Timer */}
-          {settings.enableTimer && (
+          {_settings.enableTimer && (
             <div className="stat-item">
               <div style={{ fontSize: '12px', color: '#6b7280', textAlign: 'center' }}>Time</div>
               <div style={{ fontSize: '18px', fontWeight: '600', color: '#111827' }}>
-                {formatTime(timeElapsed)}
+                {formatTime(_timeElapsed)}
               </div>
             </div>
           )}
@@ -339,10 +340,10 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
               style={{
                 fontSize: '18px',
                 fontWeight: '600',
-                color: streak > 0 ? '#f59e0b' : '#111827',
+                color: _streak > 0 ? '#f59e0b' : '#111827',
               }}
             >
-              {streak}
+              {_streak}
             </div>
           </div>
 
@@ -350,7 +351,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
           <div className="stat-item">
             <div style={{ fontSize: '12px', color: '#6b7280', textAlign: 'center' }}>Progress</div>
             <div style={{ fontSize: '18px', fontWeight: '600', color: '#111827' }}>
-              {placedCounties.length}/{availableCounties.length}
+              {_placedCounties.length}/{availableCounties.length}
             </div>
           </div>
         </div>
@@ -364,10 +365,10 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
           }}
         >
           {/* Hint Button */}
-          {settings.showHints && remainingCounties.length > 0 && (
+          {_settings.showHints && remainingCounties.length > 0 && (
             <button
               onClick={handleUseHint}
-              disabled={!isGameActive || isPaused}
+              disabled={!_isGameActive || isPaused}
               style={{
                 padding: '8px 16px',
                 fontSize: '14px',
@@ -383,7 +384,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
           )}
 
           {/* Pause/Resume Button */}
-          {isGameActive && (
+          {_isGameActive && (
             <button
               onClick={handlePauseToggle}
               style={{

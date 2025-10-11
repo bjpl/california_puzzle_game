@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { realCaliforniaCountyShapes } from '../../data/californiaCountyBoundaries';
 import { getSvgTextFill } from '../../utils/colorContrast';
 
