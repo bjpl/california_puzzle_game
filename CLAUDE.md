@@ -1,1058 +1,352 @@
-# California Counties Puzzle Game - Project Context
+# Claude Code Configuration - SPARC Development Environment
+
+## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
+
+**ABSOLUTE RULES**:
+1. ALL operations MUST be concurrent/parallel in a single message
+2. **NEVER save working files, text/mds and tests to the root folder**
+3. ALWAYS organize files in appropriate subdirectories
+4. **USE CLAUDE CODE'S TASK TOOL** for spawning agents concurrently, not just MCP
+
+### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
+
+**MANDATORY PATTERNS:**
+- **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
+- **Task tool (Claude Code)**: ALWAYS spawn ALL agents in ONE message with full instructions
+- **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
+- **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
+- **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
+
+### 🎯 CRITICAL: Claude Code Task Tool for Agent Execution
+
+**Claude Code's Task tool is the PRIMARY way to spawn agents:**
+```javascript
+// ✅ CORRECT: Use Claude Code's Task tool for parallel agent execution
+[Single Message]:
+  Task("Research agent", "Analyze requirements and patterns...", "researcher")
+  Task("Coder agent", "Implement core features...", "coder")
+  Task("Tester agent", "Create comprehensive tests...", "tester")
+  Task("Reviewer agent", "Review code quality...", "reviewer")
+  Task("Architect agent", "Design system architecture...", "system-architect")
+```
+
+**MCP tools are ONLY for coordination setup:**
+- `mcp__claude-flow__swarm_init` - Initialize coordination topology
+- `mcp__claude-flow__agent_spawn` - Define agent types for coordination
+- `mcp__claude-flow__task_orchestrate` - Orchestrate high-level workflows
+
+### 📁 File Organization Rules
+
+**NEVER save to root folder. Use these directories:**
+- `/src` - Source code files
+- `/tests` - Test files
+- `/docs` - Documentation and markdown files
+- `/config` - Configuration files
+- `/scripts` - Utility scripts
+- `/examples` - Example code
 
 ## Project Overview
 
-**Name:** California Counties Puzzle Game
-**Type:** Educational geography game with study mode and gamification
-**Target Audience:** Individual users (planned: multi-user, open-source/paid offering)
-**Inspiration:** Colombia Puzzle app (educational game design patterns)
-**Status:** Production-ready (ESLint: 0/0, Tests: 96.4%, Build: passing)
+This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
 
-**Core Features:**
+## SPARC Commands
 
-- Interactive drag-and-drop county placement
-- Study mode with comprehensive educational content
-- Multiple difficulty levels and game modes
-- Achievement system and progress tracking
-- Hint system and visual feedback
-- Leaderboard and statistics
+### Core Commands
+- `npx claude-flow sparc modes` - List available modes
+- `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
+- `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
+- `npx claude-flow sparc info <mode>` - Get mode details
 
----
+### Batchtools Commands
+- `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
+- `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
+- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
 
-## Technology Stack
+### Build Commands
+- `npm run build` - Build project
+- `npm run test` - Run tests
+- `npm run lint` - Linting
+- `npm run typecheck` - Type checking
 
-### Frontend Framework
+## SPARC Workflow Phases
 
-```
-React:          18.x (functional components, hooks)
-TypeScript:     5.x (strict mode, 100% type-safe)
-Build Tool:     Vite 5.x (fast builds, HMR)
-Styling:        Tailwind CSS 3.x + custom CSS
-State:          Zustand 4.x (gameStore, studyStore)
-```
+1. **Specification** - Requirements analysis (`sparc run spec-pseudocode`)
+2. **Pseudocode** - Algorithm design (`sparc run spec-pseudocode`)
+3. **Architecture** - System design (`sparc run architect`)
+4. **Refinement** - TDD implementation (`sparc tdd`)
+5. **Completion** - Integration (`sparc run integration`)
 
-### Key Libraries
+## Code Style & Best Practices
 
-```
-Routing:        React Router 6.x
-Drag & Drop:    @dnd-kit/core
-Animation:      Framer Motion
-Mapping:        D3.js 7.x (projections, geo)
-Testing:        Vitest + React Testing Library
-Linting:        ESLint + TypeScript ESLint
-Formatting:     Prettier
-```
+- **Modular Design**: Files under 500 lines
+- **Environment Safety**: Never hardcode secrets
+- **Test-First**: Write tests before implementation
+- **Clean Architecture**: Separate concerns
+- **Documentation**: Keep updated
 
-### Data & Assets
-
-```
-Geodata:        GeoJSON (4 detail levels: ultra-low, low, medium, high)
-Counties:       58 California counties with full metadata
-Educational:    Comprehensive county education content
-Images:         County shapes, maps, icons
-```
+## 🚀 Available Agents (54 Total)
 
----
+### Core Development
+`coder`, `reviewer`, `tester`, `planner`, `researcher`
 
-## Architecture Decisions
+### Swarm Coordination
+`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
 
-### State Management Strategy
+### Consensus & Distributed
+`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
 
-**Zustand Stores:**
+### Performance & Optimization
+`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
 
-- `gameStore`: Game state, settings, achievements, hints
-- `studyStore`: Study progress, sessions, spaced repetition
+### GitHub & Repository
+`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
 
-**Why Zustand:**
+### SPARC Methodology
+`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
 
-- Simpler than Redux, more powerful than Context
-- Built-in persistence support
-- TypeScript-friendly
-- Minimal boilerplate
+### Specialized Development
+`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
 
-### Component Architecture
+### Testing & Validation
+`tdd-london-swarm`, `production-validator`
 
-**Patterns:**
+### Migration & Planning
+`migration-planner`, `swarm-init`
 
-- Functional components with hooks (no class components)
-- Custom hooks for complex logic (useProgress, useTimer, useCaliforniaMap)
-- Compound components for related UI (Card + Card.Header + Card.Body)
-- Higher-order components sparingly (withEnhancedGame)
+## 🎯 Claude Code vs MCP Tools
 
-**File Structure:**
+### Claude Code Handles ALL EXECUTION:
+- **Task tool**: Spawn and run agents concurrently for actual work
+- File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
+- Code generation and programming
+- Bash commands and system operations
+- Implementation work
+- Project navigation and analysis
+- TodoWrite and task management
+- Git operations
+- Package management
+- Testing and debugging
 
-```
-/components/
-  /game/          - Game-specific components
-  /map/           - Map rendering components
-  /study/         - Study mode components
-  /ui/            - Reusable UI components
-  /shared/        - Shared utilities (ErrorBoundary, etc.)
-```
+### MCP Tools ONLY COORDINATE:
+- Swarm initialization (topology setup)
+- Agent type definitions (coordination patterns)
+- Task orchestration (high-level planning)
+- Memory management
+- Neural features
+- Performance tracking
+- GitHub integration
 
-### Type Safety Approach
+**KEY**: MCP coordinates the strategy, Claude Code's Task tool executes with real agents.
 
-**Standards:**
-
-- No `any` types (use `unknown` or `Record<string, unknown>`)
-- Strict TypeScript mode enabled
-- Type-only imports where appropriate
-- Proper generic parameters for D3, React, etc.
-
-**Patterns:**
-
-```typescript
-// Unused variables: prefix with underscore
-const { used, unused: _unused } = props;
-
-// Type assertions: double assertion for complex types
-const value = obj as unknown as SpecificType;
-
-// Flexible objects: use Record
-const data: Record<string, unknown> = {};
-```
-
----
-
-## File Organization Rules
-
-### Directory Structure
-
-```
-/src/
-  /components/       - React components organized by feature
-  /stores/           - Zustand state stores
-  /hooks/            - Custom React hooks
-  /utils/            - Pure utility functions
-  /context/          - React context providers
-  /config/           - Configuration files (game modes, colors, etc.)
-  /data/             - Static data (counties, education content)
-  /types/            - TypeScript type definitions
-  /styles/           - Global CSS and Tailwind config
-
-/tests/
-  /unit/             - Unit tests (mirrors /src structure)
-  /integration/      - Integration tests
-  /accessibility/    - A11y-specific tests
-  /performance/      - Performance benchmarks
-  /utils/            - Test utilities and helpers
-  /mocks/            - Mock data and fixtures
-  /fixtures/         - Test fixtures
-
-/docs/                - Project documentation
-/daily_reports/       - Daily development logs
-/scripts/             - Build and utility scripts
-/public/data/geo/     - GeoJSON files (2.2M+ lines)
-```
-
-### Naming Conventions
-
-**Files:**
-
-- Components: `PascalCase.tsx`
-- Hooks: `useCamelCase.ts`
-- Utilities: `camelCase.ts`
-- Types: `types.ts` or `ComponentName.types.ts`
-- Tests: `fileName.test.ts` or `fileName.test.tsx`
-
-**Never save to root:**
-
-- Working files, text/markdown docs → `/docs/`
-- Tests → `/tests/`
-- All code → appropriate `/src/` subdirectory
-
----
-
-## Coding Conventions
-
-### ESLint Compliance (PERFECT: 0/0)
-
-**Achieved Standards:**
-
-- Zero errors, zero warnings
-- All intentional patterns documented with suppressions
-- Pre-commit hooks enforce quality
-
-**Common Suppressions:**
-
-```typescript
-// localStorage (intentional usage)
-// eslint-disable-next-line no-restricted-globals
-localStorage.setItem(key, value);
-
-// React hooks (intentional stable deps)
-useEffect(() => {
-  // ...
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [intentionalDeps]);
-
-// React refresh (intentional mixed exports)
-// eslint-disable-next-line react-refresh/only-export-components
-export const utilityFunction = () => {};
-```
-
-### Import Organization
-
-**Standard Order:**
-
-1. React imports
-2. Third-party libraries
-3. Type imports (`import type`)
-4. Internal imports (hooks, components, utils)
-5. Styles
-
-**Example:**
-
-```typescript
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import type { County, Position } from '@/types';
-import { useGameStore } from '@/stores/gameStore';
-import { CaliforniaMap } from '@/components/map/CaliforniaMap';
-import { logger } from '@/utils/logger';
-import './styles.css';
-```
-
-**Rules:**
-
-- One import per module (no duplicates)
-- Use type-only imports for types: `import type { Type }`
-- Group related imports
-- Prefix unused destructured values: `const { used, _unused } = obj;`
-
-### React Patterns
-
-**Hooks:**
-
-- Stable dependency arrays are intentional (requires suppression)
-- Custom hooks in `/hooks/` directory
-- Use `useCallback` and `useMemo` judiciously
-
-**Components:**
-
-- Functional components only
-- Props interfaces defined above component
-- Export component as default when it's the primary export
-
-**State:**
-
-- Zustand for global state
-- Local state for component-specific UI state
-- Context for dependency injection (not state management)
-
----
-
-## Testing Strategy
-
-### Test Categories (Multi-category per file)
-
-Each test file runs in 4 categories:
-
-- `|unit|` - Isolated unit tests
-- `|integration|` - Integration tests
-- `|accessibility|` - A11y-specific tests
-- `|performance|` - Performance benchmarks
-
-**Current Stats:**
-
-- Total Tests: 1792
-- Passing: 1728 (96.4%)
-- Failing: 64 (mostly UI snapshots and performance act() warnings)
-
-### Testing Requirements
-
-**Before Commit:**
-
-- ESLint must pass (0 errors, 0 warnings)
-- Prettier must pass
-- No TODO comments in staged files
-
-**Before Push:**
-
-- Test suite should pass (use `--no-verify` only with justification)
-- Document known test failures if pushing anyway
-
-**Test File Conventions:**
-
-- Mirror source file structure
-- Use descriptive test names
-- Group related tests in `describe` blocks
-- Mock external dependencies
-- Use test fixtures from `/tests/fixtures/`
-
----
-
-## Performance Considerations
-
-### Bundle Optimization
-
-**Current Status:**
-
-- Total: 1.1 MB
-- Gzipped: ~270 KB
-- Code splitting: Active (study mode, map components separate)
-
-**Lazy Loading:**
-
-```typescript
-const StudyMode = lazy(() => import('./components/study/EnhancedStudyMode'));
-const MapComponent = lazy(() => import('./components/map/CaliforniaMapCanvas'));
-```
-
-### Geodata Strategy
-
-**4 Detail Levels:**
-
-- `ultra-low`: 21K lines (initial load, overview)
-- `low`: 98K lines (default gameplay)
-- `medium`: 194K lines (detailed view)
-- `high`: 966K lines (study mode, inspection)
-
-**Loading Strategy:**
-
-- Start with low-res
-- Progressive enhancement on zoom
-- Cache loaded levels
-
----
-
-## Git Workflow
-
-### Commit Standards
-
-**Format:**
-
-```
-<type>: <subject>
-
-<detailed body with bullet points>
-
-<technical notes if needed>
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
-
-**Types:** feat, fix, docs, style, refactor, test, chore
-
-**Commit Frequency:**
-
-- After each logical unit of work
-- After fixing batch of related errors
-- After each agent completes its task
-- Before switching contexts
-
-### Branch Strategy
-
-**Current:**
-
-- `main` - production-ready code
-- Direct commits to main (single developer)
-
-**Future (multi-user):**
-
-- Feature branches: `feature/name`
-- Bug fixes: `fix/name`
-- Pull request reviews required
-
----
-
-## Deployment Pipeline
-
-### GitHub Pages Deployment
-
-**Build:**
+## 🚀 Quick Setup
 
 ```bash
-npm run build       # Vite production build
-npm run preview     # Local preview
+# Add MCP servers (Claude Flow required, others optional)
+claude mcp add claude-flow npx claude-flow@alpha mcp start
+claude mcp add ruv-swarm npx ruv-swarm mcp start  # Optional: Enhanced coordination
+claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional: Cloud features
 ```
 
-**Deploy:**
+## MCP Tool Categories
 
-- Automatic on push to `main` (GitHub Actions)
-- Deployed to: `https://username.github.io/california_puzzle_game`
+### Coordination
+`swarm_init`, `agent_spawn`, `task_orchestrate`
 
-**Environment:**
+### Monitoring
+`swarm_status`, `agent_list`, `agent_metrics`, `task_status`, `task_results`
 
-- Base path: `/california_puzzle_game` (GitHub Pages subpath)
-- Asset paths: Handled automatically by Vite
+### Memory & Neural
+`memory_usage`, `neural_status`, `neural_train`, `neural_patterns`
 
----
+### GitHub Integration
+`github_swarm`, `repo_analyze`, `pr_enhance`, `issue_triage`, `code_review`
 
-## Known Patterns & Decisions
+### System
+`benchmark_run`, `features_detect`, `swarm_monitor`
 
-### localStorage Usage
+### Flow-Nexus MCP Tools (Optional Advanced Features)
+Flow-Nexus extends MCP capabilities with 70+ cloud-based orchestration tools:
 
-**Intentional Direct Usage** (documented with suppressions):
+**Key MCP Tool Categories:**
+- **Swarm & Agents**: `swarm_init`, `swarm_scale`, `agent_spawn`, `task_orchestrate`
+- **Sandboxes**: `sandbox_create`, `sandbox_execute`, `sandbox_upload` (cloud execution)
+- **Templates**: `template_list`, `template_deploy` (pre-built project templates)
+- **Neural AI**: `neural_train`, `neural_patterns`, `seraphina_chat` (AI assistant)
+- **GitHub**: `github_repo_analyze`, `github_pr_manage` (repository management)
+- **Real-time**: `execution_stream_subscribe`, `realtime_subscribe` (live monitoring)
+- **Storage**: `storage_upload`, `storage_list` (cloud file management)
 
-- Study progress persistence
-- Sound settings
-- Leaderboard data
-- Game state recovery
+**Authentication Required:**
+- Register: `mcp__flow-nexus__user_register` or `npx flow-nexus@latest register`
+- Login: `mcp__flow-nexus__user_login` or `npx flow-nexus@latest login`
+- Access 70+ specialized MCP tools for advanced orchestration
 
-**Pattern:**
+## 🚀 Agent Execution Flow with Claude Code
 
-```typescript
-// eslint-disable-next-line no-restricted-globals
-localStorage.setItem(key, JSON.stringify(data));
+### The Correct Pattern:
+
+1. **Optional**: Use MCP tools to set up coordination topology
+2. **REQUIRED**: Use Claude Code's Task tool to spawn agents that do actual work
+3. **REQUIRED**: Each agent runs hooks for coordination
+4. **REQUIRED**: Batch all operations in single messages
+
+### Example Full-Stack Development:
+
+```javascript
+// Single message with all agent spawning via Claude Code's Task tool
+[Parallel Agent Execution]:
+  Task("Backend Developer", "Build REST API with Express. Use hooks for coordination.", "backend-dev")
+  Task("Frontend Developer", "Create React UI. Coordinate with backend via memory.", "coder")
+  Task("Database Architect", "Design PostgreSQL schema. Store schema in memory.", "code-analyzer")
+  Task("Test Engineer", "Write Jest tests. Check memory for API contracts.", "tester")
+  Task("DevOps Engineer", "Setup Docker and CI/CD. Document in memory.", "cicd-engineer")
+  Task("Security Auditor", "Review authentication. Report findings via hooks.", "reviewer")
+  
+  // All todos batched together
+  TodoWrite { todos: [...8-10 todos...] }
+  
+  // All file operations together
+  Write "backend/server.js"
+  Write "frontend/App.jsx"
+  Write "database/schema.sql"
 ```
 
-**Rationale:** Simple, synchronous, sufficient for single-user scope
+## 📋 Agent Coordination Protocol
 
-### React Hook Dependency Arrays
+### Every Agent Spawned via Task Tool MUST:
 
-**Intentionally Incomplete Arrays:**
-
-- Game completion effects (stable callbacks)
-- Map initialization (one-time setup)
-- Timer effects (controlled updates)
-
-**Pattern:**
-
-```typescript
-useEffect(() => {
-  // Setup logic
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [specificDeps]); // Omits stable refs intentionally
-```
-
-**Rationale:** Including all deps would cause infinite loops or unnecessary re-renders
-
-### Mixed Component/Utility Exports
-
-**Pattern:**
-
-```typescript
-// Component + hook in same file
-export const Component = () => {
-  /* ... */
-};
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const useComponentHook = () => {
-  /* ... */
-};
-```
-
-**Rationale:** Collocated related functionality for better cohesion
-
----
-
-## Daily Development Workflow
-
-### Session Pattern
-
-1. **Start:** Pull latest, check status (`git status`, `npm run lint`, `npm test`)
-2. **Plan:** Create todo list, identify goals
-3. **Execute:** Work in small increments, commit frequently
-4. **Verify:** Run tests, check build, review changes
-5. **Document:** Update daily report in `/daily_reports/YYYY-MM-DD.md`
-6. **Deploy:** Push to remote, verify GitHub Pages deployment
-
-### Daily Report Format
-
-**Location:** `/daily_reports/YYYY-MM-DD.md`
-
-**Structure:**
-
-- Executive summary
-- Commit timeline
-- Statistics dashboard
-- File changes breakdown
-- Technical achievements
-- Challenges overcome
-- Metrics and analysis
-
-**Example:** See `daily_reports/2025-10-06.md` for comprehensive format
-
----
-
-## Current Project Status (As of 2025-10-06)
-
-### Code Quality: PERFECT
-
-```
-ESLint:        0 errors, 0 warnings
-TypeScript:    100% type-safe (no any types)
-Build:         ✅ Passing (26.56s)
-Bundle:        1.1 MB optimized
-```
-
-### Test Suite: EXCELLENT
-
-```
-Total Tests:   1792
-Passing:       1728 (96.4%)
-Failing:       64 (UI snapshots, performance act() warnings)
-Categories:    unit, integration, a11y, performance
-```
-
-### Recent Achievements (October 6, 2025)
-
-- ✅ Eliminated ALL 202 ESLint errors (100%)
-- ✅ Suppressed ALL 19 warnings with documented rationale (100%)
-- ✅ Removed unwanted TODO tests (77 test failures eliminated)
-- ✅ Deployed 20+ AI agents successfully
-- ✅ Improved 100+ files systematically
-- ✅ Achieved production-ready code quality
-
-### Technical Debt: MINIMAL
-
-- 64 test failures (non-blocking, mostly UI snapshots)
-- All critical paths tested and passing
-- No known security issues
-- Dependencies up-to-date
-
----
-
-## Agent Deployment Guidelines (Project-Specific)
-
-### Successful Patterns from Recent Work
-
-**Agent Specialization:**
-
-- Create agents for specific error types or file categories
-- One agent per 5-10 related files works well
-- Agents can handle 10-15 errors efficiently
-
-**Parallel Deployment:**
-
-```typescript
-// Single message with multiple Task calls
-Task('Agent 1', 'Fix components A, B, C');
-Task('Agent 2', 'Fix stores X, Y');
-Task('Agent 3', 'Fix utils P, Q, R');
-```
-
-**Avoid:**
-
-- Sed/awk scripts (breaks TypeScript syntax)
-- Batch operations without review
-- Deploying too many agents at once (>10 causes coordination issues)
-
-### Agent Task Examples
-
-**Good Agent Task:**
-
-```
-"Fix unused variables in src/components/game/:
-- Read each file
-- Identify unused vars
-- Prefix with underscore or remove
-- Use Edit tool only
-- Return summary of changes"
-```
-
-**Bad Agent Task:**
-
-```
-"Fix everything in the codebase"
-(Too broad, no clear scope)
-```
-
----
-
-## Common Gotchas & Solutions
-
-### Issue 1: Duplicate Imports
-
-**Cause:** Merge conflict resolution tools
-**Detection:** Multiple identical imports in one file
-**Fix:** Keep only one import, remove duplicates
-**Prevention:** Review imports after merges
-
-### Issue 2: Type Errors with D3
-
-**Cause:** D3 v7 requires explicit generic parameters
-**Fix:** Import proper types from d3-zoom, d3-selection
-**Pattern:** `Selection<SVGSVGElement, unknown, null, undefined>`
-
-### Issue 3: Test Failures After Changes
-
-**Cause:** Snapshots outdated or act() warnings
-**Fix:** Update snapshots with `-u` flag or wrap in act()
-**Prevention:** Run tests before committing
-
-### Issue 4: Build Failures
-
-**Cause:** Usually type errors or import issues
-**Fix:** Check `npm run build` output, fix TypeScript errors
-**Prevention:** Use IDE TypeScript support during development
-
----
-
-## Quick Reference Commands
-
-### Development
-
+**1️⃣ BEFORE Work:**
 ```bash
-npm run dev          # Start dev server (http://localhost:5173)
-npm run build        # Production build
-npm run preview      # Preview production build
-npm run lint         # Run ESLint
-npm run lint:fix     # Auto-fix ESLint issues
-npm test             # Run test suite
-npm test -- -u       # Update snapshots
+npx claude-flow@alpha hooks pre-task --description "[task]"
+npx claude-flow@alpha hooks session-restore --session-id "swarm-[id]"
 ```
 
-### Git Operations
-
+**2️⃣ DURING Work:**
 ```bash
-git status                    # Check current state
-git add <files>               # Stage changes
-git commit -m "message"       # Commit (runs pre-commit hooks)
-git push origin main          # Push (runs pre-push hooks)
-git push origin main --no-verify  # Bypass hooks (use sparingly)
+npx claude-flow@alpha hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
+npx claude-flow@alpha hooks notify --message "[what was done]"
 ```
 
-### Agent Deployment
-
+**3️⃣ AFTER Work:**
 ```bash
-# Use Task tool in Claude Code
-Task("description", "detailed prompt", "agent-type")
-
-# Agent types: general-purpose, code-reviewer, etc.
+npx claude-flow@alpha hooks post-task --task-id "[task]"
+npx claude-flow@alpha hooks session-end --export-metrics true
 ```
 
----
+## 🎯 Concurrent Execution Examples
 
-## Project-Specific Conventions
+### ✅ CORRECT WORKFLOW: MCP Coordinates, Claude Code Executes
 
-### Naming Standards
+```javascript
+// Step 1: MCP tools set up coordination (optional, for complex tasks)
+[Single Message - Coordination Setup]:
+  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
+  mcp__claude-flow__agent_spawn { type: "researcher" }
+  mcp__claude-flow__agent_spawn { type: "coder" }
+  mcp__claude-flow__agent_spawn { type: "tester" }
 
-**Components:**
-
-```typescript
-// File: CaliforniaMap.tsx
-export const CaliforniaMap: React.FC<Props> = ({ ... }) => { }
-export default CaliforniaMap;
+// Step 2: Claude Code Task tool spawns ACTUAL agents that do the work
+[Single Message - Parallel Agent Execution]:
+  // Claude Code's Task tool spawns real agents concurrently
+  Task("Research agent", "Analyze API requirements and best practices. Check memory for prior decisions.", "researcher")
+  Task("Coder agent", "Implement REST endpoints with authentication. Coordinate via hooks.", "coder")
+  Task("Database agent", "Design and implement database schema. Store decisions in memory.", "code-analyzer")
+  Task("Tester agent", "Create comprehensive test suite with 90% coverage.", "tester")
+  Task("Reviewer agent", "Review code quality and security. Document findings.", "reviewer")
+  
+  // Batch ALL todos in ONE call
+  TodoWrite { todos: [
+    {id: "1", content: "Research API patterns", status: "in_progress", priority: "high"},
+    {id: "2", content: "Design database schema", status: "in_progress", priority: "high"},
+    {id: "3", content: "Implement authentication", status: "pending", priority: "high"},
+    {id: "4", content: "Build REST endpoints", status: "pending", priority: "high"},
+    {id: "5", content: "Write unit tests", status: "pending", priority: "medium"},
+    {id: "6", content: "Integration tests", status: "pending", priority: "medium"},
+    {id: "7", content: "API documentation", status: "pending", priority: "low"},
+    {id: "8", content: "Performance optimization", status: "pending", priority: "low"}
+  ]}
+  
+  // Parallel file operations
+  Bash "mkdir -p app/{src,tests,docs,config}"
+  Write "app/package.json"
+  Write "app/src/server.js"
+  Write "app/tests/server.test.js"
+  Write "app/docs/API.md"
 ```
 
-**Hooks:**
-
-```typescript
-// File: useGameState.ts
-export function useGameState() {}
-export default useGameState;
+### ❌ WRONG (Multiple Messages):
+```javascript
+Message 1: mcp__claude-flow__swarm_init
+Message 2: Task("agent 1")
+Message 3: TodoWrite { todos: [single todo] }
+Message 4: Write "file.js"
+// This breaks parallel coordination!
 ```
 
-**Stores:**
+## Performance Benefits
 
-```typescript
-// File: gameStore.ts
-export const useGameStore = create<GameStore>()( ... );
-```
+- **84.8% SWE-Bench solve rate**
+- **32.3% token reduction**
+- **2.8-4.4x speed improvement**
+- **27+ neural models**
 
-**Utilities:**
+## Hooks Integration
 
-```typescript
-// File: californiaData.ts
-export function getCountyById(id: string): County | undefined { }
-export const CALIFORNIA_COUNTIES = [ ... ];
-```
+### Pre-Operation
+- Auto-assign agents by file type
+- Validate commands for safety
+- Prepare resources automatically
+- Optimize topology by complexity
+- Cache searches
 
-### Import Path Aliases
+### Post-Operation
+- Auto-format code
+- Train neural patterns
+- Update memory
+- Analyze performance
+- Track token usage
 
-```typescript
-// Configured in tsconfig.json and vite.config.ts
-import { Component } from '@/components/Component';
-import { useHook } from '@/hooks/useHook';
-import { utility } from '@/utils/utility';
-import type { Type } from '@/types';
-```
+### Session Management
+- Generate summaries
+- Persist state
+- Track metrics
+- Restore context
+- Export workflows
 
-**Alias Mappings:**
+## Advanced Features (v2.0.0)
 
-- `@/` → `src/`
+- 🚀 Automatic Topology Selection
+- ⚡ Parallel Execution (2.8-4.4x speed)
+- 🧠 Neural Training
+- 📊 Bottleneck Analysis
+- 🤖 Smart Auto-Spawning
+- 🛡️ Self-Healing Workflows
+- 💾 Cross-Session Memory
+- 🔗 GitHub Integration
 
-### Code Style Preferences
+## Integration Tips
 
-**Spacing:**
+1. Start with basic swarm init
+2. Scale agents gradually
+3. Use memory for context
+4. Monitor progress regularly
+5. Train patterns from success
+6. Enable hooks automation
+7. Use GitHub tools first
 
-- 2 spaces indentation
-- No trailing whitespace
-- Newline at end of file
+## Support
 
-**Strings:**
-
-- Prefer single quotes: `'string'`
-- Template literals for interpolation: `` `${var}` ``
-
-**Functions:**
-
-- Arrow functions for callbacks
-- Named functions for utilities
-- `useCallback` for component callbacks passed as props
-
----
-
-## Documentation Requirements
-
-### README.md Updates
-
-When adding features, update:
-
-- Features list
-- Installation instructions if dependencies change
-- Usage examples for major features
-- Screenshots if UI changes significantly
-
-### Code Comments
-
-**When to Comment:**
-
-- Complex algorithms or business logic
-- Non-obvious performance optimizations
-- Workarounds for browser/library quirks
-- TODO items (but not in commits - use GitHub issues)
-
-**When NOT to Comment:**
-
-- Self-explanatory code
-- Type signatures (TypeScript handles this)
-- Simple getters/setters
-
-### Architecture Decision Records (ADRs)
-
-**Location:** `/docs/ADR-*.md`
-
-**Format:**
-
-- Context: Why decision needed
-- Decision: What was decided
-- Consequences: Trade-offs and implications
-- Alternatives: What was considered
-
-**Example:** `docs/ADR-CSS-STRATEGY.md` (Tailwind adoption)
+- Documentation: https://github.com/ruvnet/claude-flow
+- Issues: https://github.com/ruvnet/claude-flow/issues
+- Flow-Nexus Platform: https://flow-nexus.ruv.io (registration required for cloud features)
 
 ---
 
-## Accessibility Standards
-
-### Requirements
-
-**Keyboard Navigation:**
-
-- All interactive elements keyboard accessible
-- Logical tab order
-- Focus indicators visible
-- Escape key closes modals
-
-**Screen Readers:**
-
-- Semantic HTML elements
-- ARIA labels where needed
-- Alt text for images
-- Live regions for dynamic content
-
-**Visual:**
-
-- Color contrast WCAG AA minimum
-- Text scalable
-- No information by color alone
-
-**Testing:**
-
-- A11y tests in `/tests/accessibility/`
-- Run with test category filter: `npm test -- |a11y|`
-
----
-
-## Security Considerations
-
-### Current Scope (Single User)
-
-**No Backend Currently:**
-
-- All data stored client-side (localStorage)
-- No authentication required
-- No sensitive data beyond user preferences
-
-### Future Multi-User Considerations
-
-**When Implementing:**
-
-- Use environment variables for API keys
-- Implement proper authentication (OAuth recommended)
-- Sanitize all user inputs
-- Use HTTPS only
-- Implement rate limiting
-- Add CSRF protection
-
-**Never Commit:**
-
-- API keys, tokens, secrets
-- Real user data
-- Environment files with sensitive info (`.env.local`)
-
----
-
-## Troubleshooting Guide
-
-### Build Issues
-
-**Error:** "Cannot find module '@/...'"
-**Fix:** Check tsconfig.json paths, restart dev server
-
-**Error:** "Type error: ..."
-**Fix:** Run `npm run typecheck`, fix TypeScript errors
-
-**Error:** "Module not found: can't resolve..."
-**Fix:** Run `npm install`, check import paths
-
-### Test Issues
-
-**Error:** "Snapshot mismatch"
-**Fix:** Review changes, run `npm test -- -u` if intentional
-
-**Error:** "act() warning"
-**Fix:** Wrap state updates in `act(() => { })` or use `waitFor()`
-
-**Error:** "Cannot find module in test"
-**Fix:** Check test file imports, verify mock setup
-
-### ESLint Issues
-
-**Error:** "... is defined but never used"
-**Fix:** Prefix with underscore: `_unused` or remove
-
-**Error:** "Unexpected any"
-**Fix:** Use proper type or `Record<string, unknown>`
-
-**Error:** "localStorage usage"
-**Fix:** Add suppression: `// eslint-disable-next-line no-restricted-globals`
-
----
-
-## Resource Links
-
-### Project Documentation
-
-- Main README: `/README.md`
-- Architecture decisions: `/docs/ADR-*.md`
-- Component structure: `/docs/COMPONENT_STRUCTURE.md`
-- Daily reports: `/daily_reports/`
-
-### External Resources
-
-- React Docs: https://react.dev
-- TypeScript Handbook: https://www.typescriptlang.org/docs/
-- Vitest Docs: https://vitest.dev
-- D3.js Docs: https://d3js.org
-- Zustand Docs: https://docs.pmnd.rs/zustand
-
----
-
-## Project History Highlights
-
-**September 20, 2025:**
-
-- Initial project creation
-- 27 commits, 91 files created
-- Complete game implementation
-- GitHub Pages deployment
-
-**October 6, 2025:**
-
-- ESLint cleanup sprint (202 errors → 0)
-- Perfect linting achieved (0 warnings)
-- 20+ AI agents deployed
-- Production-ready quality established
-
-**For Full History:** See `/daily_reports/`
-
----
-
-═══════════════════════════════════════════════════════
-AGENT OPERATING INSTRUCTIONS
-ALL DIRECTIVES ARE MANDATORY - STRICT COMPLIANCE
-═══════════════════════════════════════════════════════
-
-╔═══════════════════════════════════════════════════════╗
-║ ⚠️ CRITICAL: SWARM ORCHESTRATION ARCHITECTURE ⚠️ ║
-║ ║
-║ MANDATORY COORDINATION PATTERN: ║
-║ → Topology Setup: Use Claude Flow's MCP (Model ║
-║ Context Protocol) coordination for establishing ║
-║ agent topology and communication patterns ║
-║ → Agent Execution: Use Task tool for actual agent ║
-║ execution, following guidelines in CLAUDE.md ║
-║ → Separation of Concerns: ALWAYS distinguish between ║
-║ orchestration layer (Flow/MCP) and execution ║
-║ layer (Task tool) ║
-║ ║
-║ This pattern must be followed for ALL multi-agent ║
-║ coordination and swarm operations without exception. ║
-╚═══════════════════════════════════════════════════════╝
-
-[MANDATORY-1] COMMUNICATION & TRANSPARENCY
-→ Explain every action in detail as you perform it
-→ Include: what you're doing, why, expected outcomes, context, and rationale
-→ Maximize thought exposure: make reasoning visible and understandable
-
-[MANDATORY-2] PROFESSIONAL COMMUNICATION STYLE
-→ Avoid sycophancy: Don't over-praise, over-agree, or use excessive enthusiasm
-→ Maintain neutral, professional tone: Be direct, clear, and objective
-→ Give honest assessments: Point out potential issues, trade-offs, and concerns
-→ Don't over-apologize: Acknowledge errors once, then move forward with solutions
-→ Challenge when appropriate: Question assumptions and suggest alternatives constructively
-→ Skip unnecessary pleasantries: Get to the point efficiently
-→ Be appropriately critical: Identify flaws, risks, and weaknesses without sugar-coating
-→ Avoid hedging excessively: State things directly unless genuinely uncertain
-→ No false validation: Don't agree with problematic ideas just to be agreeable
-→ Professional candor over politeness: Prioritize clarity and usefulness over niceties
-
-[MANDATORY-3] VERSION CONTROL & DOCUMENTATION
-→ Commit frequently to local and remote repositories
-→ Write clear, meaningful commit messages for all changes
-
-[MANDATORY-4] TARGET AUDIENCE & SCOPE
-→ Primary user: Individual use (requestor)
-→ Future scope: Multi-user, public open-source or paid offering
-→ Current priority: Build meaningful, functional features first
-
-[MANDATORY-5] CLARIFICATION PROTOCOL
-→ Stop and ask questions when:
-• Instructions unclear or ambiguous
-• Uncertain about requirements or approach
-• Insufficient information for intelligent decisions
-• Multiple valid paths exist
-
-[MANDATORY-6] SWARM ORCHESTRATION APPROACH
-→ Topology setup: Use Claude Flow's MCP (Model Context Protocol) coordination for establishing agent topology and communication patterns
-→ Agent execution: Use Task tool for actual agent execution, following guidelines specified in CLAUDE.md
-→ Separation of concerns: Distinguish between orchestration layer (Flow/MCP) and execution layer (Task tool)
-
-[MANDATORY-7] ERROR HANDLING & RESILIENCE
-→ Implement graceful error handling with clear error messages
-→ Log errors with context for debugging
-→ Validate inputs and outputs at boundaries
-→ Provide fallback strategies when operations fail
-→ Never fail silently; always surface issues appropriately
-
-[MANDATORY-8] TESTING & QUALITY ASSURANCE
-→ Write tests for critical functionality before considering work complete
-→ Verify changes work as expected before committing
-→ Document test cases and edge cases considered
-→ Run existing tests to ensure no regressions
-
-[MANDATORY-9] SECURITY & PRIVACY
-→ Never commit secrets, API keys, or sensitive credentials
-→ Use environment variables for configuration
-→ Sanitize user inputs to prevent injection attacks
-→ Consider data privacy implications for future multi-user scenarios
-→ Follow principle of least privilege
-
-[MANDATORY-10] ARCHITECTURE & DESIGN
-→ Favor simple, readable solutions over clever complexity
-→ Design for modularity and reusability from the start
-→ Document architectural decisions and trade-offs
-→ Consider future extensibility without over-engineering
-→ Apply SOLID principles and appropriate design patterns
-
-[MANDATORY-11] INCREMENTAL DELIVERY
-→ Break large tasks into small, deployable increments
-→ Deliver working functionality frequently (daily if possible)
-→ Each commit should leave the system in a working state
-→ Prioritize MVP features over perfect implementations
-→ Iterate based on feedback and learnings
-
-[MANDATORY-12] DOCUMENTATION STANDARDS
-→ Update README.md as features are added
-→ Document "why" decisions were made, not just "what"
-→ Include setup instructions, dependencies, and usage examples
-→ Maintain API documentation for all public interfaces
-→ Document known limitations and future considerations
-
-[MANDATORY-13] DEPENDENCY MANAGEMENT
-→ Minimize external dependencies; evaluate necessity
-→ Pin dependency versions for reproducibility
-→ Document why each major dependency was chosen
-→ Regularly review and update dependencies for security
-
-[MANDATORY-14] PERFORMANCE AWARENESS
-→ Profile before optimizing; avoid premature optimization
-→ Consider scalability implications of design choices
-→ Document performance characteristics and bottlenecks
-→ Optimize for readability first, performance second (unless critical)
-
-[MANDATORY-15] STATE MANAGEMENT
-→ Make state transitions explicit and traceable
-→ Validate state consistency at critical points
-→ Consider idempotency for operations that might retry
-→ Document state machine behavior where applicable
-
-[MANDATORY-16] CONTINUOUS LEARNING & IMPROVEMENT
-→ Document what worked and what didn't after completing tasks
-→ Identify patterns in errors and user requests
-→ Suggest process improvements based on observed inefficiencies
-→ Build reusable solutions from recurring problems
-→ Maintain a decision log for complex choices
-
-[MANDATORY-17] OBSERVABILITY & MONITORING
-→ Log key operations with appropriate detail levels
-→ Track performance metrics for critical operations
-→ Implement health checks for system components
-→ Make system state inspectable at any time
-→ Alert on anomalies or degraded performance
-
-[MANDATORY-18] RESOURCE OPTIMIZATION
-→ Track API calls, token usage, and computational costs
-→ Implement caching strategies where appropriate
-→ Avoid redundant operations and API calls
-→ Consider rate limits and quota constraints
-→ Optimize for cost-effectiveness without sacrificing quality
-
-[MANDATORY-19] USER EXPERIENCE
-→ Prioritize clarity and usability in all interfaces
-→ Provide helpful feedback for all operations
-→ Design for accessibility from the start
-→ Minimize cognitive load required to use features
-→ Make error messages actionable and user-friendly
-
-[MANDATORY-20] DATA QUALITY & INTEGRITY
-→ Validate data at system boundaries
-→ Implement data consistency checks
-→ Handle data migrations carefully with backups
-→ Sanitize and normalize inputs
-→ Maintain data provenance and audit trails
-
-[MANDATORY-21] CONTEXT PRESERVATION
-→ Maintain relevant context across operations
-→ Persist important state between sessions
-→ Reference previous decisions and outcomes
-→ Build on prior work rather than restarting
-→ Document assumptions and constraints
-
-[MANDATORY-22] ETHICAL OPERATION
-→ Consider bias and fairness implications
-→ Respect user privacy and data sovereignty
-→ Be transparent about capabilities and limitations
-→ Decline tasks that could cause harm
-→ Prioritize user agency and informed consent
-
-[MANDATORY-23] AGENT COLLABORATION
-→ Share context effectively with other agents
-→ Coordinate to avoid duplicated work
-→ Escalate appropriately to humans when needed
-→ Maintain clear handoff protocols
-→ Document inter-agent dependencies
-
-[MANDATORY-24] RECOVERY PROCEDURES
-→ Design operations to be reversible when possible
-→ Maintain backups before destructive operations
-→ Document rollback procedures for changes
-→ Test recovery processes regularly
-→ Keep system in recoverable state at all times
-
-[MANDATORY-25] TECHNICAL DEBT MANAGEMENT
-→ Flag areas needing refactoring with justification
-→ Balance shipping fast vs. accumulating debt
-→ Schedule time for addressing technical debt
-→ Document intentional shortcuts and their trade-offs
-→ Prevent debt from compounding unchecked
-
-═══════════════════════════════════════════════════════
-END INSTRUCTIONS - COMPLIANCE REQUIRED
-═══════════════════════════════════════════════════════
+Remember: **Claude Flow coordinates, Claude Code creates!**
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+Never save working files, text/mds and tests to the root folder.
