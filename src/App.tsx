@@ -18,6 +18,7 @@ const UpdateToast = lazy(() => import('./components/shared/UpdateToast'));
 const CookieConsent = lazy(() => import('./components/shared/CookieConsent'));
 const FeedbackWidget = lazy(() => import('./components/feedback/FeedbackWidget'));
 const AnalyticsProvider = lazy(() => import('./components/analytics/AnalyticsProvider'));
+const SyncStatusIndicator = lazy(() => import('./components/sync/SyncStatusIndicator').then(m => ({ default: m.SyncStatusIndicator })));
 
 /**
  * Auth Integration Component
@@ -66,6 +67,7 @@ function App() {
                 <UpdateToast />
                 <FeedbackWidget />
                 <CookieConsent />
+                <SyncStatusIndicator />
               </Suspense>
             </div>
           </GameProvider>
