@@ -160,11 +160,22 @@ export function restoreScrollAfterDrag() {
  * Get touch coordinates from event
  *
  * Works for both TouchEvent and PointerEvent
+ * For TouchEvent, checks changedTouches first (for touchend events)
+ * then touches (for touchstart/touchmove events)
  */
 export function getTouchCoordinates(event: TouchEvent | PointerEvent | MouseEvent): {
   x: number;
   y: number;
 } {
+  // For TouchEvent, check changedTouches first (touchend events)
+  if ('changedTouches' in event && event.changedTouches && event.changedTouches.length > 0) {
+    return {
+      x: event.changedTouches[0].clientX,
+      y: event.changedTouches[0].clientY,
+    };
+  }
+
+  // Then check touches (touchstart/touchmove events)
   if ('touches' in event && event.touches.length > 0) {
     return {
       x: event.touches[0].clientX,
@@ -172,6 +183,7 @@ export function getTouchCoordinates(event: TouchEvent | PointerEvent | MouseEven
     };
   }
 
+  // For PointerEvent/MouseEvent
   if ('clientX' in event) {
     return {
       x: event.clientX,

@@ -44,6 +44,8 @@ export interface GestureState {
   startTime: number;
   /** Initial touch positions */
   initialTouches: TouchPoint[];
+  /** Whether multi-touch was detected during this gesture */
+  hadMultiTouch: boolean;
 }
 
 /**
@@ -221,6 +223,7 @@ export function useGestureDetection(config: GestureDetectionConfig = {}) {
     touchCount: 0,
     startTime: 0,
     initialTouches: [],
+    hadMultiTouch: false,
   });
 
   const lastTapTimeRef = useRef<number>(0);
@@ -249,6 +252,7 @@ export function useGestureDetection(config: GestureDetectionConfig = {}) {
         touchCount: touches.length,
         startTime: timestamp,
         initialTouches: touches,
+        hadMultiTouch: touches.length > 1,
       };
 
       // Start long-press detection for single touch
@@ -285,6 +289,11 @@ export function useGestureDetection(config: GestureDetectionConfig = {}) {
       gestureStateRef.current.touches = touches;
       gestureStateRef.current.touchCount = touches.length;
 
+      // Track if multi-touch occurred
+      if (touches.length > 1) {
+        gestureStateRef.current.hadMultiTouch = true;
+      }
+
       // Cancel long-press if finger moved too much
       if (longPressTimerRef.current && touches.length === 1) {
         const initial = gestureStateRef.current.initialTouches[0];
@@ -311,12 +320,13 @@ export function useGestureDetection(config: GestureDetectionConfig = {}) {
       const initialTouches = gestureStateRef.current.initialTouches;
       const remainingTouches = event.touches;
 
-      // Detect tap gestures (single touch, short duration, minimal movement)
+      // Detect tap gestures (single touch, short duration, minimal movement, no multi-touch)
       if (
         mergedConfig.enableTap &&
         initialTouches.length === 1 &&
         remainingTouches.length === 0 &&
-        duration <= GESTURE_CONFIG.TAP_MAX_DURATION
+        duration <= GESTURE_CONFIG.TAP_MAX_DURATION &&
+        !gestureStateRef.current.hadMultiTouch
       ) {
         const startTouch = initialTouches[0];
         const endCoords = getTouchCoordinates(event as unknown as TouchEvent);
@@ -390,6 +400,7 @@ export function useGestureDetection(config: GestureDetectionConfig = {}) {
           touchCount: 0,
           startTime: 0,
           initialTouches: [],
+          hadMultiTouch: false,
         };
       }
     },

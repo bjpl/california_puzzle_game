@@ -125,6 +125,10 @@ describe('|unit| useGestureDetection - Tap Gesture', () => {
     });
 
     const touchEnd = createTouchEvent('touchend', []);
+    // Set changedTouches to indicate where finger was released
+    Object.defineProperty(touchEnd, 'changedTouches', {
+      value: [createTouch(0, 100, 100)],
+    });
 
     act(() => {
       result.current.handleTouchEnd(touchEnd, onGesture);
@@ -157,6 +161,9 @@ describe('|unit| useGestureDetection - Tap Gesture', () => {
     });
 
     const touchEnd1 = createTouchEvent('touchend', []);
+    Object.defineProperty(touchEnd1, 'changedTouches', {
+      value: [createTouch(0, 100, 100)],
+    });
     act(() => {
       result.current.handleTouchEnd(touchEnd1, onGesture);
     });
@@ -180,6 +187,9 @@ describe('|unit| useGestureDetection - Tap Gesture', () => {
     });
 
     const touchEnd2 = createTouchEvent('touchend', []);
+    Object.defineProperty(touchEnd2, 'changedTouches', {
+      value: [createTouch(0, 100, 100)],
+    });
     act(() => {
       result.current.handleTouchEnd(touchEnd2, onGesture);
     });
@@ -210,6 +220,9 @@ describe('|unit| useGestureDetection - Tap Gesture', () => {
     });
 
     const touchEnd = createTouchEvent('touchend', []);
+    Object.defineProperty(touchEnd, 'changedTouches', {
+      value: [createTouch(0, 120, 120)],
+    });
     act(() => {
       result.current.handleTouchEnd(touchEnd, onGesture);
     });
@@ -232,6 +245,9 @@ describe('|unit| useGestureDetection - Tap Gesture', () => {
     });
 
     const touchEnd = createTouchEvent('touchend', []);
+    Object.defineProperty(touchEnd, 'changedTouches', {
+      value: [createTouch(0, 100, 100)],
+    });
     act(() => {
       result.current.handleTouchEnd(touchEnd, onGesture);
     });
@@ -548,6 +564,9 @@ describe('|integration| useGestureDetection - Multi-Gesture Scenarios', () => {
     });
 
     const tapEnd = createTouchEvent('touchend', []);
+    Object.defineProperty(tapEnd, 'changedTouches', {
+      value: [createTouch(0, 100, 100)],
+    });
     act(() => {
       result.current.handleTouchEnd(tapEnd, onGesture);
     });
@@ -608,6 +627,9 @@ describe('|integration| useGestureDetection - Multi-Gesture Scenarios', () => {
     });
 
     const touchEnd = createTouchEvent('touchend', []);
+    Object.defineProperty(touchEnd, 'changedTouches', {
+      value: [createTouch(0, 100, 100)],
+    });
     act(() => {
       result.current.handleTouchEnd(touchEnd, onGesture);
     });
@@ -690,6 +712,9 @@ describe('|a11y| useGestureDetection Accessibility', () => {
     });
 
     const touchEnd = createTouchEvent('touchend', []);
+    Object.defineProperty(touchEnd, 'changedTouches', {
+      value: [createTouch(0, 125, 115)],
+    });
     act(() => {
       result.current.handleTouchEnd(touchEnd, onGesture);
     });

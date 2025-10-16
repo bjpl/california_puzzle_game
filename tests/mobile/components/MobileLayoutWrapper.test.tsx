@@ -14,11 +14,11 @@ import type { DeviceInfo } from '@/mobile/hooks/useDeviceInfo';
 import type { County } from '@/types';
 import { act } from 'react';
 
-// Mock device info hook
+// Mock device info hook (375px = MEDIUM_PHONE)
 let mockDeviceInfo: DeviceInfo = {
   width: 375,
   height: 667,
-  deviceType: DeviceType.MOBILE,
+  deviceType: DeviceType.MEDIUM_PHONE,
   orientation: Orientation.PORTRAIT,
   isMobile: true,
   isTablet: false,
@@ -89,11 +89,11 @@ describe('MobileLayoutWrapper Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Reset to default mobile portrait
+    // Reset to default mobile portrait (375px = MEDIUM_PHONE)
     mockDeviceInfo = {
       width: 375,
       height: 667,
-      deviceType: DeviceType.MOBILE,
+      deviceType: DeviceType.MEDIUM_PHONE,
       orientation: Orientation.PORTRAIT,
       isMobile: true,
       isTablet: false,
@@ -140,7 +140,7 @@ describe('MobileLayoutWrapper Component', () => {
       const wrapper = screen.getByTestId('mobile-layout-wrapper');
       expect(wrapper).toHaveAttribute('data-layout-mode', LayoutMode.MOBILE_PORTRAIT);
       expect(wrapper).toHaveAttribute('data-orientation', Orientation.PORTRAIT);
-      expect(wrapper).toHaveAttribute('data-device-type', DeviceType.MOBILE);
+      expect(wrapper).toHaveAttribute('data-device-type', DeviceType.MEDIUM_PHONE);
     });
 
     it('should have full width and height with overflow hidden', () => {
@@ -161,7 +161,7 @@ describe('MobileLayoutWrapper Component', () => {
         ...mockDeviceInfo,
         width: 320,
         height: 568,
-        deviceType: DeviceType.MOBILE,
+        deviceType: DeviceType.SMALL_PHONE,
         orientation: Orientation.PORTRAIT,
         isMobile: true,
         isPortrait: true,
@@ -192,7 +192,7 @@ describe('MobileLayoutWrapper Component', () => {
         ...mockDeviceInfo,
         width: 768,
         height: 1024,
-        deviceType: DeviceType.TABLET,
+        deviceType: DeviceType.SMALL_TABLET,
         orientation: Orientation.PORTRAIT,
         isMobile: false,
         isTablet: true,
@@ -212,7 +212,7 @@ describe('MobileLayoutWrapper Component', () => {
         ...mockDeviceInfo,
         width: 667,
         height: 375,
-        deviceType: DeviceType.MOBILE,
+        deviceType: DeviceType.LARGE_PHONE,
         orientation: Orientation.LANDSCAPE,
         isPortrait: false,
         isLandscape: true,
@@ -229,7 +229,7 @@ describe('MobileLayoutWrapper Component', () => {
         ...mockDeviceInfo,
         width: 1024,
         height: 768,
-        deviceType: DeviceType.TABLET,
+        deviceType: DeviceType.LARGE_TABLET,
         orientation: Orientation.LANDSCAPE,
         isMobile: false,
         isTablet: true,
@@ -506,7 +506,7 @@ describe('MobileLayoutWrapper Component', () => {
         ...mockDeviceInfo,
         width: 320,
         height: 568,
-        deviceType: DeviceType.MOBILE,
+        deviceType: DeviceType.SMALL_PHONE,
       };
 
       render(<MobileLayoutWrapper {...defaultProps} />);
@@ -543,7 +543,7 @@ describe('MobileLayoutWrapper Component', () => {
         ...mockDeviceInfo,
         width: 768,
         height: 1024,
-        deviceType: DeviceType.TABLET,
+        deviceType: DeviceType.SMALL_TABLET,
         isMobile: false,
         isTablet: true,
       };
@@ -558,7 +558,7 @@ describe('MobileLayoutWrapper Component', () => {
         ...mockDeviceInfo,
         width: 1024,
         height: 768,
-        deviceType: DeviceType.TABLET,
+        deviceType: DeviceType.LARGE_TABLET,
         orientation: Orientation.LANDSCAPE,
         isMobile: false,
         isTablet: true,

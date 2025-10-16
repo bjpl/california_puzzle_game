@@ -193,7 +193,7 @@ export const MobileLayoutWrapper: React.FC<MobileLayoutWrapperProps> = ({
 
   return (
     <div
-      className={`mobile-layout-wrapper mobile-layout-wrapper--${layoutMode}`}
+      className={`mobile-layout-wrapper mobile-layout-wrapper--${layoutMode} ${className}`}
       data-testid={testId}
       data-layout-mode={layoutMode}
       data-orientation={deviceInfo.orientation}
