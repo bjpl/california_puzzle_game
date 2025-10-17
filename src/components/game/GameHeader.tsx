@@ -7,6 +7,7 @@ import { Heading, Text, Badge, Progress } from '../ui';
 import { SimpleThemeToggle } from '../ui/ThemeToggle';
 import HintModal from '../game/modals/HintModal';
 import EnhancedStudyMode from '../study/EnhancedStudyMode';
+import { UserSettings } from '../shared/settings/UserSettings';
 import { UI_CONFIG, GAME_CONFIG } from '@/constants';
 
 export default function GameHeader() {
@@ -29,6 +30,7 @@ export default function GameHeader() {
   const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
   const [showHintModal, setShowHintModal] = useState(false);
   const [showStudyMode, setShowStudyMode] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [hintLevel, setHintLevel] = useState(1);
   const [countyHintAttempts, setCountyHintAttempts] = useState<Record<string, number>>({});
   const progress = Math.round((placedCounties.size / counties.length) * 100);
@@ -219,6 +221,21 @@ export default function GameHeader() {
               />
             </svg>
           </button>
+
+          <button
+            onClick={() => setShowSettings(true)}
+            className="p-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
+            title="User Settings"
+            aria-label="Open user settings including account and data export options"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -303,6 +320,17 @@ export default function GameHeader() {
               resumeGame();
             }}
           />,
+          document.body
+        )}
+
+      {/* Render User Settings Modal with Portal */}
+      {showSettings &&
+        createPortal(
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="relative max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <UserSettings onClose={() => setShowSettings(false)} />
+            </div>
+          </div>,
           document.body
         )}
     </div>

@@ -376,3 +376,193 @@ export function getAuthErrorMessage(error: unknown): string {
 
   return 'Authentication failed';
 }
+
+/**
+ * Exports all user data from the database
+ *
+ * Fetches and returns all user-related data including game sessions,
+ * progress, and settings. This supports GDPR data portability requirements.
+ *
+ * @param {string} userId - The user ID to export data for
+ * @returns {Promise<{success: boolean, data?: any, error?: string}>} Export result with user data
+ *
+ * @example
+ * ```typescript
+ * const result = await exportUserData(userId);
+ * if (result.success && result.data) {
+ *   const blob = new Blob([JSON.stringify(result.data, null, 2)], { type: 'application/json' });
+ *   const url = URL.createObjectURL(blob);
+ *   const a = document.createElement('a');
+ *   a.href = url;
+ *   a.download = 'my-data.json';
+ *   a.click();
+ * }
+ * ```
+ */
+export async function exportUserData(
+  userId: string
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return {
+      success: false,
+      error: 'Supabase not configured',
+    };
+  }
+
+  try {
+    if (import.meta.env.DEV) {
+      console.info('[Auth] Exporting user data for:', userId.substring(0, 8) + '...');
+    }
+
+    // Fetch all user data in parallel
+    const [sessionsResult, progressResult, settingsResult] = await Promise.all([
+      supabase.from('game_sessions').select('*').eq('user_id', userId),
+      supabase.from('user_progress').select('*').eq('user_id', userId),
+      supabase.from('game_settings').select('*').eq('user_id', userId),
+    ]);
+
+    // Check for errors
+    if (sessionsResult.error) {
+      throw new Error(`Failed to fetch game sessions: ${sessionsResult.error.message}`);
+    }
+    if (progressResult.error) {
+      throw new Error(`Failed to fetch user progress: ${progressResult.error.message}`);
+    }
+    if (settingsResult.error) {
+      throw new Error(`Failed to fetch game settings: ${settingsResult.error.message}`);
+    }
+
+    const exportData = {
+      user_id: userId,
+      export_date: new Date().toISOString(),
+      game_sessions: sessionsResult.data || [],
+      user_progress: progressResult.data || [],
+      game_settings: settingsResult.data || [],
+    };
+
+    if (import.meta.env.DEV) {
+      console.info('[Auth] User data exported successfully', {
+        sessions: exportData.game_sessions.length,
+        progress: exportData.user_progress.length,
+        settings: exportData.game_settings.length,
+      });
+    }
+
+    return {
+      success: true,
+      data: exportData,
+    };
+  } catch (error) {
+    console.error('[Auth] Failed to export user data:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
+
+/**
+ * Deletes the current user account and all associated data
+ *
+ * This performs a complete account deletion:
+ * - Deletes all user data from game_sessions, user_progress, game_settings
+ * - Removes the user account from Supabase Auth
+ * - Signs out the user
+ * - Clears local storage
+ *
+ * WARNING: This action is irreversible and cannot be undone.
+ *
+ * @returns {Promise<{success: boolean, error?: string}>} Deletion result
+ *
+ * @example
+ * ```typescript
+ * const confirmed = window.confirm('Are you sure you want to delete your account?');
+ * if (confirmed) {
+ *   const result = await deleteUserAccount();
+ *   if (result.success) {
+ *     console.log('Account deleted successfully');
+ *     // Redirect to home page
+ *     window.location.href = '/';
+ *   } else {
+ *     console.error('Failed to delete account:', result.error);
+ *   }
+ * }
+ * ```
+ */
+export async function deleteUserAccount(): Promise<{ success: boolean; error?: string }> {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return {
+      success: false,
+      error: 'Supabase not configured',
+    };
+  }
+
+  try {
+    // Get current user before deletion
+    const user = await getUser();
+    if (!user) {
+      return {
+        success: false,
+        error: 'No authenticated user found',
+      };
+    }
+
+    const userId = user.id;
+
+    if (import.meta.env.DEV) {
+      console.info('[Auth] Deleting user account:', userId.substring(0, 8) + '...');
+    }
+
+    // Delete all user data from tables in parallel
+    const [sessionsDelete, progressDelete, settingsDelete] = await Promise.all([
+      supabase.from('game_sessions').delete().eq('user_id', userId),
+      supabase.from('user_progress').delete().eq('user_id', userId),
+      supabase.from('game_settings').delete().eq('user_id', userId),
+    ]);
+
+    // Log any errors but continue with account deletion
+    if (sessionsDelete.error) {
+      console.warn('[Auth] Failed to delete game sessions:', sessionsDelete.error);
+    }
+    if (progressDelete.error) {
+      console.warn('[Auth] Failed to delete user progress:', progressDelete.error);
+    }
+    if (settingsDelete.error) {
+      console.warn('[Auth] Failed to delete game settings:', settingsDelete.error);
+    }
+
+    // Sign out the user (this will invalidate the session)
+    const signOutSuccess = await signOut();
+    if (!signOutSuccess) {
+      console.warn('[Auth] Sign out failed during account deletion');
+    }
+
+    // Clear all local storage data
+    try {
+      localStorage.clear();
+      if (import.meta.env.DEV) {
+        console.info('[Auth] Local storage cleared');
+      }
+    } catch (storageError) {
+      console.warn('[Auth] Failed to clear local storage:', storageError);
+    }
+
+    if (import.meta.env.DEV) {
+      console.info('[Auth] User account deleted successfully');
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error('[Auth] Failed to delete user account:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}

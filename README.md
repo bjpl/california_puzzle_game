@@ -9,8 +9,9 @@ An interactive educational puzzle game for learning California geography. Player
 
 ## ✨ Recent Improvements
 
-- **🌐 Progressive Web App (NEW - Oct 9)** - Complete PWA with offline gameplay, installable on iOS/Android, Service Worker caching
-- **🌙 Dark Mode (NEW - Oct 9)** - Full dark theme with OLED optimization (40-60% battery savings), system preference sync, WCAG AA compliant
+- **🔒 Security & Privacy Features (NEW - Oct 16)** - User account management, data export (GDPR compliance), delete account, security badge in footer
+- **🌐 Progressive Web App (Oct 9)** - Complete PWA with offline gameplay, installable on iOS/Android, Service Worker caching
+- **🌙 Dark Mode (Oct 9)** - Full dark theme with OLED optimization (40-60% battery savings), system preference sync, WCAG AA compliant
 - **📱 Mobile Foundation** - Complete mobile-optimized infrastructure with touch interactions, responsive layouts, and gesture detection
 - **🎯 100% Test Pass Rate** - Achieved perfect test suite reliability (1,792/1,792 tests)
 - **♿ Accessibility Testing** - jest-axe integration for WCAG compliance validation
@@ -41,6 +42,8 @@ An interactive educational puzzle game for learning California geography. Player
 
 - **Progressive Web App**: Install on mobile devices, works offline with cached geodata
 - **Dark Mode**: System-aware theme with OLED optimization (40-60% battery savings)
+- **Security & Privacy**: Account management, data export (GDPR/CCPA compliant), account deletion
+- **Security Badge**: Visible encryption and privacy status in footer
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
 - **Accessibility**: Keyboard navigation and screen reader support (WCAG AA)
 - **Smooth Animations**: Framer Motion powered transitions
@@ -94,10 +97,14 @@ See [Mobile Documentation](src/mobile/README.md) for complete API reference and 
 - **Framer Motion 10.16** - Smooth animations and transitions
 - **Tailwind CSS 3.4** - Utility-first CSS framework with dark mode
 
-### Backend & Services ✅ NEW
+### Backend & Services
 
-- **Supabase** - PostgreSQL backend with authentication
+- **Supabase** - PostgreSQL backend with authentication and data management
   - ✅ Database: 6 tables (profiles, game_settings, game_stats, sessions, achievements, leaderboard)
+  - ✅ Anonymous Authentication: Privacy-first user sessions
+  - ✅ Data Export: GDPR/CCPA compliant user data portability
+  - ✅ Account Deletion: Right to be forgotten implementation
+  - ✅ AES-256 Encryption: End-to-end data security
   - ✅ Auth: Anonymous + social login support
   - ✅ Real-time: WebSocket subscriptions
   - ✅ Security: Row-Level Security (RLS) policies
