@@ -201,9 +201,8 @@ describe('useDeviceInfo', () => {
         vi.advanceTimersByTime(50);
       });
 
-      await waitFor(() => {
-        expect(result.current.width).toBe(375);
-      });
+      // Synchronous check after timer advancement
+      expect(result.current.width).toBe(375);
     });
 
     it('should debounce resize events', async () => {
@@ -227,9 +226,8 @@ describe('useDeviceInfo', () => {
         vi.advanceTimersByTime(100);
       });
 
-      await waitFor(() => {
-        expect(result.current.width).toBe(1000);
-      });
+      // Synchronous check after timer advancement
+      expect(result.current.width).toBe(1000);
     });
 
     it('should update device type on resize', async () => {
@@ -247,9 +245,8 @@ describe('useDeviceInfo', () => {
         vi.advanceTimersByTime(50);
       });
 
-      await waitFor(() => {
-        expect(result.current.isMobile).toBe(true);
-      });
+      // Synchronous check after timer advancement
+      expect(result.current.isMobile).toBe(true);
     });
   });
 
@@ -407,9 +404,8 @@ describe('useDeviceInfo', () => {
         vi.advanceTimersByTime(100);
       });
 
-      await waitFor(() => {
-        expect(result.current.width).toBe(800);
-      });
+      // Synchronous check after timer advancement
+      expect(result.current.width).toBe(800);
     });
 
     it('should handle zero debounce', async () => {
@@ -424,9 +420,8 @@ describe('useDeviceInfo', () => {
         vi.advanceTimersByTime(0);
       });
 
-      await waitFor(() => {
-        expect(result.current.width).toBe(800);
-      });
+      // Synchronous check after timer advancement
+      expect(result.current.width).toBe(800);
     });
   });
 
@@ -537,6 +532,14 @@ describe('useDeviceInfo', () => {
   describe('Retina Display Detection', () => {
     it('should detect retina display', () => {
       mockDevicePixelRatio(2);
+      // Ensure matchMedia is properly mocked
+      const matchMediaMock = vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      }));
+      window.matchMedia = matchMediaMock;
 
       const { result } = renderHook(() => useDeviceInfo());
 
@@ -545,6 +548,14 @@ describe('useDeviceInfo', () => {
 
     it('should detect super retina display', () => {
       mockDevicePixelRatio(3);
+      // Ensure matchMedia is properly mocked
+      const matchMediaMock = vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      }));
+      window.matchMedia = matchMediaMock;
 
       const { result } = renderHook(() => useDeviceInfo());
 
@@ -557,6 +568,14 @@ describe('useDeviceInfo', () => {
         writable: true,
         configurable: true,
       });
+      // Ensure matchMedia is properly mocked
+      const matchMediaMock = vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      }));
+      window.matchMedia = matchMediaMock;
 
       const { result } = renderHook(() => useDeviceInfo());
 

@@ -14,6 +14,31 @@ import { usePinchZoom } from '@/mobile/hooks/usePinchZoom';
 import { GESTURE_CONFIG } from '@/mobile/config/breakpoints';
 
 /**
+ * Mock AdaptiveGeodataLoader to prevent real async operations
+ * This prevents tests from hanging while waiting for geodata to load
+ */
+vi.mock('@/mobile/utils/progressiveGeodata', () => ({
+  AdaptiveGeodataLoader: vi.fn(() => ({
+    load: vi.fn((scale: number, onProgress?: (loaded: number, total: number) => void) => {
+      // Simulate progress callback
+      if (onProgress) {
+        onProgress(50, 100);
+        onProgress(100, 100);
+      }
+      return Promise.resolve({ type: 'FeatureCollection', features: [] });
+    }),
+    getCurrentLevel: vi.fn(() => 'low'),
+    isLoading: vi.fn(() => false),
+    preloadNext: vi.fn(() => Promise.resolve()),
+  })),
+  GeodetaLevel: {
+    LOW: 'low',
+    MEDIUM: 'medium',
+    HIGH: 'high',
+  },
+}));
+
+/**
  * Create mock TouchEvent
  */
 function createTouchEvent(
@@ -379,13 +404,9 @@ describe('|unit| usePinchZoom Hook - Touch End Handling', () => {
 });
 
 describe('|integration| usePinchZoom Integration - Progressive Geodata', () => {
+  // AdaptiveGeodataLoader is already mocked at the top of the file
   beforeEach(() => {
-    global.fetch = vi.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({ type: 'FeatureCollection', features: [] }),
-      } as Response)
-    );
+    vi.clearAllMocks();
   });
 
   it('should trigger geodata loading on zoom change', async () => {
@@ -455,7 +476,15 @@ describe('|integration| usePinchZoom Integration - Progressive Geodata', () => {
   });
 
   it('should handle geodata loading errors', async () => {
-    global.fetch = vi.fn(() => Promise.reject(new Error('Network error')));
+    // Override the mock to reject
+    const { AdaptiveGeodataLoader } = await import('@/mobile/utils/progressiveGeodata');
+    const mockLoader = AdaptiveGeodataLoader as unknown as ReturnType<typeof vi.fn>;
+    mockLoader.mockImplementationOnce(() => ({
+      load: vi.fn(() => Promise.reject(new Error('Network error'))),
+      getCurrentLevel: vi.fn(() => 'low'),
+      isLoading: vi.fn(() => false),
+      preloadNext: vi.fn(() => Promise.resolve()),
+    }));
 
     const onLoadingError = vi.fn();
 
