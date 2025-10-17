@@ -1,5 +1,12 @@
 # Run tests before push (using vitest run to force single run without watch mode)
-npx vitest run
+# Note: Full test suite can be slow. Set SKIP_TESTS=1 to skip if needed:
+#   SKIP_TESTS=1 git push
+if [ -z "$SKIP_TESTS" ]; then
+  echo "Running tests... (Set SKIP_TESTS=1 to skip)"
+  npx vitest run --reporter=dot --no-coverage || exit 1
+else
+  echo "⚠️  Tests skipped (SKIP_TESTS=1)"
+fi
 
-# Run type checking (non-blocking initially - logs warning)
-npm run typecheck || echo "Warning: Type checking failed. Please fix before merging to main."
+# Run type checking (non-blocking - logs warning only)
+npm run typecheck || echo "⚠️  Warning: Type checking failed. Please fix before merging to main."
