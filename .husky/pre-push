@@ -1,5 +1,5 @@
-# Run tests before push (using CI=true to run once without watch mode)
-CI=true npm test
+# Run tests before push (using vitest run to force single run without watch mode)
+npx vitest run
 
 # Run type checking (non-blocking initially - logs warning)
 npm run typecheck || echo "Warning: Type checking failed. Please fix before merging to main."
