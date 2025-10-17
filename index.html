@@ -9,10 +9,10 @@
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
                    script-src 'self' 'unsafe-inline';
-                   style-src 'self' 'unsafe-inline';
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
                    img-src 'self' data: https:;
                    connect-src 'self' https://pfwberdnxkuvuupjmauq.supabase.co https://*.supabase.co;
-                   font-src 'self' data:;
+                   font-src 'self' data: https://fonts.gstatic.com;
                    object-src 'none';
                    base-uri 'self';
                    form-action 'self';">
@@ -123,11 +123,17 @@
 
       /* Prevent FOUC */
       #root {
+        min-height: 100vh;
         opacity: 0;
         transition: opacity 0.3s ease;
       }
 
       #root.loaded {
+        opacity: 1;
+      }
+
+      /* Fallback: show root if loading screen disappears but root not loaded */
+      #loading-screen.hidden ~ #root:not(.loaded) {
         opacity: 1;
       }
     </style>
@@ -174,15 +180,39 @@
 
       // Hide loading screen when app is ready
       window.addEventListener('load', () => {
-        setTimeout(() => {
-          loadingScreen.classList.add('hidden');
-          root.classList.add('loaded');
+        // Wait for React to mount
+        const checkReactMounted = () => {
+          if (root.children.length > 0) {
+            // React has mounted content
+            setTimeout(() => {
+              loadingScreen.classList.add('hidden');
+              root.classList.add('loaded');
 
-          // Remove loading screen after transition
-          setTimeout(() => {
-            loadingScreen.style.display = 'none';
-          }, 500);
-        }, 2000); // Minimum loading time for UX
+              // Remove loading screen after transition
+              setTimeout(() => {
+                loadingScreen.style.display = 'none';
+              }, 500);
+            }, 500); // Brief delay to ensure rendering
+          } else {
+            // Check again in 100ms
+            setTimeout(checkReactMounted, 100);
+          }
+        };
+
+        // Start checking after minimum load time
+        setTimeout(checkReactMounted, 1500);
+
+        // Fallback: force show after 5 seconds regardless
+        setTimeout(() => {
+          if (!root.classList.contains('loaded')) {
+            console.warn('React mount timeout - showing app anyway');
+            loadingScreen.classList.add('hidden');
+            root.classList.add('loaded');
+            setTimeout(() => {
+              loadingScreen.style.display = 'none';
+            }, 500);
+          }
+        }, 5000);
       });
 
       // Handle app initialization errors

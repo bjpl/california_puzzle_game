@@ -3,7 +3,13 @@ import { realCaliforniaCountyShapes } from '../../data/californiaCountyBoundarie
 import { allCaliforniaCounties } from '../../data/californiaCountiesComplete';
 import { getRegionHexColor } from '../../config/regionColors';
 import { countyEducationData } from '../../data/countyEducationComplete';
-import { GAME_CONFIG, UI_CONFIG, STROKE_COLORS, OPACITY_VALUES, COUNTY_FILL_COLORS } from '@/constants';
+import {
+  GAME_CONFIG,
+  UI_CONFIG,
+  STROKE_COLORS,
+  OPACITY_VALUES,
+  COUNTY_FILL_COLORS,
+} from '@/constants';
 
 interface HistoricalEvent {
   year: number;
@@ -13,18 +19,54 @@ interface HistoricalEvent {
 }
 
 const HISTORICAL_EVENTS: HistoricalEvent[] = [
-  { year: 1850, label: 'California Statehood', icon: '🌟', description: 'California joins the Union as the 31st state. The original 27 counties form the foundation of the state\'s governance.' },
-  { year: 1849, label: 'Gold Rush Peak', icon: '⛏️', description: 'Over 300,000 people flood to California seeking fortune, transforming the territory overnight.' },
-  { year: 1861, label: 'Civil War Begins', icon: '🎖️', description: 'Despite being far from the conflict, California remains loyal to the Union and continues to grow westward.' },
-  { year: 1869, label: 'Transcontinental Railroad', icon: '🚂', description: 'The railroad connects California to the rest of the nation, accelerating development and settlement.' },
-  { year: 1906, label: 'Great Earthquake', icon: '🌋', description: 'A devastating 7.9 earthquake destroys much of San Francisco, but the city rebuilds stronger.' },
-  { year: 1907, label: 'California Complete', icon: '🏜️', description: 'Imperial County becomes the 58th and final county, completing California\'s geographic organization.' }
+  {
+    year: 1850,
+    label: 'California Statehood',
+    icon: '🌟',
+    description:
+      "California joins the Union as the 31st state. The original 27 counties form the foundation of the state's governance.",
+  },
+  {
+    year: 1849,
+    label: 'Gold Rush Peak',
+    icon: '⛏️',
+    description:
+      'Over 300,000 people flood to California seeking fortune, transforming the territory overnight.',
+  },
+  {
+    year: 1861,
+    label: 'Civil War Begins',
+    icon: '🎖️',
+    description:
+      'Despite being far from the conflict, California remains loyal to the Union and continues to grow westward.',
+  },
+  {
+    year: 1869,
+    label: 'Transcontinental Railroad',
+    icon: '🚂',
+    description:
+      'The railroad connects California to the rest of the nation, accelerating development and settlement.',
+  },
+  {
+    year: 1906,
+    label: 'Great Earthquake',
+    icon: '🌋',
+    description:
+      'A devastating 7.9 earthquake destroys much of San Francisco, but the city rebuilds stronger.',
+  },
+  {
+    year: 1907,
+    label: 'California Complete',
+    icon: '🏜️',
+    description:
+      "Imperial County becomes the 58th and final county, completing California's geographic organization.",
+  },
 ];
 
 type PlaybackSpeed = 0.5 | 1 | 2 | 5;
 
 export default function CountyFormationAnimation() {
-  const [currentYear, setCurrentYear] = useState(GAME_CONFIG.FORMATION_START_YEAR);
+  const [currentYear, setCurrentYear] = useState<number>(GAME_CONFIG.FORMATION_START_YEAR);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<PlaybackSpeed>(1);
   const [visibleCounties, setVisibleCounties] = useState<Set<string>>(new Set());
@@ -56,7 +98,7 @@ export default function CountyFormationAnimation() {
 
   const countiesByYear = React.useMemo(() => {
     const grouped = new Map<number, string[]>();
-    allCaliforniaCounties.forEach(county => {
+    allCaliforniaCounties.forEach((county) => {
       const year = county.founded;
       if (!grouped.has(year)) {
         grouped.set(year, []);
@@ -70,18 +112,23 @@ export default function CountyFormationAnimation() {
   const currentCount = visibleCounties.size;
 
   const getCountyInfo = (countyId: string) => {
-    return allCaliforniaCounties.find(c => c.id === countyId);
+    return allCaliforniaCounties.find((c) => c.id === countyId);
   };
 
-  const _getCountyPath = (countyId: string) => {
+  // Helper function for future use - retrieves county path data
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getCountyPath = (countyId: string) => {
     return realCaliforniaCountyShapes.find(
-      c => c.id === countyId || c.id === countyId.replace(/_/g, '-') || c.id === countyId.replace(/-/g, '_')
+      (c) =>
+        c.id === countyId ||
+        c.id === countyId.replace(/_/g, '-') ||
+        c.id === countyId.replace(/-/g, '_')
     );
   };
 
   const getCountyEducation = (countyId: string) => {
     const normalizedId = countyId.replace(/-/g, '_');
-    return countyEducationData.find(ed => ed.countyId === normalizedId);
+    return countyEducationData.find((ed) => ed.countyId === normalizedId);
   };
 
   const getFoundingStory = (countyId: string): string => {
@@ -90,10 +137,13 @@ export default function CountyFormationAnimation() {
 
     // Extract a concise founding snippet from historicalContext
     const context = education.historicalContext;
-    const sentences = context.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
+    const sentences = context
+      .split(/[.!?]+/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
 
     // Find sentence mentioning founding/established/created
-    const foundingSentence = sentences.find(s =>
+    const foundingSentence = sentences.find((s) =>
       s.match(/founded|established|created|formed|separated|divided/i)
     );
 
@@ -108,9 +158,9 @@ export default function CountyFormationAnimation() {
   const addCountiesForYear = (year: number) => {
     const newCounties = countiesByYear.get(year) || [];
     if (newCounties.length > 0) {
-      setVisibleCounties(prev => {
+      setVisibleCounties((prev) => {
         const updated = new Set(prev);
-        newCounties.forEach(id => updated.add(id));
+        newCounties.forEach((id) => updated.add(id));
         return updated;
       });
       setRecentlyAdded(newCounties);
@@ -202,12 +252,12 @@ export default function CountyFormationAnimation() {
 
     panRef.current = {
       x: startPan.current.x + dx,
-      y: startPan.current.y + dy
+      y: startPan.current.y + dy,
     };
 
     // Update transform directly without triggering React re-render
     if (gRef.current) {
-      const transform = `translate(${400 * (1 - zoom) / 2 + panRef.current.x * zoom}, ${450 * (1 - zoom) / 2 + panRef.current.y * zoom}) scale(${zoom})`;
+      const transform = `translate(${(400 * (1 - zoom)) / 2 + panRef.current.x * zoom}, ${(450 * (1 - zoom)) / 2 + panRef.current.y * zoom}) scale(${zoom})`;
       gRef.current.setAttribute('transform', transform);
     }
   };
@@ -261,7 +311,7 @@ export default function CountyFormationAnimation() {
       const yearDuration = 1000 / playbackSpeed;
 
       if (deltaTime >= yearDuration) {
-        setCurrentYear(prev => {
+        setCurrentYear((prev) => {
           const nextYear = prev + 1;
           if (nextYear > GAME_CONFIG.FORMATION_END_YEAR) {
             setIsPlaying(false);
@@ -309,7 +359,7 @@ export default function CountyFormationAnimation() {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return;
 
-      switch(e.key) {
+      switch (e.key) {
         case ' ':
           e.preventDefault();
           if (isPaused) {
@@ -320,19 +370,19 @@ export default function CountyFormationAnimation() {
           break;
         case 'ArrowLeft':
           e.preventDefault();
-          setCurrentYear(prev => Math.max(GAME_CONFIG.FORMATION_START_YEAR, prev - 1));
+          setCurrentYear((prev) => Math.max(GAME_CONFIG.FORMATION_START_YEAR, prev - 1));
           break;
         case 'ArrowRight':
           e.preventDefault();
-          setCurrentYear(prev => Math.min(GAME_CONFIG.FORMATION_END_YEAR, prev + 1));
+          setCurrentYear((prev) => Math.min(GAME_CONFIG.FORMATION_END_YEAR, prev + 1));
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setPlaybackSpeed(prev => prev === 0.5 ? 1 : prev === 1 ? 2 : prev === 2 ? 5 : 5);
+          setPlaybackSpeed((prev) => (prev === 0.5 ? 1 : prev === 1 ? 2 : prev === 2 ? 5 : 5));
           break;
         case 'ArrowDown':
           e.preventDefault();
-          setPlaybackSpeed(prev => prev === 5 ? 2 : prev === 2 ? 1 : prev === 1 ? 0.5 : 0.5);
+          setPlaybackSpeed((prev) => (prev === 5 ? 2 : prev === 2 ? 1 : prev === 1 ? 0.5 : 0.5));
           break;
         case 'r':
         case 'R':
@@ -366,7 +416,7 @@ export default function CountyFormationAnimation() {
     const newVisible = new Set<string>();
     for (let y = GAME_CONFIG.FORMATION_START_YEAR; y <= year; y++) {
       const counties = countiesByYear.get(y) || [];
-      counties.forEach(id => newVisible.add(id));
+      counties.forEach((id) => newVisible.add(id));
     }
     setVisibleCounties(newVisible);
 
@@ -383,9 +433,9 @@ export default function CountyFormationAnimation() {
     return OPACITY_VALUES.DEFAULT;
   };
 
-  const currentEvent = HISTORICAL_EVENTS
-    .filter(e => e.year <= currentYear)
-    .sort((a, b) => b.year - a.year)[0];
+  const currentEvent = HISTORICAL_EVENTS.filter((e) => e.year <= currentYear).sort(
+    (a, b) => b.year - a.year
+  )[0];
 
   const countiesAddedThisYear = countiesByYear.get(currentYear) || [];
 
@@ -395,7 +445,10 @@ export default function CountyFormationAnimation() {
         {/* Compact Header */}
         <div className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-between">
           <h1 className="text-xl font-bold">
-            California Through Time <span className="text-sm font-normal text-blue-100 ml-2">{GAME_CONFIG.FORMATION_START_YEAR}-{GAME_CONFIG.FORMATION_END_YEAR}</span>
+            California Through Time{' '}
+            <span className="text-sm font-normal text-blue-100 ml-2">
+              {GAME_CONFIG.FORMATION_START_YEAR}-{GAME_CONFIG.FORMATION_END_YEAR}
+            </span>
           </h1>
         </div>
 
@@ -404,9 +457,7 @@ export default function CountyFormationAnimation() {
           <div className="flex items-start gap-4">
             {/* Year Display */}
             <div className="flex-shrink-0">
-              <div className="text-4xl font-bold text-blue-600 leading-none">
-                {currentYear}
-              </div>
+              <div className="text-4xl font-bold text-blue-600 leading-none">{currentYear}</div>
               <div className="text-xs text-gray-500 mt-1">
                 <span className="font-bold text-blue-600">{currentCount}</span>/{totalCounties}
               </div>
@@ -432,9 +483,7 @@ export default function CountyFormationAnimation() {
                               <h3 className="font-bold text-emerald-900 text-sm">
                                 {county.name} County Founded
                               </h3>
-                              <span className="text-xs text-emerald-600">
-                                {county.region}
-                              </span>
+                              <span className="text-xs text-emerald-600">{county.region}</span>
                             </div>
                             <p className="text-xs text-emerald-800 leading-relaxed mb-1.5">
                               {foundingStory || county.funFact}
@@ -451,25 +500,34 @@ export default function CountyFormationAnimation() {
                       </div>
                     );
                   })()
-                ) : currentYear === GAME_CONFIG.FORMATION_START_YEAR && countiesAddedThisYear.length === GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES ? (
+                ) : currentYear === GAME_CONFIG.FORMATION_START_YEAR &&
+                  countiesAddedThisYear.length === GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES ? (
                   /* Special 1850 "Big Bang" Display */
                   <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-l-4 border-purple-500 rounded-r-lg px-3 py-2">
                     <div className="flex items-start gap-2 mb-2">
                       <span className="text-2xl">🌟</span>
                       <div>
                         <h3 className="font-bold text-purple-900 text-sm">
-                          California Statehood: The Original {GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES}
+                          California Statehood: The Original{' '}
+                          {GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES}
                         </h3>
                         <p className="text-xs text-purple-700 italic mt-0.5">
-                          September 9, 1850 — California becomes the 31st state with {GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES} founding counties
+                          September 9, 1850 — California becomes the 31st state with{' '}
+                          {GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES} founding counties
                         </p>
                       </div>
                     </div>
                     <div className="grid grid-cols-3 gap-x-3 gap-y-0.5 text-xs text-purple-800 ml-9">
-                      {countiesAddedThisYear.slice(0, GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES).map(id => {
-                        const county = getCountyInfo(id);
-                        return county ? <span key={id} className="font-medium">{county.name}</span> : null;
-                      })}
+                      {countiesAddedThisYear
+                        .slice(0, GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES)
+                        .map((id) => {
+                          const county = getCountyInfo(id);
+                          return county ? (
+                            <span key={id} className="font-medium">
+                              {county.name}
+                            </span>
+                          ) : null;
+                        })}
                     </div>
                   </div>
                 ) : (
@@ -482,45 +540,47 @@ export default function CountyFormationAnimation() {
                       </h3>
                     </div>
                     <div className="space-y-1.5 ml-7">
-                      {countiesAddedThisYear.map(id => {
+                      {countiesAddedThisYear.map((id) => {
                         const county = getCountyInfo(id);
                         if (!county) return null;
                         const education = getCountyEducation(id);
                         // Use first sentence of historical context for multiple counties
-                        const snippet = education?.historicalContext.split(/[.!?]+/)[0] + '.' || county.funFact;
+                        const snippet =
+                          education?.historicalContext.split(/[.!?]+/)[0] + '.' || county.funFact;
                         return (
                           <div key={id} className="text-xs">
                             <span className="font-semibold text-emerald-900">{county.name}</span>
-                            <span className="text-emerald-700"> — {snippet.length > 100 ? snippet.substring(0, 100) + '...' : snippet}</span>
+                            <span className="text-emerald-700">
+                              {' '}
+                              — {snippet.length > 100 ? snippet.substring(0, 100) + '...' : snippet}
+                            </span>
                           </div>
                         );
                       })}
                     </div>
                   </div>
                 )
-              ) : (
-                /* No Counties This Year - Show Historical Event or Context */
-                currentEvent ? (
-                  <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-lg px-3 py-2">
-                    <div className="flex items-start gap-3">
-                      <span className="text-2xl flex-shrink-0">{currentEvent.icon}</span>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-amber-900 text-sm mb-1">
-                          {currentEvent.label}
-                        </h3>
-                        <p className="text-xs text-amber-700 leading-relaxed">
-                          {currentEvent.description}
-                        </p>
-                      </div>
+              ) : /* No Counties This Year - Show Historical Event or Context */
+              currentEvent ? (
+                <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-lg px-3 py-2">
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl flex-shrink-0">{currentEvent.icon}</span>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-amber-900 text-sm mb-1">
+                        {currentEvent.label}
+                      </h3>
+                      <p className="text-xs text-amber-700 leading-relaxed">
+                        {currentEvent.description}
+                      </p>
                     </div>
                   </div>
-                ) : (
-                  <div className="bg-blue-50 border-l-4 border-blue-300 rounded-r-lg px-3 py-2">
-                    <p className="text-xs text-blue-700 italic">
-                      No new counties established in {currentYear}
-                    </p>
-                  </div>
-                )
+                </div>
+              ) : (
+                <div className="bg-blue-50 border-l-4 border-blue-300 rounded-r-lg px-3 py-2">
+                  <p className="text-xs text-blue-700 italic">
+                    No new counties established in {currentYear}
+                  </p>
+                </div>
               )}
             </div>
           </div>
@@ -544,180 +604,203 @@ export default function CountyFormationAnimation() {
       </div>
 
       {/* Map Display - Maximum Height */}
-      <div className="flex-1 bg-white overflow-hidden relative"
-           onMouseMove={(e) => {
-             const rect = e.currentTarget.getBoundingClientRect();
-             setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-           }}
-           onMouseLeave={() => setHoveredCounty(null)}
+      <div
+        className="flex-1 bg-white overflow-hidden relative"
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+        }}
+        onMouseLeave={() => setHoveredCounty(null)}
       >
-            {!hasStarted && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10">
-                <div className="text-center">
-                  <div className="text-6xl mb-4">🗺️</div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                    Ready to Travel Through Time?
-                  </h2>
-                  <p className="text-gray-600 mb-6">
-                    Watch 57 years of California history unfold
-                  </p>
-                  <button
-                    onClick={startAnimation}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                  >
-                    Begin Journey
-                  </button>
-                  <div className="mt-4 text-xs text-gray-500">
-                    💡 Tip: Use Space to play/pause, Arrow keys to navigate
-                  </div>
-                </div>
+        {!hasStarted && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10">
+            <div className="text-center">
+              <div className="text-6xl mb-4">🗺️</div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                Ready to Travel Through Time?
+              </h2>
+              <p className="text-gray-600 mb-6">Watch 57 years of California history unfold</p>
+              <button
+                onClick={startAnimation}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                Begin Journey
+              </button>
+              <div className="mt-4 text-xs text-gray-500">
+                💡 Tip: Use Space to play/pause, Arrow keys to navigate
               </div>
-            )}
-
-
-            {/* Completion Celebration */}
-            {showCompletion && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-500/90 to-purple-600/90 z-20 animate-in fade-in duration-500">
-                <div className="text-center text-white px-8">
-                  <div className="text-7xl mb-4 animate-bounce">🎉</div>
-                  <h2 className="text-4xl font-bold mb-3">
-                    California Complete!
-                  </h2>
-                  <p className="text-xl mb-6">
-                    All 58 counties established by 1907
-                  </p>
-                  <p className="text-sm text-blue-100">
-                    From 27 original counties in 1850 to the final county, Imperial, in 1907
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Hover Tooltip */}
-            {hoveredCounty && visibleCounties.has(hoveredCounty) && (() => {
-              const info = getCountyInfo(hoveredCounty);
-              if (!info) return null;
-              return (
-                <div
-                  className="absolute z-30 pointer-events-none"
-                  style={{
-                    left: Math.min(mousePosition.x + 15, window.innerWidth - 200),
-                    top: Math.max(mousePosition.y - 60, 10)
-                  }}
-                >
-                  <div className="bg-gray-900 text-white px-3 py-2 rounded-lg shadow-xl text-sm max-w-[200px]">
-                    <div className="font-bold">{info.name}</div>
-                    <div className="text-xs text-gray-300 mt-1">
-                      Founded: {info.founded}
-                    </div>
-                    <div className="text-xs text-gray-300">
-                      Region: {info.region}
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Zoom Controls */}
-            <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
-              <button
-                onClick={() => setZoom(Math.min(zoom + 0.25, 3))}
-                className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
-                title="Zoom In"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setZoom(Math.max(zoom - 0.25, 0.5))}
-                className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
-                title="Zoom Out"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
-                </svg>
-              </button>
-              <button
-                onClick={resetView}
-                className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
-                title="Reset View"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-              </button>
             </div>
+          </div>
+        )}
 
-            <svg
-              ref={svgRef}
-              viewBox="0 0 800 900"
-              className="absolute inset-0 w-full h-full"
-              preserveAspectRatio="xMidYMid meet"
-              style={{
-                display: 'block',
-                cursor: isPanning.current ? 'grabbing' : 'grab'
-              }}
-              onWheel={handleWheel}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-            >
-              <rect width="800" height="900" fill="#FFFFFF" opacity="1" />
+        {/* Completion Celebration */}
+        {showCompletion && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-500/90 to-purple-600/90 z-20 animate-in fade-in duration-500">
+            <div className="text-center text-white px-8">
+              <div className="text-7xl mb-4 animate-bounce">🎉</div>
+              <h2 className="text-4xl font-bold mb-3">California Complete!</h2>
+              <p className="text-xl mb-6">All 58 counties established by 1907</p>
+              <p className="text-sm text-blue-100">
+                From 27 original counties in 1850 to the final county, Imperial, in 1907
+              </p>
+            </div>
+          </div>
+        )}
 
-              {/* Apply zoom and pan transformation */}
-              <g ref={gRef} transform={`translate(${400 * (1 - zoom) / 2 + pan.x * zoom}, ${450 * (1 - zoom) / 2 + pan.y * zoom}) scale(${zoom})`}>
+        {/* Hover Tooltip */}
+        {hoveredCounty &&
+          visibleCounties.has(hoveredCounty) &&
+          (() => {
+            const info = getCountyInfo(hoveredCounty);
+            if (!info) return null;
+            return (
+              <div
+                className="absolute z-30 pointer-events-none"
+                style={{
+                  left: Math.min(mousePosition.x + 15, window.innerWidth - 200),
+                  top: Math.max(mousePosition.y - 60, 10),
+                }}
+              >
+                <div className="bg-gray-900 text-white px-3 py-2 rounded-lg shadow-xl text-sm max-w-[200px]">
+                  <div className="font-bold">{info.name}</div>
+                  <div className="text-xs text-gray-300 mt-1">Founded: {info.founded}</div>
+                  <div className="text-xs text-gray-300">Region: {info.region}</div>
+                </div>
+              </div>
+            );
+          })()}
 
-              {realCaliforniaCountyShapes.map(countyShape => {
-                const countyInfo = getCountyInfo(countyShape.id) ||
-                                  getCountyInfo(countyShape.id.replace(/-/g, '_')) ||
-                                  getCountyInfo(countyShape.id.replace(/_/g, '-'));
-
-                if (!countyInfo) return null;
-
-                const isVisible = hasStarted && visibleCounties.has(countyInfo.id);
-                const isHighlighted = highlightedCounty === countyInfo.id;
-                const isRecent = recentlyAdded.includes(countyInfo.id);
-
-                return (
-                  <g key={countyShape.id}>
-                    <path
-                      d={countyShape.path}
-                      fill={isVisible ? getRegionHexColor(countyInfo.region) : COUNTY_FILL_COLORS.FORMATION_UNFORMED}
-                      fillOpacity={isVisible ? getCountyOpacity(countyInfo.id, countyInfo.founded) : OPACITY_VALUES.UNFORMED}
-                      stroke={
-                        isHighlighted ? STROKE_COLORS.HIGHLIGHTED :
-                        isRecent ? STROKE_COLORS.RECENT :
-                        isVisible ? STROKE_COLORS.VISIBLE : STROKE_COLORS.UNFORMED
-                      }
-                      strokeWidth={
-                        isHighlighted ? GAME_CONFIG.STROKE_WIDTH_HIGHLIGHTED :
-                        isRecent ? GAME_CONFIG.STROKE_WIDTH_RECENT :
-                        isVisible ? GAME_CONFIG.STROKE_WIDTH_VISIBLE : GAME_CONFIG.STROKE_WIDTH_DEFAULT
-                      }
-                      strokeLinejoin="round"
-                      style={{
-                        transition: 'fill-opacity 0.3s ease-in-out, stroke 0.3s ease-in-out, stroke-width 0.3s ease-in-out, filter 0.3s ease-in-out',
-                        filter: isHighlighted ? 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.6))' : 'none',
-                        cursor: isVisible ? 'pointer' : 'default'
-                      }}
-                      onMouseEnter={() => {
-                        if (isVisible) {
-                          setHoveredCounty(countyInfo.id);
-                        }
-                      }}
-                      onMouseLeave={() => {
-                        setHoveredCounty(null);
-                      }}
-                    />
-                  </g>
-                );
-              })}
-              </g>
-
+        {/* Zoom Controls */}
+        <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
+          <button
+            onClick={() => setZoom(Math.min(zoom + 0.25, 3))}
+            className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
+            title="Zoom In"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
             </svg>
+          </button>
+          <button
+            onClick={() => setZoom(Math.max(zoom - 0.25, 0.5))}
+            className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
+            title="Zoom Out"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
+            </svg>
+          </button>
+          <button
+            onClick={resetView}
+            className="w-10 h-10 bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center text-gray-700 hover:text-blue-600"
+            title="Reset View"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+          </button>
         </div>
+
+        <svg
+          ref={svgRef}
+          viewBox="0 0 800 900"
+          className="absolute inset-0 w-full h-full"
+          preserveAspectRatio="xMidYMid meet"
+          style={{
+            display: 'block',
+            cursor: isPanning.current ? 'grabbing' : 'grab',
+          }}
+          onWheel={handleWheel}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
+          <rect width="800" height="900" fill="#FFFFFF" opacity="1" />
+
+          {/* Apply zoom and pan transformation */}
+          <g
+            ref={gRef}
+            transform={`translate(${(400 * (1 - zoom)) / 2 + pan.x * zoom}, ${(450 * (1 - zoom)) / 2 + pan.y * zoom}) scale(${zoom})`}
+          >
+            {realCaliforniaCountyShapes.map((countyShape) => {
+              const countyInfo =
+                getCountyInfo(countyShape.id) ||
+                getCountyInfo(countyShape.id.replace(/-/g, '_')) ||
+                getCountyInfo(countyShape.id.replace(/_/g, '-'));
+
+              if (!countyInfo) return null;
+
+              const isVisible = hasStarted && visibleCounties.has(countyInfo.id);
+              const isHighlighted = highlightedCounty === countyInfo.id;
+              const isRecent = recentlyAdded.includes(countyInfo.id);
+
+              return (
+                <g key={countyShape.id}>
+                  <path
+                    d={countyShape.path}
+                    fill={
+                      isVisible
+                        ? getRegionHexColor(countyInfo.region)
+                        : COUNTY_FILL_COLORS.FORMATION_UNFORMED
+                    }
+                    fillOpacity={
+                      isVisible
+                        ? getCountyOpacity(countyInfo.id, countyInfo.founded)
+                        : OPACITY_VALUES.UNFORMED
+                    }
+                    stroke={
+                      isHighlighted
+                        ? STROKE_COLORS.HIGHLIGHTED
+                        : isRecent
+                          ? STROKE_COLORS.RECENT
+                          : isVisible
+                            ? STROKE_COLORS.VISIBLE
+                            : STROKE_COLORS.UNFORMED
+                    }
+                    strokeWidth={
+                      isHighlighted
+                        ? GAME_CONFIG.STROKE_WIDTH_HIGHLIGHTED
+                        : isRecent
+                          ? GAME_CONFIG.STROKE_WIDTH_RECENT
+                          : isVisible
+                            ? GAME_CONFIG.STROKE_WIDTH_VISIBLE
+                            : GAME_CONFIG.STROKE_WIDTH_DEFAULT
+                    }
+                    strokeLinejoin="round"
+                    style={{
+                      transition:
+                        'fill-opacity 0.3s ease-in-out, stroke 0.3s ease-in-out, stroke-width 0.3s ease-in-out, filter 0.3s ease-in-out',
+                      filter: isHighlighted
+                        ? 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.6))'
+                        : 'none',
+                      cursor: isVisible ? 'pointer' : 'default',
+                    }}
+                    onMouseEnter={() => {
+                      if (isVisible) {
+                        setHoveredCounty(countyInfo.id);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredCounty(null);
+                    }}
+                  />
+                </g>
+              );
+            })}
+          </g>
+        </svg>
+      </div>
 
       {/* Controls - Fixed Bottom */}
       <div className="flex-shrink-0 bg-white border-t border-gray-200 shadow-lg">
@@ -725,9 +808,14 @@ export default function CountyFormationAnimation() {
           <div className="flex items-center gap-3 mb-2">
             <button
               onClick={() => {
-                const newYear = Math.max(GAME_CONFIG.FORMATION_START_YEAR, currentYear - UI_CONFIG.YEAR_SKIP_AMOUNT);
+                const newYear = Math.max(
+                  GAME_CONFIG.FORMATION_START_YEAR,
+                  currentYear - UI_CONFIG.YEAR_SKIP_AMOUNT
+                );
                 setCurrentYear(newYear);
-                handleScrubberChange({ target: { value: newYear.toString() } } as React.ChangeEvent<HTMLInputElement>);
+                handleScrubberChange({
+                  target: { value: newYear.toString() },
+                } as React.ChangeEvent<HTMLInputElement>);
               }}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               title="Back 5 years"
@@ -738,26 +826,39 @@ export default function CountyFormationAnimation() {
             </button>
 
             <button
-              onClick={() => isPlaying ? setIsPlaying(false) : startAnimation()}
+              onClick={() => (isPlaying ? setIsPlaying(false) : startAnimation())}
               className="p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               title={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? (
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               ) : (
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               )}
             </button>
 
             <button
               onClick={() => {
-                const newYear = Math.min(GAME_CONFIG.FORMATION_END_YEAR, currentYear + UI_CONFIG.YEAR_SKIP_AMOUNT);
+                const newYear = Math.min(
+                  GAME_CONFIG.FORMATION_END_YEAR,
+                  currentYear + UI_CONFIG.YEAR_SKIP_AMOUNT
+                );
                 setCurrentYear(newYear);
-                handleScrubberChange({ target: { value: newYear.toString() } } as React.ChangeEvent<HTMLInputElement>);
+                handleScrubberChange({
+                  target: { value: newYear.toString() },
+                } as React.ChangeEvent<HTMLInputElement>);
               }}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               title="Forward 5 years"
@@ -773,7 +874,11 @@ export default function CountyFormationAnimation() {
               title="Reset"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                  clipRule="evenodd"
+                />
               </svg>
             </button>
 
@@ -785,7 +890,11 @@ export default function CountyFormationAnimation() {
                   ? 'bg-green-100 text-green-800 border border-green-300'
                   : 'bg-gray-100 text-gray-600 border border-gray-300'
               }`}
-              title={autoPauseEnabled ? 'Auto-pause enabled - will pause after each founding' : 'Auto-pause disabled - continuous playback'}
+              title={
+                autoPauseEnabled
+                  ? 'Auto-pause enabled - will pause after each founding'
+                  : 'Auto-pause disabled - continuous playback'
+              }
             >
               {autoPauseEnabled ? '⏸' : '▶'}
               <span className="hidden sm:inline">Auto-pause</span>
@@ -793,7 +902,7 @@ export default function CountyFormationAnimation() {
 
             <div className="flex items-center gap-2 ml-auto">
               <span className="text-sm text-gray-600">Speed:</span>
-              {([0.5, 1, 2, 5] as PlaybackSpeed[]).map(speed => (
+              {([0.5, 1, 2, 5] as PlaybackSpeed[]).map((speed) => (
                 <button
                   key={speed}
                   onClick={() => setPlaybackSpeed(speed)}
@@ -812,8 +921,10 @@ export default function CountyFormationAnimation() {
           <div className="relative">
             {/* Timeline markers showing years with formations */}
             <div className="relative w-full h-1 mb-1">
-              {Array.from(countiesByYear.keys()).map(year => {
-                const position = ((year - GAME_CONFIG.FORMATION_START_YEAR) / GAME_CONFIG.FORMATION_YEARS_SPAN) * 100;
+              {Array.from(countiesByYear.keys()).map((year) => {
+                const position =
+                  ((year - GAME_CONFIG.FORMATION_START_YEAR) / GAME_CONFIG.FORMATION_YEARS_SPAN) *
+                  100;
                 const count = countiesByYear.get(year)?.length || 0;
                 return (
                   <div
@@ -821,9 +932,14 @@ export default function CountyFormationAnimation() {
                     className="absolute w-0.5 bg-blue-400 rounded-full"
                     style={{
                       left: `${position}%`,
-                      height: year === GAME_CONFIG.FORMATION_START_YEAR ? '12px' : count > 2 ? '8px' : '6px',
+                      height:
+                        year === GAME_CONFIG.FORMATION_START_YEAR
+                          ? '12px'
+                          : count > 2
+                            ? '8px'
+                            : '6px',
                       bottom: 0,
-                      transform: 'translateX(-50%)'
+                      transform: 'translateX(-50%)',
                     }}
                     title={`${year}: ${count} ${count === 1 ? 'county' : 'counties'}`}
                   />
@@ -838,7 +954,7 @@ export default function CountyFormationAnimation() {
               onChange={handleScrubberChange}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((currentYear - GAME_CONFIG.FORMATION_START_YEAR) / GAME_CONFIG.FORMATION_YEARS_SPAN) * 100}%, #E5E7EB ${((currentYear - GAME_CONFIG.FORMATION_START_YEAR) / GAME_CONFIG.FORMATION_YEARS_SPAN) * 100}%, #E5E7EB 100%)`
+                background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((currentYear - GAME_CONFIG.FORMATION_START_YEAR) / GAME_CONFIG.FORMATION_YEARS_SPAN) * 100}%, #E5E7EB ${((currentYear - GAME_CONFIG.FORMATION_START_YEAR) / GAME_CONFIG.FORMATION_YEARS_SPAN) * 100}%, #E5E7EB 100%)`,
               }}
             />
             <div className="flex justify-between mt-1 text-xs text-gray-500">
@@ -851,7 +967,8 @@ export default function CountyFormationAnimation() {
           {/* Keyboard shortcuts hint */}
           <div className="mt-2 text-center text-xs text-gray-400">
             <span className="inline-flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600">Space</kbd> Play/Pause
+              <kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600">Space</kbd>{' '}
+              Play/Pause
               <span className="mx-1">•</span>
               <kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600">←→</kbd> Navigate
               <span className="mx-1">•</span>

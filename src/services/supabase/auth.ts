@@ -10,8 +10,10 @@
  * @see docs/architecture/SUPABASE_INTEGRATION_ARCHITECTURE.md
  */
 
+/* eslint-disable no-console */
+
 import { getSupabaseClient } from './client';
-import type { Session, User, AuthError } from '@supabase/supabase-js';
+import type { Session, User } from '@supabase/supabase-js';
 
 /**
  * Authentication status information
@@ -401,7 +403,7 @@ export function getAuthErrorMessage(error: unknown): string {
  */
 export async function exportUserData(
   userId: string
-): Promise<{ success: boolean; data?: any; error?: string }> {
+): Promise<{ success: boolean; data?: Record<string, unknown>; error?: string }> {
   const supabase = getSupabaseClient();
 
   if (!supabase) {
@@ -543,6 +545,7 @@ export async function deleteUserAccount(): Promise<{ success: boolean; error?: s
 
     // Clear all local storage data
     try {
+      // eslint-disable-next-line no-restricted-globals
       localStorage.clear();
       if (import.meta.env.DEV) {
         console.info('[Auth] Local storage cleared');

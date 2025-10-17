@@ -112,7 +112,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
         updateTimer(100); // Update every 100ms for smooth timer
       }, 100);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     containerState.currentRegion,
     containerState.currentDifficulty,
@@ -200,7 +200,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
       ...prev,
       gameStarted: false,
     }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [endGame, _score, _stats, onGameComplete]);
 
   // Handle region change
@@ -220,7 +220,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
         gameStarted: false,
       }));
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     [_isGameActive, resetGame]
   );
 
@@ -242,7 +242,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
 
       updateSettings({ difficulty });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     [_isGameActive, resetGame, updateSettings]
   );
 

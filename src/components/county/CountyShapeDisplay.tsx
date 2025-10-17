@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import { realCaliforniaCountyShapes } from '../../data/californiaCountyBoundaries';
 import { getSvgTextFill } from '../../utils/colorContrast';
 
@@ -19,12 +18,13 @@ export default function CountyShapeDisplay({
   size = 60,
   className = '',
   showLabel = false,
-  fillColor
+  fillColor,
 }: CountyShapeDisplayProps) {
   const county = realCaliforniaCountyShapes.find(
-    c => c.id === countyId ||
-    c.id === countyId.replace(/_/g, '-') ||
-    c.id === countyId.replace(/-/g, '_')
+    (c) =>
+      c.id === countyId ||
+      c.id === countyId.replace(/_/g, '-') ||
+      c.id === countyId.replace(/-/g, '_')
   );
 
   if (!county) return null;
@@ -40,13 +40,13 @@ export default function CountyShapeDisplay({
     }
     if (coords.length === 0) return { minX: 0, minY: 0, maxX: 100, maxY: 100 };
 
-    const xs = coords.map(c => c[0]);
-    const ys = coords.map(c => c[1]);
+    const xs = coords.map((c) => c[0]);
+    const ys = coords.map((c) => c[1]);
     return {
       minX: Math.min(...xs),
       maxX: Math.max(...xs),
       minY: Math.min(...ys),
-      maxY: Math.max(...ys)
+      maxY: Math.max(...ys),
     };
   };
 
@@ -58,15 +58,23 @@ export default function CountyShapeDisplay({
 
   // Determine fill color based on region if not provided
   const getRegionColor = (region: string) => {
-    switch(region?.toLowerCase()) {
-      case 'bay area': return '#3B82F6';
-      case 'southern california': return '#EF4444';
-      case 'central valley': return '#10B981';
-      case 'central coast': return '#A855F7';
-      case 'northern california': return '#F59E0B';
-      case 'north coast': return '#06B6D4';
-      case 'sierra nevada': return '#8B5CF6';
-      default: return '#6B7280';
+    switch (region?.toLowerCase()) {
+      case 'bay area':
+        return '#3B82F6';
+      case 'southern california':
+        return '#EF4444';
+      case 'central valley':
+        return '#10B981';
+      case 'central coast':
+        return '#A855F7';
+      case 'northern california':
+        return '#F59E0B';
+      case 'north coast':
+        return '#06B6D4';
+      case 'sierra nevada':
+        return '#8B5CF6';
+      default:
+        return '#6B7280';
     }
   };
 
@@ -117,7 +125,7 @@ export default function CountyShapeDisplay({
 export function CountyShapeGrid({
   countyIds,
   size = 50,
-  columns = 4
+  columns = 4,
 }: {
   countyIds: string[];
   size?: number;
@@ -127,18 +135,14 @@ export function CountyShapeGrid({
     <div
       className="grid gap-2"
       style={{
-        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
       }}
     >
-      {countyIds.map(id => (
+      {countyIds.map((id) => (
         <div key={id} className="flex flex-col items-center">
-          <CountyShapeDisplay
-            countyId={id}
-            size={size}
-            className="mb-1"
-          />
+          <CountyShapeDisplay countyId={id} size={size} className="mb-1" />
           <span className="text-xs text-gray-600 text-center">
-            {realCaliforniaCountyShapes.find(c => c.id === id)?.name}
+            {realCaliforniaCountyShapes.find((c) => c.id === id)?.name}
           </span>
         </div>
       ))}

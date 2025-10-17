@@ -7,86 +7,94 @@ import { Badge, Heading, Text, Card } from '../ui';
 import { County } from '../../types';
 
 // Memoized draggable county component
-const DraggableCounty = memo(({ county }: { county: County }) => {
-  const { placedCounties, selectCounty, currentCounty } = useGame();
-  const sound = useSoundEffect();
-  const isPlaced = placedCounties.has(county.id);
-  const isSelected = currentCounty?.id === county.id;
+const DraggableCounty = memo(
+  ({ county }: { county: County }) => {
+    const { placedCounties, selectCounty, currentCounty } = useGame();
+    const sound = useSoundEffect();
+    const isPlaced = placedCounties.has(county.id);
+    const isSelected = currentCounty?.id === county.id;
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform: _transform,
-    isDragging,
-  } = useDraggable({
-    id: county.id,
-    disabled: isPlaced,
-  });
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform: _transform,
+      isDragging,
+    } = useDraggable({
+      id: county.id,
+      disabled: isPlaced,
+    });
 
-  // When dragging, hide the original element to prevent scrolling issues
-  const style = isDragging
-    ? {
-        opacity: 0,
-        pointerEvents: 'none' as const,
-      }
-    : undefined;
+    // When dragging, hide the original element to prevent scrolling issues
+    const style = isDragging
+      ? {
+          opacity: 0,
+          pointerEvents: 'none' as const,
+        }
+      : undefined;
 
-  // Use centralized color configuration
-  const _regionColor = getRegionColor(county.region);
+    // Use centralized color configuration
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const regionColor = getRegionColor(county.region);
 
-  // Memoize click handler
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      if (!isPlaced && !isSelected) {
-        sound.playSound('pickup', 0.5);
-        selectCounty(county);
-      }
-    },
-    [isPlaced, isSelected, sound, selectCounty, county]
-  );
-
-  // Memoize title
-  const title = useMemo(
-    () =>
-      `${county.name} - ${county.region}${isSelected ? ' (Selected - Use hint or drag to map)' : ' (Click to select)'}`,
-    [county.name, county.region, isSelected]
-  );
-
-  if (isPlaced) {
-    return (
-      <Badge variant="default" size="small" className="opacity-50 cursor-not-allowed line-through">
-        {county.name}
-      </Badge>
+    // Memoize click handler
+    const handleClick = useCallback(
+      (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!isPlaced && !isSelected) {
+          sound.playSound('pickup', 0.5);
+          selectCounty(county);
+        }
+      },
+      [isPlaced, isSelected, sound, selectCounty, county]
     );
-  }
 
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-      onClick={handleClick}
-      title={title}
-    >
-      <Badge
-        region={county.region}
-        size="small"
-        className={`cursor-move hover:shadow-sm transition-all ${
-          isDragging ? 'opacity-50 cursor-grabbing' : ''
-        } ${isSelected ? 'ring-2 ring-blue-500 shadow-md transform scale-105' : ''}`}
+    // Memoize title
+    const title = useMemo(
+      () =>
+        `${county.name} - ${county.region}${isSelected ? ' (Selected - Use hint or drag to map)' : ' (Click to select)'}`,
+      [county.name, county.region, isSelected]
+    );
+
+    if (isPlaced) {
+      return (
+        <Badge
+          variant="default"
+          size="small"
+          className="opacity-50 cursor-not-allowed line-through"
+        >
+          {county.name}
+        </Badge>
+      );
+    }
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
+        onClick={handleClick}
+        title={title}
       >
-        {isSelected && '▶ '}
-        {county.name}
-      </Badge>
-    </div>
-  );
-}, (prevProps, nextProps) => {
-  // Custom comparison for better performance
-  return prevProps.county.id === nextProps.county.id;
-});
+        <Badge
+          region={county.region}
+          size="small"
+          className={`cursor-move hover:shadow-sm transition-all ${
+            isDragging ? 'opacity-50 cursor-grabbing' : ''
+          } ${isSelected ? 'ring-2 ring-blue-500 shadow-md transform scale-105' : ''}`}
+        >
+          {isSelected && '▶ '}
+          {county.name}
+        </Badge>
+      </div>
+    );
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison for better performance
+    return prevProps.county.id === nextProps.county.id;
+  }
+);
 
 DraggableCounty.displayName = 'DraggableCounty';
 
