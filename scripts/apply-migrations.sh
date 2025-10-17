@@ -1,0 +1,25 @@
+#!/bin/bash
+# Apply Supabase migrations to your project
+# This script helps you set up the database tables
+
+echo "🗄️  Supabase Database Setup"
+echo "=========================="
+echo ""
+echo "Project: https://pfwberdnxkuvuupjmauq.supabase.co"
+echo ""
+echo "Option 1: Manual (Dashboard) ⭐ RECOMMENDED"
+echo "  1. Open: https://app.supabase.com/project/pfwberdnxkuvuupjmauq/editor"
+echo "  2. Click 'SQL Editor'"
+echo "  3. Copy contents of: supabase/migrations/001_initial_schema.sql"
+echo "  4. Paste in SQL Editor"
+echo "  5. Click 'Run' button"
+echo ""
+echo "Option 2: Supabase CLI"
+echo "  1. Install: npm install -g supabase"
+echo "  2. Login: supabase login"
+echo "  3. Link: supabase link --project-ref pfwberdnxkuvuupjmauq"
+echo "  4. Push: supabase db push"
+echo ""
+echo "After running migration, verify with:"
+echo "  node scripts/test-supabase-connection.mjs"
+echo ""
