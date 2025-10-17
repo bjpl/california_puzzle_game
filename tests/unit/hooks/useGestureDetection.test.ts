@@ -5,7 +5,7 @@
  * swipe, and pinch gestures with comprehensive edge cases.
  */
 
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   useGestureDetection,
@@ -13,8 +13,6 @@ import {
   calculateCenterPoint,
   touchListToPoints,
   type TouchPoint,
-  type GestureResult,
-  type TapGesture,
   type SwipeGesture,
 } from '../../../src/mobile/hooks/useGestureDetection';
 
@@ -250,7 +248,7 @@ describe('useGestureDetection', () => {
   });
 
   describe('Long-Press Detection', () => {
-    it('should detect long-press after threshold', async () => {
+    it('should detect long-press after threshold', () => {
       const { result } = renderHook(() =>
         useGestureDetection({
           enableLongPress: true,
@@ -266,14 +264,12 @@ describe('useGestureDetection', () => {
       });
 
       // Advance time to trigger long-press
-      await act(async () => {
+      act(() => {
         vi.advanceTimersByTime(500);
-        await waitFor(() => {
-          // Long press would have been triggered
-        });
       });
 
       // Note: Long press callback is custom, tested via integration
+      // The timer should have fired and touch should still be active
       expect(result.current.getTouchCount()).toBe(1);
     });
 
@@ -328,7 +324,7 @@ describe('useGestureDetection', () => {
       // End touch before threshold
       act(() => {
         vi.advanceTimersByTime(200);
-        const endEvent = createTouchEvent('touchend', []);
+        const endEvent = createTouchEvent('touchend', [], [touch]);
         result.current.handleTouchEnd(endEvent);
       });
 

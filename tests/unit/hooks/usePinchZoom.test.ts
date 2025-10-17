@@ -8,7 +8,6 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { usePinchZoom } from '../../../src/mobile/hooks/usePinchZoom';
-import { GeodetaLevel } from '../../../src/mobile/utils/progressiveGeodata';
 
 // Mock AdaptiveGeodataLoader
 vi.mock('../../../src/mobile/utils/progressiveGeodata', () => ({
@@ -72,7 +71,7 @@ describe('usePinchZoom', () => {
 
   describe('Initialization', () => {
     it('should initialize with default configuration', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       expect(result.current.currentZoom).toBe(1.0);
       expect(result.current.previousZoom).toBe(1.0);
@@ -84,6 +83,7 @@ describe('usePinchZoom', () => {
       const { result } = renderHook(() =>
         usePinchZoom({
           initialScale: 1.5,
+          enableProgressiveLoading: false,
         })
       );
 
@@ -95,6 +95,7 @@ describe('usePinchZoom', () => {
         usePinchZoom({
           minScale: 0.5,
           maxScale: 4.0,
+          enableProgressiveLoading: false,
         })
       );
 
@@ -117,7 +118,7 @@ describe('usePinchZoom', () => {
 
   describe('Pinch Gesture Detection', () => {
     it('should detect two-finger pinch start', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       const touch1 = createTouch(1, 100, 100);
       const touch2 = createTouch(2, 200, 200);
@@ -132,7 +133,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should not detect pinch with single finger', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       const touch = createTouch(1, 100, 100);
       const event = createTouchEvent('touchstart', [touch]);
@@ -145,7 +146,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should cancel pinch with more than two fingers', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start pinch with two fingers
       const touch1 = createTouch(1, 100, 100);
@@ -170,7 +171,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should prevent default browser zoom behavior', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       const touch1 = createTouch(1, 100, 100);
       const touch2 = createTouch(2, 200, 200);
@@ -186,7 +187,7 @@ describe('usePinchZoom', () => {
 
   describe('Zoom Scale Calculation', () => {
     it('should calculate zoom scale based on pinch distance', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start pinch (distance = ~141 pixels)
       const touch1 = createTouch(1, 100, 100);
@@ -213,7 +214,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should zoom in when fingers move apart', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start pinch
       const touch1 = createTouch(1, 150, 150);
@@ -333,7 +334,7 @@ describe('usePinchZoom', () => {
 
   describe('Pinch Center Tracking', () => {
     it('should track center point during pinch', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       const touch1 = createTouch(1, 100, 100);
       const touch2 = createTouch(2, 200, 200);
@@ -347,7 +348,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should update center point during pinch movement', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start pinch
       const touch1 = createTouch(1, 100, 100);
@@ -371,7 +372,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should clear center when pinch ends', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start pinch
       const touch1 = createTouch(1, 100, 100);
@@ -397,7 +398,7 @@ describe('usePinchZoom', () => {
 
   describe('Touch End Handling', () => {
     it('should end pinch when fingers are released', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start pinch
       const touch1 = createTouch(1, 100, 100);
@@ -421,7 +422,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should end pinch when one finger is released', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start pinch
       const touch1 = createTouch(1, 100, 100);
@@ -445,7 +446,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should maintain zoom scale after pinch ends', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start pinch and zoom
       const touch1 = createTouch(1, 150, 150);
@@ -479,7 +480,7 @@ describe('usePinchZoom', () => {
 
   describe('Programmatic Zoom Controls', () => {
     it('should set zoom programmatically', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       act(() => {
         result.current.setZoom(2.0);
@@ -541,7 +542,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should get zoom percentage correctly', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       act(() => {
         result.current.setZoom(1.5);
@@ -657,7 +658,7 @@ describe('usePinchZoom', () => {
 
   describe('Edge Cases', () => {
     it('should handle finger count changes during pinch', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start pinch
       const touch1 = createTouch(1, 100, 100);
@@ -681,7 +682,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should handle rapid zoom changes', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       for (let i = 1; i <= 10; i++) {
         act(() => {
@@ -694,7 +695,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should handle concurrent pinch gestures gracefully', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       // Start first pinch
       const touch1 = createTouch(1, 100, 100);
@@ -719,7 +720,7 @@ describe('usePinchZoom', () => {
     });
 
     it('should track previous zoom correctly', () => {
-      const { result } = renderHook(() => usePinchZoom());
+      const { result } = renderHook(() => usePinchZoom({ enableProgressiveLoading: false }));
 
       act(() => {
         result.current.setZoom(1.5);

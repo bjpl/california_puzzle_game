@@ -16,7 +16,7 @@
  * @see docs/MOBILE_PRD.md - F-4: Touch-Optimized Drag and Drop
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { useHaptic } from '../hooks/useHaptic';
 import { GESTURE_CONFIG } from '../config/breakpoints';
@@ -114,6 +114,10 @@ export const TouchCountyDrag: React.FC<TouchCountyDragProps> = ({
     disabled: isPlaced,
   });
 
+  // Track previous drag state to detect transitions
+  const wasDraggingRef = useRef(false);
+  const hasSnappedRef = useRef(false);
+
   /**
    * Calculate if current position is within snap threshold of target
    */
@@ -134,7 +138,11 @@ export const TouchCountyDrag: React.FC<TouchCountyDragProps> = ({
    * Handle drag start - trigger haptic feedback and callbacks
    */
   useEffect(() => {
-    if (isDragging && active?.id === county.id) {
+    // Only trigger on transition from not dragging to dragging
+    if (isDragging && !wasDraggingRef.current && active?.id === county.id) {
+      wasDraggingRef.current = true;
+      hasSnappedRef.current = false;
+
       // Prevent page scroll during drag
       preventScrollDuringDrag();
 
@@ -156,9 +164,13 @@ export const TouchCountyDrag: React.FC<TouchCountyDragProps> = ({
         y: transform.y,
       };
 
-      // Check if near target and trigger snap haptic
-      if (isNearTarget(currentPos)) {
+      // Check if near target and trigger snap haptic (only once)
+      if (isNearTarget(currentPos) && !hasSnappedRef.current) {
+        hasSnappedRef.current = true;
         haptic.snap();
+      } else if (!isNearTarget(currentPos) && hasSnappedRef.current) {
+        // Reset snap flag if moved away from target
+        hasSnappedRef.current = false;
       }
     }
   }, [isDragging, transform, targetPosition, isNearTarget, haptic]);
@@ -167,7 +179,10 @@ export const TouchCountyDrag: React.FC<TouchCountyDragProps> = ({
    * Handle drag end - restore scroll and trigger callbacks
    */
   useEffect(() => {
-    if (!isDragging && active === null) {
+    // Only trigger on transition from dragging to not dragging
+    if (!isDragging && wasDraggingRef.current && active === null) {
+      wasDraggingRef.current = false;
+
       // Restore page scroll
       restoreScrollAfterDrag();
 

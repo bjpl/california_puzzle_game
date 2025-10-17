@@ -320,6 +320,15 @@ export function useGestureDetection(config: GestureDetectionConfig = {}) {
       const initialTouches = gestureStateRef.current.initialTouches;
       const remainingTouches = event.touches;
 
+      // Get end coordinates from changedTouches if available, fallback to getTouchCoordinates
+      let endCoords: { x: number; y: number };
+      if (event.changedTouches && event.changedTouches.length > 0) {
+        const lastTouch = event.changedTouches[0];
+        endCoords = { x: lastTouch.clientX, y: lastTouch.clientY };
+      } else {
+        endCoords = getTouchCoordinates(event as unknown as TouchEvent);
+      }
+
       // Detect tap gestures (single touch, short duration, minimal movement, no multi-touch)
       if (
         mergedConfig.enableTap &&
@@ -329,7 +338,6 @@ export function useGestureDetection(config: GestureDetectionConfig = {}) {
         !gestureStateRef.current.hadMultiTouch
       ) {
         const startTouch = initialTouches[0];
-        const endCoords = getTouchCoordinates(event as unknown as TouchEvent);
         const movement = Math.sqrt(
           Math.pow(endCoords.x - startTouch.x, 2) + Math.pow(endCoords.y - startTouch.y, 2)
         );
@@ -355,17 +363,28 @@ export function useGestureDetection(config: GestureDetectionConfig = {}) {
             });
             lastTapTimeRef.current = endTime;
           }
+
+          // Early return to prevent swipe detection for taps
+          if (remainingTouches.length === 0) {
+            gestureStateRef.current = {
+              touches: [],
+              touchCount: 0,
+              startTime: 0,
+              initialTouches: [],
+              hadMultiTouch: false,
+            };
+          }
+          return;
         }
       }
 
-      // Detect swipe gestures (single touch, fast movement)
+      // Detect swipe gestures (single touch, fast movement, not a tap)
       if (
         mergedConfig.enableSwipe &&
         initialTouches.length === 1 &&
         remainingTouches.length === 0
       ) {
         const startTouch = initialTouches[0];
-        const endCoords = getTouchCoordinates(event as unknown as TouchEvent);
 
         if (isSwipeGesture(startTouch.x, startTouch.y, endCoords.x, endCoords.y, duration)) {
           const direction = getSwipeDirection(startTouch.x, startTouch.y, endCoords.x, endCoords.y);
