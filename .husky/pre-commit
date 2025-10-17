@@ -1,5 +1,5 @@
-# Run lint-staged for formatting and linting
-npx lint-staged
+# Run lint-staged for formatting and linting (use local node_modules binary to avoid npx issues)
+./node_modules/.bin/lint-staged
 
 # Prevent commits with TODO comments (except in tests and docs)
 if git diff --cached --name-only | grep -E '\.(tsx?|jsx?)$' | xargs grep -l 'TODO:' 2>/dev/null | grep -v -E 'test|spec|\.md$'; then
