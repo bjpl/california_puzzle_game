@@ -10,20 +10,30 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { usePinchZoom } from '../../../src/mobile/hooks/usePinchZoom';
 
 // Mock AdaptiveGeodataLoader
-vi.mock('../../../src/mobile/utils/progressiveGeodata', () => ({
-  GeodetaLevel: {
+vi.mock('../../../src/mobile/utils/progressiveGeodata', () => {
+  const GeodetaLevel = {
+    ULTRA_LOW: 'ultra-low',
     LOW: 'low',
     MEDIUM: 'medium',
     HIGH: 'high',
-    ULTRA: 'ultra',
-  },
-  AdaptiveGeodataLoader: vi.fn().mockImplementation(() => ({
-    load: vi.fn().mockResolvedValue({}),
-    preloadNext: vi.fn().mockResolvedValue({}),
-    getCurrentLevel: vi.fn().mockReturnValue('medium'),
-    isLoading: vi.fn().mockReturnValue(false),
-  })),
-}));
+  };
+
+  // Create a proper mock constructor that returns instances with methods
+  const AdaptiveGeodataLoader = vi.fn(() => {
+    const instance = {
+      load: vi.fn().mockResolvedValue({}),
+      preloadNext: vi.fn().mockResolvedValue({}),
+      getCurrentLevel: vi.fn().mockReturnValue(GeodetaLevel.MEDIUM),
+      isLoading: vi.fn().mockReturnValue(false),
+    };
+    return instance;
+  });
+
+  return {
+    GeodetaLevel,
+    AdaptiveGeodataLoader,
+  };
+});
 
 // Mock touch event helpers
 function createTouch(id: number, x: number, y: number): Touch {
@@ -61,12 +71,13 @@ function createTouchEvent(
 
 describe('usePinchZoom', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    // Don't use fake timers for these tests as they interfere with async operations
+    // vi.useFakeTimers();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.useRealTimers();
+    // vi.useRealTimers();
   });
 
   describe('Initialization', () => {

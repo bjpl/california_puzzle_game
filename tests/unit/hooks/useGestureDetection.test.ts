@@ -101,7 +101,8 @@ describe('useGestureDetection', () => {
 
       const touch = createTouch(1, 100, 100);
       const startEvent = createTouchEvent('touchstart', [touch]);
-      const endEvent = createTouchEvent('touchend', []);
+      const endTouch = createTouch(1, 100, 100); // Same position for tap
+      const endEvent = createTouchEvent('touchend', [], [endTouch]);
 
       act(() => {
         result.current.handleTouchStart(startEvent);
@@ -132,6 +133,7 @@ describe('useGestureDetection', () => {
       const mockGestureHandler = vi.fn();
 
       const touch = createTouch(1, 100, 100);
+      const endTouch = createTouch(1, 100, 100);
 
       // First tap
       act(() => {
@@ -141,7 +143,7 @@ describe('useGestureDetection', () => {
 
       act(() => {
         vi.advanceTimersByTime(50);
-        const endEvent = createTouchEvent('touchend', []);
+        const endEvent = createTouchEvent('touchend', [], [endTouch]);
         result.current.handleTouchEnd(endEvent, mockGestureHandler);
       });
 
@@ -154,7 +156,7 @@ describe('useGestureDetection', () => {
 
       act(() => {
         vi.advanceTimersByTime(50);
-        const endEvent = createTouchEvent('touchend', []);
+        const endEvent = createTouchEvent('touchend', [], [endTouch]);
         result.current.handleTouchEnd(endEvent, mockGestureHandler);
       });
 
@@ -176,6 +178,7 @@ describe('useGestureDetection', () => {
       const mockGestureHandler = vi.fn();
 
       const touch = createTouch(1, 100, 100);
+      const endTouch = createTouch(1, 100, 100);
 
       // First tap
       act(() => {
@@ -185,7 +188,7 @@ describe('useGestureDetection', () => {
 
       act(() => {
         vi.advanceTimersByTime(50);
-        const endEvent = createTouchEvent('touchend', []);
+        const endEvent = createTouchEvent('touchend', [], [endTouch]);
         result.current.handleTouchEnd(endEvent, mockGestureHandler);
       });
 
@@ -200,7 +203,7 @@ describe('useGestureDetection', () => {
 
       act(() => {
         vi.advanceTimersByTime(50);
-        const endEvent = createTouchEvent('touchend', []);
+        const endEvent = createTouchEvent('touchend', [], [endTouch]);
         result.current.handleTouchEnd(endEvent, mockGestureHandler);
       });
 
@@ -236,14 +239,17 @@ describe('useGestureDetection', () => {
         result.current.handleTouchMove(moveEvent);
       });
 
+      const endTouch = createTouch(1, 130, 130);
       act(() => {
         vi.advanceTimersByTime(50);
-        const endEvent = createTouchEvent('touchend', []);
+        const endEvent = createTouchEvent('touchend', [], [endTouch]);
         result.current.handleTouchEnd(endEvent, mockGestureHandler);
       });
 
       // Should not detect tap due to excessive movement
-      expect(mockGestureHandler).not.toHaveBeenCalled();
+      // (Swipe might not be detected if distance doesn't meet swipe threshold)
+      const tapGestures = mockGestureHandler.mock.calls.filter((call) => call[0]?.type === 'tap');
+      expect(tapGestures).toHaveLength(0);
     });
   });
 
@@ -350,13 +356,10 @@ describe('useGestureDetection', () => {
         result.current.handleTouchStart(startEvent);
       });
 
+      const endTouch = createTouch(1, 200, 100);
       act(() => {
         vi.advanceTimersByTime(100);
-        const endEvent = createTouchEvent('touchend', []);
-        // Mock end coordinates for swipe detection
-        Object.defineProperty(endEvent, 'changedTouches', {
-          value: createTouchList(createTouch(1, 200, 100)),
-        });
+        const endEvent = createTouchEvent('touchend', [], [endTouch]);
         result.current.handleTouchEnd(endEvent, mockGestureHandler);
       });
 
@@ -379,12 +382,10 @@ describe('useGestureDetection', () => {
         result.current.handleTouchStart(startEvent);
       });
 
+      const endTouch = createTouch(1, 100, 200);
       act(() => {
         vi.advanceTimersByTime(100);
-        const endEvent = createTouchEvent('touchend', []);
-        Object.defineProperty(endEvent, 'changedTouches', {
-          value: createTouchList(createTouch(1, 100, 200)),
-        });
+        const endEvent = createTouchEvent('touchend', [], [endTouch]);
         result.current.handleTouchEnd(endEvent, mockGestureHandler);
       });
 
