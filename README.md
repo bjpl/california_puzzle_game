@@ -87,24 +87,46 @@ See [Mobile Documentation](src/mobile/README.md) for complete API reference and 
 ### Frontend
 
 - **React 18** - Component framework
-- **TypeScript** - Type safety and developer experience
-- **Vite** - Fast build tool and development server
-- **D3.js** - Map visualization and geographic projections
-- **Zustand** - State management
-- **Framer Motion** - Animations and transitions
-- **Tailwind CSS** - Utility-first CSS framework
+- **TypeScript 5.9** - Full type safety with strict mode
+- **Vite 4.5** - Fast build tool and development server
+- **D3.js 7.8** - Map visualization and geographic projections
+- **Zustand 5.0** - State management with localStorage persistence
+- **Framer Motion 10.16** - Smooth animations and transitions
+- **Tailwind CSS 3.4** - Utility-first CSS framework with dark mode
+
+### Backend & Services ✅ NEW
+
+- **Supabase** - PostgreSQL backend with authentication
+  - ✅ Database: 6 tables (profiles, game_settings, game_stats, sessions, achievements, leaderboard)
+  - ✅ Auth: Anonymous + social login support
+  - ✅ Real-time: WebSocket subscriptions
+  - ✅ Security: Row-Level Security (RLS) policies
+  - 📦 Connection verified: `node scripts/test-supabase-connection.mjs`
 
 ### UI Components
 
 - **Custom Component Library** - Button, Badge, Card, Progress, Typography
 - **Design System** - Comprehensive style guide with region-specific theming
-- **React DnD** - Drag and drop functionality
+- **@dnd-kit** - Touch-optimized drag and drop with haptic feedback
 
 ### Development Tools
 
-- **Vitest** - Testing framework
-- **ESLint** - Code linting
-- **TypeScript** - Static type checking
+- **Vitest 2.0** - Fast testing framework with workspace support
+  - ✅ **Recent Fixes:** Test timeouts eliminated (26s vs 120s)
+  - ✅ **Mocking:** Proper async operation mocking
+  - 📊 **Coverage:** 80%+ thresholds on all metrics
+- **ESLint 8** - Code linting with TypeScript support
+- **Prettier 3.6** - Code formatting (auto-format on commit)
+- **Husky 9.1** - Git hooks ✅ **Working without --no-verify**
+
+### Testing Stack ✅ Enhanced
+
+- **@testing-library/react 16.0** - Component testing
+- **jest-axe 10.0** - Accessibility validation (WCAG AA)
+- **vitest-axe 0.1** - A11y testing integration
+- **@testing-library/user-event 14.5** - User interaction simulation
+
+See [Technology Stack Analysis](docs/ad_hoc_reports/technology_stack.md) for comprehensive details.
 
 ## 🚀 Quick Start
 
