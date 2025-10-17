@@ -317,6 +317,10 @@ describe('|unit| useHaptic Hook - API Support Detection', () => {
   it('should return false when no vibrate API is available', () => {
     // @ts-expect-error - Testing unsupported environment
     delete navigator.vibrate;
+    // @ts-expect-error - Testing vendor-prefixed APIs
+    delete navigator.mozVibrate;
+    // @ts-expect-error - Testing vendor-prefixed APIs
+    delete navigator.webkitVibrate;
 
     const { result } = renderHook(() => useHaptic());
 
@@ -459,6 +463,10 @@ describe('|a11y| useHaptic Accessibility', () => {
   it('should handle unsupported devices gracefully', () => {
     // @ts-expect-error - Testing unsupported environment
     delete navigator.vibrate;
+    // @ts-expect-error - Testing vendor-prefixed APIs
+    delete navigator.mozVibrate;
+    // @ts-expect-error - Testing vendor-prefixed APIs
+    delete navigator.webkitVibrate;
 
     const { result } = renderHook(() => useHaptic({ enabled: true, intensity: 1.0 }));
 

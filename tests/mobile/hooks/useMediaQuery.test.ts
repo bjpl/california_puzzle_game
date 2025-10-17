@@ -36,11 +36,20 @@ class MockMediaQueryList implements MediaQueryList {
 
   // Deprecated API for older browsers
   addListener(callback: (event: MediaQueryListEvent) => void): void {
-    this.addEventListener('change', callback);
+    // Check if modern API exists, otherwise directly manage listeners
+    if (this.addEventListener) {
+      this.addEventListener('change', callback);
+    } else {
+      this.listeners.push(callback);
+    }
   }
 
   removeListener(callback: (event: MediaQueryListEvent) => void): void {
-    this.removeEventListener('change', callback);
+    if (this.removeEventListener) {
+      this.removeEventListener('change', callback);
+    } else {
+      this.listeners = this.listeners.filter((l) => l !== callback);
+    }
   }
 
   // Test helper: trigger change event
