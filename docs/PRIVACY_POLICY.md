@@ -1,12 +1,47 @@
 # Privacy Policy
 
-**Last Updated: October 11, 2025**
+**Last Updated: October 16, 2025**
 
 ## Introduction
 
 California Counties Puzzle Game ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard information when you use our game.
 
+**TL;DR:** We use **anonymous accounts** by default (no email/password required). Your game data is encrypted and only visible to you. You can delete your account anytime.
+
 ## Information We Collect
+
+### Account & Game Data (Supabase Cloud Storage) ⭐ NEW
+
+**Anonymous Account (Created Automatically):**
+
+When you first play, we automatically create an **anonymous account** for you (no email or password required):
+
+**What We Store:**
+
+- **Anonymous User ID** - Random UUID (e.g., `a1b2c3d4-...`), not linked to you personally
+- **Game Progress** - Scores, counties completed, achievements unlocked
+- **Settings** - Sound preferences, difficulty level, theme choice
+- **Session Data** - Game start/end times, accuracy, hints used
+
+**What We DON'T Store:**
+
+- ❌ **No email address** (unless you upgrade to a real account)
+- ❌ **No password** (anonymous accounts don't have passwords)
+- ❌ **No name or personal information**
+- ❌ **No payment details** (game is free)
+- ❌ **No location data**
+
+**Security:**
+
+- ✅ **Encrypted in transit** (HTTPS/TLS 1.3)
+- ✅ **Encrypted at rest** (PostgreSQL encryption)
+- ✅ **Row-Level Security** - You can only see your own data, even if someone gets our API key
+- ✅ **Auto-session refresh** - Tokens refresh automatically, you stay logged in
+
+**Data Location:** Hosted on Supabase (https://supabase.com/privacy)
+
+**Upgrade to Real Account (Optional):**
+If you want to sync across devices or keep your progress long-term, you can upgrade to a real account (requires email). This is **completely optional**.
 
 ### Analytics Data (Optional)
 
@@ -19,6 +54,7 @@ If you consent, we collect anonymous usage analytics through Plausible Analytics
 - **Accessibility Features**: Which features are used (to improve them)
 
 **What we DON'T collect:**
+
 - Personal information (name, email, phone)
 - IP addresses (anonymized automatically)
 - Cookies
@@ -36,6 +72,7 @@ If you consent, we collect technical error data through Sentry:
 - **Session ID**: Anonymous session identifier (not linked to you)
 
 **What we DON'T include:**
+
 - Personal information
 - User input or form data
 - Authentication tokens
@@ -64,11 +101,52 @@ We use collected information to:
 
 ## Data Storage and Security
 
-- **Local Storage Only**: Game progress is stored in your browser's local storage
-- **No User Accounts**: No registration or login required
-- **No Server Storage**: Analytics are processed by third-party services (Plausible, Sentry)
-- **Encryption**: All data transmission uses HTTPS
-- **Retention**: Analytics data is retained for 12 months, then deleted
+### Cloud Storage (Supabase)
+
+- **Encrypted Database**: Game progress stored in encrypted PostgreSQL database
+- **Anonymous Accounts**: No email/password required to start playing
+- **Row-Level Security (RLS)**: You can only access your own data
+- **Automatic Backups**: Your data is backed up daily (disaster recovery)
+- **Secure Transmission**: All data sent over HTTPS/TLS 1.3
+
+### Local Storage (Your Browser)
+
+- **Session Tokens**: Authentication tokens cached in localStorage (encrypted JWTs)
+- **Offline Cache**: Game assets cached for offline play (Service Worker)
+- **Privacy Settings**: Your analytics preferences stored locally
+
+### Data Retention
+
+- **Active Accounts**: Data kept while you use the game
+- **Inactive Anonymous Accounts**: Auto-deleted after 90 days of inactivity
+- **Registered Accounts**: Kept until you delete your account
+- **Analytics Data**: Retained for 12 months, then deleted
+
+### How to Delete Your Account & Data
+
+You have the **right to delete** all your data at any time:
+
+**Method 1: In-App (Coming Soon)**
+
+1. Go to Settings → Privacy
+2. Click "Delete My Account"
+3. Confirm deletion
+4. All data deleted within 24 hours
+
+**Method 2: Manual (Until feature is added)**
+
+1. Email us at privacy@example.com with subject "Delete Account"
+2. Include your anonymous User ID (found in Settings)
+3. We'll delete your data within 24 hours
+
+**What Gets Deleted:**
+
+- All game progress (scores, achievements, stats)
+- All settings and preferences
+- All session records
+- Anonymous user account
+
+**Note:** Deletion is **permanent and cannot be undone**.
 
 ## Third-Party Services
 
@@ -134,9 +212,11 @@ This Privacy Policy complies with:
 
 For privacy concerns or questions:
 
-- **Email**: privacy@example.com
-- **Feedback Widget**: Use the in-game feedback button
-- **GitHub Issues**: https://github.com/yourusername/california-puzzle-game/issues
+- **Email**: privacy@example.com (security and privacy issues)
+- **Feedback Widget**: Use the in-game feedback button (general feedback)
+- **GitHub Issues**: https://github.com/bjpl/california_puzzle_game/issues (bug reports)
+
+**Security Concerns:** For security vulnerabilities, please email security@example.com or create a private security advisory on GitHub.
 
 ## Data Processing Details
 
@@ -184,4 +264,4 @@ We believe in radical transparency:
 
 ---
 
-*This game is an educational project. We prioritize privacy and learning over data collection.*
+_This game is an educational project. We prioritize privacy and learning over data collection._

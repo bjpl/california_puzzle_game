@@ -1,0 +1,39 @@
+Contact: https://github.com/bjpl/california_puzzle_game/security/advisories/new
+Contact: mailto:security@example.com
+Expires: 2026-10-16T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://bjpl.github.io/california_puzzle_game/.well-known/security.txt
+
+# Security Policy
+
+We take security seriously. If you discover a security vulnerability, please:
+
+1. DO NOT open a public GitHub issue
+2. Use the GitHub Security Advisories link above (preferred)
+3. Or email security@example.com with details
+4. Include steps to reproduce if possible
+
+We will respond within 48 hours and work with you to address the issue.
+
+# Scope
+
+This security policy applies to:
+- Main application (https://bjpl.github.io/california_puzzle_game/)
+- Source code (https://github.com/bjpl/california_puzzle_game)
+- Supabase backend (data security only, not infrastructure)
+
+# Out of Scope
+
+- Third-party services (Supabase infrastructure, GitHub Pages CDN)
+- Social engineering attacks
+- Physical security
+
+# Safe Harbor
+
+We support responsible disclosure and will not take legal action against security researchers who:
+- Make a good faith effort to avoid privacy violations
+- Do not exploit vulnerabilities beyond what's necessary to demonstrate them
+- Report vulnerabilities promptly
+- Do not access or modify other users' data
+
+Thank you for helping keep our users safe!

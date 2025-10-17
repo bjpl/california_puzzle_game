@@ -4,6 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/california-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Security: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline';
+                   style-src 'self' 'unsafe-inline';
+                   img-src 'self' data: https:;
+                   connect-src 'self' https://pfwberdnxkuvuupjmauq.supabase.co https://*.supabase.co;
+                   font-src 'self' data:;
+                   object-src 'none';
+                   base-uri 'self';
+                   form-action 'self';">
+
     <meta name="description" content="Interactive California Counties Puzzle Game - Learn California geography through an engaging drag-and-drop puzzle game with D3.js visualizations." />
     <meta name="keywords" content="California, counties, puzzle, geography, education, game, D3.js, interactive, learning" />
     <meta name="author" content="California Puzzle Game" />
