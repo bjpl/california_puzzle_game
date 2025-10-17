@@ -1,12 +1,26 @@
-# Run tests before push (using vitest run to force single run without watch mode)
-# Note: Full test suite can be slow. Set SKIP_TESTS=1 to skip if needed:
-#   SKIP_TESTS=1 git push
+# Pre-push hook: Fast validation before pushing
+# Full test suite runs in CI - this just catches obvious breakages
+
+echo "🔍 Pre-push validation..."
+
+# 1. Type checking (fast, catches most issues)
+echo "  → Type checking..."
+npm run typecheck || {
+  echo "❌ Type check failed. Fix errors before pushing."
+  exit 1
+}
+
+# 2. Run fast unit tests only (skip slow integration/a11y tests)
+# Set SKIP_TESTS=1 to bypass: SKIP_TESTS=1 git push
 if [ -z "$SKIP_TESTS" ]; then
-  echo "Running tests... (Set SKIP_TESTS=1 to skip)"
-  npx vitest run --reporter=dot --no-coverage || exit 1
+  echo "  → Running fast unit tests (30s timeout)..."
+  timeout 30 npx vitest run --reporter=dot --no-coverage tests/unit 2>/dev/null || {
+    echo "⚠️  Fast tests failed or timed out. Full suite runs in CI."
+    echo "   Tip: Use 'SKIP_TESTS=1 git push' to bypass"
+    exit 1
+  }
 else
-  echo "⚠️  Tests skipped (SKIP_TESTS=1)"
+  echo "  ⚠️  Tests skipped (SKIP_TESTS=1 set)"
 fi
 
-# Run type checking (non-blocking - logs warning only)
-npm run typecheck || echo "⚠️  Warning: Type checking failed. Please fix before merging to main."
+echo "✅ Pre-push validation passed!"
