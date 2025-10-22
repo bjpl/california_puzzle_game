@@ -526,7 +526,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
               width={800}
               height={600}
               counties={availableCounties}
-              placedCounties={new Set(placedCounties.map((c) => c.id))}
+              placedCounties={new Set(_placedCounties.map((c: CountyPiece) => c.id))}
               onCountyDrop={handleCountyDrop}
               showHints={true}
               difficulty={containerState.currentDifficulty}

@@ -35,7 +35,7 @@ const DraggableCounty = memo(
 
     // Use centralized color configuration
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const regionColor = getRegionColor(county.region);
+    const _regionColor = getRegionColor(county.region);
 
     // Memoize click handler
     const handleClick = useCallback(

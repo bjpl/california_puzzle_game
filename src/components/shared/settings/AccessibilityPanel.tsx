@@ -22,12 +22,11 @@ export const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({ onClose 
   const {
     enabled: highContrastEnabled,
     toggleHighContrast,
-    getContrastRatio,
+    getContrastRatio: _getContrastRatio,
   } = useHighContrast();
 
-  const [touchTargetSize, setTouchTargetSizeState] = useState<TouchTargetSize>(
-    getTouchTargetSize()
-  );
+  const [touchTargetSize, setTouchTargetSizeState] =
+    useState<TouchTargetSize>(getTouchTargetSize());
 
   const [voiceControlEnabled, setVoiceControlEnabled] = useState(false);
   const [screenReaderAnnouncements, setScreenReaderAnnouncements] = useState(true);
@@ -41,7 +40,7 @@ export const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({ onClose 
     () => {}, // Hint
     () => {}, // Undo
     () => {}, // Settings
-    () => {}  // Help
+    () => {} // Help
   );
 
   const voiceControl = useVoiceControl(voiceCommands, {
@@ -76,7 +75,7 @@ export const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({ onClose 
 
   const testContrast = () => {
     const results = testColorCompliance();
-    const allPass = Object.values(results).every(r => r.passes);
+    const allPass = Object.values(results).every((r) => r.passes);
     announceToScreenReader(
       allPass
         ? 'All colors pass WCAG AAA contrast requirements'
@@ -91,9 +90,7 @@ export const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({ onClose 
       aria-label="Accessibility Settings"
     >
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">
-          Accessibility Settings
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-900">Accessibility Settings</h2>
         {onClose && (
           <button
             onClick={onClose}
@@ -130,7 +127,8 @@ export const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({ onClose 
                 Enable High Contrast Theme
               </label>
               <p className="text-sm text-gray-600 mt-1">
-                7:1 contrast ratio for WCAG AAA compliance. Removes decorative elements and increases border thickness.
+                7:1 contrast ratio for WCAG AAA compliance. Removes decorative elements and
+                increases border thickness.
               </p>
             </div>
             <button
@@ -249,9 +247,7 @@ export const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({ onClose 
 
             {voiceControl.isListening && (
               <div className="p-4 bg-green-50 border-l-4 border-green-400 rounded" role="status">
-                <p className="text-sm text-green-800 font-medium">
-                  Voice control is listening...
-                </p>
+                <p className="text-sm text-green-800 font-medium">Voice control is listening...</p>
               </div>
             )}
 
@@ -263,9 +259,7 @@ export const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({ onClose 
 
             {voiceControlEnabled && (
               <details className="p-4 bg-gray-50 rounded-lg">
-                <summary className="cursor-pointer font-medium">
-                  Available Voice Commands
-                </summary>
+                <summary className="cursor-pointer font-medium">Available Voice Commands</summary>
                 <ul className="mt-3 space-y-2 text-sm">
                   {voiceCommands.map((cmd, index) => (
                     <li key={index} className="flex justify-between">
@@ -374,11 +368,11 @@ export const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({ onClose 
                 />
               </svg>
               <div className="ml-3">
-                <h4 className="text-sm font-medium text-green-800">
-                  AAA Compliance Achieved
-                </h4>
+                <h4 className="text-sm font-medium text-green-800">AAA Compliance Achieved</h4>
                 <p className="mt-1 text-sm text-green-700">
-                  This game meets WCAG 2.1 Level AAA accessibility standards with high contrast mode, adjustable touch targets, voice control, and comprehensive keyboard navigation.
+                  This game meets WCAG 2.1 Level AAA accessibility standards with high contrast
+                  mode, adjustable touch targets, voice control, and comprehensive keyboard
+                  navigation.
                 </p>
                 <a
                   href="/docs/ACCESSIBILITY_REPORT.md"

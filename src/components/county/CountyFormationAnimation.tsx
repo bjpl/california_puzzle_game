@@ -116,8 +116,7 @@ export default function CountyFormationAnimation() {
   };
 
   // Helper function for future use - retrieves county path data
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getCountyPath = (countyId: string) => {
+  const _getCountyPath = (countyId: string) => {
     return realCaliforniaCountyShapes.find(
       (c) =>
         c.id === countyId ||

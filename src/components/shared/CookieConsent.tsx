@@ -33,6 +33,7 @@ export function CookieConsent() {
    */
   useEffect(() => {
     try {
+      // eslint-disable-next-line no-restricted-globals
       const consent = localStorage.getItem('cookie_consent');
       if (!consent) {
         // Show banner if no consent decision has been made
@@ -81,7 +82,9 @@ export function CookieConsent() {
   const savePreferences = (prefs: ConsentPreferences) => {
     try {
       // Save to localStorage
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('cookie_consent', 'given');
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('consent_preferences', JSON.stringify(prefs));
 
       // Apply preferences
@@ -102,7 +105,7 @@ export function CookieConsent() {
    * Toggle preference
    */
   const togglePreference = (key: keyof ConsentPreferences) => {
-    setPreferences(prev => ({
+    setPreferences((prev) => ({
       ...prev,
       [key]: !prev[key],
     }));
@@ -128,12 +131,18 @@ export function CookieConsent() {
 
             {/* Message */}
             <div className="flex-1">
-              <h2 id="cookie-consent-title" className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+              <h2
+                id="cookie-consent-title"
+                className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1"
+              >
                 We value your privacy
               </h2>
-              <p id="cookie-consent-description" className="text-sm text-gray-600 dark:text-gray-400">
-                We use cookies and similar technologies to improve your experience, analyze usage, and fix errors.
-                No personal data is collected. Learn more in our{' '}
+              <p
+                id="cookie-consent-description"
+                className="text-sm text-gray-600 dark:text-gray-400"
+              >
+                We use cookies and similar technologies to improve your experience, analyze usage,
+                and fix errors. No personal data is collected. Learn more in our{' '}
                 <a
                   href="/privacy-policy"
                   className="text-blue-600 dark:text-blue-400 hover:underline"
@@ -197,12 +206,10 @@ export function CookieConsent() {
                   className="mt-1 w-5 h-5 text-blue-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
                 <div className="flex-1">
-                  <div className="font-medium text-gray-900 dark:text-gray-100">
-                    Analytics
-                  </div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100">Analytics</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Help us understand how you use the game to improve your experience.
-                    We use privacy-friendly analytics that don't track personal data.
+                    Help us understand how you use the game to improve your experience. We use
+                    privacy-friendly analytics that don't track personal data.
                   </div>
                 </div>
               </label>
@@ -220,8 +227,8 @@ export function CookieConsent() {
                     Error Reporting
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Automatically report technical errors to help us fix bugs faster.
-                    No personal information is collected.
+                    Automatically report technical errors to help us fix bugs faster. No personal
+                    information is collected.
                   </div>
                 </div>
               </label>
