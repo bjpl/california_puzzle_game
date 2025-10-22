@@ -263,7 +263,7 @@
     fill: rgba(254, 254, 254, 0.95);
     stroke: rgba(209, 213, 219, 0.8);
     stroke-width: 0.5;
-    rx: 3;
+    /* SVG rx attribute should be set in JSX, not CSS */
   }
 
   /* Progress Indicators - like grade trackers */
@@ -530,8 +530,7 @@
     fill: rgba(255, 255, 255, 0.95);
     stroke: #8c8c8c;
     stroke-width: 0.5;
-    rx: 3;
-    ry: 3;
+    /* SVG rx/ry attributes should be set in JSX, not CSS */
   }
 
   .county-label {
