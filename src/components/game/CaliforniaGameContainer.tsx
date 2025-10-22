@@ -12,6 +12,7 @@ import {
   GameMode,
   PlacementResult,
   Achievement,
+  HintType,
 } from '@/types';
 import { useGameStore } from '@/stores/gameStore';
 import { getCountiesByRegion } from '@/utils/californiaData';
@@ -112,7 +113,6 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
         updateTimer(100); // Update every 100ms for smooth timer
       }, 100);
     }
-     
   }, [
     containerState.currentRegion,
     containerState.currentDifficulty,
@@ -200,7 +200,6 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
       ...prev,
       gameStarted: false,
     }));
-     
   }, [endGame, _score, _stats, onGameComplete]);
 
   // Handle region change
@@ -220,7 +219,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
         gameStarted: false,
       }));
     },
-     
+
     [_isGameActive, resetGame]
   );
 
@@ -242,7 +241,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
 
       updateSettings({ difficulty });
     },
-     
+
     [_isGameActive, resetGame, updateSettings]
   );
 
@@ -250,7 +249,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
   const handleUseHint = useCallback(() => {
     if (remainingCounties.length > 0) {
       const nextCounty = remainingCounties[0];
-      requestHint('visual', nextCounty.id);
+      requestHint(HintType.LOCATION, nextCounty.id);
     }
   }, [remainingCounties, requestHint]);
 
@@ -465,7 +464,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
             <RegionSelector
               selectedRegion={containerState.currentRegion}
               onRegionChange={handleRegionChange}
-              disabled={isGameActive}
+              disabled={containerState.gameStarted}
             />
           )}
 
@@ -527,9 +526,9 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
               width={800}
               height={600}
               counties={availableCounties}
-              placedCounties={placedCounties}
+              placedCounties={new Set(placedCounties.map((c) => c.id))}
               onCountyDrop={handleCountyDrop}
-              showHints={settings.showHints}
+              showHints={true}
               difficulty={containerState.currentDifficulty}
             />
           ) : (

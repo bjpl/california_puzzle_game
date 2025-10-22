@@ -85,7 +85,7 @@ export default function GameContainer() {
     const county = counties.find((c) => c.id === countyId);
     if (county && !placedCounties.has(countyId)) {
       selectCounty(county);
-      setActiveCounty(county);
+      setActiveCounty(county as unknown as Record<string, unknown>);
       setIsDragging(true);
       // Sound now plays on click in CountyPill component
     }
