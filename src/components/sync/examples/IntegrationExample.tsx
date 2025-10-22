@@ -99,7 +99,7 @@ export const MobileHeaderWithSync: React.FC = () => {
  * PATTERN: Custom UI using useSyncStatus hook
  */
 export const SettingsPanelWithSync: React.FC = () => {
-  const { status, queueSize, isOnline, isSyncing, lastError, syncAll, clearError } =
+  const { _status, queueSize, isOnline, isSyncing, lastError, syncAll, clearError } =
     useSyncStatus();
 
   return (

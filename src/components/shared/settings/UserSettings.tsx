@@ -22,7 +22,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
-import { supabase } from '../../../lib/supabase';
+import { _supabase } from '../../../lib/supabase';
 import { deleteUserAccount, exportUserData } from '../../../services/supabase/auth';
 import { announceToScreenReader } from '../../../utils/accessibility';
 
@@ -100,7 +100,7 @@ export const UserSettings: React.FC<UserSettingsProps> = ({ onClose }) => {
       if (result.success && result.data) {
         // Create downloadable JSON file
         const blob = new Blob([JSON.stringify(result.data, null, 2)], {
-          type: 'application/json'
+          type: 'application/json',
         });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -151,7 +151,9 @@ export const UserSettings: React.FC<UserSettingsProps> = ({ onClose }) => {
    */
   const proceedToFinalConfirmation = () => {
     setShowFinalConfirmation(true);
-    announceToScreenReader('Final confirmation step. Please type DELETE to confirm account deletion.');
+    announceToScreenReader(
+      'Final confirmation step. Please type DELETE to confirm account deletion.'
+    );
   };
 
   if (!isAuthenticated) {
@@ -169,9 +171,7 @@ export const UserSettings: React.FC<UserSettingsProps> = ({ onClose }) => {
       aria-label="User Account Settings"
     >
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">
-          Account Settings
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-900">Account Settings</h2>
         {onClose && (
           <button
             onClick={onClose}
@@ -213,7 +213,9 @@ export const UserSettings: React.FC<UserSettingsProps> = ({ onClose }) => {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Created:</span>
-              <span>{user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}</span>
+              <span>
+                {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}
+              </span>
             </div>
           </div>
         </section>
@@ -225,8 +227,8 @@ export const UserSettings: React.FC<UserSettingsProps> = ({ onClose }) => {
           </h3>
           <div className="p-4 bg-gray-50 rounded-lg">
             <p className="text-sm text-gray-600 mb-4">
-              Download a copy of all your game data including sessions, progress, and settings.
-              This complies with GDPR data portability requirements.
+              Download a copy of all your game data including sessions, progress, and settings. This
+              complies with GDPR data portability requirements.
             </p>
             <button
               onClick={handleExportData}
@@ -250,9 +252,7 @@ export const UserSettings: React.FC<UserSettingsProps> = ({ onClose }) => {
             Danger Zone
           </h3>
           <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg">
-            <h4 className="font-semibold text-red-900 mb-2">
-              Delete Account
-            </h4>
+            <h4 className="font-semibold text-red-900 mb-2">Delete Account</h4>
             <p className="text-sm text-red-800 mb-4">
               Permanently delete your account and all associated data. This action cannot be undone.
               All game progress, settings, and session data will be permanently removed.
@@ -306,9 +306,7 @@ export const UserSettings: React.FC<UserSettingsProps> = ({ onClose }) => {
                 </div>
 
                 <div className="mb-6">
-                  <p className="text-sm text-gray-600 mb-3">
-                    This action will permanently delete:
-                  </p>
+                  <p className="text-sm text-gray-600 mb-3">This action will permanently delete:</p>
                   <ul className="list-disc list-inside text-sm text-gray-600 space-y-1 ml-2">
                     <li>All game progress and achievements</li>
                     <li>Game settings and preferences</li>
@@ -343,11 +341,10 @@ export const UserSettings: React.FC<UserSettingsProps> = ({ onClose }) => {
               // Final Confirmation Step
               <>
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Final Confirmation
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Final Confirmation</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    To confirm account deletion, please type <strong>DELETE</strong> (in capital letters) in the field below:
+                    To confirm account deletion, please type <strong>DELETE</strong> (in capital
+                    letters) in the field below:
                   </p>
                   <input
                     type="text"
@@ -369,13 +366,19 @@ export const UserSettings: React.FC<UserSettingsProps> = ({ onClose }) => {
                 </div>
 
                 {deleteError && (
-                  <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-400 rounded" role="alert">
+                  <div
+                    className="mb-4 p-3 bg-red-50 border-l-4 border-red-400 rounded"
+                    role="alert"
+                  >
                     <p className="text-sm text-red-800">{deleteError}</p>
                   </div>
                 )}
 
                 {isDeleting && (
-                  <div className="mb-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded" role="status">
+                  <div
+                    className="mb-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded"
+                    role="status"
+                  >
                     <p className="text-sm text-blue-800 font-medium">
                       Deleting your account... Please wait.
                     </p>
