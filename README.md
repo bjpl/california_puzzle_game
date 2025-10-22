@@ -1,5 +1,7 @@
 # California Counties Puzzle Game
 
+<!-- Deployment trigger: 2025-10-22 -->
+
 ![CI/CD Pipeline](https://github.com/bjpl/california_puzzle_game/workflows/CI%2FCD%20Pipeline/badge.svg)
 ![GitHub Pages](https://github.com/bjpl/california_puzzle_game/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)
 ![Dependency Check](https://github.com/bjpl/california_puzzle_game/workflows/Dependency%20Check/badge.svg)
