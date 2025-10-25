@@ -372,6 +372,41 @@
     display: none;
   }
 
+  /* County tray optimized scrollbar for mobile and desktop */
+  .county-tray-scroll {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  }
+
+  .county-tray-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .county-tray-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .county-tray-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+  }
+
+  .county-tray-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(107, 114, 128, 0.7);
+  }
+
+  /* For dark mode */
+  .dark .county-tray-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(75, 85, 99, 0.5);
+  }
+
+  .dark .county-tray-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(75, 85, 99, 0.7);
+  }
+
   /* Screen reader only utility */
   .sr-only {
     position: absolute;
