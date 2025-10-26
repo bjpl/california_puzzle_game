@@ -181,7 +181,9 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
 
   // Get outline styling based on county state and difficulty
   const getOutlineColor = (county: County): string => {
-    const isPlaced = placedCounties.some((p) => p.id === county.id);
+    const isPlaced = Array.isArray(placedCounties)
+      ? placedCounties.some((p: CountyPiece) => p.id === county.id)
+      : placedCounties.has(county.id);
     const isHovered = hoveredCounty === county.id;
 
     if (isPlaced) return '#4ade80'; // Green for placed
@@ -203,7 +205,9 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
   };
 
   const getOutlineWidth = (county: County): number => {
-    const isPlaced = placedCounties.some((p) => p.id === county.id);
+    const isPlaced = Array.isArray(placedCounties)
+      ? placedCounties.some((p: CountyPiece) => p.id === county.id)
+      : placedCounties.has(county.id);
     const isHovered = hoveredCounty === county.id;
 
     if (isPlaced) return 3;
@@ -224,7 +228,9 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
   };
 
   const getOutlineDashArray = (county: County): string => {
-    const isPlaced = placedCounties.some((p) => p.id === county.id);
+    const isPlaced = Array.isArray(placedCounties)
+      ? placedCounties.some((p: CountyPiece) => p.id === county.id)
+      : placedCounties.has(county.id);
 
     if (isPlaced) return 'none';
 
@@ -243,7 +249,9 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
   };
 
   const getOutlineOpacity = (county: County): number => {
-    const isPlaced = placedCounties.some((p) => p.id === county.id);
+    const isPlaced = Array.isArray(placedCounties)
+      ? placedCounties.some((p: CountyPiece) => p.id === county.id)
+      : placedCounties.has(county.id);
     const isHovered = hoveredCounty === county.id;
 
     if (isPlaced) return 1;

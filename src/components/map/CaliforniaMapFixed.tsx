@@ -77,13 +77,13 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
 
     if (geom.type === 'Polygon') {
       // Single polygon (may have holes)
-      geom.coordinates.forEach((ring, i) => {
+      geom.coordinates.forEach((ring: unknown, i: number) => {
         path += coordinatesToPath(ring, i > 0);
       });
     } else if (geom.type === 'MultiPolygon') {
       // Multiple polygons (like islands)
-      geom.coordinates.forEach((polygon) => {
-        polygon.forEach((ring, i) => {
+      geom.coordinates.forEach((polygon: unknown) => {
+        (polygon as unknown[]).forEach((ring: unknown, i: number) => {
           path += coordinatesToPath(ring, i > 0);
         });
       });
