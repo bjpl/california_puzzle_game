@@ -130,8 +130,8 @@ export const VirtualCountyList: React.FC<VirtualCountyListProps> = memo(
     placedCounties,
     currentCounty,
     onCountySelect,
-    height = 520,
-    itemSize = 40,
+    height: _height = 520, // Prefixed with _ since not used without react-window
+    itemSize: _itemSize = 40, // Prefixed with _ since not used without react-window
     groupByRegion = true,
   }) => {
     // Group counties by region if requested

@@ -125,7 +125,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
   const sortedCounties = [...filteredCounties].sort((a, b) => a.name.localeCompare(b.name));
 
   // Helper function to merge county data from multiple sources
-  const getMergedCountyData = (county: Record<string, unknown>) => {
+  const getMergedCountyData = (county: County) => {
     // Try to find matching data from californiaCounties.ts by name matching
     const normalizedId = county.id.toLowerCase().replace(/-/g, '_');
     const comprehensiveData = californiaCounties.find((c) => {

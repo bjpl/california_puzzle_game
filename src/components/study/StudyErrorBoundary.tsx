@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { ErrorBoundary } from '../shared/ErrorBoundary';
 import { studyLogger } from '@/utils/logger';
 

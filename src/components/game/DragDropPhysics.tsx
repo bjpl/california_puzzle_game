@@ -50,15 +50,15 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
   const springY = useSpring(y, { damping, stiffness });
 
   // Transform values for visual effects
-  const scale = useTransform([x, y], ([latestX, latestY]) => {
+  const scale = useTransform([x, y], ([latestX, latestY]: number[]) => {
     if (!isDragging) return 1;
-    const distance = Math.sqrt(latestX * latestX + latestY * latestY);
+    const distance = Math.sqrt((latestX as number) * (latestX as number) + (latestY as number) * (latestY as number));
     return Math.max(0.95, 1 - distance * 0.0001);
   });
 
-  const rotate = useTransform([x, y], ([latestX, _latestY]) => {
+  const rotate = useTransform([x, y], ([latestX, _latestY]: number[]) => {
     if (!isDragging) return 0;
-    return latestX * 0.1;
+    return (latestX as number) * 0.1;
   });
 
   const opacity = useTransform(scale, [0.95, 1], [0.8, 1]);
