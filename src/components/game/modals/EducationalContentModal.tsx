@@ -1,13 +1,62 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import CountyShapeDisplay from '../../county/CountyShapeDisplay';
+import { County } from '@/types';
+
+interface EducationalContent {
+  overview?: string;
+  uniqueFeatures?: string;
+  historicalContext?: string;
+  economicImportance?: string;
+  culturalHeritage?: string;
+  geographicalSignificance?: string;
+  specificData?: {
+    historicalEvents?: Array<{ year: number; event: string }>;
+    industries?: string[];
+    majorAttractions?: string[];
+    climate?: string;
+    elevation?: string;
+  };
+  history?: {
+    founding?: string;
+    keyEvents?: string[];
+    historicalFigures?: string[];
+    historicalEvents?: Array<{ year: number; event: string }>;
+  };
+  economy?: {
+    industries?: string[];
+    majorEmployers?: string[];
+    economicFacts?: string[];
+  };
+  culture?: {
+    landmarks?: string[];
+    festivals?: string[];
+    cuisine?: string[];
+  };
+  geography?: {
+    area?: string;
+    terrain?: string;
+    climate?: string;
+    features?: string[];
+  };
+}
+
+interface MemoryAid {
+  mnemonic?: string;
+  visualCue?: string;
+  visualCues?: string[];
+  associations?: string[];
+  locationMnemonic?: string;
+  shapeMnemonic?: string;
+  rhymes?: string[];
+}
 
 interface EducationalContentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  county: Record<string, unknown>;
-  educationContent: Record<string, unknown>;
-  memoryAid?: Record<string, unknown>;
+  county: County;
+  educationContent: EducationalContent;
+  memoryAid?: MemoryAid;
 }
 
 export default function EducationalContentModal({
@@ -246,14 +295,14 @@ export default function EducationalContentModal({
                   </h4>
                   <div className="space-y-3">
                     {educationContent.specificData.historicalEvents.map(
-                      (event: string, idx: number) => (
+                      (event: { year: number; event: string }, idx: number) => (
                         <div key={idx} className="flex gap-3">
                           <div className="flex-shrink-0 w-8 h-8 bg-yellow-200 dark:bg-yellow-800/50 rounded-full flex items-center justify-center">
                             <span className="text-yellow-800 dark:text-yellow-200 font-bold text-sm">
-                              {idx + 1}
+                              {event.year}
                             </span>
                           </div>
-                          <p className="text-yellow-800 dark:text-yellow-200">{event}</p>
+                          <p className="text-yellow-800 dark:text-yellow-200">{event.event}</p>
                         </div>
                       )
                     )}

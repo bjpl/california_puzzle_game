@@ -18,6 +18,8 @@ export interface County {
   funFacts?: string[];
   naturalFeatures?: string[];
   economicFocus?: string[];
+  culturalLandmarks?: string[];
+  knownFor?: string;
 }
 
 export interface CountyPiece extends County {
