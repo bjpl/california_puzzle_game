@@ -147,7 +147,7 @@ function CountyDropZone({
     }
 
     // If we have predefined centroid data in game context, use it
-    if (countyData?.centroid) {
+    if (countyData?.centroid && Array.isArray(countyData.centroid)) {
       return project([countyData.centroid[0], countyData.centroid[1]]);
     }
 
