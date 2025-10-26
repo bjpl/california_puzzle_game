@@ -211,15 +211,15 @@ export default function GameContainer() {
           onDragEnd={handleDragEnd}
           collisionDetection={closestCenter}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
-            {/* County Tray */}
-            <div className="lg:col-span-1">
+          <div className="flex flex-col lg:grid lg:grid-cols-4 gap-3 lg:gap-4 mt-2">
+            {/* County Tray - More compact on mobile */}
+            <div className="lg:col-span-1 order-2 lg:order-1">
               <CountyTray />
             </div>
 
-            {/* Map - Using simplified version for better rendering */}
-            <div className="lg:col-span-3">
-              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg shadow-lg p-4 border border-gray-100 dark:border-gray-800 h-[60vh] lg:h-[520px]">
+            {/* Map - Larger on mobile for better gameplay */}
+            <div className="lg:col-span-3 order-1 lg:order-2">
+              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg shadow-lg p-3 lg:p-4 border border-gray-100 dark:border-gray-800 h-[55vh] lg:h-[520px]">
                 <MapErrorBoundary>
                   <CaliforniaMapSimple isDragging={isDragging} />
                 </MapErrorBoundary>
