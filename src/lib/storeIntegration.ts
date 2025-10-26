@@ -225,7 +225,7 @@ class StoreIntegrationManager {
     // Listen to progress changes
     const unsubscribeProgress = useStudyStore.subscribe(
       (state) => state.progress,
-      (progress, previousProgress) => {
+      (progress: unknown, previousProgress: unknown) => {
         if (!this.initialized) return;
 
         // Only log for now - study progress sync will be implemented in Phase 3

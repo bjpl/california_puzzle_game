@@ -120,8 +120,8 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
     if (geom.type === 'Polygon') {
       processCoords(geom.coordinates[0]);
     } else if (geom.type === 'MultiPolygon') {
-      geom.coordinates.forEach((polygon) => {
-        processCoords(polygon[0]);
+      geom.coordinates.forEach((polygon: unknown) => {
+        processCoords((polygon as unknown[])[0]);
       });
     }
 

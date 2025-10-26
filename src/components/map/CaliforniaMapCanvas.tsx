@@ -382,7 +382,9 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
 
     // Draw drop zone circles
     dropZones.forEach((zone) => {
-      const isPlaced = placedCounties.some((p) => p.id === zone.targetCounty.id);
+      const isPlaced = Array.isArray(placedCounties)
+        ? placedCounties.some((p: CountyPiece) => p.id === zone.targetCounty.id)
+        : placedCounties.has(zone.targetCounty.id);
       if (isPlaced) return;
 
       mapGroup
