@@ -281,8 +281,10 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     mapGroup.selectAll('.placed-county').remove();
     mapGroup.selectAll('.placed-county-label').remove();
 
-    // Draw placed counties
-    placedCounties.forEach((county) => {
+    // Draw placed counties (only works with CountyPiece[], not Set<string>)
+    if (!Array.isArray(placedCounties)) return;
+
+    placedCounties.forEach((county: CountyPiece) => {
       if (!county.geometry) return;
 
       const fillColor = getPlacedCountyFill(county);
@@ -507,7 +509,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
             fontFamily: 'monospace',
           }}
         >
-          Counties: {counties.length} | Placed: {placedCounties.length} | Zones: {dropZones.length}{' '}
+          Counties: {counties.length} | Placed: {Array.isArray(placedCounties) ? placedCounties.length : placedCounties.size} | Zones: {dropZones.length}{' '}
           | Difficulty: {difficulty}
         </div>
       )}
