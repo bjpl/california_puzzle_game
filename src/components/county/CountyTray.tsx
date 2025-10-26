@@ -124,7 +124,7 @@ const CountyTray = memo(() => {
         Counties ({counties.length})
       </Heading>
       <div
-        className="flex-1 overflow-y-auto overflow-x-hidden pr-1 space-y-1 county-tray-scroll"
+        className="flex-1 overflow-x-hidden pr-1 space-y-1 county-tray-scroll"
       >
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
           <div key={region} className="mb-2">
