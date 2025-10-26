@@ -169,18 +169,15 @@ export const VirtualCountyList: React.FC<VirtualCountyListProps> = memo(
     );
 
     return (
-      <div className="h-full">
-        <List
-          height={height}
-          itemCount={organizedCounties.length}
-          itemSize={itemSize}
-          width="100%"
-          itemData={listData}
-          overscanCount={5} // Render a few extra items outside viewport
-          className="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
-        >
-          {CountyRow}
-        </List>
+      <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+        {organizedCounties.map((county) => (
+          <CountyRow
+            key={county.id}
+            index={organizedCounties.indexOf(county)}
+            style={{}} // Style applied by component
+            data={listData}
+          />
+        ))}
       </div>
     );
   }

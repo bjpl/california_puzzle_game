@@ -192,11 +192,12 @@ const HighlightArea: React.FC<HighlightAreaProps> = ({ center, radius, opacity, 
   );
 };
 
-interface HeatMapIndicatorProps {
+// HeatMapIndicator props and component (available for future use)
+/* interface HeatMapIndicatorProps {
   positions: Position[];
   intensity: number;
   hintType: HintType;
-}
+} */
 
 // HeatMapIndicator component (available for future use)
 /* const HeatMapIndicator: React.FC<HeatMapIndicatorProps> = ({ positions, intensity, hintType }) => {

@@ -98,3 +98,6 @@ export const CaliforniaButton = forwardRef<HTMLButtonElement, CaliforniaButtonPr
 );
 
 CaliforniaButton.displayName = 'CaliforniaButton';
+
+// Default export for backward compatibility
+export default CaliforniaButton;

@@ -13,7 +13,7 @@ import { GameModeSelector } from './GameModeSelector';
 import { DifficultySystem, useDifficultySettings } from '../game/DifficultySystem';
 import { ProgressionSystem } from '../game/ProgressionSystem';
 import StudyMode from '../study/StudyMode';
-import CaliforniaButton from '../ui/CaliforniaButton';
+import { CaliforniaButton } from '../ui/CaliforniaButton';
 import CountyTray from '../county/CountyTray';
 import CaliforniaMapFixed from '../map/CaliforniaMapFixed';
 import GameHeader from './GameHeader';
@@ -388,3 +388,6 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
       return null;
   }
 };
+
+// Default export for backward compatibility
+export default EnhancedGameContainer;

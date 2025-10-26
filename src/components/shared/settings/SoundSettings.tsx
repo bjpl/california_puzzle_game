@@ -1,7 +1,7 @@
 import React from 'react';
 import { Volume2, VolumeX, Music, Gamepad2, Trophy, MousePointer } from 'lucide-react';
-import { useGame } from '../../../context/GameContext';
-import CaliforniaButton from '../../ui/CaliforniaButton';
+import { useGameStore } from '../../../stores/gameStore';
+import { CaliforniaButton } from '../../ui/CaliforniaButton';
 
 interface SoundSettingsProps {
   className?: string;

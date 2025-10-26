@@ -17,7 +17,7 @@ export { default as CaliforniaGameContainer } from './game/CaliforniaGameContain
 export { default as CaliforniaGameWithHints } from './game/CaliforniaGameWithHints';
 export { DifficultySystem, useDifficultySettings } from './game/DifficultySystem';
 export { default as DragDropPhysics } from './game/DragDropPhysics';
-export { default as EnhancedGameContainer } from './game/EnhancedGameContainer';
+export { EnhancedGameContainer } from './game/EnhancedGameContainer'; // Named export, not default
 export { default as GameComplete } from './game/GameComplete';
 export { default as GameContainer } from './game/GameContainer';
 export { default as GameHeader } from './game/GameHeader';

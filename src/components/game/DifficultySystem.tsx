@@ -36,7 +36,7 @@ export const DifficultySystem: React.FC<DifficultySystemProps> = ({
 
   // Calculate adaptive difficulty adjustments
   const adaptiveDifficulty = useMemo((): AdaptiveDifficultyState => {
-    const { timeElapsed, mistakes, streak, placedCounties, totalCounties } = gameState;
+    const { timeElapsed, mistakes, streak, placedCounties } = gameState;
 
     // Calculate performance metrics
     // const progressRatio = totalCounties > 0 ? placedCounties / totalCounties : 0;

@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import {
   County,
   CountyPiece,
-  Position,
+  // Position, // Commented out with findDropZone
   CaliforniaMapCanvasProps,
   DifficultyLevel,
   DropZone,
