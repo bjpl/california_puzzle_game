@@ -219,7 +219,7 @@ export default function GameContainer() {
 
             {/* Map - Using simplified version for better rendering */}
             <div className="lg:col-span-3">
-              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 border border-gray-100 dark:border-gray-800 h-[60vh] lg:h-[520px]">
+              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg shadow-lg p-4 border border-gray-100 dark:border-gray-800 h-[60vh] lg:h-[520px]">
                 <MapErrorBoundary>
                   <CaliforniaMapSimple isDragging={isDragging} />
                 </MapErrorBoundary>
