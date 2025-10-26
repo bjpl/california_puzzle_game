@@ -29,13 +29,15 @@ export type { TouchCountyDragProps } from './components/TouchCountyDrag';
 
 // Touch Feedback Components
 export { TouchFeedback, useTouchFeedback } from './components/TouchFeedback';
-export type { TouchFeedbackProps, RippleOptions } from './components/TouchFeedback';
+export type { TouchFeedbackProps } from './components/TouchFeedback';
+// Note: RippleOptions interface not exported from TouchFeedback
 
 export { DragPreview, useDragPreview } from './components/DragPreview';
 export type { DragPreviewProps, DragPreviewState } from './components/DragPreview';
 
 export { SnapGuides, useSnapGuides } from './components/SnapGuides';
-export type { SnapGuidesProps, SnapTarget, SnapState } from './components/SnapGuides';
+export type { SnapGuidesProps } from './components/SnapGuides';
+// Note: SnapTarget and SnapState interfaces not exported from SnapGuides
 
 // Tutorial Component
 export { GestureTutorial, TutorialStep } from './components/GestureTutorial';

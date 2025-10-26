@@ -1,6 +1,6 @@
 import { useEffect, useState, memo } from 'react';
 import { geographicHints, getCountyCharacteristics } from '../../../data/californiaGeographicHints';
-import { County } from '../../../data/californiaCounties';
+import { County } from '@/types';
 
 interface HintModalProps {
   isOpen: boolean;
