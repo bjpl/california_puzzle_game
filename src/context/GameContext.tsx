@@ -4,7 +4,7 @@ import {
   allCaliforniaCounties,
   County as _CompleteCounty,
 } from '../data/californiaCountiesComplete';
-import { useTimer, TimerState } from '../hooks/useTimer';
+import { useTimer, TimerStats } from '../hooks/useTimer';
 import {
   calculateScore,
   calculateGameMetrics,
