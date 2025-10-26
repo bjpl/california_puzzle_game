@@ -204,7 +204,7 @@ function CountyDropZone({
   const [labelX, labelY] = getLabelPosition();
 
   // Store label position for the parent component if this county is placed
-  React.useEffect(() => {
+  useEffect(() => {
     if (isPlaced && onLabelPosition) {
       onLabelPosition(countyId, [labelX, labelY]);
     }
