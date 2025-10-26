@@ -45,9 +45,9 @@ class SoundManager {
   private audioContext: AudioContext | null = null;
   private soundCache: Map<SoundType, HTMLAudioElement> = new Map();
   private volumeSettings: VolumeSettings = {
-    master: 0.7,
-    effects: 0.8,
-    music: 0.5,
+    master: 0.35,
+    effects: 0.4,
+    music: 0.25,
     muted: false,
   };
   private isInitialized = false;
@@ -57,7 +57,7 @@ class SoundManager {
   private readonly soundConfigs: Record<SoundType, SoundConfig> = {
     [SoundType.PICKUP]: {
       type: SoundType.PICKUP,
-      volume: 0.6,
+      volume: 0.3,
       loop: false,
       placeholder: {
         frequency: 440,
@@ -67,7 +67,7 @@ class SoundManager {
     },
     [SoundType.CORRECT]: {
       type: SoundType.CORRECT,
-      volume: 0.8,
+      volume: 0.4,
       loop: false,
       placeholder: {
         frequency: 660,
@@ -77,7 +77,7 @@ class SoundManager {
     },
     [SoundType.INCORRECT]: {
       type: SoundType.INCORRECT,
-      volume: 0.7,
+      volume: 0.35,
       loop: false,
       placeholder: {
         frequency: 220,
@@ -87,7 +87,7 @@ class SoundManager {
     },
     [SoundType.WIN]: {
       type: SoundType.WIN,
-      volume: 0.9,
+      volume: 0.45,
       loop: false,
       placeholder: {
         frequency: 880,
@@ -97,7 +97,7 @@ class SoundManager {
     },
     [SoundType.CLICK]: {
       type: SoundType.CLICK,
-      volume: 0.4,
+      volume: 0.2,
       loop: false,
       placeholder: {
         frequency: 800,
@@ -107,7 +107,7 @@ class SoundManager {
     },
     [SoundType.HOVER]: {
       type: SoundType.HOVER,
-      volume: 0.3,
+      volume: 0.15,
       loop: false,
       placeholder: {
         frequency: 600,
@@ -117,7 +117,7 @@ class SoundManager {
     },
     [SoundType.ACHIEVEMENT]: {
       type: SoundType.ACHIEVEMENT,
-      volume: 0.8,
+      volume: 0.4,
       loop: false,
       placeholder: {
         frequency: 1320,
@@ -127,7 +127,7 @@ class SoundManager {
     },
     [SoundType.BACKGROUND_MUSIC]: {
       type: SoundType.BACKGROUND_MUSIC,
-      volume: 0.3,
+      volume: 0.15,
       loop: true,
       fadeDuration: 2000,
       placeholder: {

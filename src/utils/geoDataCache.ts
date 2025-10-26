@@ -3,6 +3,8 @@
  * Handles loading, caching, and optimization of geographical data
  */
 
+import { logger } from './logger';
+
 export interface CachedGeoData {
   geoData: {
     type: 'FeatureCollection';
