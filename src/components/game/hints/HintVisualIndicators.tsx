@@ -233,7 +233,7 @@ interface HeatMapIndicatorProps {
       ))}
     </div>
   );
-};
+}; */
 
 interface ShapeOutlineProps {
   county: County;
