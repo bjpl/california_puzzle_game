@@ -1482,7 +1482,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Map Display Area - Responsive height with mobile support */}
-                <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 h-[500px] sm:h-[600px] lg:h-[calc(100vh-240px)]">
+                <div className="lg:col-span-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-lg p-3 h-[500px] sm:h-[600px] lg:h-[calc(100vh-240px)]">
                   <StudyModeMap
                     onCountySelect={(countyId) => {
                       const county = counties.find(

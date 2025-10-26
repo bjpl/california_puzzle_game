@@ -171,8 +171,8 @@ export default function StudyModeMap({
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          {/* Clean white background for study mode */}
-          <rect width="800" height="900" fill="#FFFFFF" />
+          {/* Transparent background - inherits from parent container */}
+          <rect width="800" height="900" fill="transparent" />
 
           {/* Apply zoom and pan transformation */}
           <g
