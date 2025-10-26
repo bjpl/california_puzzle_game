@@ -2,11 +2,11 @@
 // Displays comprehensive game analytics and progress visualization
 
 import React, { useState, useMemo as _useMemo } from 'react';
-import { useProgress, useDailyProgress } from '../hooks/useProgress';
-import { useAchievements } from '../hooks/useAchievements';
-import { storageManager } from '../../utils/storage';
-import { CaliforniaRegion, DifficultyLevel } from '../types';
-import { AchievementRarity } from '../../utils/achievements';
+import { useProgress, useDailyProgress } from '../../../hooks/useProgress';
+import { useAchievements } from '../../../hooks/useAchievements';
+import { storageManager } from '../../../utils/storage';
+import { CaliforniaRegion, DifficultyLevel } from '../../../types';
+import { AchievementRarity } from '../../../utils/achievements';
 
 interface StatisticsProps {
   className?: string;

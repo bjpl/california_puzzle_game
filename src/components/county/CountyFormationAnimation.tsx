@@ -116,14 +116,15 @@ export default function CountyFormationAnimation() {
   };
 
   // Helper function for future use - retrieves county path data
-  const _getCountyPath = (countyId: string) => {
-    return realCaliforniaCountyShapes.find(
-      (c) =>
-        c.id === countyId ||
-        c.id === countyId.replace(/_/g, '-') ||
-        c.id === countyId.replace(/-/g, '_')
-    );
-  };
+  // Commented out to remove unused variable warning
+  // const getCountyPath = (countyId: string) => {
+  //   return realCaliforniaCountyShapes.find(
+  //     (c) =>
+  //       c.id === countyId ||
+  //       c.id === countyId.replace(/_/g, '-') ||
+  //       c.id === countyId.replace(/-/g, '_')
+  //   );
+  // };
 
   const getCountyEducation = (countyId: string) => {
     const normalizedId = countyId.replace(/-/g, '_');

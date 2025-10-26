@@ -2,7 +2,7 @@ import { memo, useMemo, useCallback } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
-import { getRegionColor } from '../../config/regionColors';
+// import { getRegionColor } from '../../config/regionColors'; // Available if needed
 import { Badge, Heading, Text, Card } from '../ui';
 import { County } from '../../types';
 
@@ -34,8 +34,7 @@ const DraggableCounty = memo(
       : undefined;
 
     // Use centralized color configuration
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _regionColor = getRegionColor(county.region);
+    // Color available if needed: getRegionColor(county.region)
 
     // Memoize click handler
     const handleClick = useCallback(

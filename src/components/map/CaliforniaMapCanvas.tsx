@@ -69,26 +69,26 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
 
     svg.call(zoom);
 
-    // Set up drag behavior for county pieces
-    const _drag = d3
-      .drag<SVGGElement, CountyPiece>()
-      .on('start', function (_event, _d) {
-        d3.select(this).raise().classed('dragging', true);
-      })
-      .on('drag', function (event, _d) {
-        const [x, y] = d3.pointer(event, svg.node());
-        d3.select(this).attr('transform', `translate(${x},${y})`);
-      })
-      .on('end', function (_event, _d) {
-        d3.select(this).classed('dragging', false);
-        const [x, y] = d3.pointer(event, svg.node());
-
-        // Check if dropped in valid zone
-        const dropZone = findDropZone({ x, y });
-        if (dropZone && dropZone.targetCounty.id === d.id) {
-          onCountyDrop(d, { x, y });
-        }
-      });
+    // Set up drag behavior for county pieces (available for future use)
+    // const drag = d3
+    //   .drag<SVGGElement, CountyPiece>()
+    //   .on('start', function (_event, _d) {
+    //     d3.select(this).raise().classed('dragging', true);
+    //   })
+    //   .on('drag', function (event, _d) {
+    //     const [x, y] = d3.pointer(event, svg.node());
+    //     d3.select(this).attr('transform', `translate(${x},${y})`);
+    //   })
+    //   .on('end', function (_event, _d) {
+    //     d3.select(this).classed('dragging', false);
+    //     const [x, y] = d3.pointer(event, svg.node());
+    //
+    //     // Check if dropped in valid zone
+    //     const dropZone = findDropZone({ x, y });
+    //     if (dropZone && dropZone.targetCounty.id === d.id) {
+    //       onCountyDrop(d, { x, y });
+    //     }
+    //   });
 
     setMapState({ projection, path, svg, zoom });
 

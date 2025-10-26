@@ -48,7 +48,7 @@ const CountyRow = memo<RowProps>(
       disabled: isPlaced,
     });
 
-    const _regionColor = getRegionColor(county.region);
+    // Region color available if needed: getRegionColor(county.region)
 
     const handleClick = useCallback(
       (e: React.MouseEvent) => {

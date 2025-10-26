@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { shouldShowReturnToGame, generateReturnToGameUrl, loadGameState } from '../../utils/gameStateManager';
+import { shouldShowReturnToGame, generateReturnToGameUrl, loadGameState } from '../../../utils/gameStateManager';
 
 interface ReturnToGameBannerProps {
   className?: string;

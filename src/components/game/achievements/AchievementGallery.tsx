@@ -4,7 +4,7 @@
 import React, { useState, useMemo } from 'react';
 import { useAchievements } from '../../../hooks/useAchievements';
 import { AchievementDefinition, AchievementRarity } from '../../../utils/achievements';
-import { AchievementCategory } from '../types';
+import { AchievementCategory } from '../../../types';
 
 interface AchievementGalleryProps {
   className?: string;

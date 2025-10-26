@@ -92,8 +92,9 @@ interface ArrowIndicatorProps {
 }
 
 const ArrowIndicator: React.FC<ArrowIndicatorProps> = ({ from, to, style, color = '#3B82F6' }) => {
-  const _distance = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
-  const _angle = Math.atan2(to.y - from.y, to.x - from.x);
+  // Distance and angle calculations available if needed for future enhancements
+  // const distance = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
+  // const angle = Math.atan2(to.y - from.y, to.x - from.x);
 
   const pathD =
     style === 'curved'
@@ -197,7 +198,8 @@ interface HeatMapIndicatorProps {
   hintType: HintType;
 }
 
-const _HeatMapIndicator: React.FC<HeatMapIndicatorProps> = ({ positions, intensity, hintType }) => {
+// HeatMapIndicator component (available for future use)
+/* const HeatMapIndicator: React.FC<HeatMapIndicatorProps> = ({ positions, intensity, hintType }) => {
   const getHeatColor = (type: HintType): string => {
     switch (type) {
       case HintType.LOCATION:

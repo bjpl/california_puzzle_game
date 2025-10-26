@@ -77,8 +77,8 @@ function CountyDropZone({
     strokeWidth = '1.5';
   }
 
-  // Calculate optimal text color based on background
-  const _textColor = getSvgTextFill(fillColor);
+  // Calculate optimal text color based on background (available if needed)
+  // const textColor = getSvgTextFill(fillColor);
 
   // Convert Web Mercator (EPSG:3857) to lat/lon (EPSG:4326)
   const webMercatorToLatLon = (x: number, y: number): [number, number] => {

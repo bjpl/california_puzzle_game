@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import HintSystem from '../hints/HintSystem';
-import HintVisualIndicators from '../hints/HintVisualIndicators';
+import HintSystem from './hints/HintSystem';
+import HintVisualIndicators from './hints/HintVisualIndicators';
 import {
   HintType,
   County,
@@ -89,7 +89,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
     const isCorrect = distance < 100; // Within 100 pixels of target
 
     // Place the county
-    const _result = placeCounty(draggedCounty as County, position);
+    placeCounty(draggedCounty as County, position);
 
     // Analyze struggle for hint system
     analyzePlayerStruggle(draggedCounty.id, position, isCorrect);
