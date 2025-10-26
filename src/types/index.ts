@@ -311,6 +311,7 @@ export interface ModeCardProps {
 export interface HintSystemState {
   availableHints: number;
   usedHints: number;
+  freeHintsRemaining: number; // Track free hints separately
   currentHintType?: HintType;
   hintProgress: number; // 0-1 for progressive revealing
   cooldownTimeRemaining: number;

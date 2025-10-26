@@ -6,7 +6,10 @@ import {
   HintType,
   County,
   Position,
-  Hint
+  Hint,
+  CaliforniaRegion,
+  DifficultyLevel,
+  Geometry
 } from '@/types';
 import { useGameStore } from '@/stores/gameStore';
 import { generateHint } from '@/utils/hintEngine';
@@ -22,8 +25,8 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
   height = 600,
   className = ''
 }) => {
+  const gameStore = useGameStore();
   const {
-    gameState,
     settings,
     hintSystem,
     remainingCounties,
@@ -33,7 +36,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
     analyzePlayerStruggle,
     startGame,
     placeCounty
-  } = useGameStore();
+  } = gameStore;
 
   const [activeHint, setActiveHint] = useState<Hint | null>(null);
   const [showVisualIndicators, setShowVisualIndicators] = useState(false);
@@ -109,28 +112,28 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
       id: 'los_angeles',
       name: 'Los Angeles County',
       fips: '06037',
-      region: 'southern',
+      region: CaliforniaRegion.SOUTHERN,
       centroid: [width * 0.3, height * 0.7],
-      difficulty: 'easy',
-      geometry: {} // Simplified for demo
+      difficulty: DifficultyLevel.EASY,
+      geometry: { type: 'Polygon', coordinates: [] } as Geometry
     },
     {
       id: 'san_francisco',
       name: 'San Francisco County',
       fips: '06075',
-      region: 'northern',
+      region: CaliforniaRegion.NORTHERN,
       centroid: [width * 0.2, height * 0.3],
-      difficulty: 'medium',
-      geometry: {}
+      difficulty: DifficultyLevel.MEDIUM,
+      geometry: { type: 'Polygon', coordinates: [] } as Geometry
     },
     {
       id: 'orange',
       name: 'Orange County',
       fips: '06059',
-      region: 'southern',
+      region: CaliforniaRegion.SOUTHERN,
       centroid: [width * 0.35, height * 0.75],
-      difficulty: 'easy',
-      geometry: {}
+      difficulty: DifficultyLevel.EASY,
+      geometry: { type: 'Polygon', coordinates: [] } as Geometry
     }
   ];
 
