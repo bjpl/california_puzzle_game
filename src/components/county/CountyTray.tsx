@@ -115,7 +115,7 @@ const CountyTray = memo(() => {
   );
 
   return (
-    <Card variant="elevated" className="h-[30vh] lg:h-[520px] p-2 flex flex-col">
+    <Card variant="elevated" className="h-[30vh] lg:h-[520px] p-2 flex flex-col overflow-hidden">
       <Heading
         level={2}
         size="label"
@@ -124,7 +124,7 @@ const CountyTray = memo(() => {
         Counties ({counties.length})
       </Heading>
       <div
-        className="flex-1 overflow-x-hidden pr-1 space-y-1 county-tray-scroll"
+        className="flex-1 overflow-x-hidden pr-1 space-y-1 county-tray-scroll min-h-0"
       >
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
           <div key={region} className="mb-2">
