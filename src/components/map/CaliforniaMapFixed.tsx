@@ -1,11 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import { mapLogger } from '../../utils/logger';
 import { useDroppable } from '@dnd-kit/core';
-import { mapLogger } from '../../utils/logger';
 import { useGame } from '../../context/GameContext';
-import { mapLogger } from '../../utils/logger';
 import { getSvgTextFill } from '../../utils/colorContrast';
-import { mapLogger } from '../../utils/logger';
 import { UI_CONFIG, COUNTY_FILL_COLORS, STROKE_COLORS, GAME_CONFIG } from '@/constants';
 import { mapLogger } from '../../utils/logger';
 
@@ -220,7 +216,7 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
 
   // Show ALL counties from the GeoJSON (we have all 58 counties now)
   // No filtering needed since our game includes all California counties
-  const _filteredFeatures = geoData?.features || [];
+  // const filteredFeatures = geoData?.features || []; // Using geoData.features directly
 
   if (!geoData || !projection) {
     return (

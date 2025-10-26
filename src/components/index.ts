@@ -15,15 +15,15 @@ export { default as CountyTray } from './county/CountyTray';
 // Game Components
 export { default as CaliforniaGameContainer } from './game/CaliforniaGameContainer';
 export { default as CaliforniaGameWithHints } from './game/CaliforniaGameWithHints';
-export { default as DifficultySystem } from './game/DifficultySystem';
+export { DifficultySystem, useDifficultySettings } from './game/DifficultySystem';
 export { default as DragDropPhysics } from './game/DragDropPhysics';
 export { default as EnhancedGameContainer } from './game/EnhancedGameContainer';
 export { default as GameComplete } from './game/GameComplete';
 export { default as GameContainer } from './game/GameContainer';
 export { default as GameHeader } from './game/GameHeader';
-export { default as GameModeSelector } from './game/GameModeSelector';
-export { default as ModeCard } from './game/ModeCard';
-export { default as ProgressionSystem } from './game/ProgressionSystem';
+export { GameModeSelector } from './game/GameModeSelector';
+export { ModeCard } from './game/ModeCard';
+export { ProgressionSystem } from './game/ProgressionSystem';
 export { default as RegionSelector } from './game/RegionSelector';
 export { default as VirtualCountyList } from './game/VirtualCountyList';
 
@@ -47,7 +47,7 @@ export { default as StudyMode } from './study/StudyMode';
 export { default as StudyModeCard } from './study/StudyModeCard';
 
 // UI Components
-export { default as CaliforniaButton } from './ui/CaliforniaButton';
+export { CaliforniaButton } from './ui/CaliforniaButton'; // Named export, not default
 export { default as PlacementFeedback } from './ui/PlacementFeedback';
 export { default as ProgressIndicator } from './ui/ProgressIndicator';
 

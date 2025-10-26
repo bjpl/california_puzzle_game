@@ -167,7 +167,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
 
     if (over && active) {
       const draggedId = active.id as string;
-      const _targetId = over.id as string;
+      // const targetId = over.id as string; // Available if needed for validation
 
       const county = modeCounties.find((c) => c.id === draggedId);
       if (county) {

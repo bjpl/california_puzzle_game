@@ -131,18 +131,18 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
     }
   };
 
-  // Find drop zone at position
-  const findDropZone = (position: Position): DropZone | null => {
-    return (
-      dropZones.find(
-        (zone) =>
-          position.x >= zone.bounds.left &&
-          position.x <= zone.bounds.right &&
-          position.y >= zone.bounds.top &&
-          position.y <= zone.bounds.bottom
-      ) || null
-    );
-  };
+  // Find drop zone at position (available for future drag/drop)
+  // const findDropZone = (position: Position): DropZone | null => {
+  //   return (
+  //     dropZones.find(
+  //       (zone) =>
+  //         position.x >= zone.bounds.left &&
+  //         position.x <= zone.bounds.right &&
+  //         position.y >= zone.bounds.top &&
+  //         position.y <= zone.bounds.bottom
+  //     ) || null
+  //   );
+  // };
 
   // Draw county outlines
   const drawCountyOutlines = useCallback(() => {

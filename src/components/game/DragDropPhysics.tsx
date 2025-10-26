@@ -145,7 +145,7 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
     }
 
     // Call callbacks
-    onDragEnd?.(info);
+    onDragEnd?.(_info);
     onDrop?.({ x: x.get(), y: y.get() });
 
     setIsNearTarget(false);

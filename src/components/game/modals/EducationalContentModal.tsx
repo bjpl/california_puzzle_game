@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import CountyShapeDisplay from '../../county/CountyShapeDisplay';
 
@@ -482,7 +482,7 @@ export default function EducationalContentModal({
 }
 
 // Add animation styles to globals.css if not already present
-const _animationStyles = `
+/* const animationStyles = `
 @keyframes slideInUp {
   from {
     opacity: 0;
@@ -497,4 +497,4 @@ const _animationStyles = `
 .animate-slideInUp {
   animation: slideInUp 0.3s ease-out;
 }
-`;
+`; */

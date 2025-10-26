@@ -1,8 +1,8 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import { FixedSizeList as List } from 'react-window';
+import { memo, useCallback, useMemo } from 'react';
+// import { FixedSizeList as List } from 'react-window'; // Not available, using scroll instead
 import { clsx } from 'clsx';
 import { Badge } from '../ui';
-import { getRegionColor } from '../../config/regionColors';
+// import { getRegionColor } from '../../config/regionColors'; // Available if needed
 import { useDraggable } from '@dnd-kit/core';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 

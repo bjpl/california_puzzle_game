@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { mapLogger } from '../../utils/logger';
-import { getSvgTextFill } from '../../utils/colorContrast';
+// import { getSvgTextFill } from '../../utils/colorContrast'; // Available if needed
 import CountyDetailsModal from '../county/CountyDetailsModal';
 import EnhancedStudyMode from '../study/EnhancedStudyMode';
 import { CALIFORNIA_COUNTIES } from '../../utils/californiaData';
