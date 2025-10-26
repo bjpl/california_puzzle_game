@@ -328,7 +328,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
 
                   {/* Map */}
                   <div className="lg:col-span-3">
-                    <div className="bg-white rounded-lg shadow-lg p-4 h-[600px] relative">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-4 h-[600px] relative">
                       <CaliforniaMapFixed isDragging={isDragging} />
 
                       {/* Mode-specific overlays */}

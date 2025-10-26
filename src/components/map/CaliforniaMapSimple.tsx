@@ -451,8 +451,8 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
           </pattern>
         </defs>
 
-        {/* Clean educational background */}
-        <rect width="800" height="600" fill="#fefefe" />
+        {/* Transparent background - inherits from parent */}
+        <rect width="800" height="600" fill="transparent" />
 
         {/* Apply zoom and pan transformation - zoom from center */}
         <g
