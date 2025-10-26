@@ -595,7 +595,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
           <>
             {/* County List - Responsive: Hidden on mobile when county selected */}
             <div
-              className={`${selectedCounty ? 'hidden md:block' : 'block'} w-full md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-[280px] max-w-[400px] border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto`}
+              className={`${selectedCounty ? 'hidden md:block' : 'block'} w-full md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-[280px] max-w-[400px] border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto max-h-screen`}
             >
               <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 z-10">
                 <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">
@@ -1481,8 +1481,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {/* Map Display Area - Fixed height, no scroll (map handles its own zoom) */}
-                <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 h-[calc(100vh-240px)]">
+                {/* Map Display Area - Responsive height with mobile support */}
+                <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 h-[500px] sm:h-[600px] lg:h-[calc(100vh-240px)]">
                   <StudyModeMap
                     onCountySelect={(countyId) => {
                       const county = counties.find(

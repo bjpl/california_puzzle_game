@@ -161,7 +161,7 @@ export default function StudyModeMap({
           viewBox="0 0 800 900"
           className="w-full h-full"
           style={{
-            maxHeight: '600px',
+            minHeight: '300px',
             cursor: isPanning.current ? 'grabbing' : 'grab',
           }}
           preserveAspectRatio="xMidYMid meet"
