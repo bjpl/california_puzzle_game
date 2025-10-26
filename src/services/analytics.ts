@@ -62,6 +62,9 @@ export enum AnalyticsEvent {
   SLOW_PERFORMANCE = 'slow_performance',
   LOW_FPS = 'low_fps',
   LOAD_ERROR = 'load_error',
+  BUNDLE_SIZE = 'bundle_size',
+  BUDGET_VIOLATION = 'budget_violation',
+  WEB_VITAL = 'web_vital',
 
   // Feedback
   FEEDBACK_OPENED = 'feedback_opened',
@@ -81,8 +84,8 @@ export enum FunnelStage {
   QUIZ_COMPLETE = 'quiz_complete',
 }
 
-interface AnalyticsProperties {
-  [key: string]: string | number | boolean | undefined;
+export interface AnalyticsProperties {
+  [key: string]: string | number | boolean | undefined | string[] | Record<string, number>;
 }
 
 interface AnalyticsConfig {

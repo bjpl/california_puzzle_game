@@ -73,16 +73,16 @@ class StorageManager {
     }
   }
 
-  private migrate(fromVersion: string | null): void {
+  private migrate(fromVersion: unknown): void {
     storageLogger.debug(`Migrating storage from ${fromVersion || 'initial'} to ${STORAGE_VERSION}`);
 
     // Handle migration logic here
     if (!fromVersion) {
-      // First time setup
-      this.setItem('profiles', []);
-      this.setItem('currentProfileId', null);
-      this.setItem('leaderboard', []);
-      this.setItem('sessions', []);
+      // First time setup - use type assertions for initial data
+      this.setItem('profiles', [] as unknown as Record<string, unknown>);
+      this.setItem('currentProfileId', '' as unknown as Record<string, unknown>);
+      this.setItem('leaderboard', [] as unknown as Record<string, unknown>);
+      this.setItem('sessions', [] as unknown as Record<string, unknown>);
     }
 
     // Add migration logic for future versions
@@ -108,9 +108,9 @@ class StorageManager {
     }
   }
 
-  private setItem<T>(key: string, value: T): void {
+  private setItem<T extends Record<string, unknown>>(key: string, value: T): void {
     try {
-      const serialized = JSON.stringify(value, this.dateReplacer);
+      const serialized = JSON.stringify(value, this.dateReplacer as any);
       // eslint-disable-next-line no-restricted-globals
       localStorage.setItem(this.getKey(key), serialized);
 
@@ -124,28 +124,32 @@ class StorageManager {
   private removeItem(key: string): void {
     // eslint-disable-next-line no-restricted-globals
     localStorage.removeItem(this.getKey(key));
-    this.notifyListeners(key, null);
+    this.notifyListeners(key, {} as Record<string, unknown>);
   }
 
-  private dateReplacer(key: string, value: Record<string, unknown>): Record<string, unknown> {
+  private dateReplacer(_key: string, value: unknown): unknown {
     if (value instanceof Date) {
-      return { __date: value.toISOString() };
+      return { __date: value.toISOString() } as Record<string, unknown>;
     }
     if (value instanceof Set) {
-      return { __set: Array.from(value) };
+      return { __set: Array.from(value) } as Record<string, unknown>;
+    }
+    if (Array.isArray(value)) {
+      return value.map(item => this.dateReplacer('', item)) as Record<string, unknown>[];
     }
     return value;
   }
 
-  private deserializeDates(obj: Record<string, unknown>): Record<string, unknown> {
+  private deserializeDates(obj: unknown): unknown {
     if (obj === null || obj === undefined) return obj;
 
     if (typeof obj === 'object') {
-      if (obj.__date) {
-        return new Date(obj.__date);
+      const record = obj as Record<string, unknown>;
+      if (record.__date && typeof record.__date === 'string') {
+        return new Date(record.__date);
       }
-      if (obj.__set) {
-        return new Set(obj.__set);
+      if (record.__set && Array.isArray(record.__set)) {
+        return new Set(record.__set);
       }
 
       if (Array.isArray(obj)) {
@@ -153,10 +157,10 @@ class StorageManager {
       }
 
       const result: Record<string, unknown> = {};
-      for (const [key, value] of Object.entries(obj)) {
+      for (const [key, value] of Object.entries(record)) {
         result[key] = this.deserializeDates(value);
       }
-      return result;
+      return result as Record<string, unknown>;
     }
 
     return obj;
@@ -439,6 +443,16 @@ class StorageManager {
         autoSuggestThreshold: 3,
         enableVisualIndicators: true,
         enableEducationalHints: true,
+      },
+      soundSettings: {
+        masterVolume: 0.7,
+        effectsVolume: 0.8,
+        musicVolume: 0.5,
+        muted: false,
+        enableBackgroundMusic: true,
+        enableClickSounds: true,
+        enableGameSounds: true,
+        enableAchievementSounds: true,
       },
     };
   }

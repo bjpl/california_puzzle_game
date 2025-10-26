@@ -52,8 +52,9 @@ function sendToAnalytics(metric: Metric) {
   const { name, value, rating, id, delta } = metric;
 
   // Example: Google Analytics 4
-  if (typeof window !== 'undefined' && (window as Record<string, unknown>).gtag) {
-    (window as Record<string, unknown>).gtag('event', name, {
+  if (typeof window !== 'undefined' && (window as unknown as Record<string, unknown>).gtag) {
+    const gtag = (window as unknown as Record<string, unknown>).gtag as (...args: unknown[]) => void;
+    gtag('event', name, {
       value: Math.round(name === 'CLS' ? delta * 1000 : delta),
       metric_id: id,
       metric_value: value,

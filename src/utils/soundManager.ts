@@ -19,6 +19,7 @@ export enum SoundType {
   HOVER = 'hover',
   ACHIEVEMENT = 'achievement',
   BACKGROUND_MUSIC = 'background_music',
+  COMPLETE = 'complete', // Added for game completion sound
 }
 
 export interface SoundConfig {
@@ -147,7 +148,7 @@ class SoundManager {
     return '';
   }
 
-  private _soundPaths: Record<SoundType, string> = {} as Record<SoundType, string>;
+  private soundPaths: Record<SoundType, string> = {} as Record<SoundType, string>;
 
   private constructor() {
     // Initialize sound paths with proper base path
@@ -161,6 +162,7 @@ class SoundManager {
       [SoundType.HOVER]: `${basePath}/sounds/hover.mp3`,
       [SoundType.ACHIEVEMENT]: `${basePath}/sounds/achievement.mp3`,
       [SoundType.BACKGROUND_MUSIC]: `${basePath}/sounds/background.mp3`,
+      [SoundType.COMPLETE]: `${basePath}/sounds/win.mp3`, // Reuse win sound for completion
     };
 
     this.initializeAudioContext();
@@ -330,11 +332,12 @@ class SoundManager {
 
     try {
       // Get or load the sound
-      let audio = this.soundCache.get(soundType);
+      let audio: HTMLAudioElement | undefined = this.soundCache.get(soundType);
       if (!audio) {
-        audio = await this.loadSound(soundType);
-        if (audio) {
-          this.soundCache.set(soundType, audio);
+        const loadedAudio = await this.loadSound(soundType);
+        if (loadedAudio) {
+          this.soundCache.set(soundType, loadedAudio);
+          audio = loadedAudio;
         }
       }
 

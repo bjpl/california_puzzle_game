@@ -72,16 +72,17 @@ function trackMetric(metric: Metric): void {
 export async function initWebVitals(): Promise<void> {
   try {
     // Dynamic import to avoid bloating the initial bundle
-    const { onFCP, onLCP, onFID, onCLS, onINP, onTTFB } = await import('web-vitals');
+    // Note: onFID is deprecated in web-vitals v4+, use onINP instead
+    const { onFCP, onLCP, onCLS, onINP, onTTFB } = await import('web-vitals');
 
     // First Contentful Paint
-    onFCP((metric) => {
+    onFCP((metric: Metric) => {
       const rating = getRating(metric.value, THRESHOLDS.FCP);
       trackMetric({ ...metric, rating });
     });
 
     // Largest Contentful Paint
-    onLCP((metric) => {
+    onLCP((metric: Metric) => {
       const rating = getRating(metric.value, THRESHOLDS.LCP);
       trackMetric({ ...metric, rating });
 
@@ -91,9 +92,9 @@ export async function initWebVitals(): Promise<void> {
       }
     });
 
-    // First Input Delay
-    onFID((metric) => {
-      const rating = getRating(metric.value, THRESHOLDS.FID);
+    // Interaction to Next Paint (replaces FID)
+    onINP((metric: Metric) => {
+      const rating = getRating(metric.value, THRESHOLDS.INP);
       trackMetric({ ...metric, rating });
     });
 
@@ -151,21 +152,20 @@ export function getWebVitalsSnapshot(): Promise<{
     }
 
     // For other metrics, need to wait for web-vitals library
-    import('web-vitals').then(({ onLCP, onFID, onCLS, onINP }) => {
-      onLCP((metric) => {
+    // Note: onFID is deprecated in web-vitals v4+, use onINP instead
+    import('web-vitals').then(({ onLCP, onCLS, onINP }) => {
+      onLCP((metric: Metric) => {
         vitals.LCP = metric.value;
       });
 
-      onFID((metric) => {
-        vitals.FID = metric.value;
-      });
-
-      onCLS((metric) => {
+      onCLS((metric: Metric) => {
         vitals.CLS = metric.value;
       });
 
-      onINP((metric) => {
+      onINP((metric: Metric) => {
         vitals.INP = metric.value;
+        // INP replaces FID in modern web-vitals
+        vitals.FID = metric.value;
       });
 
       // Give it a moment to collect metrics
