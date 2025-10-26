@@ -13,7 +13,7 @@
 
 import { useGameStore } from '../stores/gameStore';
 import { useStudyStore } from '../stores/studyStore';
-import { useAuthStore } from '../stores/authStore';
+// import { useAuthStore } from '../stores/authStore'; // Available for future auth integration
 import { gameSettingsSync } from './sync/gameSettingsSync';
 import { gameStatsSync } from './sync/gameStatsSync';
 import { achievementSync } from './sync/achievementSync';

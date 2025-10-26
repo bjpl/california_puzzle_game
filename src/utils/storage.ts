@@ -121,11 +121,12 @@ class StorageManager {
     }
   }
 
-  private removeItem(key: string): void {
-    // eslint-disable-next-line no-restricted-globals
-    localStorage.removeItem(this.getKey(key));
-    this.notifyListeners(key, {} as Record<string, unknown>);
-  }
+  // Method available for future use
+  // private removeItem(key: string): void {
+  //   // eslint-disable-next-line no-restricted-globals
+  //   localStorage.removeItem(this.getKey(key));
+  //   this.notifyListeners(key, {} as Record<string, unknown>);
+  // }
 
   private dateReplacer(_key: string, value: unknown): unknown {
     if (value instanceof Date) {
