@@ -595,7 +595,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
           <>
             {/* County List - Responsive: Hidden on mobile when county selected */}
             <div
-              className={`${selectedCounty ? 'hidden md:block' : 'block'} w-full md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-[280px] max-w-[400px] border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto max-h-screen`}
+              className={`${selectedCounty ? 'hidden md:block' : 'block'} w-full md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-[280px] max-w-[400px] border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto max-h-screen county-tray-scroll`}
             >
               <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 z-10">
                 <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">
