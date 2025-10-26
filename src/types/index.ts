@@ -268,7 +268,7 @@ export interface CaliforniaMapCanvasProps {
   width: number;
   height: number;
   counties: County[];
-  placedCounties: CountyPiece[];
+  placedCounties: Set<string> | CountyPiece[]; // Support both Set of IDs and array of pieces
   onCountyDrop: (county: CountyPiece, position: Position) => void;
   showHints: boolean;
   difficulty: DifficultyLevel;

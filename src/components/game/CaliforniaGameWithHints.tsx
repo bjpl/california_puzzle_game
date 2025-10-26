@@ -91,8 +91,19 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
     );
     const isCorrect = distance < 100; // Within 100 pixels of target
 
+    // Convert County to CountyPiece for placement
+    const countyPiece: CountyPiece = {
+      ...draggedCounty,
+      isPlaced: false,
+      currentPosition: position,
+      targetPosition: { x: draggedCounty.centroid[0], y: draggedCounty.centroid[1] },
+      rotation: 0,
+      scale: 1,
+      zIndex: 1,
+    };
+
     // Place the county
-    placeCounty(draggedCounty as County, position);
+    placeCounty(countyPiece, position);
 
     // Analyze struggle for hint system
     analyzePlayerStruggle(draggedCounty.id, position, isCorrect);

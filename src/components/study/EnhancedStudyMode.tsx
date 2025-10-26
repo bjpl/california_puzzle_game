@@ -13,6 +13,7 @@ import EducationalContentModal from '../game/modals/EducationalContentModal';
 import CountyDetailsModal from '../county/CountyDetailsModal';
 import CountyFormationAnimation from '../county/CountyFormationAnimation';
 import { getRegionColor } from '../../config/regionColors';
+import { County } from '@/types';
 
 interface StudyModeProps {
   onClose: () => void;
@@ -45,7 +46,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
   const [viewMode, setViewMode] = useState<ViewMode>('explore');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
-  const [selectedCounty, setSelectedCounty] = useState<Record<string, unknown> | null>(null);
+  const [selectedCounty, setSelectedCounty] = useState<County | null>(null);
   const [contentTab, setContentTab] = useState<ContentTab>('overview');
   const [showEducationalModal, setShowEducationalModal] = useState(false);
   const [showCountyDetailsModal, setShowCountyDetailsModal] = useState(false);
