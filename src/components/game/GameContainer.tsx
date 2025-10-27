@@ -212,7 +212,7 @@ export default function GameContainer() {
           collisionDetection={closestCenter}
         >
           <div className="flex flex-col lg:grid lg:grid-cols-4 gap-3 lg:gap-4 mt-2">
-            {/* County Tray - More compact on mobile */}
+            {/* County Tray - Optimized for mobile scrolling */}
             <div className="lg:col-span-1 order-2 lg:order-1">
               <CountyTray />
             </div>
