@@ -123,9 +123,9 @@ const CountyTray = memo(() => {
       >
         Counties ({counties.length})
       </Heading>
-      <div className="flex-1 min-h-0 relative">
+      <div className="flex-1 min-h-0 relative overflow-hidden">
         <div
-          className="h-full overflow-x-hidden overflow-y-auto space-y-1 pr-1"
+          className="absolute inset-0 overflow-x-hidden overflow-y-auto space-y-1 pr-1"
           style={{
             scrollbarWidth: 'thin',
             scrollbarColor: '#9ca3af #f3f4f6'
@@ -154,7 +154,7 @@ const CountyTray = memo(() => {
         <div className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-b from-transparent via-white/50 to-white dark:via-gray-800/50 dark:to-gray-800" />
 
         {/* Scroll indicator icon */}
-        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 pointer-events-none">
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 pointer-events-none z-10">
           <svg
             className="w-5 h-5 text-gray-400 animate-bounce"
             fill="none"
