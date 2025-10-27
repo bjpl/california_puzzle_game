@@ -267,7 +267,13 @@ function CountyDropZone({
   );
 }
 
-export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolean }) {
+export default function CaliforniaMapSimple({
+  isDragging,
+  onMobilePlacement,
+}: {
+  isDragging: boolean;
+  onMobilePlacement?: (targetCountyId: string) => void;
+}) {
   mapLogger.debug('🗺️ CaliforniaMapSimple component rendering');
   const gameContext = useGame();
   const {
@@ -301,6 +307,13 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
 
   // Handle mobile tap-to-place functionality
   const handleMobilePlacement = (targetCountyId: string) => {
+    // Use the onMobilePlacement callback if provided (from parent), otherwise use local logic
+    if (onMobilePlacement) {
+      onMobilePlacement(targetCountyId);
+      return;
+    }
+
+    // Fallback logic if no callback provided
     if (!currentCounty || !isMobile) return;
 
     const isCorrect = currentCounty.id === targetCountyId;

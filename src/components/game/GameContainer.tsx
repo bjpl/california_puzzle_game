@@ -37,6 +37,7 @@ export default function GameContainer() {
     selectCounty,
     placeCounty,
     clearCurrentCounty,
+    currentCounty,
     counties,
     placedCounties,
   } = useGame();
@@ -122,6 +123,22 @@ export default function GameContainer() {
     } else {
       clearCurrentCounty();
     }
+  };
+
+  // Handle mobile tap-to-place functionality
+  const handleMobilePlacement = (targetCountyId: string) => {
+    if (!currentCounty) return;
+
+    const isCorrect = currentCounty.id === targetCountyId;
+
+    if (isCorrect) {
+      sound.playSound('correct', 0.7);
+    } else {
+      sound.playSound('incorrect', 0.5);
+    }
+
+    // Place the county
+    placeCounty(currentCounty.id, isCorrect);
   };
 
   if (!isGameStarted) {
@@ -262,7 +279,10 @@ export default function GameContainer() {
               `}
               >
                 <MapErrorBoundary>
-                  <CaliforniaMapSimple isDragging={isDragging} />
+                  <CaliforniaMapSimple
+                    isDragging={isDragging}
+                    onMobilePlacement={handleMobilePlacement}
+                  />
                 </MapErrorBoundary>
               </div>
             </div>
