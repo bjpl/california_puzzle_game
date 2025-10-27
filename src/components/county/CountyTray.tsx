@@ -3,8 +3,9 @@ import { useDraggable } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 // import { getRegionColor } from '../../config/regionColors'; // Available if needed
-import { Badge, Heading, Text, Card } from '../ui';
+import { Badge, Heading, Text } from '../ui';
 import { County } from '../../types';
+import './CountyTray.css';
 
 // Memoized draggable county component
 const DraggableCounty = memo(
@@ -115,7 +116,7 @@ const CountyTray = memo(() => {
   );
 
   return (
-    <Card variant="elevated" className="h-[35vh] lg:h-[520px] p-2 flex flex-col relative overflow-hidden">
+    <div className="h-[35vh] lg:h-[520px] p-3 flex flex-col relative bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
       <Heading
         level={2}
         size="label"
@@ -123,7 +124,7 @@ const CountyTray = memo(() => {
       >
         Counties ({counties.length})
       </Heading>
-      <div className="flex-1 overflow-y-auto overflow-x-hidden pr-1 space-y-1 min-h-0">
+      <div className="flex-1 overflow-y-auto overflow-x-visible pr-2 space-y-1 min-h-0 county-scroll-container">
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
           <div key={region} className="mb-2">
             <Text
@@ -145,9 +146,9 @@ const CountyTray = memo(() => {
 
       {/* Visual scroll indicator - gradient fade shows more content below */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-b from-transparent to-white/90 dark:to-gray-800/90"
+        className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none bg-gradient-to-b from-transparent to-white/90 dark:to-gray-800/90"
       />
-    </Card>
+    </div>
   );
 });
 

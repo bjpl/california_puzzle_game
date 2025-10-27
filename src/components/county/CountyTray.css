@@ -1,0 +1,40 @@
+/* County Tray Scrollbar Styles */
+.county-scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: #9ca3af #f3f4f6;
+}
+
+.county-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.county-scroll-container::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.county-scroll-container::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 4px;
+}
+
+.county-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Dark mode scrollbar */
+.dark .county-scroll-container {
+  scrollbar-color: #4b5563 #374151;
+}
+
+.dark .county-scroll-container::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark .county-scroll-container::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark .county-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
