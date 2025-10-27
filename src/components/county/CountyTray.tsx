@@ -143,12 +143,9 @@ const CountyTray = memo(() => {
         ))}
       </div>
 
-      {/* Visual scroll indicator - simple gradient at bottom */}
+      {/* Visual scroll indicator - gradient fade shows more content below */}
       <div
-        className="absolute bottom-0 left-0 right-2 h-8 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.95))'
-        }}
+        className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-b from-transparent to-white/90 dark:to-gray-800/90"
       />
     </Card>
   );
