@@ -132,7 +132,7 @@ const CountyTray = memo(() => {
               size="xs"
               weight="semibold"
               color="secondary"
-              className="mb-1 sticky top-0 bg-white dark:bg-gray-800 py-0.5 z-10"
+              className="mb-1 py-0.5"
             >
               {region}
             </Text>
