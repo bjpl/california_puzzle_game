@@ -5,12 +5,9 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { logger } from '../utils/logger';
-import * as d3 from 'd3-geo';
-import { logger } from '../utils/logger';
+import { ZoomTransform } from 'd3-zoom';
 import { GeoDataCache } from '../utils/geoDataCache';
-import { logger } from '../utils/logger';
 import { CaliforniaMapUtilities, CountyCollisionDetector } from '../utils/mapUtilities';
-import { logger } from '../utils/logger';
 
 export interface CountyData {
   id: string;
@@ -59,7 +56,7 @@ export interface MapState {
   error: string | null;
   currentDetailLevel: 'ultra-low' | 'low' | 'medium' | 'high';
   zoomLevel: number;
-  transform: d3.ZoomTransform | null;
+  transform: ZoomTransform | null;
   counties: CountyData[];
   geoData: GeoJsonFeature[] | null;
 }
@@ -85,8 +82,8 @@ export interface UseCaliforniaMapReturn {
   switchProjection: (projection: 'albers' | 'mercator' | 'lambert') => void;
 
   // Map interactions
-  zoomToCounty: (countyId: string, duration?: number) => d3.ZoomTransform | null;
-  zoomToFitAll: (padding?: number) => d3.ZoomTransform | null;
+  zoomToCounty: (countyId: string, duration?: number) => ZoomTransform | null;
+  zoomToFitAll: (padding?: number) => ZoomTransform | null;
   getCountyAtPoint: (point: [number, number]) => CountyData | null;
 
   // Coordinate utilities
@@ -187,7 +184,7 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
         ...prev,
         currentDetailLevel: level,
         counties: data.lookup.counties,
-        geoData: data.geoData.features,
+        geoData: data.geoData.features as unknown as GeoJsonFeature[],
         isLoading: false,
       }));
     } catch (error) {

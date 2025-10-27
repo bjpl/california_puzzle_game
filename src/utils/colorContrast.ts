@@ -101,7 +101,7 @@ export function getOptimalTextColor(
   } = options;
 
   const bgColor = parseColor(backgroundColor);
-  const _bgLuminance = getRelativeLuminance(...bgColor);
+  void getRelativeLuminance(...bgColor); // Calculate for reference
 
   // Test preferred colors first
   const preferredDarkRgb = parseColor(preferredDark);

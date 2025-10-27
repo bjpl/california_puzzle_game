@@ -45,8 +45,8 @@ export interface SyncOperation {
   type: SyncOperationType;
   table: string;
   recordId?: string;
-  data: Record<string, any>;
-  previousData?: Record<string, any>; // For conflict resolution
+  data: Record<string, unknown>;
+  previousData?: Record<string, unknown>; // For conflict resolution
   status: SyncOperationStatus;
   retryCount: number;
   createdAt: number;
@@ -64,7 +64,6 @@ export interface SyncOperation {
 class SyncQueue {
   private readonly STORAGE_KEY = 'california-puzzle-sync-queue';
   private readonly MAX_RETRIES = 3;
-  private readonly RETRY_DELAY = 1000; // 1 second
   private userId: string | null = null;
 
   /**
@@ -259,6 +258,7 @@ class SyncQueue {
    */
   private async loadQueue(): Promise<SyncOperation[]> {
     try {
+      // eslint-disable-next-line no-restricted-globals
       const stored = localStorage.getItem(this.STORAGE_KEY);
 
       if (!stored) {
@@ -281,6 +281,7 @@ class SyncQueue {
    */
   private async saveQueue(queue: SyncOperation[]): Promise<void> {
     try {
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(queue));
     } catch (error) {
       logger.error('[SyncQueue] Failed to save queue:', error);
@@ -301,11 +302,7 @@ class SyncQueue {
 
     const cleaned = queue.filter(
       (op) =>
-        !(
-          op.status === 'failed' &&
-          op.retryCount >= this.MAX_RETRIES &&
-          op.createdAt < oneDayAgo
-        )
+        !(op.status === 'failed' && op.retryCount >= this.MAX_RETRIES && op.createdAt < oneDayAgo)
     );
 
     if (cleaned.length < queue.length) {

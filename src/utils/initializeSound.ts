@@ -8,7 +8,6 @@
 import { soundManager, preloadSounds } from './soundManager';
 import { soundLogger } from './logger';
 import { useGameStore } from '../stores/gameStore';
-import { soundLogger } from './logger';
 
 /**
  * Initialize the sound system with the current game settings
@@ -27,7 +26,7 @@ export const initializeSoundSystem = async (): Promise<void> => {
       effects: soundSettings.effectsVolume,
       music: soundSettings.musicVolume,
       muted: soundSettings.muted,
-    });
+    } as { master: number; effects: number; music: number; muted: boolean });
 
     // Preload all sound effects for better performance
     await preloadSounds();
@@ -109,7 +108,7 @@ export const checkAudioSupport = (): {
   // Check Web Audio API support
   try {
     const AudioContext =
-      window.AudioContext || (window as Record<string, unknown>).webkitAudioContext;
+      window.AudioContext || (window as unknown as Record<string, unknown>).webkitAudioContext;
     support.webAudioAPI = !!AudioContext;
   } catch (e) {
     support.webAudioAPI = false;

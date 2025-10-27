@@ -28,7 +28,7 @@ interface Breadcrumb {
   category: string;
   message: string;
   level: 'info' | 'warning' | 'error';
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
 interface ErrorReport {
@@ -128,6 +128,7 @@ class ErrorReportingService {
    */
   private getConsentStatus(): boolean {
     try {
+      // eslint-disable-next-line no-restricted-globals
       const consent = localStorage.getItem('error_reporting_consent');
       return consent === 'true';
     } catch {
@@ -140,6 +141,7 @@ class ErrorReportingService {
    */
   setConsent(enabled: boolean): void {
     try {
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('error_reporting_consent', String(enabled));
       this.isEnabled = enabled;
 
@@ -191,7 +193,7 @@ class ErrorReportingService {
     additionalContext?: {
       category?: string;
       componentStack?: string;
-      [key: string]: any;
+      [key: string]: unknown;
     }
   ): void {
     if (!this.isEnabled) {
@@ -223,7 +225,7 @@ class ErrorReportingService {
     // Send to Sentry if available
     if (this.sentryInitialized) {
       import('@sentry/react').then(({ captureException, setContext }) => {
-        setContext('custom', additionalContext);
+        setContext('custom', additionalContext || {});
         captureException(error);
       });
     } else {
@@ -249,7 +251,7 @@ class ErrorReportingService {
       // Use sendBeacon for reliability
       if (navigator.sendBeacon) {
         const blob = new Blob([JSON.stringify(report)], {
-          type: 'application/json'
+          type: 'application/json',
         });
         navigator.sendBeacon(endpoint, blob);
       } else {
@@ -297,7 +299,7 @@ class ErrorReportingService {
 export const errorReporting = new ErrorReportingService();
 
 // Convenience functions
-export const captureError = (error: Error, context?: Record<string, any>) =>
+export const captureError = (error: Error, context?: Record<string, unknown>) =>
   errorReporting.captureError(error, context);
 
 export const captureMessage = (message: string, level?: 'info' | 'warning' | 'error') =>
@@ -306,8 +308,6 @@ export const captureMessage = (message: string, level?: 'info' | 'warning' | 'er
 export const addBreadcrumb = (breadcrumb: Omit<Breadcrumb, 'timestamp'>) =>
   errorReporting.addBreadcrumb(breadcrumb);
 
-export const setErrorReportingConsent = (enabled: boolean) =>
-  errorReporting.setConsent(enabled);
+export const setErrorReportingConsent = (enabled: boolean) => errorReporting.setConsent(enabled);
 
-export const isErrorReportingEnabled = () =>
-  errorReporting.isErrorReportingEnabled();
+export const isErrorReportingEnabled = () => errorReporting.isErrorReportingEnabled();

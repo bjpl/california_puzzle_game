@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { logger } from '../utils/logger';
 import { storageManager } from '../utils/storage';
-import { logger } from '../utils/logger';
+import type { DifficultyLevel, CaliforniaRegion } from '../types';
 
 type SetValue<T> = T | ((val: T) => T);
 
@@ -41,8 +41,8 @@ export function useLocalStorage<T>(
 
   // Listen for storage changes
   useEffect(() => {
-    const handleStorageChange = (newValue: T) => {
-      setStoredValue(newValue);
+    const handleStorageChange = (data: Record<string, unknown>) => {
+      setStoredValue(data as T);
     };
 
     storageManager.addListener(key, handleStorageChange);
@@ -62,7 +62,7 @@ export function useProfileStorage<T>(
 ): [T, (value: SetValue<T>) => void, boolean] {
   const profile = storageManager.getCurrentProfile();
   const profileKey = profile ? `${profile.id}_${key}` : `guest_${key}`;
-  
+
   return useLocalStorage(profileKey, initialValue);
 }
 
@@ -109,11 +109,11 @@ export function useStats() {
       bestScore: 0,
       averageAccuracy: 0,
       totalPlayTime: 0,
-      favoriteDifficulty: 'easy' as const,
-      favoriteRegion: 'bay_area' as const,
+      favoriteDifficulty: 'easy' as DifficultyLevel,
+      favoriteRegion: 'bay_area' as CaliforniaRegion,
       countiesLearned: new Set<string>(),
       perfectPlacements: 0,
-      longestStreak: 0
+      longestStreak: 0,
     };
     setStats(defaultStats);
     storageManager.saveStats(defaultStats);

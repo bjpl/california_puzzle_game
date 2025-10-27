@@ -17,7 +17,10 @@
  */
 export async function loadCountyBoundaries() {
   const module = await import('../californiaCountyBoundaries');
-  return module.californiaCountyBoundaries;
+  return (
+    (module as { californiaCountyBoundaries?: unknown; default?: unknown })
+      .californiaCountyBoundaries || module
+  );
 }
 
 /**
@@ -26,7 +29,11 @@ export async function loadCountyBoundaries() {
  */
 export async function loadEducationData() {
   const module = await import('../countyEducationComplete');
-  return module.default || module.countyEducationData;
+  return (
+    (module as { countyEducationData?: unknown; default?: unknown }).countyEducationData ||
+    (module as { default?: unknown }).default ||
+    module
+  );
 }
 
 /**
@@ -35,7 +42,11 @@ export async function loadEducationData() {
  */
 export async function loadQuizQuestions() {
   const module = await import('../californiaQuizQuestions');
-  return module.quizQuestions;
+  return (
+    (module as { quizQuestions?: unknown; californiaQuizQuestions?: unknown }).quizQuestions ||
+    (module as { californiaQuizQuestions?: unknown }).californiaQuizQuestions ||
+    module
+  );
 }
 
 /**
@@ -62,7 +73,7 @@ export async function loadGeographicHints() {
  */
 export async function loadMemoryAids() {
   const module = await import('../memoryAids');
-  return module.memoryAids;
+  return (module as { memoryAidsData?: unknown; default?: unknown }).memoryAidsData || module;
 }
 
 /**
@@ -72,10 +83,13 @@ export async function loadMemoryAids() {
 export function preloadCriticalData() {
   // Use requestIdleCallback to load during idle time
   if ('requestIdleCallback' in window) {
-    requestIdleCallback(() => {
-      loadCountyData(); // Most commonly needed
-      loadGeographicHints(); // Frequently accessed
-    }, { timeout: 2000 });
+    requestIdleCallback(
+      () => {
+        loadCountyData(); // Most commonly needed
+        loadGeographicHints(); // Frequently accessed
+      },
+      { timeout: 2000 }
+    );
   } else {
     // Fallback for browsers without requestIdleCallback
     setTimeout(() => {
@@ -91,23 +105,13 @@ export function preloadCriticalData() {
 export async function preloadForGameMode(mode: string) {
   switch (mode) {
     case 'quiz':
-      return Promise.all([
-        loadQuizQuestions(),
-        loadEducationData(),
-      ]);
+      return Promise.all([loadQuizQuestions(), loadEducationData()]);
 
     case 'study':
-      return Promise.all([
-        loadCountyBoundaries(),
-        loadGeographicHints(),
-        loadMemoryAids(),
-      ]);
+      return Promise.all([loadCountyBoundaries(), loadGeographicHints(), loadMemoryAids()]);
 
     case 'classic':
-      return Promise.all([
-        loadCountyData(),
-        loadGeographicHints(),
-      ]);
+      return Promise.all([loadCountyData(), loadGeographicHints()]);
 
     default:
       return loadCountyData();
@@ -117,5 +121,5 @@ export async function preloadForGameMode(mode: string) {
 // Export type for data modules
 export interface DataModule<T> {
   default?: T;
-  [key: string]: any;
+  [key: string]: unknown;
 }

@@ -361,9 +361,9 @@ export function useProgress() {
     // Analyze consistency
     if (progress.learningCurve.length > 5) {
       const recentAccuracy = progress.learningCurve.slice(-5).map((p) => p.accuracy);
+      const mean = recentAccuracy.reduce((s, a) => s + a, 0) / recentAccuracy.length;
       const variance =
-        recentAccuracy.reduce((sum, acc, i, arr) => {
-          const mean = arr.reduce((s, a) => s + a, 0) / arr.length;
+        recentAccuracy.reduce((sum, acc) => {
           return sum + Math.pow(acc - mean, 2);
         }, 0) / recentAccuracy.length;
 

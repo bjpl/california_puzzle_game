@@ -68,7 +68,7 @@ function isVibrationSupported(): boolean {
  * @param pattern - Vibration pattern (ms or array of [vibrate, pause, vibrate, ...])
  * @returns True if vibration was triggered, false if not supported
  */
-function triggerVibration(pattern: number | number[]): boolean {
+function triggerVibration(pattern: number | readonly number[]): boolean {
   if (!isVibrationSupported()) {
     return false;
   }
@@ -76,7 +76,7 @@ function triggerVibration(pattern: number | number[]): boolean {
   try {
     // Try standard API
     if ('vibrate' in navigator) {
-      return navigator.vibrate(pattern);
+      return navigator.vibrate(pattern as number | number[]);
     }
 
     // Try Mozilla-prefixed API
@@ -134,15 +134,15 @@ export function useHaptic(settings: HapticSettings = { enabled: true, intensity:
   /**
    * Trigger haptic with settings applied
    */
-  const trigger = useCallback((pattern: number | number[]) => {
+  const trigger = useCallback((pattern: number | readonly number[]) => {
     if (!settingsRef.current.enabled) {
       return false;
     }
 
     // Apply intensity multiplier
-    const adjustedPattern = Array.isArray(pattern)
-      ? pattern.map((duration) => Math.round(duration * settingsRef.current.intensity))
-      : Math.round(pattern * settingsRef.current.intensity);
+    const adjustedPattern: number | number[] = Array.isArray(pattern)
+      ? [...pattern].map((duration) => Math.round(duration * settingsRef.current.intensity))
+      : Math.round((pattern as number) * settingsRef.current.intensity);
 
     return triggerVibration(adjustedPattern);
   }, []);

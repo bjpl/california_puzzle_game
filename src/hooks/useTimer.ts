@@ -24,7 +24,7 @@ interface UseTimerOptions {
   precision?: number; // Precision in milliseconds (default: 10)
 }
 
-interface TimerState {
+export interface TimerState {
   elapsed: number;
   remaining: number;
   isRunning: boolean;

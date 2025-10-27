@@ -97,9 +97,9 @@ export const DragPreview: React.FC<DragPreviewProps> = ({
     return null;
   }
 
-  // Apply 20px offset from touch point (GESTURE_CONFIG.dragPreviewOffset)
-  const offsetX = position.x + GESTURE_CONFIG.dragPreviewOffset.x;
-  const offsetY = position.y + GESTURE_CONFIG.dragPreviewOffset.y;
+  // Apply 20px offset from touch point (GESTURE_CONFIG.DRAG_PREVIEW_OFFSET)
+  const offsetX = position.x + GESTURE_CONFIG.DRAG_PREVIEW_OFFSET;
+  const offsetY = position.y + GESTURE_CONFIG.DRAG_PREVIEW_OFFSET;
 
   // Default preview render function
   const defaultPreview = (c: County) => (
@@ -145,7 +145,7 @@ export const DragPreview: React.FC<DragPreviewProps> = ({
             scale: 0.8,
           }}
           transition={{
-            duration: prefersReducedMotion ? 0 : MOBILE_ANIMATIONS.durations.fast / 1000,
+            duration: prefersReducedMotion ? 0 : MOBILE_ANIMATIONS.FAST / 1000,
             ease: 'easeOut',
           }}
           style={{

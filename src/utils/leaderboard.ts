@@ -229,14 +229,15 @@ export function getPlayerStats(playerName: string): LeaderboardStats {
   playerEntries.forEach((entry) => {
     // Check if entry has difficulty field which might encode region information
     // Or we could add a region field to LeaderboardEntry in the future
-    const region = (entry as Record<string, unknown>).region || 'unknown';
+    const entryWithRegion = entry as LeaderboardEntry & { region?: string };
+    const region = entryWithRegion.region || 'unknown';
     regionCounts.set(region, (regionCounts.get(region) || 0) + 1);
   });
 
   let favoriteRegion = 'N/A';
   let maxCount = 0;
 
-  regionCounts.forEach((count, region) => {
+  regionCounts.forEach((count, region: string) => {
     if (count > maxCount && region !== 'unknown') {
       maxCount = count;
       favoriteRegion = region;
@@ -360,8 +361,8 @@ function applyFilters(
     filtered = filtered.filter((entry) => entry.difficulty === filters.difficulty);
   }
 
-  if (filters.minAccuracy) {
-    filtered = filtered.filter((entry) => entry.accuracy >= filters.minAccuracy);
+  if (filters.minAccuracy !== undefined) {
+    filtered = filtered.filter((entry) => entry.accuracy >= (filters.minAccuracy ?? 0));
   }
 
   if (filters.tier) {

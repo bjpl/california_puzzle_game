@@ -96,7 +96,10 @@ export const useAuthStore = create<AuthStore>()(
               try {
                 await syncManager.initialize(data.user.id);
                 await storeIntegration.initialize(data.user.id);
-                logger.info('[Auth] Sync manager and store integration initialized for user:', data.user.id);
+                logger.info(
+                  '[Auth] Sync manager and store integration initialized for user:',
+                  data.user.id
+                );
               } catch (syncError) {
                 logger.error('[Auth] Failed to initialize sync:', syncError);
                 // Don't fail auth if sync initialization fails
@@ -266,7 +269,10 @@ export const useAuthStore = create<AuthStore>()(
                 try {
                   await syncManager.initialize(data.session.user.id);
                   await storeIntegration.initialize(data.session.user.id);
-                  logger.info('[Auth] Sync and store integration initialized for restored session:', data.session.user.id);
+                  logger.info(
+                    '[Auth] Sync and store integration initialized for restored session:',
+                    data.session.user.id
+                  );
                 } catch (syncError) {
                   logger.error('[Auth] Failed to initialize sync for restored session:', syncError);
                   // Don't fail auth if sync initialization fails
@@ -379,7 +385,10 @@ export function setupAuthListeners(): void {
           try {
             await syncManager.initialize(session.user.id);
             await storeIntegration.initialize(session.user.id);
-            logger.info('[Auth] Sync and store integration initialized on auth state change:', session.user.id);
+            logger.info(
+              '[Auth] Sync and store integration initialized on auth state change:',
+              session.user.id
+            );
           } catch (syncError) {
             logger.error('[Auth] Failed to initialize sync on auth state change:', syncError);
           }
@@ -405,7 +414,6 @@ export function setupAuthListeners(): void {
         break;
 
       case 'PASSWORD_RECOVERY':
-      case 'USER_DELETED':
         // Handle edge cases
         logger.warn('[Auth] Unhandled auth event:', event);
         break;

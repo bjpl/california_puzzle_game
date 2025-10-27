@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { Badge } from '../ui';
-import { County } from '../../types';
+import { County } from '../../data/californiaCountiesComplete';
 
 interface MobileCountySelectorProps {
   county: County;
@@ -56,20 +56,14 @@ export const MobileCountySelector = memo<MobileCountySelectorProps>(
         className={`
           touch-none select-none cursor-pointer
           transition-all duration-200 ease-in-out
-          ${isSelected
-            ? 'transform scale-110 z-10'
-            : 'hover:scale-105 active:scale-95'
-          }
+          ${isSelected ? 'transform scale-110 z-10' : 'hover:scale-105 active:scale-95'}
         `}
       >
         <Badge
           region={county.region}
           size="small"
           className={`
-            ${isSelected
-              ? 'ring-2 ring-blue-500 shadow-lg bg-blue-50 dark:bg-blue-900/30'
-              : ''
-            }
+            ${isSelected ? 'ring-2 ring-blue-500 shadow-lg bg-blue-50 dark:bg-blue-900/30' : ''}
           `}
         >
           {isSelected && <span className="mr-1">👆</span>}
@@ -79,10 +73,7 @@ export const MobileCountySelector = memo<MobileCountySelectorProps>(
     );
   },
   (prevProps, nextProps) => {
-    return (
-      prevProps.county.id === nextProps.county.id &&
-      prevProps.isPlaced === nextProps.isPlaced
-    );
+    return prevProps.county.id === nextProps.county.id && prevProps.isPlaced === nextProps.isPlaced;
   }
 );
 

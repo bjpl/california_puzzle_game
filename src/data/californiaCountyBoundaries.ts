@@ -13,7 +13,7 @@ export interface RealCountyShape {
 }
 
 // Map county names to regions
-const _countyRegions: Record<string, string> = {
+export const countyRegions: Record<string, string> = {
   Alameda: 'Bay Area',
   Alpine: 'Sierra Nevada',
   Amador: 'Sierra Nevada',

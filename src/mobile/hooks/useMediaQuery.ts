@@ -48,24 +48,12 @@ export function useMediaQuery(query: string, defaultValue = false): boolean {
       setMatches(event.matches);
     };
 
-    // Add listener (using both old and new APIs for compatibility)
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-    } else {
-      // Fallback for older browsers
-      // @ts-expect-error - addListener is deprecated but needed for old browsers
-      mediaQuery.addListener(handleChange);
-    }
+    // Add listener
+    mediaQuery.addEventListener('change', handleChange);
 
     // Cleanup
     return () => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleChange);
-      } else {
-        // Fallback for older browsers
-        // @ts-expect-error - removeListener is deprecated but needed for old browsers
-        mediaQuery.removeListener(handleChange);
-      }
+      mediaQuery.removeEventListener('change', handleChange);
     };
   }, [query, matches]);
 
@@ -128,12 +116,7 @@ export function useMediaQueries<T extends Record<string, string>>(
         }));
       };
 
-      if (mq.addEventListener) {
-        mq.addEventListener('change', handlers[key]);
-      } else {
-        // @ts-expect-error - addListener deprecated but needed for old browsers
-        mq.addListener(handlers[key]);
-      }
+      mq.addEventListener('change', handlers[key]);
     }
 
     // Cleanup
@@ -141,13 +124,7 @@ export function useMediaQueries<T extends Record<string, string>>(
       for (const key in queries) {
         const mq = mediaQueries[key];
         const handler = handlers[key];
-
-        if (mq.removeEventListener) {
-          mq.removeEventListener('change', handler);
-        } else {
-          // @ts-expect-error - removeListener deprecated but needed for old browsers
-          mq.removeListener(handler);
-        }
+        mq.removeEventListener('change', handler);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

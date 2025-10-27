@@ -16,11 +16,10 @@ import { syncManager } from '../syncManager';
 import { supabase, Database } from '../supabase';
 import { logger } from '../../utils/logger';
 import { useGameStore } from '../../stores/gameStore';
-import type { GameSettings } from '../../types';
+import type { GameSettings, DifficultyLevel, CaliforniaRegion } from '../../types';
 
 type GameSettingsRow = Database['public']['Tables']['game_settings']['Row'];
 type GameSettingsInsert = Database['public']['Tables']['game_settings']['Insert'];
-type GameSettingsUpdate = Database['public']['Tables']['game_settings']['Update'];
 
 /**
  * Game Settings Sync Class
@@ -106,16 +105,17 @@ class GameSettingsSync {
     const settingsData = this.serializeSettings(currentSettings);
 
     if (existingSettings) {
+      const settingsRow = existingSettings as GameSettingsRow;
       // Update existing settings
       await syncManager.queueOperation({
         type: 'update',
         table: 'game_settings',
-        recordId: existingSettings.id,
+        recordId: settingsRow.id,
         data: {
           ...settingsData,
           updated_at: new Date().toISOString(),
         },
-        previousData: existingSettings,
+        previousData: settingsRow as Record<string, unknown>,
       });
     } else {
       // Insert new settings
@@ -250,8 +250,8 @@ class GameSettingsSync {
    */
   private deserializeSettings(data: GameSettingsRow): GameSettings {
     return {
-      difficulty: data.difficulty,
-      region: data.region,
+      difficulty: data.difficulty as DifficultyLevel,
+      region: data.region as CaliforniaRegion,
       showHints: data.show_hints,
       enableTimer: data.enable_timer,
       soundEnabled: data.sound_enabled,

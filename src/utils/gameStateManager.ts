@@ -39,7 +39,7 @@ export function saveGameState(gameState: Omit<SavedGameState, 'timestamp'>): boo
     localStorage.setItem(GAME_STATE_KEY, JSON.stringify(stateWithTimestamp));
     return true;
   } catch (error) {
-    storageLogger.error('Failed to save game state:', error);
+    console.error('Failed to save game state:', error);
     return false;
   }
 }
@@ -65,7 +65,7 @@ export function loadGameState(): SavedGameState | null {
 
     return gameState;
   } catch (error) {
-    storageLogger.error('Failed to load game state:', error);
+    console.error('Failed to load game state:', error);
     return null;
   }
 }
@@ -75,7 +75,7 @@ export function clearGameState(): void {
     // eslint-disable-next-line no-restricted-globals
     localStorage.removeItem(GAME_STATE_KEY);
   } catch (error) {
-    storageLogger.error('Failed to clear game state:', error);
+    console.error('Failed to clear game state:', error);
   }
 }
 

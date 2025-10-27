@@ -3,7 +3,7 @@ import {
   GameModeConfiguration,
   GameModeCategory,
   GameModeSelectorProps,
-  DifficultyLevel
+  DifficultyLevel,
 } from '@/types';
 import { ModeCard } from '../game/ModeCard';
 import { CaliforniaButton } from '../ui/CaliforniaButton';
@@ -13,7 +13,7 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
   availableModes,
   onModeSelect,
   playerStats,
-  className = ''
+  className = '',
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<GameModeCategory | 'all'>('all');
   const [selectedMode, setSelectedMode] = useState<GameModeConfiguration | null>(null);
@@ -21,7 +21,7 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
 
   // Filter modes based on unlock status
   const unlockedModes = useMemo(() => {
-    return getUnlockedModes(playerStats);
+    return getUnlockedModes(playerStats as unknown as Record<string, unknown>);
   }, [playerStats]);
 
   // Filter modes by category and difficulty
@@ -29,7 +29,7 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
     let modes = selectedCategory === 'all' ? availableModes : getModesByCategory(selectedCategory);
 
     if (difficultyFilter !== 'all') {
-      modes = modes.filter(mode => mode.difficulty === difficultyFilter);
+      modes = modes.filter((mode) => mode.difficulty === difficultyFilter);
     }
 
     return modes;
@@ -41,10 +41,10 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
       [GameModeCategory.LEARNING]: [],
       [GameModeCategory.CHALLENGE]: [],
       [GameModeCategory.MASTERY]: [],
-      [GameModeCategory.SPECIAL]: []
+      [GameModeCategory.SPECIAL]: [],
     };
 
-    filteredModes.forEach(mode => {
+    filteredModes.forEach((mode) => {
       grouped[mode.category].push(mode);
     });
 
@@ -54,7 +54,7 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
   // Calculate completion stats
   const completionStats = useMemo(() => {
     const totalModes = unlockedModes.length;
-    const completedModes = unlockedModes.filter(mode => mode.isCompleted).length;
+    const completedModes = unlockedModes.filter((mode) => mode.isCompleted).length;
     const totalStars = unlockedModes.reduce((sum, mode) => sum + mode.stars, 0);
     const maxStars = unlockedModes.length * 3;
 
@@ -63,12 +63,12 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
       completedModes,
       totalStars,
       maxStars,
-      completionPercentage: totalModes > 0 ? (completedModes / totalModes) * 100 : 0
+      completionPercentage: totalModes > 0 ? (completedModes / totalModes) * 100 : 0,
     };
   }, [unlockedModes]);
 
   const handleModeSelect = (mode: GameModeConfiguration) => {
-    const isUnlocked = unlockedModes.some(m => m.id === mode.id);
+    const isUnlocked = unlockedModes.some((m) => m.id === mode.id);
     if (isUnlocked) {
       setSelectedMode(mode);
     }
@@ -81,7 +81,7 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
   };
 
   const isLocked = (mode: GameModeConfiguration) => {
-    return !unlockedModes.some(m => m.id === mode.id);
+    return !unlockedModes.some((m) => m.id === mode.id);
   };
 
   const renderCategoryTabs = () => (
@@ -118,7 +118,7 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
       >
         All
       </CaliforniaButton>
-      {Object.values(DifficultyLevel).map(difficulty => (
+      {Object.values(DifficultyLevel).map((difficulty) => (
         <CaliforniaButton
           key={difficulty}
           variant={difficultyFilter === difficulty ? 'primary' : 'secondary'}
@@ -186,7 +186,7 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
         <p className="text-gray-600 mb-4">{categoryInfo.description}</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {modes.map(mode => (
+          {modes.map((mode) => (
             <ModeCard
               key={mode.id}
               mode={mode}
@@ -204,12 +204,10 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
     <div className={`max-w-7xl mx-auto p-6 ${className}`}>
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Choose Your California Adventure
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Your California Adventure</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          From beginner-friendly regional puzzles to expert-level challenges,
-          find the perfect way to explore California's 58 counties.
+          From beginner-friendly regional puzzles to expert-level challenges, find the perfect way
+          to explore California's 58 counties.
         </p>
       </div>
 
@@ -223,15 +221,16 @@ export const GameModeSelector: React.FC<GameModeSelectorProps> = ({
       {renderDifficultyFilter()}
 
       {/* Mode Display */}
-      {selectedCategory === 'all' ? (
-        // Show all categories
-        Object.entries(groupedModes).map(([category, modes]) =>
-          renderModeGrid(category as GameModeCategory, modes)
-        )
-      ) : (
-        // Show selected category
-        renderModeGrid(selectedCategory as GameModeCategory, groupedModes[selectedCategory as GameModeCategory])
-      )}
+      {selectedCategory === 'all'
+        ? // Show all categories
+          Object.entries(groupedModes).map(([category, modes]) =>
+            renderModeGrid(category as GameModeCategory, modes)
+          )
+        : // Show selected category
+          renderModeGrid(
+            selectedCategory as GameModeCategory,
+            groupedModes[selectedCategory as GameModeCategory]
+          )}
 
       {/* Play Button (Sticky) */}
       {selectedMode && (

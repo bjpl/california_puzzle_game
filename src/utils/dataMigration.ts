@@ -106,8 +106,11 @@ class DataMigrationManager {
         }
 
         // Migrate old stats format to new format
-        if (migrated.stats && Array.isArray(migrated.stats.countiesLearned)) {
-          migrated.stats.countiesLearned = new Set(migrated.stats.countiesLearned);
+        if (migrated.stats && typeof migrated.stats === 'object' && migrated.stats !== null) {
+          const stats = migrated.stats as Record<string, unknown>;
+          if (Array.isArray(stats.countiesLearned)) {
+            stats.countiesLearned = new Set(stats.countiesLearned);
+          }
         }
 
         // Add new achievement fields
@@ -123,18 +126,22 @@ class DataMigrationManager {
         }
 
         // Add profile preferences
-        migrated.profiles.forEach((profile: Record<string, unknown>) => {
-          if (!profile.preferences) {
-            profile.preferences = {
-              theme: 'auto',
-              language: 'en',
-              notifications: true,
-              autoSave: true,
-              cloudSync: false,
-              analytics: true,
-            };
-          }
-        });
+        if (Array.isArray(migrated.profiles)) {
+          (migrated.profiles as Record<string, unknown>[]).forEach(
+            (profile: Record<string, unknown>) => {
+              if (!profile.preferences) {
+                profile.preferences = {
+                  theme: 'auto',
+                  language: 'en',
+                  notifications: true,
+                  autoSave: true,
+                  cloudSync: false,
+                  analytics: true,
+                };
+              }
+            }
+          );
+        }
 
         migrated.version = '1.1.0';
         return migrated;
@@ -143,15 +150,20 @@ class DataMigrationManager {
         const rolledBack = { ...data };
 
         // Remove new fields
-        if (rolledBack.profiles) {
-          rolledBack.profiles.forEach((profile: Record<string, unknown>) => {
-            delete profile.preferences;
-          });
+        if (rolledBack.profiles && Array.isArray(rolledBack.profiles)) {
+          (rolledBack.profiles as Record<string, unknown>[]).forEach(
+            (profile: Record<string, unknown>) => {
+              delete profile.preferences;
+            }
+          );
         }
 
         // Convert Set back to Array
-        if (rolledBack.stats && rolledBack.stats.countiesLearned instanceof Set) {
-          rolledBack.stats.countiesLearned = Array.from(rolledBack.stats.countiesLearned);
+        if (rolledBack.stats && typeof rolledBack.stats === 'object' && rolledBack.stats !== null) {
+          const stats = rolledBack.stats as Record<string, unknown>;
+          if (stats.countiesLearned instanceof Set) {
+            stats.countiesLearned = Array.from(stats.countiesLearned);
+          }
         }
 
         rolledBack.version = '1.0.0';
@@ -185,9 +197,14 @@ class DataMigrationManager {
         }
 
         // Add new settings
-        if (migrated.settings) {
-          if (!migrated.settings.soundSettings) {
-            migrated.settings.soundSettings = {
+        if (
+          migrated.settings &&
+          typeof migrated.settings === 'object' &&
+          migrated.settings !== null
+        ) {
+          const settings = migrated.settings as Record<string, unknown>;
+          if (!settings.soundSettings) {
+            settings.soundSettings = {
               masterVolume: 0.7,
               effectsVolume: 0.8,
               musicVolume: 0.5,

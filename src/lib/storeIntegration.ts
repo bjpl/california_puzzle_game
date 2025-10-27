@@ -18,7 +18,7 @@ import { gameSettingsSync } from './sync/gameSettingsSync';
 import { gameStatsSync } from './sync/gameStatsSync';
 import { achievementSync } from './sync/achievementSync';
 import { logger } from '../utils/logger';
-import type { GameSettings, GameStats, Achievement, PlacementResult } from '../types';
+import type { GameSettings, GameStats } from '../types';
 
 /**
  * Integration state tracker
@@ -116,98 +116,72 @@ class StoreIntegrationManager {
   private setupGameStoreListeners(): void {
     logger.info('[StoreIntegration] Setting up gameStore listeners...');
 
-    // Listen to settings changes
-    const unsubscribeSettings = useGameStore.subscribe(
-      (state) => state.settings,
-      (settings: GameSettings, previousSettings: GameSettings) => {
-        if (!this.initialized) return;
+    let previousSettings = useGameStore.getState().settings;
+    let previousStats = useGameStore.getState().stats;
+    let previousAchievements = useGameStore.getState().achievements;
+    let wasGameActive = useGameStore.getState().isGameActive;
 
-        // Only sync if settings actually changed
-        if (JSON.stringify(settings) !== JSON.stringify(previousSettings)) {
-          logger.info('[StoreIntegration] Settings changed, syncing...');
-          gameSettingsSync.sync(settings).catch((error) => {
-            logger.error('[StoreIntegration] Failed to sync settings:', error);
-          });
-        }
-      },
-      { fireImmediately: false }
-    );
-    this.unsubscribers.push(unsubscribeSettings);
+    // Listen to all store changes and handle specific updates
+    const unsubscribeAll = useGameStore.subscribe((state) => {
+      if (!this.initialized) return;
 
-    // Listen to stats changes
-    const unsubscribeStats = useGameStore.subscribe(
-      (state) => state.stats,
-      (stats: GameStats, previousStats: GameStats) => {
-        if (!this.initialized) return;
+      // Handle settings changes
+      if (JSON.stringify(state.settings) !== JSON.stringify(previousSettings)) {
+        logger.info('[StoreIntegration] Settings changed, syncing...');
+        gameSettingsSync.sync(state.settings).catch((error) => {
+          logger.error('[StoreIntegration] Failed to sync settings:', error);
+        });
+        previousSettings = state.settings;
+      }
 
-        // Only sync if stats actually changed
-        if (JSON.stringify(stats) !== JSON.stringify(previousStats)) {
-          logger.info('[StoreIntegration] Stats changed, syncing...');
-          gameStatsSync.sync(stats).catch((error) => {
-            logger.error('[StoreIntegration] Failed to sync stats:', error);
-          });
-        }
-      },
-      { fireImmediately: false }
-    );
-    this.unsubscribers.push(unsubscribeStats);
+      // Handle stats changes
+      if (JSON.stringify(state.stats) !== JSON.stringify(previousStats)) {
+        logger.info('[StoreIntegration] Stats changed, syncing...');
+        gameStatsSync.sync(state.stats).catch((error) => {
+          logger.error('[StoreIntegration] Failed to sync stats:', error);
+        });
+        previousStats = state.stats;
+      }
 
-    // Listen to achievement changes
-    const unsubscribeAchievements = useGameStore.subscribe(
-      (state) => state.achievements,
-      (achievements: Achievement[], previousAchievements: Achievement[]) => {
-        if (!this.initialized) return;
+      // Handle achievement changes
+      const newlyUnlocked = state.achievements.filter((achievement) => {
+        const previous = previousAchievements.find((a) => a.id === achievement.id);
+        return achievement.isUnlocked && (!previous || !previous.isUnlocked);
+      });
 
-        // Find newly unlocked achievements
-        const newlyUnlocked = achievements.filter((achievement) => {
-          const previous = previousAchievements.find((a) => a.id === achievement.id);
-          return achievement.isUnlocked && (!previous || !previous.isUnlocked);
+      if (newlyUnlocked.length > 0) {
+        logger.info('[StoreIntegration] Achievements unlocked, syncing...', {
+          count: newlyUnlocked.length,
         });
 
-        // Sync each newly unlocked achievement
-        if (newlyUnlocked.length > 0) {
-          logger.info('[StoreIntegration] Achievements unlocked, syncing...', {
-            count: newlyUnlocked.length,
+        newlyUnlocked.forEach((achievement) => {
+          achievementSync.syncAchievement(achievement).catch((error) => {
+            logger.error('[StoreIntegration] Failed to sync achievement:', error);
           });
+        });
+      }
+      previousAchievements = state.achievements;
 
-          newlyUnlocked.forEach((achievement) => {
-            achievementSync.syncAchievement(achievement).catch((error) => {
-              logger.error('[StoreIntegration] Failed to sync achievement:', error);
-            });
+      // Handle game end events for session recording
+      if (wasGameActive && !state.isGameActive) {
+        logger.info('[StoreIntegration] Game ended, recording session...');
+
+        gameStatsSync
+          .recordGameSession({
+            score: state.score,
+            difficulty: state.difficulty,
+            region: state.selectedRegion,
+            timeElapsed: state.timeElapsed,
+            accuracy: state.placedCounties.length > 0 ? 0.8 : 0, // Note: accuracy calculation to be refined
+          })
+          .catch((error) => {
+            logger.error('[StoreIntegration] Failed to record game session:', error);
           });
-        }
-      },
-      { fireImmediately: false }
-    );
-    this.unsubscribers.push(unsubscribeAchievements);
+      }
+      wasGameActive = state.isGameActive;
+    });
 
-    // Listen to game end events for session recording
-    const unsubscribeGameEnd = useGameStore.subscribe(
-      (state) => state.isGameActive,
-      (isGameActive: boolean, wasGameActive: boolean) => {
-        if (!this.initialized) return;
-
-        // Detect game end (was active, now not active)
-        if (wasGameActive && !isGameActive) {
-          const state = useGameStore.getState();
-          logger.info('[StoreIntegration] Game ended, recording session...');
-
-          gameStatsSync
-            .recordGameSession({
-              score: state.score,
-              difficulty: state.difficulty,
-              region: state.selectedRegion,
-              timeElapsed: state.timeElapsed,
-              accuracy: state.placedCounties.length > 0 ? 0.8 : 0, // TODO: Calculate actual accuracy
-            })
-            .catch((error) => {
-              logger.error('[StoreIntegration] Failed to record game session:', error);
-            });
-        }
-      },
-      { fireImmediately: false }
-    );
-    this.unsubscribers.push(unsubscribeGameEnd);
+    this.unsubscribers.push(unsubscribeAll);
 
     logger.info('[StoreIntegration] gameStore listeners ready');
   }
@@ -222,36 +196,28 @@ class StoreIntegrationManager {
   private setupStudyStoreListeners(): void {
     logger.info('[StoreIntegration] Setting up studyStore listeners...');
 
-    // Listen to progress changes
-    const unsubscribeProgress = useStudyStore.subscribe(
-      (state) => state.progress,
-      (progress: unknown, previousProgress: unknown) => {
-        if (!this.initialized) return;
+    let previousProgress = useStudyStore.getState().progress;
+    let wasStudySessionActive = useStudyStore.getState().isStudySessionActive;
 
-        // Only log for now - study progress sync will be implemented in Phase 3
-        if (JSON.stringify(progress) !== JSON.stringify(previousProgress)) {
-          logger.info('[StoreIntegration] Study progress changed (sync pending Phase 3)');
-        }
-      },
-      { fireImmediately: false }
-    );
-    this.unsubscribers.push(unsubscribeProgress);
+    // Listen to all study store changes
+    const unsubscribeStudy = useStudyStore.subscribe((state) => {
+      if (!this.initialized) return;
 
-    // Listen to session end events
-    const unsubscribeSession = useStudyStore.subscribe(
-      (state) => state.isStudySessionActive,
-      (isActive: boolean, wasActive: boolean) => {
-        if (!this.initialized) return;
+      // Handle progress changes
+      if (JSON.stringify(state.progress) !== JSON.stringify(previousProgress)) {
+        logger.info('[StoreIntegration] Study progress changed (sync pending Phase 3)');
+        previousProgress = state.progress;
+      }
 
-        // Detect session end (was active, now not active)
-        if (wasActive && !isActive) {
-          logger.info('[StoreIntegration] Study session ended (sync pending Phase 3)');
-          // TODO: Implement study session sync in Phase 3
-        }
-      },
-      { fireImmediately: false }
-    );
-    this.unsubscribers.push(unsubscribeSession);
+      // Detect session end (was active, now not active)
+      if (wasStudySessionActive && !state.isStudySessionActive) {
+        logger.info('[StoreIntegration] Study session ended (sync pending Phase 3)');
+        // Note: Study session sync will be implemented in Phase 3
+      }
+      wasStudySessionActive = state.isStudySessionActive;
+    });
+
+    this.unsubscribers.push(unsubscribeStudy);
 
     logger.info('[StoreIntegration] studyStore listeners ready (Phase 3 pending)');
   }

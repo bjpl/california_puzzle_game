@@ -296,7 +296,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
             opacity: backdropOpacity,
           }}
           initial={{ opacity: 0 }}
-          animate={{ opacity: currentState === BottomSheetState.CLOSED ? 0 : 0.5 }}
+          animate={{ opacity: currentState === BottomSheetState.COLLAPSED ? 0.3 : 0.5 }}
           exit={{ opacity: 0 }}
           transition={{ duration: MOBILE_ANIMATIONS.NORMAL / 1000 }}
           onClick={handleBackdropTap}

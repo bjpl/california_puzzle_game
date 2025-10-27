@@ -5,7 +5,7 @@ import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 // import { getRegionColor } from '../../config/regionColors'; // Available if needed
 import { Badge, Heading, Text } from '../ui';
-import { County } from '../../types';
+import { County } from '../../data/californiaCountiesComplete';
 import { MobileCountySelector } from './MobileCountySelector';
 import './CountyTray.css';
 
@@ -101,7 +101,7 @@ const DraggableCounty = memo(
 DraggableCounty.displayName = 'DraggableCounty';
 
 const CountyTray = memo(() => {
-  const { counties, currentCounty, selectCounty, placedCounties } = useGame();
+  const { counties, placedCounties } = useGame();
   const deviceInfo = useDeviceInfo();
   const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
 
@@ -120,11 +120,13 @@ const CountyTray = memo(() => {
   );
 
   return (
-    <div className={`
+    <div
+      className={`
       ${isMobile ? 'h-[30vh]' : 'h-[35vh] lg:h-[520px]'}
       p-3 flex flex-col relative bg-white dark:bg-gray-800 rounded-lg shadow-lg
       border border-gray-100 dark:border-gray-700
-    `}>
+    `}
+    >
       <Heading
         level={2}
         size="label"
@@ -135,12 +137,7 @@ const CountyTray = memo(() => {
       <div className="flex-1 overflow-y-auto overflow-x-visible pr-2 space-y-1 min-h-0 county-scroll-container">
         {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
           <div key={region} className="mb-2">
-            <Text
-              size="xs"
-              weight="semibold"
-              color="secondary"
-              className="mb-1 py-0.5"
-            >
+            <Text size="xs" weight="semibold" color="secondary" className="mb-1 py-0.5">
               {region}
             </Text>
             <div className="flex flex-wrap gap-1">
@@ -161,9 +158,7 @@ const CountyTray = memo(() => {
       </div>
 
       {/* Visual scroll indicator - gradient fade shows more content below */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none bg-gradient-to-b from-transparent to-white/90 dark:to-gray-800/90"
-      />
+      <div className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none bg-gradient-to-b from-transparent to-white/90 dark:to-gray-800/90" />
     </div>
   );
 });

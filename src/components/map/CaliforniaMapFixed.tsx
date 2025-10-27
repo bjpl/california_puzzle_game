@@ -19,7 +19,7 @@ interface CountyFeature {
 
 interface CountyDropZoneProps {
   county: CountyFeature;
-  projection: Record<string, unknown>;
+  projection: (coord: [number, number]) => [number, number];
 }
 
 function CountyDropZone({ county, projection }: CountyDropZoneProps) {
@@ -37,7 +37,7 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   const isCorrectHover = isOver && currentCounty?.id === countyId;
   const isWrongHover = isOver && currentCounty?.id !== countyId;
 
-  let fillColor = COUNTY_FILL_COLORS.DEFAULT; // Default gray
+  let fillColor: string = COUNTY_FILL_COLORS.DEFAULT; // Default gray
   if (isPlaced)
     fillColor = COUNTY_FILL_COLORS.PLACED; // Green when placed
   else if (isCorrectHover)
@@ -50,7 +50,7 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   const textColor = getSvgTextFill(fillColor);
 
   // Convert coordinates to path
-  const coordinatesToPath = (coords: Record<string, unknown>[], isHole = false): string => {
+  const coordinatesToPath = (coords: [number, number][], isHole = false): string => {
     if (!coords || coords.length === 0) return '';
 
     const points = coords.map((coord) => projection(coord));
@@ -77,13 +77,13 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
 
     if (geom.type === 'Polygon') {
       // Single polygon (may have holes)
-      geom.coordinates.forEach((ring: unknown, i: number) => {
+      (geom.coordinates as unknown as [number, number][][]).forEach((ring, i: number) => {
         path += coordinatesToPath(ring, i > 0);
       });
     } else if (geom.type === 'MultiPolygon') {
       // Multiple polygons (like islands)
-      geom.coordinates.forEach((polygon: unknown) => {
-        (polygon as unknown[]).forEach((ring: unknown, i: number) => {
+      (geom.coordinates as unknown as [number, number][][][]).forEach((polygon) => {
+        polygon.forEach((ring, i: number) => {
           path += coordinatesToPath(ring, i > 0);
         });
       });
@@ -106,7 +106,7 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
       totalY = 0,
       count = 0;
 
-    const processCoords = (coords: Record<string, unknown>[]) => {
+    const processCoords = (coords: [number, number][]) => {
       coords.forEach((coord) => {
         const point = projection(coord);
         if (point) {
@@ -118,10 +118,10 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
     };
 
     if (geom.type === 'Polygon') {
-      processCoords(geom.coordinates[0]);
+      processCoords((geom.coordinates as unknown as [number, number][][])[0]);
     } else if (geom.type === 'MultiPolygon') {
-      geom.coordinates.forEach((polygon: unknown) => {
-        processCoords((polygon as unknown[])[0]);
+      (geom.coordinates as unknown as [number, number][][][]).forEach((polygon) => {
+        processCoords(polygon[0]);
       });
     }
 
@@ -131,7 +131,7 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   const centroid = calculateCentroid();
 
   return (
-    <g ref={setNodeRef}>
+    <g ref={setNodeRef as (node: SVGGElement | null) => void}>
       <path
         d={path}
         fill={fillColor}
@@ -272,13 +272,15 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
 
         {/* All California counties - show them all since we have all 58 counties */}
         <g>
-          {geoData.features.map((feature: CountyFeature, idx: number) => (
-            <CountyDropZone
-              key={feature.properties.NAME || `county-${idx}`}
-              county={feature}
-              projection={projection}
-            />
-          ))}
+          {geoData.features && Array.isArray(geoData.features)
+            ? geoData.features.map((feature: CountyFeature, idx: number) => (
+                <CountyDropZone
+                  key={feature.properties.NAME || `county-${idx}`}
+                  county={feature}
+                  projection={projection as (coord: [number, number]) => [number, number]}
+                />
+              ))
+            : null}
         </g>
 
         {/* Legend */}

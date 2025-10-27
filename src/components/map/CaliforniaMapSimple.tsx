@@ -130,12 +130,12 @@ function CountyDropZone({
     };
 
     if (geom.type === 'Polygon') {
-      pathData = geom.coordinates.map((ring: number[][]) => ringToPath(ring)).join(' ');
+      pathData = (geom.coordinates as unknown as number[][][])
+        .map((ring) => ringToPath(ring))
+        .join(' ');
     } else if (geom.type === 'MultiPolygon') {
-      pathData = geom.coordinates
-        .map((polygon: number[][][]) =>
-          polygon.map((ring: number[][]) => ringToPath(ring)).join(' ')
-        )
+      pathData = (geom.coordinates as unknown as number[][][][])
+        .map((polygon) => polygon.map((ring) => ringToPath(ring)).join(' '))
         .join(' ');
     }
 
@@ -148,13 +148,18 @@ function CountyDropZone({
   const getLabelPosition = (): [number, number] => {
     // First try to find centroid data from the californiaData
     const californiaCountyData = CALIFORNIA_COUNTIES.find((c) => c.id === countyId);
-    if (californiaCountyData?.centroid) {
+    if (
+      californiaCountyData &&
+      'centroid' in californiaCountyData &&
+      californiaCountyData.centroid
+    ) {
       return project([californiaCountyData.centroid[0], californiaCountyData.centroid[1]]);
     }
 
     // If we have predefined centroid data in game context, use it
-    if (countyData?.centroid && Array.isArray(countyData.centroid)) {
-      return project([countyData.centroid[0], countyData.centroid[1]]);
+    const countyWithCentroid = countyData as { centroid?: [number, number] };
+    if (countyWithCentroid?.centroid && Array.isArray(countyWithCentroid.centroid)) {
+      return project([countyWithCentroid.centroid[0], countyWithCentroid.centroid[1]]);
     }
 
     // Otherwise, calculate approximate centroid from geometry
@@ -179,12 +184,14 @@ function CountyDropZone({
 
     try {
       if (geom.type === 'Polygon') {
-        if (geom.coordinates && geom.coordinates.length > 0) {
-          processRing(geom.coordinates[0]);
+        const coords = geom.coordinates as unknown as number[][][];
+        if (coords && coords.length > 0) {
+          processRing(coords[0]);
         }
       } else if (geom.type === 'MultiPolygon') {
-        if (geom.coordinates && geom.coordinates.length > 0) {
-          geom.coordinates.forEach((polygon: number[][][]) => {
+        const coords = geom.coordinates as unknown as number[][][][];
+        if (coords && coords.length > 0) {
+          coords.forEach((polygon) => {
             if (polygon && polygon.length > 0) {
               processRing(polygon[0]);
             }
@@ -223,12 +230,12 @@ function CountyDropZone({
     }
     // For desktop or when viewing placed counties
     else if (isPlaced && onCountyClick && countyData) {
-      onCountyClick(countyData);
+      onCountyClick(countyData as unknown as Record<string, unknown>);
     }
   };
 
   return (
-    <g ref={setNodeRef}>
+    <g ref={setNodeRef as (node: SVGGElement | null) => void}>
       <path
         d={path}
         fill={fillColor}
@@ -329,7 +336,10 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         setGeoData(data);
         // We use fixed California bounds in the projection function,
         // so we don't need to calculate them from the data
-        setBounds({ loaded: true });
+        setBounds([
+          [0, 0],
+          [0, 0],
+        ] as [[number, number], [number, number]]);
       })
       .catch((error) => {
         mapLogger.error('Error loading GeoJSON:', error);
@@ -348,7 +358,11 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
     );
   }
 
-  mapLogger.debug('✅ Map data loaded, rendering', geoData.features?.length, 'counties');
+  mapLogger.debug(
+    '✅ Map data loaded, rendering',
+    (geoData.features as CountyFeature[])?.length || 0,
+    'counties'
+  );
 
   // Handle mouse wheel for zoom
   const handleWheel = (e: React.WheelEvent) => {
@@ -493,20 +507,22 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
         >
           {/* Render all county shapes with hover labels and click handlers */}
           <g className="county-shapes">
-            {geoData.features.map((feature: CountyFeature, idx: number) => (
-              <CountyDropZone
-                key={feature.properties.NAME || `county-${idx}`}
-                county={feature}
-                isDragging={isDragging}
-                onCountyClick={(county) => setSelectedCounty(county)}
-                onCountyHover={(countyId) => setHoveredCounty(countyId)}
-                onCountyLeave={() => setHoveredCounty(null)}
-                onLabelPosition={(countyId, position) => {
-                  setLabelPositions((prev) => new Map(prev.set(countyId, position)));
-                }}
-                onMobilePlacement={handleMobilePlacement}
-              />
-            ))}
+            {geoData.features && Array.isArray(geoData.features)
+              ? (geoData.features as CountyFeature[]).map((feature: CountyFeature, idx: number) => (
+                  <CountyDropZone
+                    key={feature.properties.NAME || `county-${idx}`}
+                    county={feature}
+                    isDragging={isDragging}
+                    onCountyClick={(county) => setSelectedCounty(county)}
+                    onCountyHover={(countyId) => setHoveredCounty(countyId)}
+                    onCountyLeave={() => setHoveredCounty(null)}
+                    onLabelPosition={(countyId, position) => {
+                      setLabelPositions((prev) => new Map(prev.set(countyId, position)));
+                    }}
+                    onMobilePlacement={handleMobilePlacement}
+                  />
+                ))
+              : null}
           </g>
 
           {/* Render county labels above all shapes for proper layering */}
@@ -556,7 +572,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       <CountyDetailsModal
         isOpen={!!selectedCounty}
         onClose={() => setSelectedCounty(null)}
-        county={selectedCounty}
+        county={selectedCounty!}
         onViewEducationalContent={() => {
           // Keep reference to selected county for Study Mode focus
           // Don't close county modal immediately - Study Mode will handle the focus

@@ -35,11 +35,9 @@ export default function GameContainer() {
     isGameStarted,
     isGameComplete,
     startGame,
-    resetGame: _resetGame,
     selectCounty,
     placeCounty,
     clearCurrentCounty,
-    currentCounty,
     counties,
     placedCounties,
   } = useGame();
@@ -47,7 +45,6 @@ export default function GameContainer() {
   const [isDragging, setIsDragging] = useState(false);
   const [activeCounty, setActiveCounty] = useState<Record<string, unknown> | null>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
-  const [selectedCountyForTouch, setSelectedCountyForTouch] = useState<Record<string, unknown> | null>(null);
   const sound = useSoundEffect();
   const deviceInfo = useDeviceInfo();
 
@@ -214,9 +211,7 @@ export default function GameContainer() {
         <RegionsPanel />
 
         {/* Mobile instructions */}
-        {(deviceInfo.isMobile || deviceInfo.isTablet) && (
-          <MobileGameInstructions />
-        )}
+        {(deviceInfo.isMobile || deviceInfo.isTablet) && <MobileGameInstructions />}
 
         <DndContext
           sensors={sensors}
@@ -224,37 +219,45 @@ export default function GameContainer() {
           onDragEnd={handleDragEnd}
           collisionDetection={closestCenter}
         >
-          <div className={`
-            ${deviceInfo.isMobile || deviceInfo.isTablet
-              ? 'flex flex-col gap-2'
-              : 'flex flex-col lg:grid lg:grid-cols-4 gap-3 lg:gap-4'
+          <div
+            className={`
+            ${
+              deviceInfo.isMobile || deviceInfo.isTablet
+                ? 'flex flex-col gap-2'
+                : 'flex flex-col lg:grid lg:grid-cols-4 gap-3 lg:gap-4'
             } mt-2
-          `}>
+          `}
+          >
             {/* County Tray - Optimized for mobile scrolling */}
-            <div className={`
-              ${deviceInfo.isMobile || deviceInfo.isTablet
-                ? 'order-2'
-                : 'lg:col-span-1 order-2 lg:order-1'
+            <div
+              className={`
+              ${
+                deviceInfo.isMobile || deviceInfo.isTablet
+                  ? 'order-2'
+                  : 'lg:col-span-1 order-2 lg:order-1'
               }
-            `}>
+            `}
+            >
               <CountyTray />
             </div>
 
             {/* Map - Larger on mobile for better gameplay */}
-            <div className={`
-              ${deviceInfo.isMobile || deviceInfo.isTablet
-                ? 'order-1'
-                : 'lg:col-span-3 order-1 lg:order-2'
+            <div
+              className={`
+              ${
+                deviceInfo.isMobile || deviceInfo.isTablet
+                  ? 'order-1'
+                  : 'lg:col-span-3 order-1 lg:order-2'
               }
-            `}>
-              <div className={`
+            `}
+            >
+              <div
+                className={`
                 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg shadow-lg
                 p-3 lg:p-4 border border-gray-100 dark:border-gray-800
-                ${deviceInfo.isMobile || deviceInfo.isTablet
-                  ? 'h-[40vh]'
-                  : 'h-[55vh] lg:h-[520px]'
-                }
-              `}>
+                ${deviceInfo.isMobile || deviceInfo.isTablet ? 'h-[40vh]' : 'h-[55vh] lg:h-[520px]'}
+              `}
+              >
                 <MapErrorBoundary>
                   <CaliforniaMapSimple isDragging={isDragging} />
                 </MapErrorBoundary>
@@ -270,7 +273,7 @@ export default function GameContainer() {
                 style={{ fontSize: '11px' }}
               >
                 <span className="font-semibold text-gray-700 dark:text-gray-200">
-                  {activeCounty.name}
+                  {activeCounty.name as string}
                 </span>
               </div>
             ) : null}

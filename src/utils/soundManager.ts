@@ -137,6 +137,16 @@ class SoundManager {
         waveType: 'sine',
       },
     },
+    [SoundType.COMPLETE]: {
+      type: SoundType.COMPLETE,
+      volume: 0.45,
+      loop: false,
+      placeholder: {
+        frequency: 880,
+        duration: 1.0,
+        waveType: 'triangle',
+      },
+    },
   };
 
   // File paths for actual sound files (when available)
@@ -148,11 +158,14 @@ class SoundManager {
     return '';
   }
 
-  private soundPaths: Record<SoundType, string> = {} as Record<SoundType, string>;
+  // Sound paths kept for future use when actual MP3 files are added
+  // Currently using generated tones for all sounds
+  private readonly soundPaths: Record<SoundType, string> = {} as Record<SoundType, string>;
 
   private constructor() {
     // Initialize sound paths with proper base path
     const basePath = this.getBasePath();
+    // @ts-expect-error - Initializing readonly property in constructor
     this.soundPaths = {
       [SoundType.PICKUP]: `${basePath}/sounds/pickup.mp3`,
       [SoundType.CORRECT]: `${basePath}/sounds/correct.mp3`,

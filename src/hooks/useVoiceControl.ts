@@ -32,6 +32,9 @@ export interface VoiceControlState {
 const DEFAULT_LANGUAGE = 'en-US';
 const CONFIDENCE_THRESHOLD = 0.7;
 
+// Type for Web Speech API (may not be available in all browsers)
+type SpeechRecognition = unknown;
+
 export function useVoiceControl(
   commands: VoiceCommand[],
   options: VoiceControlOptions = { enabled: false }
@@ -50,15 +53,18 @@ export function useVoiceControl(
   // Check browser support
   useEffect(() => {
     const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      (window as Window & { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown })
+        .SpeechRecognition ||
+      (window as Window & { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown })
+        .webkitSpeechRecognition;
 
     if (SpeechRecognition) {
-      setState(prev => ({ ...prev, isSupported: true }));
+      setState((prev) => ({ ...prev, isSupported: true }));
     } else {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isSupported: false,
-        error: 'Speech recognition not supported'
+        error: 'Speech recognition not supported',
       }));
     }
   }, []);
@@ -67,13 +73,13 @@ export function useVoiceControl(
   useEffect(() => {
     const commandMap = new Map<string, VoiceCommand>();
 
-    commands.forEach(cmd => {
+    commands.forEach((cmd) => {
       // Add main command
       commandMap.set(cmd.command.toLowerCase(), cmd);
 
       // Add aliases
       if (cmd.aliases) {
-        cmd.aliases.forEach(alias => {
+        cmd.aliases.forEach((alias) => {
           commandMap.set(alias.toLowerCase(), cmd);
         });
       }
@@ -89,8 +95,12 @@ export function useVoiceControl(
     }
 
     const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      (window as Window & { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown })
+        .SpeechRecognition ||
+      (window as Window & { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown })
+        .webkitSpeechRecognition;
 
+    // @ts-expect-error - SpeechRecognition API not fully typed
     const recognition = new SpeechRecognition();
     recognition.lang = options.language || DEFAULT_LANGUAGE;
     recognition.continuous = options.continuous ?? true;
@@ -98,15 +108,15 @@ export function useVoiceControl(
     recognition.maxAlternatives = options.maxAlternatives ?? 1;
 
     recognition.onstart = () => {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isListening: true,
-        error: null
+        error: null,
       }));
     };
 
     recognition.onend = () => {
-      setState(prev => ({ ...prev, isListening: false }));
+      setState((prev) => ({ ...prev, isListening: false }));
 
       // Auto-restart if still enabled
       if (options.enabled) {
@@ -118,8 +128,7 @@ export function useVoiceControl(
       }
     };
 
-    recognition.onerror = (event: any) => {
-
+    recognition.onerror = (event: { error: string }) => {
       let errorMessage = 'Unknown error';
       switch (event.error) {
         case 'no-speech':
@@ -138,33 +147,35 @@ export function useVoiceControl(
           errorMessage = `Error: ${event.error}`;
       }
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         error: errorMessage,
-        isListening: false
+        isListening: false,
       }));
     };
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: {
+      results: Array<Array<{ transcript: string; confidence: number }>>;
+    }) => {
       const last = event.results.length - 1;
       const result = event.results[last];
       const transcript = result[0].transcript.toLowerCase().trim();
       const confidence = result[0].confidence;
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         lastCommand: transcript,
         confidence,
-        error: null
+        error: null,
       }));
 
       // Process command if confidence is high enough
       if (confidence >= CONFIDENCE_THRESHOLD) {
         processVoiceCommand(transcript);
       } else {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          error: `Low confidence (${Math.round(confidence * 100)}%). Please try again.`
+          error: `Low confidence (${Math.round(confidence * 100)}%). Please try again.`,
         }));
       }
     };
@@ -184,6 +195,7 @@ export function useVoiceControl(
         recognitionRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.isSupported, options.enabled, options.language, options.continuous]);
 
   // Process voice command
@@ -207,15 +219,15 @@ export function useVoiceControl(
       try {
         command.action();
       } catch {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          error: 'Failed to execute command'
+          error: 'Failed to execute command',
         }));
       }
     } else {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        error: `Unknown command: "${transcript}"`
+        error: `Unknown command: "${transcript}"`,
       }));
     }
   }, []);
@@ -238,7 +250,7 @@ export function useVoiceControl(
   }, [state.isListening]);
 
   const clearError = useCallback(() => {
-    setState(prev => ({ ...prev, error: null }));
+    setState((prev) => ({ ...prev, error: null }));
   }, []);
 
   return {

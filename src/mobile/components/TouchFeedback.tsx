@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MOBILE_ANIMATIONS } from '../config/breakpoints';
 import '../styles/touchFeedback.css';
 
 interface RippleEffect {
@@ -176,7 +175,7 @@ export const TouchFeedback: React.FC<TouchFeedbackProps> = ({
             }}
             transition={{
               duration: effectiveDuration / 1000,
-              ease: MOBILE_ANIMATIONS.springs.gentle.type === 'spring' ? 'easeOut' : 'easeOut',
+              ease: 'easeOut',
             }}
             style={{
               position: 'absolute',
@@ -208,7 +207,7 @@ export const TouchFeedback: React.FC<TouchFeedbackProps> = ({
  */
 // eslint-disable-next-line react-refresh/only-export-components
 export const useTouchFeedback = (
-  elementRef: React.RefObject<HTMLElement>,
+  _elementRef: React.RefObject<HTMLElement>,
   options?: Partial<TouchFeedbackProps>
 ) => {
   const [ripples, setRipples] = useState<RippleEffect[]>([]);

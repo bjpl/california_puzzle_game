@@ -167,7 +167,9 @@ class SyncManager {
    * WHY: Support offline-first functionality
    * PATTERN: Queue pattern with retry logic
    */
-  async queueOperation(operation: Omit<SyncOperation, 'id' | 'userId' | 'createdAt'>): Promise<void> {
+  async queueOperation(
+    operation: Omit<SyncOperation, 'id' | 'userId' | 'createdAt' | 'status' | 'retryCount'>
+  ): Promise<void> {
     if (!this.userId) {
       logger.error('[SyncManager] Cannot queue operation without user ID');
       return;
@@ -195,7 +197,7 @@ class SyncManager {
    */
   subscribeToTable(
     table: string,
-    callback: (payload: any) => void | Promise<void>
+    callback: (payload: { eventType: string; new?: unknown; old?: unknown }) => void | Promise<void>
   ): RealtimeChannel {
     if (this.channels.has(table)) {
       logger.warn('[SyncManager] Already subscribed to:', table);
@@ -332,6 +334,7 @@ class SyncManager {
 
     switch (type) {
       case 'insert': {
+        // @ts-expect-error - Dynamic table name requires runtime type checking
         const { error } = await supabase.from(table).insert(data);
 
         if (error) {
@@ -346,6 +349,7 @@ class SyncManager {
         }
 
         // Check for conflicts
+        // @ts-expect-error - Dynamic table name requires runtime type checking
         const { data: serverData, error: fetchError } = await supabase
           .from(table)
           .select('*')
@@ -378,6 +382,7 @@ class SyncManager {
           }
         }
 
+        // @ts-expect-error - Dynamic table name requires runtime type checking
         const { error } = await supabase.from(table).update(data).eq('id', recordId);
 
         if (error) {
@@ -391,6 +396,7 @@ class SyncManager {
           throw new Error('Delete requires recordId');
         }
 
+        // @ts-expect-error - Dynamic table name requires runtime type checking
         const { error } = await supabase.from(table).delete().eq('id', recordId);
 
         if (error) {

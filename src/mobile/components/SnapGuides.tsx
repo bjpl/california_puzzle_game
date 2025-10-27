@@ -91,7 +91,7 @@ export const SnapGuides: React.FC<SnapGuidesProps> = ({
   targets,
   dragPosition,
   isDragging,
-  threshold = GESTURE_CONFIG.snapThreshold,
+  threshold = GESTURE_CONFIG.SNAP_THRESHOLD,
   showDistance = true,
   activeColor = 'rgb(59, 130, 246)',
   inactiveColor = 'rgb(156, 163, 175)',
@@ -168,7 +168,7 @@ export const SnapGuides: React.FC<SnapGuidesProps> = ({
               }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{
-                duration: prefersReducedMotion ? 0 : MOBILE_ANIMATIONS.durations.fast / 1000,
+                duration: prefersReducedMotion ? 0 : MOBILE_ANIMATIONS.FAST / 1000,
                 ease: 'easeOut',
               }}
               style={{
@@ -326,7 +326,7 @@ export const SnapGuides: React.FC<SnapGuidesProps> = ({
 // eslint-disable-next-line react-refresh/only-export-components
 export const useSnapGuides = (
   targets: SnapTarget[],
-  threshold: number = GESTURE_CONFIG.snapThreshold
+  threshold: number = GESTURE_CONFIG.SNAP_THRESHOLD
 ) => {
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
   const [activeTarget, setActiveTarget] = useState<SnapTarget | null>(null);

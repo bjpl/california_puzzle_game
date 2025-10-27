@@ -161,7 +161,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
         .append('path')
         .datum(county)
         .attr('class', `county-outline county-${county.id}`)
-        .attr('d', mapState.path)
+        .attr('d', (d: County) => (mapState.path && mapState.path(d.geometry)) || '')
         .attr('fill', 'none')
         .attr('stroke', getOutlineColor(county))
         .attr('stroke-width', getOutlineWidth(county))
@@ -293,7 +293,7 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
         .append('path')
         .datum(county)
         .attr('class', `placed-county placed-${county.id}`)
-        .attr('d', mapState.path)
+        .attr('d', (d: CountyPiece) => (mapState.path && mapState.path(d.geometry)) || '')
         .attr('fill', fillColor)
         .attr('stroke', '#059669')
         .attr('stroke-width', 2)
@@ -509,8 +509,9 @@ const CaliforniaMapCanvas: React.FC<CaliforniaMapCanvasProps> = ({
             fontFamily: 'monospace',
           }}
         >
-          Counties: {counties.length} | Placed: {Array.isArray(placedCounties) ? placedCounties.length : placedCounties.size} | Zones: {dropZones.length}{' '}
-          | Difficulty: {difficulty}
+          Counties: {counties.length} | Placed:{' '}
+          {Array.isArray(placedCounties) ? placedCounties.length : placedCounties.size} | Zones:{' '}
+          {dropZones.length} | Difficulty: {difficulty}
         </div>
       )}
     </div>

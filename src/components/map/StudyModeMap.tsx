@@ -100,7 +100,7 @@ export default function StudyModeMap({
 
   return (
     <>
-      <style jsx global>{`
+      <style>{`
         @keyframes pulse {
           0%,
           100% {
@@ -196,7 +196,9 @@ export default function StudyModeMap({
                     )
                   : true;
 
-              const fillColor = isFiltered ? getRegionColorForMap(county.region) : '#E5E7EB'; // Gray color for filtered out counties
+              const fillColor = isFiltered
+                ? getRegionColorForMap(county.region || 'Unknown')
+                : '#E5E7EB'; // Gray color for filtered out counties
 
               return (
                 <g key={county.id}>

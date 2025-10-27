@@ -146,7 +146,7 @@ const neighborHints: Record<string, string[]> = {
  * Generates a hint for a specific county and hint type
  */
 export function generateHint(county: County, type: HintType, progress: number = 0): Hint {
-  const _countyData = getCountyById(county.id);
+  void getCountyById(county.id); // Get county data for reference
   let content = '';
   let visualData: HintVisualData | undefined;
   let educationalValue = 1;

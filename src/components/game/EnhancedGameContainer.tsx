@@ -290,7 +290,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
             </div>
 
             {/* Study Mode */}
-            <StudyMode counties={currentMode.counties} onStudyComplete={handleStudyComplete} />
+            <StudyMode onClose={handleStudyComplete} />
           </div>
         </div>
       );

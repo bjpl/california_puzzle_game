@@ -44,7 +44,7 @@ export const ProgressionSystem: React.FC<ProgressionSystemProps> = ({
 
   // Calculate unlock status for all modes
   const modeUnlockStatuses = useMemo((): ModeUnlockStatus[] => {
-    const unlockedModes = getUnlockedModes(playerStats);
+    const unlockedModes = getUnlockedModes(playerStats as unknown as Record<string, unknown>);
     const unlockedModeIds = new Set(unlockedModes.map((m) => m.id));
 
     return availableModes.map((mode) => {

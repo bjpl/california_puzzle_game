@@ -275,6 +275,7 @@ export const useGameStore = create<GameStore>()(
         hintSystem: {
           availableHints: 3,
           usedHints: 0,
+          freeHintsRemaining: 1,
           currentHintType: undefined,
           hintProgress: 0,
           cooldownTimeRemaining: 0,
@@ -725,6 +726,7 @@ export const useGameStore = create<GameStore>()(
             hintSystem: {
               availableHints: state.settings.hintSettings.maxHintsPerLevel,
               usedHints: 0,
+              freeHintsRemaining: state.settings.hintSettings.freeHintsAllowed,
               currentHintType: undefined,
               hintProgress: 0,
               cooldownTimeRemaining: 0,

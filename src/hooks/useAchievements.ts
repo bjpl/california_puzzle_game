@@ -8,9 +8,7 @@ import {
   AchievementNotification,
   AchievementRarity,
 } from '../utils/achievements';
-import { achievementLogger } from '../utils/logger';
 import { storageManager } from '../utils/storage';
-import { achievementLogger } from '../utils/logger';
 import {
   Achievement,
   GameStats,
@@ -18,7 +16,6 @@ import {
   DifficultyLevel,
   CaliforniaRegion,
 } from '../types';
-import { achievementLogger } from '../utils/logger';
 
 interface AchievementHookReturn {
   achievements: AchievementDefinition[];
@@ -33,7 +30,14 @@ interface AchievementHookReturn {
   checkAchievements: (
     stats: GameStats,
     placement?: PlacementResult,
-    gameData?: Record<string, unknown>
+    gameData?: {
+      difficulty: DifficultyLevel;
+      region: CaliforniaRegion;
+      timeElapsed: number;
+      hintsUsed: number;
+      mistakes: number;
+      streak: number;
+    }
   ) => Promise<Achievement[]>;
   markNotificationAsRead: (index: number) => void;
   markAllNotificationsAsRead: () => void;

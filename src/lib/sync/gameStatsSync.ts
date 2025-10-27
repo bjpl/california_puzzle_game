@@ -91,7 +91,7 @@ class GameStatsSync {
     logger.info('[GameStatsSync] Syncing stats to server...');
 
     // Check if progress record exists
-    const { data: existingProgress, error: fetchError } = await supabase
+    const { data, error: fetchError } = await supabase
       .from('user_progress')
       .select('*')
       .eq('user_id', this.userId)
@@ -102,6 +102,8 @@ class GameStatsSync {
       return;
     }
 
+    const existingProgress = data as UserProgressRow | null;
+
     if (existingProgress) {
       // Merge stats (use maximum values)
       const mergedStats = this.mergeStats(currentStats, this.deserializeStats(existingProgress));
@@ -110,12 +112,12 @@ class GameStatsSync {
       await syncManager.queueOperation({
         type: 'update',
         table: 'user_progress',
-        recordId: existingProgress.id,
+        recordId: String(existingProgress.id),
         data: {
           ...statsData,
           updated_at: new Date().toISOString(),
         },
-        previousData: existingProgress,
+        previousData: existingProgress as Record<string, unknown>,
       });
 
       // Update local store with merged values

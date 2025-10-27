@@ -58,6 +58,20 @@ export enum ConnectionType {
 }
 
 /**
+ * Network Information API interface
+ */
+interface NetworkInformation {
+  effectiveType?: string;
+  downlink?: number;
+}
+
+interface NavigatorWithConnection extends Navigator {
+  connection?: NetworkInformation;
+  mozConnection?: NetworkInformation;
+  webkitConnection?: NetworkInformation;
+}
+
+/**
  * Get connection type from Network Information API
  */
 function getConnectionType(): ConnectionType {
@@ -65,10 +79,8 @@ function getConnectionType(): ConnectionType {
     return ConnectionType.UNKNOWN;
   }
 
-  const connection =
-    (navigator as Record<string, unknown>).connection ||
-    (navigator as Record<string, unknown>).mozConnection ||
-    (navigator as Record<string, unknown>).webkitConnection;
+  const nav = navigator as NavigatorWithConnection;
+  const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
 
   if (!connection || !connection.effectiveType) {
     return ConnectionType.UNKNOWN;
@@ -85,10 +97,8 @@ function getConnectionSpeed(): number | null {
     return null;
   }
 
-  const connection =
-    (navigator as Record<string, unknown>).connection ||
-    (navigator as Record<string, unknown>).mozConnection ||
-    (navigator as Record<string, unknown>).webkitConnection;
+  const nav = navigator as NavigatorWithConnection;
+  const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
 
   if (!connection || !connection.downlink) {
     return null;

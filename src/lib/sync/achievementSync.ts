@@ -13,10 +13,12 @@
  */
 
 import { syncManager } from '../syncManager';
-import { supabase } from '../supabase';
+import { supabase, Database } from '../supabase';
 import { logger } from '../../utils/logger';
 import { useGameStore } from '../../stores/gameStore';
 import type { Achievement } from '../../types';
+
+type UserProgressRow = Database['public']['Tables']['user_progress']['Row'];
 
 /**
  * Achievement Sync Class
@@ -107,13 +109,6 @@ class AchievementSync {
 
     logger.info('[AchievementSync] Syncing achievement:', achievement.id);
 
-    // Get current achievements from server
-    const { data: existingProgress } = await supabase
-      .from('user_progress')
-      .select('achievements')
-      .eq('user_id', this.userId)
-      .single();
-
     const currentAchievements = useGameStore.getState().achievements;
     await this.updateAchievementsOnServer(currentAchievements);
 
@@ -150,25 +145,28 @@ class AchievementSync {
       return;
     }
 
-    if (data && data.achievements) {
-      logger.info('[AchievementSync] Achievements loaded from server');
+    if (data) {
+      const progressData = data as UserProgressRow;
+      if (progressData.achievements) {
+        logger.info('[AchievementSync] Achievements loaded from server');
 
-      // Merge with local achievements
-      const serverAchievementIds = new Set(data.achievements as string[]);
-      const localAchievements = useGameStore.getState().achievements;
+        // Merge with local achievements
+        const serverAchievementIds = new Set(progressData.achievements);
+        const localAchievements = useGameStore.getState().achievements;
 
-      const mergedAchievements = localAchievements.map((achievement) => {
-        if (serverAchievementIds.has(achievement.id) && !achievement.isUnlocked) {
-          return {
-            ...achievement,
-            isUnlocked: true,
-            progress: 1,
-          };
-        }
-        return achievement;
-      });
+        const mergedAchievements = localAchievements.map((achievement) => {
+          if (serverAchievementIds.has(achievement.id) && !achievement.isUnlocked) {
+            return {
+              ...achievement,
+              isUnlocked: true,
+              progress: 1,
+            };
+          }
+          return achievement;
+        });
 
-      useGameStore.setState({ achievements: mergedAchievements });
+        useGameStore.setState({ achievements: mergedAchievements });
+      }
     }
   }
 
@@ -191,11 +189,11 @@ class AchievementSync {
       logger.info('[AchievementSync] Real-time update received:', payload.eventType);
 
       if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
-        const serverProgress = payload.new;
+        const serverProgress = payload.new as UserProgressRow;
 
         if (serverProgress.user_id === this.userId && serverProgress.achievements) {
           // Merge with local achievements
-          const serverAchievementIds = new Set(serverProgress.achievements as string[]);
+          const serverAchievementIds = new Set(serverProgress.achievements);
           const localAchievements = useGameStore.getState().achievements;
 
           const mergedAchievements = localAchievements.map((achievement) => {
@@ -248,10 +246,11 @@ class AchievementSync {
     }
 
     if (existingProgress) {
+      const progressData = existingProgress as UserProgressRow;
       await syncManager.queueOperation({
         type: 'update',
         table: 'user_progress',
-        recordId: existingProgress.id,
+        recordId: progressData.id,
         data: {
           achievements: unlockedIds,
           updated_at: new Date().toISOString(),

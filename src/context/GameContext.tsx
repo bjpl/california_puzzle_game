@@ -1,10 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { californiaCounties as _californiaCounties } from '../data/californiaCounties';
-import {
-  allCaliforniaCounties,
-  County as _CompleteCounty,
-} from '../data/californiaCountiesComplete';
-import { useTimer, TimerStats } from '../hooks/useTimer';
+import { allCaliforniaCounties, County } from '../data/californiaCountiesComplete';
+import { useTimer, TimerState } from '../hooks/useTimer';
 import {
   calculateScore,
   calculateGameMetrics,
@@ -13,19 +10,6 @@ import {
 } from '../utils/scoring';
 import { saveLeaderboardEntry, LeaderboardEntry } from '../utils/leaderboard';
 import { loadGameState, clearGameState } from '../utils/gameStateManager';
-
-// Use the complete County interface but make some fields optional for compatibility
-interface County {
-  id: string;
-  name: string;
-  region: string;
-  capital?: string;
-  population?: number;
-  area?: number;
-  founded?: number;
-  difficulty?: 'easy' | 'medium' | 'hard';
-  funFact?: string;
-}
 
 interface PlacementRecord {
   countyId: string;
@@ -142,7 +126,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         setScore(savedState.score);
         setMistakes(savedState.mistakes);
         setGameSettings(savedState.gameSettings as GameSettings);
-        setPlacementHistory(savedState.placementHistory);
+        setPlacementHistory((savedState.placementHistory || []) as unknown as PlacementRecord[]);
         setIsGameStarted(true);
         setTimerStarted(true);
 
@@ -205,7 +189,14 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, [placedCounties, counties]);
 
   // Calculate current game metrics
-  const gameMetrics = calculateGameMetrics(placementHistory, timerState.elapsed);
+  const gameMetrics = calculateGameMetrics(
+    placementHistory.map((record) => ({
+      isCorrect: record.isCorrect,
+      time: record.placementTime,
+      region: record.region,
+    })),
+    timerState.elapsed
+  );
 
   const selectCounty = useCallback(
     (county: County) => {

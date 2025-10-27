@@ -301,7 +301,7 @@ export default function GameHeader() {
           <HintModal
             isOpen={showHintModal}
             onClose={() => setShowHintModal(false)}
-            county={currentCounty}
+            county={currentCounty!}
             hintLevel={hintLevel}
           />,
           document.body

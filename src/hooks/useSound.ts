@@ -14,6 +14,7 @@ import {
   setupAudioContextResume,
   cleanupSoundSystem,
 } from '../utils/initializeSound';
+import type { SoundSettings } from '@/types';
 
 export interface UseSoundOptions {
   enableClickSounds?: boolean;
@@ -29,7 +30,7 @@ export interface UseSoundReturn {
   toggleMute: () => void;
   startBackgroundMusic: () => void;
   stopBackgroundMusic: () => void;
-  soundSettings: Record<string, unknown>;
+  soundSettings: SoundSettings;
   initializeSound: () => Promise<void>;
 }
 

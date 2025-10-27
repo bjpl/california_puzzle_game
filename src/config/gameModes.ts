@@ -390,10 +390,10 @@ export const getUnlockedModes = (playerStats: Record<string, unknown>): GameMode
           }
 
           case UnlockRequirementType.TOTAL_GAMES:
-            return playerStats.totalGamesPlayed >= (req.threshold || 0);
+            return (playerStats.totalGamesPlayed as number) >= (req.threshold || 0);
 
           case UnlockRequirementType.ACHIEVE_SCORE:
-            return playerStats.bestScore >= (req.threshold || 0);
+            return (playerStats.bestScore as number) >= (req.threshold || 0);
 
           case UnlockRequirementType.COMPLETE_REGION:
             // Check if all modes in a region are completed

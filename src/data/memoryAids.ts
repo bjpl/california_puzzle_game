@@ -455,7 +455,8 @@ export function getSpatialRelationship(
   countyId: string,
   direction: 'northOf' | 'southOf' | 'eastOf' | 'westOf'
 ): string[] {
-  return spatialRelationships[direction][countyId] || [];
+  const directionMap = spatialRelationships[direction] as Record<string, string[]>;
+  return directionMap[countyId] || [];
 }
 
 export function getLearningStrategy(level: 'beginner' | 'intermediate' | 'advanced'): string[] {

@@ -22,7 +22,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
-import { supabase } from '../../../lib/supabase';
+import { supabase as _supabase } from '../../../lib/supabase';
 import { deleteUserAccount, exportUserData } from '../../../services/supabase/auth';
 import { announceToScreenReader } from '../../../utils/accessibility';
 

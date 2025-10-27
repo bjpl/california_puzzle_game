@@ -138,11 +138,6 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
     }
   }, [isPaused, resumeGame, pauseGame, updateTimer]);
 
-  // Handle county drag start
-  const handleCountyDrag = useCallback((_county: CountyPiece) => {
-    // Could add visual feedback here
-  }, []);
-
   // Handle county drop
   const handleCountyDrop = useCallback(
     (county: CountyPiece, position: Position) => {
@@ -176,12 +171,6 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [_isGameActive, isPaused, placeCounty, checkAchievements, remainingCounties.length]
   );
-
-  // Handle county drag end (including failed drops)
-  const handleCountyDragEnd = useCallback((_county: CountyPiece, _position: Position) => {
-    // For now, this will be handled by handleCountyDrop if successful
-    // Could add logic here for failed drop attempts
-  }, []);
 
   // Handle game completion
   const handleGameComplete = useCallback(() => {
@@ -502,12 +491,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
           {/* County Tray */}
           {containerState.gameStarted && (
             <div style={{ flex: 1, overflow: 'auto' }}>
-              <CountyTray
-                counties={remainingCounties}
-                onCountyDrag={handleCountyDrag}
-                onCountyDragEnd={handleCountyDragEnd}
-                difficulty={containerState.currentDifficulty}
-              />
+              <CountyTray />
             </div>
           )}
         </div>

@@ -101,21 +101,21 @@ class StorageManager {
       const parsed = JSON.parse(item);
 
       // Handle Date objects
-      return this.deserializeDates(parsed);
+      return this.deserializeDates(parsed) as T;
     } catch (error) {
       storageLogger.warn(`Failed to get item ${key}:`, error);
       return null;
     }
   }
 
-  private setItem<T extends Record<string, unknown>>(key: string, value: T): void {
+  private setItem(key: string, value: unknown): void {
     try {
-      const serialized = JSON.stringify(value, this.dateReplacer as any);
+      const serialized = JSON.stringify(value, this.dateReplacer);
       // eslint-disable-next-line no-restricted-globals
       localStorage.setItem(this.getKey(key), serialized);
 
       // Notify listeners
-      this.notifyListeners(key, value);
+      this.notifyListeners(key, value as Record<string, unknown>);
     } catch (error) {
       storageLogger.warn(`Failed to set item ${key}:`, error);
     }
@@ -136,7 +136,7 @@ class StorageManager {
       return { __set: Array.from(value) } as Record<string, unknown>;
     }
     if (Array.isArray(value)) {
-      return value.map(item => this.dateReplacer('', item)) as Record<string, unknown>[];
+      return value.map((item) => this.dateReplacer('', item)) as Record<string, unknown>[];
     }
     return value;
   }
@@ -370,7 +370,7 @@ class StorageManager {
   public importData(dataString: string): boolean {
     try {
       const data = JSON.parse(dataString);
-      const deserializedData = this.deserializeDates(data);
+      const deserializedData = this.deserializeDates(data) as Record<string, unknown>;
 
       if (deserializedData.profiles) {
         this.setItem('profiles', deserializedData.profiles);

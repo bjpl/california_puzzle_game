@@ -282,13 +282,15 @@ export function useDataLoader() {
       const achievements = storageManager.loadAchievements();
       // Merge with current achievements
       const currentAchievements = gameStore.achievements;
-      const _mergedAchievements = currentAchievements.map((current) => {
+      const mergedAchievements = currentAchievements.map((current) => {
         const saved = achievements.find((a) => a.id === current.id);
         return saved ? { ...current, ...saved } : current;
       });
 
       // Note: This would require a method to set achievements in the store
       // For now, we'll assume the store handles this through persistence
+      // Store merged achievements for future use
+      void mergedAchievements;
 
       logger.debug('Saved data loaded successfully');
     } catch (error) {

@@ -18,7 +18,7 @@ const HoverEffects: React.FC<HoverEffectsProps> = ({
   disabled = false,
   className = '',
   onHoverStart,
-  onHoverEnd
+  onHoverEnd,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -38,10 +38,14 @@ const HoverEffects: React.FC<HoverEffectsProps> = ({
 
   const getIntensityMultiplier = () => {
     switch (intensity) {
-      case 'subtle': return 0.5;
-      case 'medium': return 1;
-      case 'strong': return 1.5;
-      default: return 1;
+      case 'subtle':
+        return 0.5;
+      case 'medium':
+        return 1;
+      case 'strong':
+        return 1.5;
+      default:
+        return 1;
     }
   };
 
@@ -82,17 +86,17 @@ const HoverEffects: React.FC<HoverEffectsProps> = ({
           whileHover: {
             y: -8 * multiplier,
             boxShadow: `0 ${12 * multiplier}px ${24 * multiplier}px rgba(0, 0, 0, 0.15)`,
-            transition: { duration: 0.2, ease: 'easeOut' }
-          }
+            transition: { duration: 0.2, ease: 'easeOut' },
+          },
         };
 
       case 'glow':
         return {
           whileHover: {
             boxShadow: `0 0 ${20 * multiplier}px rgba(59, 130, 246, 0.6)`,
-            scale: 1 + (0.02 * multiplier),
-            transition: { duration: 0.3, ease: 'easeOut' }
-          }
+            scale: 1 + 0.02 * multiplier,
+            transition: { duration: 0.3, ease: 'easeOut' },
+          },
         };
 
       case 'tilt':
@@ -100,51 +104,51 @@ const HoverEffects: React.FC<HoverEffectsProps> = ({
           style: {
             rotateX: disabled ? 0 : rotateX,
             rotateY: disabled ? 0 : rotateY,
-            transformPerspective: 1000
+            transformPerspective: 1000,
           },
           whileHover: {
-            scale: 1 + (0.05 * multiplier),
-            transition: { duration: 0.2 }
-          }
+            scale: 1 + 0.05 * multiplier,
+            transition: { duration: 0.2 },
+          },
         };
 
       case 'scale':
         return {
           whileHover: {
-            scale: 1 + (0.1 * multiplier),
-            transition: { duration: 0.2, ease: 'easeOut' }
-          }
+            scale: 1 + 0.1 * multiplier,
+            transition: { duration: 0.2, ease: 'easeOut' },
+          },
         };
 
       case 'magnetic':
         return {
           style: {
             x: disabled ? 0 : x,
-            y: disabled ? 0 : y
+            y: disabled ? 0 : y,
           },
           whileHover: {
-            scale: 1 + (0.03 * multiplier),
-            transition: { duration: 0.2 }
-          }
+            scale: 1 + 0.03 * multiplier,
+            transition: { duration: 0.2 },
+          },
         };
 
       case 'ripple':
         return {
           whileHover: {
             scale: [1, 1.05, 1],
-            transition: { duration: 0.6, ease: 'easeInOut' }
-          }
+            transition: { duration: 0.6, ease: 'easeInOut' },
+          },
         };
 
       case 'california':
         return {
           whileHover: {
-            scale: 1 + (0.05 * multiplier),
+            scale: 1 + 0.05 * multiplier,
             rotateZ: 2 * multiplier,
-            filter: `brightness(${1.1 + (0.1 * multiplier)}) hue-rotate(${10 * multiplier}deg)`,
+            filter: `brightness(${1.1 + 0.1 * multiplier}) hue-rotate(${10 * multiplier}deg)`,
             boxShadow: `0 ${8 * multiplier}px ${16 * multiplier}px rgba(220, 38, 38, 0.3)`,
-            transition: { duration: 0.3, ease: 'easeOut' }
-          }
+            transition: { duration: 0.3, ease: 'easeOut' },
+          },
         };
 
       default:
@@ -169,13 +173,13 @@ const HoverEffects: React.FC<HoverEffectsProps> = ({
             initial={{ scale: 1, opacity: 0.6 }}
             animate={{
               scale: [1, 1.2, 1.4],
-              opacity: [0.6, 0.3, 0]
+              opacity: [0.6, 0.3, 0],
             }}
             transition={{
               duration: 1.5,
               repeat: Infinity,
               delay: i * 0.3,
-              ease: 'easeOut'
+              ease: 'easeOut',
             }}
           />
         ))}
@@ -194,7 +198,7 @@ const HoverEffects: React.FC<HoverEffectsProps> = ({
         exit={{ opacity: 0 }}
         style={{
           background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1))',
-          filter: 'blur(1px)'
+          filter: 'blur(1px)',
         }}
       />
     );
@@ -213,7 +217,7 @@ const HoverEffects: React.FC<HoverEffectsProps> = ({
           exit={{ opacity: 0 }}
           style={{
             background: 'linear-gradient(45deg, rgba(251, 191, 36, 0.2), rgba(239, 68, 68, 0.2))',
-            filter: 'blur(2px)'
+            filter: 'blur(2px)',
           }}
         />
 
@@ -225,18 +229,18 @@ const HoverEffects: React.FC<HoverEffectsProps> = ({
               className="absolute text-yellow-400"
               style={{
                 left: `${20 + i * 15}%`,
-                top: `${10 + Math.sin(i) * 20}%`
+                top: `${10 + Math.sin(i) * 20}%`,
               }}
               animate={{
                 scale: [0, 1, 0],
                 rotate: [0, 180, 360],
-                opacity: [0, 1, 0]
+                opacity: [0, 1, 0],
               }}
               transition={{
                 duration: 2,
                 repeat: Infinity,
                 delay: i * 0.3,
-                ease: 'easeInOut'
+                ease: 'easeInOut',
               }}
             >
               ⭐
@@ -257,7 +261,7 @@ const HoverEffects: React.FC<HoverEffectsProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       {...effectStyles}
-      animate={disabled ? {} : effectStyles.animate}
+      animate={disabled ? {} : (effectStyles as { animate?: Record<string, unknown> }).animate}
     >
       {children}
 
