@@ -115,7 +115,7 @@ const CountyTray = memo(() => {
   );
 
   return (
-    <Card variant="elevated" className="h-[35vh] lg:h-[520px] p-2 flex flex-col">
+    <Card variant="elevated" className="h-[35vh] lg:h-[520px] p-2 flex flex-col relative">
       <Heading
         level={2}
         size="label"
@@ -123,33 +123,52 @@ const CountyTray = memo(() => {
       >
         Counties ({counties.length})
       </Heading>
-      <div
-        className="flex-1 overflow-x-hidden space-y-1 county-tray-scroll min-h-0"
-        style={{
-          overflowY: 'scroll',
-          scrollbarWidth: 'thin',
-          scrollbarColor: '#9ca3af #f3f4f6',
-          marginRight: '-0.5rem',
-          paddingRight: '0.75rem'
-        }}
-      >
-        {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
-          <div key={region} className="mb-2">
-            <Text
-              size="xs"
-              weight="semibold"
-              color="secondary"
-              className="mb-1 py-0.5"
-            >
-              {region}
-            </Text>
-            <div className="flex flex-wrap gap-1">
-              {regionCounties.map((county) => (
-                <DraggableCounty key={county.id} county={county} />
-              ))}
+      <div className="flex-1 min-h-0 relative">
+        <div
+          className="h-full overflow-x-hidden overflow-y-auto space-y-1 pr-1"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#9ca3af #f3f4f6'
+          }}
+        >
+          {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
+            <div key={region} className="mb-2">
+              <Text
+                size="xs"
+                weight="semibold"
+                color="secondary"
+                className="mb-1 py-0.5"
+              >
+                {region}
+              </Text>
+              <div className="flex flex-wrap gap-1">
+                {regionCounties.map((county) => (
+                  <DraggableCounty key={county.id} county={county} />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Visual scroll indicator - gradient fade at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-b from-transparent via-white/50 to-white dark:via-gray-800/50 dark:to-gray-800" />
+
+        {/* Scroll indicator icon */}
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 pointer-events-none">
+          <svg
+            className="w-5 h-5 text-gray-400 animate-bounce"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
       </div>
     </Card>
   );
