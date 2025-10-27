@@ -22,7 +22,6 @@ import RegionsPanel from '../shared/RegionsPanel';
 import MobileGameInstructions from './MobileGameInstructions';
 import { MapErrorBoundary } from '../map/MapErrorBoundary';
 import { StudyErrorBoundary } from '../study/StudyErrorBoundary';
-import { GAME_CONFIG } from '@/constants';
 import LoadingSpinner from '../shared/LoadingSpinner';
 import { prefetchStudyMode, prefetchGameFeatures } from '../../utils/prefetch';
 import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
@@ -74,13 +73,17 @@ export default function GameContainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Use touch sensor for mobile, pointer sensor for desktop
+  // Use both touch and pointer sensors for better compatibility
   const sensors = useSensors(
-    useSensor(deviceInfo.isTouch ? TouchSensor : PointerSensor, {
+    useSensor(PointerSensor, {
       activationConstraint: {
-        distance: deviceInfo.isTouch ? 10 : GAME_CONFIG.DRAG_ACTIVATION_DISTANCE,
-        delay: deviceInfo.isTouch ? 250 : 0, // Add delay for touch to prevent accidental drags
-        tolerance: deviceInfo.isTouch ? 5 : 0,
+        distance: 5, // Small distance to start drag
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250, // Delay for touch to prevent accidental drags
+        tolerance: 5,
       },
     })
   );
