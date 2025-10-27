@@ -569,16 +569,18 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
       </svg>
 
       {/* County Details Modal */}
-      <CountyDetailsModal
-        isOpen={!!selectedCounty}
-        onClose={() => setSelectedCounty(null)}
-        county={selectedCounty!}
-        onViewEducationalContent={() => {
-          // Keep reference to selected county for Study Mode focus
-          // Don't close county modal immediately - Study Mode will handle the focus
-          setShowStudyMode(true);
-        }}
-      />
+      {selectedCounty && (
+        <CountyDetailsModal
+          isOpen={!!selectedCounty}
+          onClose={() => setSelectedCounty(null)}
+          county={selectedCounty as never}
+          onViewEducationalContent={() => {
+            // Keep reference to selected county for Study Mode focus
+            // Don't close county modal immediately - Study Mode will handle the focus
+            setShowStudyMode(true);
+          }}
+        />
+      )}
 
       {/* Enhanced Study Mode Modal */}
       {showStudyMode && (

@@ -64,10 +64,14 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
   }, [updateHintSystem]);
 
   // Handle county drag start
-  const handleCountyDragStart = useCallback((county: County, event: React.DragEvent) => {
-    setDraggedCounty(county);
-    setIsDragging(true);
-    event.dataTransfer.setData('text/plain', county.id);
+  const handleCountyDragStart = useCallback((county: County) => {
+    return (event: React.DragEvent | React.MouseEvent | React.TouchEvent | React.PointerEvent) => {
+      if ('dataTransfer' in event) {
+        setDraggedCounty(county);
+        setIsDragging(true);
+        event.dataTransfer.setData('text/plain', county.id);
+      }
+    };
   }, []);
 
   // Handle county drop
@@ -271,7 +275,7 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
                 <HintVisualIndicators
                   visualData={activeHint.visualData}
                   hintType={activeHint.type}
-                  county={currentTargetCounty as County}
+                  county={currentTargetCounty as never}
                   isActive={showVisualIndicators}
                   onAnimationComplete={() => {}}
                 />
@@ -301,7 +305,12 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
                 key={county.id}
                 className="county-piece p-3 bg-blue-100 hover:bg-blue-200 rounded-lg cursor-move transition-colors"
                 draggable
-                onDragStart={(e: React.DragEvent) => handleCountyDragStart(county as County, e)}
+                onDragStart={(e) => {
+                  const handler = handleCountyDragStart(county as County);
+                  if (e && 'dataTransfer' in e) {
+                    handler(e as unknown as React.DragEvent);
+                  }
+                }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >

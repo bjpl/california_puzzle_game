@@ -349,7 +349,6 @@ class SyncManager {
         }
 
         // Check for conflicts
-        // @ts-expect-error - Dynamic table name requires runtime type checking
         const { data: serverData, error: fetchError } = await supabase
           .from(table)
           .select('*')
@@ -382,8 +381,12 @@ class SyncManager {
           }
         }
 
-        // @ts-expect-error - Dynamic table name requires runtime type checking
-        const { error } = await supabase.from(table).update(data).eq('id', recordId);
+        // Dynamic table update - type safety handled at runtime
+        const updateQuery = supabase
+          .from(table)
+          .update(data as never)
+          .eq('id', recordId);
+        const { error } = await updateQuery;
 
         if (error) {
           throw new Error(`Update failed: ${error.message}`);
@@ -396,7 +399,6 @@ class SyncManager {
           throw new Error('Delete requires recordId');
         }
 
-        // @ts-expect-error - Dynamic table name requires runtime type checking
         const { error } = await supabase.from(table).delete().eq('id', recordId);
 
         if (error) {

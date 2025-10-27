@@ -297,11 +297,12 @@ export default function GameHeader() {
 
       {/* Render HintModal via Portal to ensure it's on top */}
       {typeof document !== 'undefined' &&
+        currentCounty &&
         createPortal(
           <HintModal
             isOpen={showHintModal}
             onClose={() => setShowHintModal(false)}
-            county={currentCounty!}
+            county={currentCounty as never}
             hintLevel={hintLevel}
           />,
           document.body

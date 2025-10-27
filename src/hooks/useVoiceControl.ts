@@ -191,7 +191,7 @@ export function useVoiceControl(
 
     return () => {
       if (recognitionRef.current) {
-        recognitionRef.current.stop();
+        (recognitionRef.current as { stop: () => void }).stop();
         recognitionRef.current = null;
       }
     };
@@ -236,7 +236,7 @@ export function useVoiceControl(
   const startListening = useCallback(() => {
     if (recognitionRef.current && !state.isListening) {
       try {
-        recognitionRef.current.start();
+        (recognitionRef.current as { start: () => void }).start();
       } catch {
         // Failed to start listening
       }
@@ -245,7 +245,7 @@ export function useVoiceControl(
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current && state.isListening) {
-      recognitionRef.current.stop();
+      (recognitionRef.current as { stop: () => void }).stop();
     }
   }, [state.isListening]);
 

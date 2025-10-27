@@ -149,35 +149,7 @@ class SoundManager {
     },
   };
 
-  // File paths for actual sound files (when available)
-  // Use proper base path for GitHub Pages deployment
-  private getBasePath(): string {
-    if (typeof window !== 'undefined') {
-      return window.location.hostname === 'localhost' ? '' : '/california_puzzle_game';
-    }
-    return '';
-  }
-
-  // Sound paths kept for future use when actual MP3 files are added
-  // Currently using generated tones for all sounds
-  private readonly soundPaths: Record<SoundType, string> = {} as Record<SoundType, string>;
-
   private constructor() {
-    // Initialize sound paths with proper base path
-    const basePath = this.getBasePath();
-    // @ts-expect-error - Initializing readonly property in constructor
-    this.soundPaths = {
-      [SoundType.PICKUP]: `${basePath}/sounds/pickup.mp3`,
-      [SoundType.CORRECT]: `${basePath}/sounds/correct.mp3`,
-      [SoundType.INCORRECT]: `${basePath}/sounds/incorrect.mp3`,
-      [SoundType.WIN]: `${basePath}/sounds/win.mp3`,
-      [SoundType.CLICK]: `${basePath}/sounds/click.mp3`,
-      [SoundType.HOVER]: `${basePath}/sounds/hover.mp3`,
-      [SoundType.ACHIEVEMENT]: `${basePath}/sounds/achievement.mp3`,
-      [SoundType.BACKGROUND_MUSIC]: `${basePath}/sounds/background.mp3`,
-      [SoundType.COMPLETE]: `${basePath}/sounds/win.mp3`, // Reuse win sound for completion
-    };
-
     this.initializeAudioContext();
   }
 

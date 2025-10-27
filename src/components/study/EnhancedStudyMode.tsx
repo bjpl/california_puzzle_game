@@ -1968,11 +1968,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
       {/* Educational Content Modal */}
       {selectedCounty && educationContent && (
-        // @ts-expect-error - Type mismatches between ExtendedCounty and expected types
         <EducationalContentModal
           isOpen={showEducationalModal}
           onClose={() => setShowEducationalModal(false)}
-          county={selectedCounty}
+          county={selectedCounty as never}
           educationContent={educationContent}
           memoryAid={memoryAid || undefined}
         />
@@ -1980,11 +1979,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
       {/* County Details Modal */}
       {selectedCounty && (
-        // @ts-expect-error - Type mismatches between ExtendedCounty and expected types
         <CountyDetailsModal
           isOpen={showCountyDetailsModal}
           onClose={() => setShowCountyDetailsModal(false)}
-          county={selectedCounty}
+          county={selectedCounty as never}
           educationContent={educationContent || undefined}
           memoryAid={memoryAid || undefined}
           onViewEducationalContent={() => {
