@@ -115,7 +115,7 @@ const CountyTray = memo(() => {
   );
 
   return (
-    <Card variant="elevated" className="h-[35vh] lg:h-[520px] p-2 flex flex-col relative">
+    <Card variant="elevated" className="h-[35vh] lg:h-[520px] p-2 flex flex-col relative !overflow-visible">
       <Heading
         level={2}
         size="label"
