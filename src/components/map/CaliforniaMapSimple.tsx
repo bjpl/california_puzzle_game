@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { mapLogger } from '../../utils/logger';
+import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
+import { useSoundEffect } from '../../utils/simpleSoundManager';
 // import { getSvgTextFill } from '../../utils/colorContrast'; // Available if needed
 import CountyDetailsModal from '../county/CountyDetailsModal';
 import EnhancedStudyMode from '../study/EnhancedStudyMode';
@@ -28,6 +30,7 @@ function CountyDropZone({
   onCountyHover,
   onCountyLeave,
   onLabelPosition,
+  onMobilePlacement,
 }: {
   county: CountyFeature;
   isDragging: boolean;
@@ -35,9 +38,12 @@ function CountyDropZone({
   onCountyHover?: (countyId: string) => void;
   onCountyLeave?: () => void;
   onLabelPosition?: (countyId: string, position: [number, number]) => void;
+  onMobilePlacement?: (targetCountyId: string) => void;
 }) {
-  const { placedCounties, currentCounty: _currentCounty, showRegions, counties } = useGame();
+  const { placedCounties, currentCounty, showRegions, counties } = useGame();
   const [isHovered, setIsHovered] = useState(false);
+  const deviceInfo = useDeviceInfo();
+  const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
   const isPlaced = placedCounties.has(countyId);
@@ -211,7 +217,12 @@ function CountyDropZone({
   }, [isPlaced, labelX, labelY, countyId, onLabelPosition]);
 
   const handleClick = () => {
-    if (isPlaced && onCountyClick && countyData) {
+    // For mobile, handle tap-to-place when a county is selected
+    if (isMobile && currentCounty && !isPlaced) {
+      onMobilePlacement?.(countyId);
+    }
+    // For desktop or when viewing placed counties
+    else if (isPlaced && onCountyClick && countyData) {
       onCountyClick(countyData);
     }
   };
@@ -256,12 +267,17 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
     showRegions,
     placedCounties,
     counties,
+    currentCounty,
+    placeCounty,
     score: _score,
     timerState: _timerState,
     mistakes: _mistakes,
     gameSettings: _gameSettings,
     placementHistory: _placementHistory,
   } = gameContext;
+  const sound = useSoundEffect();
+  const deviceInfo = useDeviceInfo();
+  const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
   mapLogger.debug('🎨 showRegions value:', showRegions);
   const [selectedCounty, setSelectedCounty] = useState<Record<string, unknown> | null>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
@@ -275,6 +291,23 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
   const isPanning = useRef(false);
   const startPan = useRef({ x: 0, y: 0 });
   const startMouse = useRef({ x: 0, y: 0 });
+
+  // Handle mobile tap-to-place functionality
+  const handleMobilePlacement = (targetCountyId: string) => {
+    if (!currentCounty || !isMobile) return;
+
+    const isCorrect = currentCounty.id === targetCountyId;
+
+    // Play appropriate sound
+    if (isCorrect) {
+      sound.playSound('correct');
+    } else {
+      sound.playSound('incorrect');
+    }
+
+    // Place the county
+    placeCounty(currentCounty.id, isCorrect);
+  };
 
   useEffect(() => {
     const basePath =
@@ -471,6 +504,7 @@ export default function CaliforniaMapSimple({ isDragging }: { isDragging: boolea
                 onLabelPosition={(countyId, position) => {
                   setLabelPositions((prev) => new Map(prev.set(countyId, position)));
                 }}
+                onMobilePlacement={handleMobilePlacement}
               />
             ))}
           </g>

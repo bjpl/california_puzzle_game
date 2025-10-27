@@ -2,9 +2,11 @@ import { memo, useMemo, useCallback } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
+import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 // import { getRegionColor } from '../../config/regionColors'; // Available if needed
 import { Badge, Heading, Text } from '../ui';
 import { County } from '../../types';
+import { MobileCountySelector } from './MobileCountySelector';
 import './CountyTray.css';
 
 // Memoized draggable county component
@@ -99,7 +101,9 @@ const DraggableCounty = memo(
 DraggableCounty.displayName = 'DraggableCounty';
 
 const CountyTray = memo(() => {
-  const { counties } = useGame();
+  const { counties, currentCounty, selectCounty, placedCounties } = useGame();
+  const deviceInfo = useDeviceInfo();
+  const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
 
   // Memoize grouped counties to prevent recalculation
   const countiesByRegion = useMemo(
@@ -116,7 +120,11 @@ const CountyTray = memo(() => {
   );
 
   return (
-    <div className="h-[35vh] lg:h-[520px] p-3 flex flex-col relative bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
+    <div className={`
+      ${isMobile ? 'h-[30vh]' : 'h-[35vh] lg:h-[520px]'}
+      p-3 flex flex-col relative bg-white dark:bg-gray-800 rounded-lg shadow-lg
+      border border-gray-100 dark:border-gray-700
+    `}>
       <Heading
         level={2}
         size="label"
@@ -136,9 +144,17 @@ const CountyTray = memo(() => {
               {region}
             </Text>
             <div className="flex flex-wrap gap-1">
-              {regionCounties.map((county) => (
-                <DraggableCounty key={county.id} county={county} />
-              ))}
+              {regionCounties.map((county) =>
+                isMobile ? (
+                  <MobileCountySelector
+                    key={county.id}
+                    county={county}
+                    isPlaced={placedCounties.has(county.id)}
+                  />
+                ) : (
+                  <DraggableCounty key={county.id} county={county} />
+                )
+              )}
             </div>
           </div>
         ))}

@@ -8,6 +8,7 @@ import {
   useSensor,
   useSensors,
   PointerSensor,
+  TouchSensor,
   closestCenter,
 } from '@dnd-kit/core';
 import { useGame } from '../../context/GameContext';
@@ -18,11 +19,13 @@ import CaliforniaMapSimple from '../map/CaliforniaMapSimple';
 import GameHeader from './GameHeader';
 import GameComplete from './GameComplete';
 import RegionsPanel from '../shared/RegionsPanel';
+import MobileGameInstructions from './MobileGameInstructions';
 import { MapErrorBoundary } from '../map/MapErrorBoundary';
 import { StudyErrorBoundary } from '../study/StudyErrorBoundary';
 import { GAME_CONFIG } from '@/constants';
 import LoadingSpinner from '../shared/LoadingSpinner';
 import { prefetchStudyMode, prefetchGameFeatures } from '../../utils/prefetch';
+import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 
 // Lazy load heavy components
 const EnhancedStudyMode = lazy(() => import('../study/EnhancedStudyMode'));
@@ -36,7 +39,7 @@ export default function GameContainer() {
     selectCounty,
     placeCounty,
     clearCurrentCounty,
-    currentCounty: _currentCounty,
+    currentCounty,
     counties,
     placedCounties,
   } = useGame();
@@ -44,7 +47,9 @@ export default function GameContainer() {
   const [isDragging, setIsDragging] = useState(false);
   const [activeCounty, setActiveCounty] = useState<Record<string, unknown> | null>(null);
   const [showStudyMode, setShowStudyMode] = useState(false);
+  const [selectedCountyForTouch, setSelectedCountyForTouch] = useState<Record<string, unknown> | null>(null);
   const sound = useSoundEffect();
+  const deviceInfo = useDeviceInfo();
 
   // Prefetch game features when game starts
   useEffect(() => {
@@ -72,10 +77,13 @@ export default function GameContainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Use touch sensor for mobile, pointer sensor for desktop
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(deviceInfo.isTouch ? TouchSensor : PointerSensor, {
       activationConstraint: {
-        distance: GAME_CONFIG.DRAG_ACTIVATION_DISTANCE,
+        distance: deviceInfo.isTouch ? 10 : GAME_CONFIG.DRAG_ACTIVATION_DISTANCE,
+        delay: deviceInfo.isTouch ? 250 : 0, // Add delay for touch to prevent accidental drags
+        tolerance: deviceInfo.isTouch ? 5 : 0,
       },
     })
   );
@@ -205,21 +213,48 @@ export default function GameContainer() {
         {/* Regions Panel */}
         <RegionsPanel />
 
+        {/* Mobile instructions */}
+        {(deviceInfo.isMobile || deviceInfo.isTablet) && (
+          <MobileGameInstructions />
+        )}
+
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
           collisionDetection={closestCenter}
         >
-          <div className="flex flex-col lg:grid lg:grid-cols-4 gap-3 lg:gap-4 mt-2">
+          <div className={`
+            ${deviceInfo.isMobile || deviceInfo.isTablet
+              ? 'flex flex-col gap-2'
+              : 'flex flex-col lg:grid lg:grid-cols-4 gap-3 lg:gap-4'
+            } mt-2
+          `}>
             {/* County Tray - Optimized for mobile scrolling */}
-            <div className="lg:col-span-1 order-2 lg:order-1">
+            <div className={`
+              ${deviceInfo.isMobile || deviceInfo.isTablet
+                ? 'order-2'
+                : 'lg:col-span-1 order-2 lg:order-1'
+              }
+            `}>
               <CountyTray />
             </div>
 
             {/* Map - Larger on mobile for better gameplay */}
-            <div className="lg:col-span-3 order-1 lg:order-2">
-              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg shadow-lg p-3 lg:p-4 border border-gray-100 dark:border-gray-800 h-[55vh] lg:h-[520px]">
+            <div className={`
+              ${deviceInfo.isMobile || deviceInfo.isTablet
+                ? 'order-1'
+                : 'lg:col-span-3 order-1 lg:order-2'
+              }
+            `}>
+              <div className={`
+                bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg shadow-lg
+                p-3 lg:p-4 border border-gray-100 dark:border-gray-800
+                ${deviceInfo.isMobile || deviceInfo.isTablet
+                  ? 'h-[40vh]'
+                  : 'h-[55vh] lg:h-[520px]'
+                }
+              `}>
                 <MapErrorBoundary>
                   <CaliforniaMapSimple isDragging={isDragging} />
                 </MapErrorBoundary>
