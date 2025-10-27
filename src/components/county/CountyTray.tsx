@@ -123,53 +123,33 @@ const CountyTray = memo(() => {
       >
         Counties ({counties.length})
       </Heading>
-      <div className="flex-1 min-h-0 relative overflow-hidden">
-        <div
-          className="absolute inset-0 overflow-x-hidden overflow-y-auto space-y-1 pr-1"
-          style={{
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#9ca3af #f3f4f6'
-          }}
-        >
-          {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
-            <div key={region} className="mb-2">
-              <Text
-                size="xs"
-                weight="semibold"
-                color="secondary"
-                className="mb-1 py-0.5"
-              >
-                {region}
-              </Text>
-              <div className="flex flex-wrap gap-1">
-                {regionCounties.map((county) => (
-                  <DraggableCounty key={county.id} county={county} />
-                ))}
-              </div>
+      <div className="flex-1 overflow-y-auto overflow-x-hidden pr-1 space-y-1 min-h-0">
+        {Object.entries(countiesByRegion).map(([region, regionCounties]) => (
+          <div key={region} className="mb-2">
+            <Text
+              size="xs"
+              weight="semibold"
+              color="secondary"
+              className="mb-1 py-0.5"
+            >
+              {region}
+            </Text>
+            <div className="flex flex-wrap gap-1">
+              {regionCounties.map((county) => (
+                <DraggableCounty key={county.id} county={county} />
+              ))}
             </div>
-          ))}
-        </div>
-
-        {/* Visual scroll indicator - gradient fade at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-b from-transparent via-white/50 to-white dark:via-gray-800/50 dark:to-gray-800" />
-
-        {/* Scroll indicator icon */}
-        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 pointer-events-none z-10">
-          <svg
-            className="w-5 h-5 text-gray-400 animate-bounce"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </div>
+          </div>
+        ))}
       </div>
+
+      {/* Visual scroll indicator - simple gradient at bottom */}
+      <div
+        className="absolute bottom-0 left-0 right-2 h-8 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.95))'
+        }}
+      />
     </Card>
   );
 });
