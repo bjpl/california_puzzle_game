@@ -5,6 +5,7 @@ import { getCountyEducation, getRelatedCounties } from '../../data/countyEducati
 import { getCountyEducationComplete } from '../../data/countyEducationComplete';
 import { getMemoryAid as getMemoryAidData } from '../../data/memoryAids';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
+import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 import { californiaCounties } from '../../data/californiaCounties';
 import { QuizQuestion, getRandomQuestions } from '../../data/californiaQuizQuestions';
 import StudyModeMap from '../map/StudyModeMap';
@@ -43,6 +44,10 @@ interface QuestionResult {
 export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }: StudyModeProps) {
   const { counties } = useGame();
   const sound = useSoundEffect();
+  const deviceInfo = useDeviceInfo();
+
+  // Device detection for mobile-responsive layouts
+  const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
 
   const [viewMode, setViewMode] = useState<ViewMode>('explore');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
@@ -67,6 +72,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
     completedQuizzes: new Set(),
     masteredCounties: new Set(),
   });
+  const [showMapCountyList, setShowMapCountyList] = useState(false);
+  const [showMobileBottomSheet, setShowMobileBottomSheet] = useState(false);
 
   // Load progress from localStorage (client-side only)
   useEffect(() => {
@@ -549,10 +556,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
       {/* Refined Region Filter Bar - Sticky with Full Height (Hidden in Formation mode) */}
       {viewMode !== 'formation' && (
         <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600 shadow-sm flex-shrink-0 sticky top-0 z-40 overflow-visible">
-          <div className="px-4 sm:px-6 py-6">
-            <div className="flex items-center gap-4 overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent min-h-[44px]">
+          <div className="px-4 sm:px-6 py-4 sm:py-6">
+            <div
+              className="flex items-center gap-4 overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent min-h-[44px] scroll-smooth"
+              style={{ scrollSnapType: 'x mandatory' }}
+            >
               {/* Filter Label */}
-              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap flex-shrink-0">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap flex-shrink-0">
                 Filter by Region:
               </span>
 
@@ -562,8 +572,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                 <button
                   onClick={() => handleRegionChange('all')}
                   className={`
-                    relative px-3 py-1 rounded-full text-sm font-medium leading-5
+                    relative px-3 py-2 rounded-full text-sm font-medium leading-5
                     transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
+                    min-h-[44px] active:scale-95
                     ${
                       selectedRegion === 'all'
                         ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md transform scale-105'
@@ -593,8 +604,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                       key={region}
                       onClick={() => handleRegionChange(region)}
                       className={`
-                        relative px-3 py-1 rounded-full text-sm font-medium leading-5
+                        relative px-3 py-2 rounded-full text-sm font-medium leading-5
                         transition-all duration-200 whitespace-nowrap inline-flex items-center justify-center
+                        min-h-[44px] active:scale-95
                         ${
                           selectedRegion === region
                             ? `bg-gradient-to-r ${getRegionGradient(region)} text-white shadow-md transform scale-105`
@@ -631,10 +643,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
               className={`${selectedCounty ? 'hidden md:block' : 'block'} w-full md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-[280px] max-w-[400px] border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto max-h-screen county-tray-scroll`}
             >
               <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 z-10">
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base sm:text-lg">
                   {selectedRegion === 'all' ? 'All Counties' : selectedRegion}
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
                   {sortedCounties.length} counties
                 </p>
               </div>
@@ -646,7 +658,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                     <button
                       key={county.id}
                       onClick={() => handleCountySelect(county)}
-                      className={`w-full p-4 rounded-xl text-left transition-all duration-200 border ${
+                      className={`w-full p-4 rounded-xl text-left transition-all duration-200 border min-h-[56px] active:scale-98 ${
                         selectedCounty?.id === county.id
                           ? 'ring-2 ring-blue-500 shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border-blue-200 dark:border-blue-700'
                           : 'bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:shadow-md border-gray-200 dark:border-gray-600'
@@ -654,10 +666,10 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                     >
                       <div className="flex justify-between items-center">
                         <div className="flex-1">
-                          <div className="font-semibold text-gray-900 dark:text-gray-100">
+                          <div className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">
                             {county.name}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                          <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
                             {county.capital || (county as ExtendedCounty).countySeat}
                           </div>
                         </div>
@@ -681,7 +693,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                 <div className="md:hidden sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 z-10">
                   <button
                     onClick={() => setSelectedCounty(null)}
-                    className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium"
+                    className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium min-h-[44px] active:scale-95"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -695,14 +707,14 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                   </button>
                 </div>
               )}
-              <div className="flex-1 p-4 md:p-8 overflow-y-auto max-w-6xl mx-auto w-full">
+              <div className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto max-w-6xl mx-auto w-full">
                 {selectedCounty ? (
                   <div>
                     {/* County Header - Enhanced */}
-                    <div className="mb-8">
-                      <div className="flex items-start justify-between mb-4">
+                    <div className="mb-6 sm:mb-8">
+                      <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-4">
                         <div>
-                          <h3 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+                          <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                             {selectedCounty.name} County
                           </h3>
                           <div
@@ -713,13 +725,13 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                             {selectedCounty.region}
                           </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-left sm:text-right">
                           {selectedCounty.founded && (
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                               Established
                             </div>
                           )}
-                          <div className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                          <div className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-200">
                             {selectedCounty.founded || selectedCounty.established || 'N/A'}
                           </div>
                         </div>
@@ -727,46 +739,63 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                     </div>
 
                     {/* Content Tabs - Enhanced Design */}
-                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-1 mb-6">
-                      <div className="flex gap-1 flex-wrap">
-                        {[
-                          { id: 'overview' as ContentTab, label: 'Overview', icon: '📊' },
-                          { id: 'history' as ContentTab, label: 'History', icon: '📜' },
-                          { id: 'economy' as ContentTab, label: 'Economy', icon: '💼' },
-                          { id: 'culture' as ContentTab, label: 'Culture', icon: '🎭' },
-                          { id: 'geography' as ContentTab, label: 'Geography', icon: '🗺️' },
-                          { id: 'memory' as ContentTab, label: 'Memory Aid', icon: '🧠' },
-                        ].map((tab) => (
-                          <button
-                            key={tab.id}
-                            onClick={() => setContentTab(tab.id)}
-                            className={`
-                              flex-1 min-w-[100px] flex items-center justify-center gap-2 px-4 py-3 rounded-lg
-                              font-medium transition-all duration-200
-                              ${
-                                contentTab === tab.id
-                                  ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
-                                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
-                              }
-                            `}
-                          >
-                            <span>{tab.icon}</span>
-                            <span className="hidden sm:inline">{tab.label}</span>
-                          </button>
-                        ))}
+                    {isMobile ? (
+                      <div className="mb-6">
+                        <select
+                          value={contentTab}
+                          onChange={(e) => setContentTab(e.target.value as ContentTab)}
+                          className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-base font-medium min-h-[44px] shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        >
+                          <option value="overview">📊 Overview</option>
+                          <option value="history">📜 History</option>
+                          <option value="economy">💼 Economy</option>
+                          <option value="culture">🎭 Culture</option>
+                          <option value="geography">🗺️ Geography</option>
+                          <option value="memory">🧠 Memory Aid</option>
+                        </select>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-1 mb-6 overflow-x-auto">
+                        <div className="flex gap-1 min-w-max">
+                          {[
+                            { id: 'overview' as ContentTab, label: 'Overview', icon: '📊' },
+                            { id: 'history' as ContentTab, label: 'History', icon: '📜' },
+                            { id: 'economy' as ContentTab, label: 'Economy', icon: '💼' },
+                            { id: 'culture' as ContentTab, label: 'Culture', icon: '🎭' },
+                            { id: 'geography' as ContentTab, label: 'Geography', icon: '🗺️' },
+                            { id: 'memory' as ContentTab, label: 'Memory Aid', icon: '🧠' },
+                          ].map((tab) => (
+                            <button
+                              key={tab.id}
+                              onClick={() => setContentTab(tab.id)}
+                              className={`
+                                flex-shrink-0 flex items-center justify-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-lg
+                                font-medium transition-all duration-200
+                                ${
+                                  contentTab === tab.id
+                                    ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                }
+                              `}
+                            >
+                              <span className="text-base sm:text-lg">{tab.icon}</span>
+                              <span className="whitespace-nowrap">{tab.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Tab Content - Improved Spacing */}
                     <div className="space-y-6">
                       {contentTab === 'overview' && (
                         <>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-700 shadow-sm">
-                              <h4 className="font-bold text-blue-900 dark:text-blue-100 mb-4 text-lg flex items-center gap-2">
-                                <span className="text-2xl">📊</span> Quick Facts
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                            <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-700 shadow-sm">
+                              <h4 className="font-bold text-blue-900 dark:text-blue-100 mb-4 text-base sm:text-lg flex items-center gap-2">
+                                <span className="text-xl sm:text-2xl">📊</span> Quick Facts
                               </h4>
-                              <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                              <div className="space-y-1 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                                 <div>
                                   <strong className="text-gray-900 dark:text-gray-100">
                                     County Seat:
@@ -826,12 +855,12 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                                 </div>
                               </div>
                             </div>
-                            <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-700 shadow-sm">
-                              <h4 className="font-bold text-green-900 dark:text-green-100 mb-4 text-lg flex items-center gap-2">
-                                <span className="text-2xl">🎉</span> Fun Facts
+                            <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-700 shadow-sm">
+                              <h4 className="font-bold text-green-900 dark:text-green-100 mb-4 text-base sm:text-lg flex items-center gap-2">
+                                <span className="text-xl sm:text-2xl">🎉</span> Fun Facts
                               </h4>
                               {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 ? (
-                                <ul className="text-sm text-green-800 dark:text-green-200 space-y-1">
+                                <ul className="text-xs sm:text-sm text-green-800 dark:text-green-200 space-y-1">
                                   {selectedCounty.funFacts
                                     .slice(0, 3)
                                     .map((fact: string, idx: number) => (
@@ -852,7 +881,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
                           {/* Natural Features and Economic Focus */}
                           {(selectedCounty.naturalFeatures || selectedCounty.economicFocus) && (
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               {selectedCounty.naturalFeatures &&
                                 selectedCounty.naturalFeatures.length > 0 && (
                                   <div className="p-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border border-cyan-200 dark:border-cyan-700">
@@ -1014,7 +1043,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                             {educationContent?.geographicalSignificance ||
                               'No geographical data available.'}
                           </p>
-                          <div className="grid grid-cols-2 gap-4 mt-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                             <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                               <h5 className="font-medium text-gray-700 dark:text-gray-200 mb-1">
                                 Climate
@@ -1078,7 +1107,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
                     {/* Natural Features & Landmarks */}
                     {(selectedCounty.naturalFeatures || selectedCounty.culturalLandmarks) && (
-                      <div className="mt-6 grid grid-cols-2 gap-4">
+                      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {selectedCounty.naturalFeatures && (
                           <div className="p-4 bg-teal-50 rounded-lg">
                             <h4 className="font-semibold text-teal-900 mb-2">
@@ -1162,7 +1191,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                               <button
                                 key={countyId}
                                 onClick={() => handleCountySelect(relatedCounty)}
-                                className="px-3 py-1 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-sm text-gray-700 hover:text-gray-900"
+                                className="px-3 py-1 min-h-[44px] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-sm text-gray-700 hover:text-gray-900"
                               >
                                 {relatedCounty.name}
                               </button>
@@ -1188,20 +1217,20 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
         {viewMode === 'quiz' && (
           <div className="flex-1 bg-gradient-to-br from-gray-50 to-indigo-50 dark:from-gray-900 dark:to-indigo-950 overflow-y-auto">
-            <div className="max-w-6xl mx-auto p-8">
+            <div className="max-w-6xl mx-auto p-4 sm:p-6 md:p-8">
               {/* Quiz States */}
               {quizState === 'idle' && (
                 <div className="text-center">
-                  <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4 sm:mb-6">
                     🎯 County Knowledge Quiz
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-400 mb-8">
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 sm:mb-8">
                     Test your knowledge of California counties!
                   </p>
 
                   {/* Quiz Statistics */}
-                  <div className="flex justify-center mb-8">
-                    <div className="bg-purple-50 dark:bg-purple-900/30 p-6 rounded-lg">
+                  <div className="flex justify-center mb-6 sm:mb-8">
+                    <div className="bg-purple-50 dark:bg-purple-900/30 p-4 sm:p-6 rounded-lg">
                       <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
                         {progress.completedQuizzes.size}
                       </div>
@@ -1212,16 +1241,16 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-4 justify-center">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                     <button
                       onClick={() => startQuiz(5)}
-                      className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl text-xl font-bold hover:from-blue-600 hover:to-purple-600 transition-all transform hover:scale-105"
+                      className="px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl text-base sm:text-lg md:text-xl font-bold hover:from-blue-600 hover:to-purple-600 transition-all transform hover:scale-105"
                     >
                       🎯 Quick Quiz (5)
                     </button>
                     <button
                       onClick={() => startQuiz(15)}
-                      className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl text-xl font-bold hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105"
+                      className="px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl text-base sm:text-lg md:text-xl font-bold hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105"
                     >
                       🏆 Full Quiz (15)
                     </button>
@@ -1254,7 +1283,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                   </div>
 
                   {/* Question Card */}
-                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 relative">
+                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 relative">
                     {/* Question Header */}
                     <div className="flex justify-between items-start mb-6">
                       <div className="flex-1">
@@ -1269,14 +1298,14 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                             {quizQuestion.region}
                           </span>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
                           {quizQuestion.question}
                         </h3>
                       </div>
                     </div>
 
                     {/* Answer Options */}
-                    <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
                       {quizQuestion.options.map((option: string, idx: number) => {
                         const isSelected = selectedAnswer === option;
                         const isCorrect = option === quizQuestion.correctAnswer;
@@ -1287,7 +1316,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                             key={idx}
                             onClick={() => !showAnswer && handleQuizAnswer(option)}
                             disabled={showAnswer}
-                            className={`p-4 rounded-lg transition-all text-lg font-medium relative ${
+                            className={`min-h-[44px] p-3 sm:p-4 rounded-lg transition-all text-sm sm:text-base md:text-lg font-medium relative ${
                               showResult
                                 ? isCorrect
                                   ? 'bg-green-100 border-2 border-green-500 text-green-800'
@@ -1314,20 +1343,20 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
                     {/* Explanation (shown after answering) */}
                     {showAnswer && quizQuestion.explanation && (
-                      <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg mb-6">
-                        <p className="text-sm text-blue-800 dark:text-blue-200">
+                      <div className="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg mb-6">
+                        <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200">
                           <strong>Explanation:</strong> {quizQuestion.explanation}
                         </p>
                       </div>
                     )}
 
                     {/* Navigation Controls */}
-                    <div className="flex justify-between items-center pt-6 border-t">
+                    <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0 pt-4 sm:pt-6 border-t">
                       <div className="flex gap-2">
                         <button
                           onClick={goToPreviousQuestion}
                           disabled={currentQuestionIndex === 0}
-                          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                          className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-medium transition-all ${
                             currentQuestionIndex === 0
                               ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -1337,7 +1366,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                         </button>
                         <button
                           onClick={goToNextQuestion}
-                          className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                          className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-lg text-sm sm:text-base font-medium transition-all ${
                             showAnswer
                               ? 'bg-blue-500 text-white hover:bg-blue-600'
                               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -1352,14 +1381,14 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
                       <button
                         onClick={endQuiz}
-                        className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                        className="px-3 sm:px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm sm:text-base hover:bg-red-200 transition-colors"
                       >
                         End Quiz
                       </button>
                     </div>
 
                     {/* Keyboard shortcuts hint */}
-                    <div className="mt-4 text-xs text-gray-500 text-center">
+                    <div className="hidden sm:block mt-4 text-xs text-gray-500 text-center">
                       Press 1-4 to select answer • Space/Enter for next • ← → to navigate
                     </div>
                   </div>
@@ -1368,22 +1397,24 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
               {/* Quiz Summary */}
               {quizState === 'summary' && (
-                <div className="text-center">
-                  <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">
+                <div className="text-center px-4">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">
                     📊 Quiz Complete!
                   </h2>
 
                   {/* Score Summary */}
-                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 mb-3">
-                    <div className="grid grid-cols-2 gap-4 mb-3">
+                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-3 sm:p-4 mb-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
                       <div>
-                        <div className="text-3xl font-bold text-green-600">
+                        <div className="text-2xl sm:text-3xl font-bold text-green-600">
                           {questionHistory.filter((q) => q.isCorrect).length}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">Correct</div>
+                        <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                          Correct
+                        </div>
                       </div>
                       <div>
-                        <div className="text-3xl font-bold text-blue-600">
+                        <div className="text-2xl sm:text-3xl font-bold text-blue-600">
                           {Math.round(
                             (questionHistory.filter((q) => q.isCorrect).length /
                               questionHistory.length) *
@@ -1391,16 +1422,18 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                           )}
                           %
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">Accuracy</div>
+                        <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                          Accuracy
+                        </div>
                       </div>
                     </div>
 
                     {/* Question Review */}
                     <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
-                      <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                      <h3 className="text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300 mb-3">
                         Question Review
                       </h3>
-                      <div className="space-y-3 max-h-[450px] overflow-y-auto">
+                      <div className="space-y-2 sm:space-y-3 max-h-[350px] sm:max-h-[450px] overflow-y-auto">
                         {questionHistory.length === 0 ? (
                           <p className="text-gray-500 text-center py-4">
                             No questions answered yet
@@ -1409,7 +1442,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                           questionHistory.map((result, idx) => (
                             <div
                               key={idx}
-                              className={`p-4 rounded-lg border ${
+                              className={`p-3 sm:p-4 rounded-lg border ${
                                 result.isCorrect
                                   ? 'bg-green-50 border-green-200'
                                   : 'bg-red-50 border-red-200'
@@ -1444,7 +1477,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                                   {result.question.question}
                                 </p>
 
-                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                                   {result.question.options.map((option, optIdx) => {
                                     const isUserAnswer = option === result.userAnswer;
                                     const isCorrectAnswer =
@@ -1453,7 +1486,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                                     return (
                                       <div
                                         key={optIdx}
-                                        className={`px-3 py-2 rounded text-xs ${
+                                        className={`min-h-[36px] px-2 sm:px-3 py-2 rounded text-xs ${
                                           isCorrectAnswer
                                             ? 'bg-green-200 text-green-800 font-semibold'
                                             : isUserAnswer && !result.isCorrect
@@ -1485,16 +1518,16 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-4 justify-center">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                     <button
                       onClick={() => startQuiz(10)}
-                      className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600"
+                      className="px-4 sm:px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg text-sm sm:text-base font-semibold hover:from-blue-600 hover:to-purple-600"
                     >
                       New Quiz
                     </button>
                     <button
                       onClick={resetQuiz}
-                      className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300"
+                      className="px-4 sm:px-6 py-3 bg-gray-200 text-gray-700 rounded-lg text-sm sm:text-base font-semibold hover:bg-gray-300"
                     >
                       Back to Menu
                     </button>
@@ -1520,7 +1553,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Map Display Area - Responsive height with mobile support */}
-                <div className="lg:col-span-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-lg p-3 h-[500px] sm:h-[600px] lg:h-[calc(100vh-240px)]">
+                <div className="lg:col-span-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-lg p-3 h-[60vh] sm:h-[65vh] lg:h-[calc(100vh-240px)]">
                   <StudyModeMap
                     onCountySelect={(countyId) => {
                       const county = counties.find(
@@ -1539,8 +1572,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                   />
                 </div>
 
-                {/* County Info Panel */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                {/* County Info Panel - Desktop Only */}
+                <div className="hidden lg:block bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                   <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-gray-100">
                     📍 County Information
                   </h3>
@@ -1660,6 +1693,186 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                 </div>
               </div>
 
+              {/* Mobile Floating Button - Show County Info */}
+              <button
+                onClick={() => setShowMapCountyList(true)}
+                className="lg:hidden fixed bottom-6 right-6 z-40 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-200"
+                aria-label="Show county information"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </button>
+
+              {/* Mobile Bottom Sheet - County Information */}
+              {showMapCountyList && (
+                <>
+                  {/* Backdrop */}
+                  <div
+                    className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity"
+                    onClick={() => setShowMapCountyList(false)}
+                  />
+
+                  {/* Bottom Sheet */}
+                  <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 rounded-t-3xl shadow-2xl transform transition-transform duration-300 ease-out max-h-[80vh] overflow-y-auto">
+                    {/* Handle Bar */}
+                    <div className="flex justify-center pt-3 pb-2">
+                      <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full" />
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100">
+                          📍 County Information
+                        </h3>
+                        <button
+                          onClick={() => setShowMapCountyList(false)}
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                          aria-label="Close"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {selectedCounty ? (
+                        <div className="space-y-4">
+                          {/* County Shape and Name */}
+                          <div className="flex items-start gap-4">
+                            <CountyShapeDisplay
+                              countyId={selectedCounty.id}
+                              size={90}
+                              className="flex-shrink-0 shadow-md"
+                            />
+                            <div className="flex-1">
+                              <h4 className="text-xl font-semibold text-blue-600 dark:text-blue-400">
+                                {selectedCounty.name}
+                              </h4>
+                              <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                                {selectedCounty.region}
+                              </div>
+                              <div className="text-xs text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded inline-block">
+                                County ID: {selectedCounty.id}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="font-medium text-gray-600 dark:text-gray-400">
+                                County Seat:
+                              </span>
+                              <span className="text-gray-800 dark:text-gray-200">
+                                {selectedCounty.capital || selectedCounty.countySeat || 'N/A'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-medium text-gray-600 dark:text-gray-400">
+                                Population:
+                              </span>
+                              <span className="text-gray-800 dark:text-gray-200">
+                                {selectedCounty.population?.toLocaleString() || 'N/A'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-medium text-gray-600 dark:text-gray-400">
+                                Area:
+                              </span>
+                              <span className="text-gray-800 dark:text-gray-200">
+                                {selectedCounty.area
+                                  ? `${selectedCounty.area.toLocaleString()} sq mi`
+                                  : 'N/A'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-medium text-gray-600 dark:text-gray-400">
+                                Established:
+                              </span>
+                              <span className="text-gray-800 dark:text-gray-200">
+                                {selectedCounty.founded || selectedCounty.established || 'N/A'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {selectedCounty.funFact && (
+                            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                              <h5 className="font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Fun Fact:
+                              </h5>
+                              <p className="text-sm text-gray-600 dark:text-gray-400 italic">
+                                {selectedCounty.funFact}
+                              </p>
+                            </div>
+                          )}
+
+                          {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 && (
+                            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                              <h5 className="font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Interesting Facts:
+                              </h5>
+                              <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                                {selectedCounty.funFacts
+                                  .slice(0, 3)
+                                  .map((fact: string, idx: number) => (
+                                    <li key={idx} className="flex items-start">
+                                      <span className="text-blue-500 mr-2">•</span>
+                                      <span>{fact}</span>
+                                    </li>
+                                  ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {educationContent && (
+                            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                              <button
+                                onClick={() => {
+                                  setShowEducationalModal(true);
+                                  setShowMapCountyList(false);
+                                }}
+                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all transform hover:scale-105"
+                              >
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                                </svg>
+                                <span>View Full Educational Content</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8">
+                          <div className="text-4xl mb-3">👆</div>
+                          <p className="text-gray-500 dark:text-gray-400">
+                            Tap on a county on the map
+                          </p>
+                          <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                            to view detailed information
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+
               {/* Region Legend */}
               <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <h4 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">
@@ -1702,14 +1915,18 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
         {/* Timeline Mode - Historical Perspective with Side Panel */}
         {viewMode === 'timeline' && (
-          <div className="flex-1 flex gap-6 bg-gradient-to-br from-gray-50 to-amber-50 dark:from-gray-900 dark:to-amber-950 overflow-hidden p-8">
+          <div
+            className={`flex-1 flex ${isMobile ? 'flex-col' : 'gap-6'} bg-gradient-to-br from-gray-50 to-amber-50 dark:from-gray-900 dark:to-amber-950 overflow-hidden p-4 sm:p-6 md:p-8`}
+          >
             {/* Main Timeline Area - Left Side */}
             <div className="flex-1 overflow-y-auto pr-2">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">
                 📅 California Counties Timeline
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-5 text-sm">
-                Click any county to view detailed information →
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-5">
+                {isMobile
+                  ? 'Tap any county to view details'
+                  : 'Click any county to view detailed information →'}
               </p>
 
               {/* Timeline visualization */}
@@ -1762,14 +1979,16 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                     <div key={decade} className="relative">
                       {/* Decade Header */}
                       <div className="flex items-center mb-3">
-                        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg">
+                        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-bold shadow-lg text-base sm:text-lg md:text-xl">
                           {decade}s
                         </div>
-                        <div className="flex-1 h-0.5 bg-gradient-to-r from-gray-300 to-transparent ml-4"></div>
+                        <div className="flex-1 h-0.5 bg-gradient-to-r from-gray-300 to-transparent ml-2 sm:ml-4"></div>
                       </div>
 
                       {/* Counties in this decade */}
-                      <div className="flex flex-wrap gap-3 ml-6">
+                      <div
+                        className={`flex flex-wrap gap-2 sm:gap-3 ${isMobile ? 'ml-0' : 'ml-6'}`}
+                      >
                         {(countiesByDecade[decade] || [])
                           .sort((a: County, b: County) => {
                             const establishedA = (a as ExtendedCounty).established;
@@ -1789,20 +2008,25 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
                           .map((county: County) => (
                             <button
                               key={county.id}
-                              onClick={() => handleCountySelect(county)}
-                              className={`min-w-[140px] max-w-[180px] p-3 rounded-xl border-2 transition-all transform hover:scale-105 ${
+                              onClick={() => {
+                                handleCountySelect(county);
+                                if (isMobile) {
+                                  setShowMobileBottomSheet(true);
+                                }
+                              }}
+                              className={`${isMobile ? 'flex-1 min-w-[calc(50%-0.25rem)]' : 'min-w-[140px] max-w-[180px]'} p-2.5 sm:p-3 rounded-xl border-2 transition-all transform hover:scale-105 ${
                                 selectedCounty?.id === county.id
                                   ? 'bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 border-blue-500 dark:border-blue-700 shadow-lg scale-105'
                                   : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md hover:bg-blue-50 dark:hover:bg-gray-600'
                               }`}
                             >
-                              <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                              <div className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200">
                                 {county.name}
                               </div>
                               <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                                 {county.founded || (county as ExtendedCounty).established}
                               </div>
-                              {selectedCounty?.id === county.id && (
+                              {selectedCounty?.id === county.id && !isMobile && (
                                 <div className="mt-0.5">
                                   <span className="text-xs text-blue-600 font-bold">
                                     ✓ Selected
@@ -1818,110 +2042,236 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
               </div>
             </div>
 
-            {/* Right Side Panel for County Details */}
-            <div className="w-80 flex-shrink-0">
-              {selectedCounty ? (
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-5 border-2 border-gray-100 dark:border-gray-700 h-full overflow-y-auto">
-                  <div className="mb-4">
-                    {/* Header with County Shape */}
-                    <div className="flex items-start gap-3 mb-3">
-                      <CountyShapeDisplay
-                        countyId={selectedCounty.id}
-                        size={75}
-                        className="flex-shrink-0 shadow-lg"
-                      />
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                          {selectedCounty.name} County
-                        </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                          {selectedCounty.region}
+            {/* Right Side Panel for County Details - Desktop Only */}
+            {!isMobile && (
+              <div className="w-80 flex-shrink-0">
+                {selectedCounty ? (
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-5 border-2 border-gray-100 dark:border-gray-700 h-full overflow-y-auto">
+                    <div className="mb-4">
+                      {/* Header with County Shape */}
+                      <div className="flex items-start gap-3 mb-3">
+                        <CountyShapeDisplay
+                          countyId={selectedCounty.id}
+                          size={75}
+                          className="flex-shrink-0 shadow-lg"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+                            {selectedCounty.name} County
+                          </h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                            {selectedCounty.region}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
+                        <h4 className="font-bold text-blue-900 mb-1 text-sm flex items-center gap-2">
+                          <span>📅</span> Established
+                        </h4>
+                        <p className="text-2xl font-bold text-blue-700">
+                          {selectedCounty.founded || selectedCounty.established || 'Unknown'}
                         </p>
                       </div>
+
+                      <div className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
+                        <h4 className="font-bold text-purple-900 mb-1 text-sm flex items-center gap-2">
+                          <span>🏛️</span> County Seat
+                        </h4>
+                        <p className="text-lg font-semibold text-purple-700">
+                          {selectedCounty.capital || selectedCounty.countySeat || 'N/A'}
+                        </p>
+                      </div>
+
+                      <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl">
+                        <h4 className="font-bold text-green-900 mb-1 text-sm flex items-center gap-2">
+                          <span>📍</span> Region
+                        </h4>
+                        <p className="text-base font-medium text-green-700">
+                          {selectedCounty.region || 'N/A'}
+                        </p>
+                      </div>
+
+                      {selectedCounty.population && (
+                        <div className="p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl">
+                          <h4 className="font-bold text-amber-900 mb-1 text-sm flex items-center gap-2">
+                            <span>👥</span> Population
+                          </h4>
+                          <p className="text-base font-semibold text-amber-700">
+                            {selectedCounty.population.toLocaleString()}
+                          </p>
+                        </div>
+                      )}
+
+                      {educationContent && (
+                        <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl">
+                          <h4 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-2">
+                            <span>📚</span> Historical Context
+                          </h4>
+                          <p className="text-xs text-gray-700 leading-relaxed">
+                            {educationContent.historicalContext}
+                          </p>
+                        </div>
+                      )}
+
+                      {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 && (
+                        <div className="p-3 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl">
+                          <h4 className="font-bold text-yellow-900 mb-2 text-sm flex items-center gap-2">
+                            <span>✨</span> Fun Facts
+                          </h4>
+                          <ul className="space-y-1">
+                            {selectedCounty.funFacts
+                              .slice(0, 3)
+                              .map((fact: string, idx: number) => (
+                                <li key={idx} className="text-xs text-yellow-800 flex gap-1.5">
+                                  <span className="text-yellow-600">•</span>
+                                  <span>{fact}</span>
+                                </li>
+                              ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
-                    <div className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                  </div>
+                ) : (
+                  <div className="sticky top-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg p-6 border-2 border-gray-200 dark:border-gray-600 h-[400px] flex flex-col items-center justify-center text-center">
+                    <span className="text-5xl mb-3 opacity-50">📋</span>
+                    <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      Select a County
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                      Click on any county from the timeline to view its detailed historical
+                      information and facts.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Mobile Bottom Sheet for Timeline - Slides up from bottom */}
+            {isMobile && showMobileBottomSheet && selectedCounty && (
+              <>
+                {/* Backdrop overlay */}
+                <div
+                  className="fixed inset-0 bg-black/50 z-40 transition-opacity"
+                  onClick={() => setShowMobileBottomSheet(false)}
+                />
+
+                {/* Bottom sheet */}
+                <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 rounded-t-3xl z-50 max-h-[80vh] overflow-y-auto shadow-2xl">
+                  {/* Drag handle */}
+                  <div className="sticky top-0 bg-white dark:bg-gray-800 pt-3 pb-2 flex justify-center border-b border-gray-200 dark:border-gray-700 rounded-t-3xl">
+                    <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full" />
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
-                      <h4 className="font-bold text-blue-900 mb-1 text-sm flex items-center gap-2">
-                        <span>📅</span> Established
-                      </h4>
-                      <p className="text-2xl font-bold text-blue-700">
-                        {selectedCounty.founded || selectedCounty.established || 'Unknown'}
-                      </p>
+                  {/* Content */}
+                  <div className="p-5">
+                    <div className="mb-4">
+                      {/* Header with County Shape */}
+                      <div className="flex items-start gap-3 mb-3">
+                        <CountyShapeDisplay
+                          countyId={selectedCounty.id}
+                          size={60}
+                          className="flex-shrink-0 shadow-lg"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                            {selectedCounty.name} County
+                          </h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                            {selectedCounty.region}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setShowMobileBottomSheet(false)}
+                          className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      <div className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                     </div>
 
-                    <div className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
-                      <h4 className="font-bold text-purple-900 mb-1 text-sm flex items-center gap-2">
-                        <span>🏛️</span> County Seat
-                      </h4>
-                      <p className="text-lg font-semibold text-purple-700">
-                        {selectedCounty.capital || selectedCounty.countySeat || 'N/A'}
-                      </p>
-                    </div>
-
-                    <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl">
-                      <h4 className="font-bold text-green-900 mb-1 text-sm flex items-center gap-2">
-                        <span>📍</span> Region
-                      </h4>
-                      <p className="text-base font-medium text-green-700">
-                        {selectedCounty.region || 'N/A'}
-                      </p>
-                    </div>
-
-                    {selectedCounty.population && (
-                      <div className="p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl">
-                        <h4 className="font-bold text-amber-900 mb-1 text-sm flex items-center gap-2">
-                          <span>👥</span> Population
+                    <div className="space-y-3">
+                      <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
+                        <h4 className="font-bold text-blue-900 mb-1 text-sm flex items-center gap-2">
+                          <span>📅</span> Established
                         </h4>
-                        <p className="text-base font-semibold text-amber-700">
-                          {selectedCounty.population.toLocaleString()}
+                        <p className="text-2xl font-bold text-blue-700">
+                          {selectedCounty.founded || selectedCounty.established || 'Unknown'}
                         </p>
                       </div>
-                    )}
 
-                    {educationContent && (
-                      <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl">
-                        <h4 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-2">
-                          <span>📚</span> Historical Context
+                      <div className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
+                        <h4 className="font-bold text-purple-900 mb-1 text-sm flex items-center gap-2">
+                          <span>🏛️</span> County Seat
                         </h4>
-                        <p className="text-xs text-gray-700 leading-relaxed">
-                          {educationContent.historicalContext}
+                        <p className="text-lg font-semibold text-purple-700">
+                          {selectedCounty.capital || selectedCounty.countySeat || 'N/A'}
                         </p>
                       </div>
-                    )}
 
-                    {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 && (
-                      <div className="p-3 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl">
-                        <h4 className="font-bold text-yellow-900 mb-2 text-sm flex items-center gap-2">
-                          <span>✨</span> Fun Facts
+                      <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl">
+                        <h4 className="font-bold text-green-900 mb-1 text-sm flex items-center gap-2">
+                          <span>📍</span> Region
                         </h4>
-                        <ul className="space-y-1">
-                          {selectedCounty.funFacts.slice(0, 3).map((fact: string, idx: number) => (
-                            <li key={idx} className="text-xs text-yellow-800 flex gap-1.5">
-                              <span className="text-yellow-600">•</span>
-                              <span>{fact}</span>
-                            </li>
-                          ))}
-                        </ul>
+                        <p className="text-base font-medium text-green-700">
+                          {selectedCounty.region || 'N/A'}
+                        </p>
                       </div>
-                    )}
+
+                      {selectedCounty.population && (
+                        <div className="p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl">
+                          <h4 className="font-bold text-amber-900 mb-1 text-sm flex items-center gap-2">
+                            <span>👥</span> Population
+                          </h4>
+                          <p className="text-base font-semibold text-amber-700">
+                            {selectedCounty.population.toLocaleString()}
+                          </p>
+                        </div>
+                      )}
+
+                      {(() => {
+                        const educationContent =
+                          getCountyEducationComplete(selectedCounty.id) ||
+                          getCountyEducation(selectedCounty.id);
+                        return educationContent ? (
+                          <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl">
+                            <h4 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-2">
+                              <span>📚</span> Historical Context
+                            </h4>
+                            <p className="text-xs text-gray-700 leading-relaxed">
+                              {educationContent.historicalContext}
+                            </p>
+                          </div>
+                        ) : null;
+                      })()}
+
+                      {selectedCounty.funFacts && selectedCounty.funFacts.length > 0 && (
+                        <div className="p-3 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl">
+                          <h4 className="font-bold text-yellow-900 mb-2 text-sm flex items-center gap-2">
+                            <span>✨</span> Fun Facts
+                          </h4>
+                          <ul className="space-y-1">
+                            {selectedCounty.funFacts
+                              .slice(0, 3)
+                              .map((fact: string, idx: number) => (
+                                <li key={idx} className="text-xs text-yellow-800 flex gap-1.5">
+                                  <span className="text-yellow-600">•</span>
+                                  <span>{fact}</span>
+                                </li>
+                              ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <div className="sticky top-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-lg p-6 border-2 border-gray-200 dark:border-gray-600 h-[400px] flex flex-col items-center justify-center text-center">
-                  <span className="text-5xl mb-3 opacity-50">📋</span>
-                  <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">
-                    Select a County
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                    Click on any county from the timeline to view its detailed historical
-                    information and facts.
-                  </p>
-                </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -1949,7 +2299,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
           {/* Floating Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-50 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all flex items-center gap-2 text-sm font-medium"
+            className="absolute top-4 right-4 z-50 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all flex items-center gap-2 text-sm font-medium min-h-[44px] active:scale-95"
             aria-label="Return to Menu"
           >
             <span>Return to Menu</span>
