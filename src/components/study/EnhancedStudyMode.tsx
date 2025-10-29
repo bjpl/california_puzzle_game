@@ -13,8 +13,8 @@ import CountyShapeDisplay from '../county/CountyShapeDisplay';
 import EducationalContentModal from '../game/modals/EducationalContentModal';
 import CountyDetailsModal from '../county/CountyDetailsModal';
 import CountyFormationAnimation from '../county/CountyFormationAnimation';
-import { getRegionColor } from '../../config/regionColors';
 import { useStudyProgress } from './EnhancedStudyMode/hooks/useStudyProgress';
+import { getRegionGradient } from './EnhancedStudyMode/utils/regionHelpers';
 import type { County, ExtendedCounty } from '../../types/game-types';
 
 interface StudyModeProps {
@@ -329,12 +329,6 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
     return () => window.removeEventListener('keydown', handleKeyPress);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewMode, quizState, quizQuestion, showAnswer, currentQuestionIndex, questionHistory]);
-
-  // Get region colors from centralized configuration
-  const getRegionGradient = (region: string): string => {
-    const colorConfig = getRegionColor(region);
-    return colorConfig.tailwindGradient;
-  };
 
   // Get education content for selected county
   // Try to get complete data first, fall back to basic data if not available
