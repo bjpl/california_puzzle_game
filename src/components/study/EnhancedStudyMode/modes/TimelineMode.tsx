@@ -30,7 +30,7 @@ const TimelineMode: React.FC<TimelineModeComponentProps> = ({
   selectedCounty,
   onCountySelect,
   isMobile,
-  onRegionChange: _onRegionChange,
+  onRegionChange,
 }) => {
   const [showMobileBottomSheet, setShowMobileBottomSheet] = useState(false);
 
