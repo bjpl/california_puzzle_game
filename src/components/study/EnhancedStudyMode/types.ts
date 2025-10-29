@@ -89,9 +89,25 @@ export interface MapModeProps {
   selectedRegion: string;
   selectedCounty: County | null;
   progress: StudyProgress;
+  isMobile?: boolean;
+  educationContent?: {
+    historicalContext?: string;
+    economicImportance?: string;
+    culturalHeritage?: string;
+    geographicalSignificance?: string;
+    uniqueFeatures?: string[];
+    specificData?: {
+      majorAttractions?: string[];
+      historicalEvents?: Array<{ year: number; event: string } | string>;
+      industries?: string[];
+      landmarks?: string[];
+    };
+  } | null;
   onRegionChange: (region: string) => void;
   onCountySelect: (county: County) => void;
   onShowEducationalContent: () => void;
+  onShowEducationalModal?: () => void;
+  onShowCountyDetailsModal?: () => void;
 }
 
 export interface TimelineModeProps {
