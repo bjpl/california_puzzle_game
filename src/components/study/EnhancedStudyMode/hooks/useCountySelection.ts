@@ -106,7 +106,7 @@ export const useCountySelection = (counties: County[]): CountySelectionHookRetur
     }
 
     // Play selection sound effect
-    sound.playSound('select');
+    sound.playSound('pickup');
   };
 
   /**
