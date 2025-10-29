@@ -75,7 +75,7 @@ function CountyDropZone({
   } else if (isDragging && isOver) {
     fillColor = '#fef3c7'; // Light yellow fill when hovering during drag
     strokeColor = '#ea580c'; // BRIGHT ORANGE stroke - very visible
-    strokeWidth = '4'; // Extra thick for maximum visibility
+    strokeWidth = '6'; // Much thicker for consistent visibility
     fillOpacity = 0.8; // Semi-transparent so you can see through
   } else if (isHovered) {
     fillOpacity = 1;
@@ -244,10 +244,14 @@ function CountyDropZone({
         strokeWidth={strokeWidth}
         strokeLinejoin="round"
         strokeLinecap="round"
+        paintOrder="fill stroke"
+        vectorEffect={isDragging && isOver ? 'non-scaling-stroke' : undefined}
         className="county-drop-zone"
         style={{
           cursor: 'pointer',
           transition: 'all 0.15s ease',
+          strokeLinejoin: 'round',
+          strokeLinecap: 'round',
         }}
         onMouseEnter={() => {
           setIsHovered(true);
