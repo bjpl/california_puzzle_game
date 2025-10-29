@@ -14,17 +14,12 @@ import EducationalContentModal from '../game/modals/EducationalContentModal';
 import CountyDetailsModal from '../county/CountyDetailsModal';
 import CountyFormationAnimation from '../county/CountyFormationAnimation';
 import { getRegionColor } from '../../config/regionColors';
+import { useStudyProgress } from './EnhancedStudyMode/hooks/useStudyProgress';
 import type { County, ExtendedCounty } from '../../types/game-types';
 
 interface StudyModeProps {
   onClose: () => void;
   onStartGame: () => void;
-}
-
-interface StudyProgress {
-  studiedCounties: Set<string>;
-  completedQuizzes: Set<string>;
-  masteredCounties: Set<string>;
 }
 
 type ViewMode = 'explore' | 'quiz' | 'map' | 'timeline' | 'formation';
@@ -49,6 +44,9 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
   // Device detection for mobile-responsive layouts
   const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
 
+  // Study progress with localStorage persistence
+  const { progress, markCountyStudied, markQuizCompleted } = useStudyProgress();
+
   const [viewMode, setViewMode] = useState<ViewMode>('explore');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [selectedCounty, setSelectedCounty] = useState<County | null>(null);
@@ -67,44 +65,8 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
   const [quizSettings, setQuizSettings] = useState<QuizSettings>({
     questionsPerSession: 10,
   });
-  const [progress, setProgress] = useState<StudyProgress>({
-    studiedCounties: new Set(),
-    completedQuizzes: new Set(),
-    masteredCounties: new Set(),
-  });
   const [showMapCountyList, setShowMapCountyList] = useState(false);
   const [showMobileBottomSheet, setShowMobileBottomSheet] = useState(false);
-
-  // Load progress from localStorage (client-side only)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // eslint-disable-next-line no-restricted-globals
-      const savedProgress = localStorage.getItem('californiaStudyProgress');
-      if (savedProgress) {
-        const parsed = JSON.parse(savedProgress);
-        setProgress({
-          ...parsed,
-          studiedCounties: new Set(parsed.studiedCounties || []),
-          completedQuizzes: new Set(parsed.completedQuizzes || []),
-          masteredCounties: new Set(parsed.masteredCounties || []),
-        });
-      }
-    }
-  }, []);
-
-  // Save progress to localStorage (client-side only)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const toSave = {
-        ...progress,
-        studiedCounties: Array.from(progress.studiedCounties),
-        completedQuizzes: Array.from(progress.completedQuizzes),
-        masteredCounties: Array.from(progress.masteredCounties),
-      };
-      // eslint-disable-next-line no-restricted-globals
-      localStorage.setItem('californiaStudyProgress', JSON.stringify(toSave));
-    }
-  }, [progress]);
 
   // Auto-select first county on load with merged data
   useEffect(() => {
@@ -183,10 +145,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
     }
 
     setContentTab('overview');
-    setProgress((prev) => ({
-      ...prev,
-      studiedCounties: new Set([...prev.studiedCounties, county.id]),
-    }));
+    markCountyStudied(county.id);
   };
 
   // Generate quiz question using the comprehensive database
@@ -301,10 +260,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
 
     if (isCorrect) {
       sound.playSound('correct');
-      setProgress((prev) => ({
-        ...prev,
-        completedQuizzes: new Set([...prev.completedQuizzes, quizQuestion.question]),
-      }));
+      markQuizCompleted(quizQuestion.question);
     } else {
       sound.playSound('incorrect');
     }
