@@ -21,6 +21,7 @@ import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 import EducationalContentModal from '../game/modals/EducationalContentModal';
 import CountyDetailsModal from '../county/CountyDetailsModal';
 import type { County } from '../../types/game-types';
+import type { County as FilterCounty } from '../../types';
 
 // Import all extracted hooks
 import { useStudyProgress } from './EnhancedStudyMode/hooks/useStudyProgress';
@@ -251,7 +252,7 @@ export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }
       {/* Region Filter Bar - Hidden in Formation Mode */}
       {viewMode !== 'formation' && (
         <RegionFilterBar
-          counties={counties as County[]}
+          counties={counties.filter((c) => 'fips' in c && c.fips) as unknown as FilterCounty[]}
           selectedRegion={selectedRegion}
           onRegionChange={requestRegionChange}
           isMobile={isMobile}

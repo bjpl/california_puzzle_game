@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/california-icon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy"
@@ -50,6 +50,20 @@
     <link rel="prefetch" href="/src/components/game/achievements/AchievementGallery.tsx" as="script" />
 
     <title>California Counties Puzzle Game</title>
+
+    <!-- Fix mobile viewport height issue - MUST run before styles -->
+    <script>
+      // Calculate real viewport height for mobile browsers (fixes iOS Safari address bar issue)
+      function setViewportHeight() {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', vh + 'px');
+      }
+
+      // Set immediately and on resize/orientation change
+      setViewportHeight();
+      window.addEventListener('resize', setViewportHeight);
+      window.addEventListener('orientationchange', setViewportHeight);
+    </script>
 
     <!-- Critical CSS for loading state -->
     <style>
@@ -121,21 +135,18 @@
         100% { transform: rotate(360deg); }
       }
 
-      /* Prevent FOUC */
+      /* Prevent FOUC - Mobile-friendly viewport height */
       #root {
-        min-height: 100vh;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      #root.loaded {
+        /* Use CSS custom property for mobile-friendly height */
+        min-height: 100vh; /* Fallback for older browsers */
+        min-height: calc(var(--vh, 1vh) * 100); /* Mobile fix: real viewport height */
+        width: 100%;
+        /* Start visible to prevent blank screen on mobile */
         opacity: 1;
       }
 
-      /* Fallback: show root if loading screen disappears but root not loaded */
-      #loading-screen.hidden ~ #root:not(.loaded) {
-        opacity: 1;
-      }
+      /* No longer needed - root is always visible */
+      /* Removed opacity transition that caused blank screens on mobile */
     </style>
   </head>
   <body>
@@ -186,7 +197,6 @@
             // React has mounted content
             setTimeout(() => {
               loadingScreen.classList.add('hidden');
-              root.classList.add('loaded');
 
               // Remove loading screen after transition
               setTimeout(() => {
@@ -204,10 +214,9 @@
 
         // Fallback: force show after 5 seconds regardless
         setTimeout(() => {
-          if (!root.classList.contains('loaded')) {
-            console.warn('React mount timeout - showing app anyway');
+          if (loadingScreen.style.display !== 'none') {
+            console.warn('React mount timeout - hiding loading screen anyway');
             loadingScreen.classList.add('hidden');
-            root.classList.add('loaded');
             setTimeout(() => {
               loadingScreen.style.display = 'none';
             }, 500);

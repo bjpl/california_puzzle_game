@@ -22,7 +22,9 @@ html, body {
 }
 
 #root {
-  min-height: 100vh;
+  /* Use CSS custom property for mobile-friendly height */
+  min-height: 100vh; /* Fallback for older browsers */
+  min-height: calc(var(--vh, 1vh) * 100); /* Mobile fix: real viewport height */
   width: 100%;
 }
 
