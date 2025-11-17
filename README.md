@@ -21,6 +21,31 @@ An interactive educational puzzle game for learning California geography. Player
 **Status**: Active Development
 **Test Coverage**: 1,792/1,792 tests passing (100%)
 
+## Live Demo
+
+**Deployed Application:** [View Live Demo](https://bjpl.github.io/california_puzzle_game/)
+
+This project demonstrates interactive educational game development combining D3.js geographic visualization with React state management and Progressive Web App capabilities. The implementation showcases advanced game mechanics, offline-first architecture, and comprehensive accessibility features.
+
+## Technical Overview
+
+**Key Technologies:**
+- D3.js 7.8 for precise geographic visualizations and projections
+- React 18 with TypeScript 5.9 for type-safe component architecture
+- Vite 4.5 for lightning-fast development and optimized builds
+- Zustand 5.0 for efficient state management
+- Framer Motion 10.16 for smooth animations
+- Tailwind CSS 3.4 with dark mode support
+
+**Implementation Highlights:**
+- Interactive drag-and-drop with visual feedback and validation
+- Multi-tier Progressive Web App with 3-tier caching strategy
+- Comprehensive game modes: Easy/Medium/Hard/Expert with regional focus
+- Supabase integration for backend with anonymous authentication
+- WCAG AA accessibility with touch optimization and haptic feedback
+- Dark mode with OLED optimization for battery savings
+- Comprehensive test coverage with 1,792 passing tests
+
 ## Features
 
 ### Core Gameplay
@@ -44,14 +69,54 @@ An interactive educational puzzle game for learning California geography. Player
 - WCAG AA accessibility compliance
 - Comprehensive component library with consistent theming
 
-## Installation
+## Exploring the Code
 
-### Prerequisites
+The project demonstrates modern web game architecture with comprehensive testing:
+
+```
+src/
+├── components/
+│   ├── ui/                        # Reusable component library
+│   ├── game/                      # Game logic components
+│   ├── county/                    # County-specific components
+│   ├── CaliforniaMapCanvas.tsx    # D3 visualization layer
+│   └── RegionSelector.tsx         # Region selection interface
+├── stores/              # Zustand state management
+├── types/               # TypeScript definitions
+├── utils/               # Game utilities and algorithms
+└── hooks/               # Custom React hooks
+```
+
+**Architecture Highlights:**
+- Component-based architecture with strict TypeScript typing
+- State management pattern using Zustand for performance
+- D3.js integration layer for geographic projections
+- Service worker architecture for offline-first capability
+- Accessibility-first design with keyboard and screen reader support
+- Comprehensive testing strategy (unit, integration, E2E, accessibility)
+
+**Game Features Demonstrate:**
+- Interactive drag-and-drop mechanics with visual feedback
+- Multiple difficulty levels with progressive complexity
+- Regional focus modes for targeted learning
+- Achievement system with badges and scoring
+- PWA capabilities with offline support and installability
+
+**For Technical Review:**
+
+Those interested in the implementation details can explore:
+- `/src/components` for React component architecture
+- `/src/stores` for state management patterns
+- `/src/utils` for game algorithms and logic
+- Test files demonstrating comprehensive testing approach
+
+<details>
+<summary>Local Development Setup (Optional)</summary>
+
+**Prerequisites:**
 - Node.js 18+
-- npm or yarn
 
-### Setup
-
+**Setup:**
 ```bash
 # Clone repository
 git clone https://github.com/bjpl/california_puzzle_game
@@ -64,53 +129,19 @@ npm install
 npm run dev
 ```
 
-## Usage
-
-### Development
-
+**Available Scripts:**
 ```bash
-# Start development server
-npm run dev              # Run at http://localhost:3000
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+npm run dev              # Development server
+npm run build            # Production build
+npm run test             # Run tests
+npm run test:coverage    # Coverage report
 ```
 
-### Installing as Progressive Web App
+**Installing as PWA:**
+- **Mobile**: Tap "Add to Home Screen" in browser menu
+- **Desktop**: Click install icon in address bar
 
-#### Android Chrome
-1. Visit the app in Chrome
-2. Wait for install banner or tap menu → Add to Home screen
-3. App installs to home screen
-
-#### iOS Safari
-1. Visit the app in Safari
-2. Tap Share button → Add to Home Screen
-3. App installs to home screen
-
-#### Desktop
-1. Visit the app in Chrome/Edge
-2. Look for install icon in address bar
-3. Click to install as desktop app
-
-### Testing
-
-```bash
-# Run all tests
-npm run test
-
-# Run tests with UI
-npm run test:ui
-
-# Generate coverage report
-npm run test:coverage
-
-# Run accessibility tests
-npm run test:accessibility
-```
+</details>
 
 ## Project Structure
 
