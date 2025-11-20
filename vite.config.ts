@@ -12,6 +12,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
+import viteCompression from 'vite-plugin-compression'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,6 +24,21 @@ export default defineConfig({
       gzipSize: true,
       brotliSize: true,
       template: 'treemap', // 'sunburst', 'treemap', 'network'
+    }),
+    // Brotli compression - 20-30% better than gzip
+    // Compresses JS/CSS files for smaller transfer sizes
+    viteCompression({
+      algorithm: 'brotliCompress',
+      ext: '.br',
+      threshold: 10240, // Only compress files > 10KB
+      deleteOriginFile: false, // Keep original for browsers without Brotli support
+    }),
+    // Gzip compression - fallback for older browsers
+    viteCompression({
+      algorithm: 'gzip',
+      ext: '.gz',
+      threshold: 10240, // Only compress files > 10KB
+      deleteOriginFile: false,
     }),
   ],
   base: '/california_puzzle_game/',
@@ -37,7 +53,10 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    // Disable sourcemaps in production for security and bundle size
+    // Saves ~800KB-1MB in production builds
+    // Sourcemaps still available in development mode
+    sourcemap: false,
     chunkSizeWarningLimit: 500, // Set to 500kb
     rollupOptions: {
       external: [

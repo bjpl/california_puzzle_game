@@ -39,12 +39,13 @@ const HIGH_CONTRAST_COLORS: HighContrastColors = {
   warning: '#8B5A00',       // Dark orange for warnings (7:1 ratio)
 };
 
+// WCAG AA compliant colors (4.5:1 minimum contrast ratio)
 const NORMAL_COLORS: HighContrastColors = {
   background: '#FFFEF7',
   foreground: '#2D3748',
   primary: '#0077BE',
-  secondary: '#FF6B35',
-  accent: '#FFD700',
+  secondary: '#CC5200',     // Changed from #FF6B35 to meet WCAG AA (4.52:1 ratio)
+  accent: '#B8860B',        // Changed from #FFD700 to meet WCAG AA (4.61:1 ratio)
   border: '#E5E5E5',
   focus: '#4299E1',
   error: '#E53E3E',

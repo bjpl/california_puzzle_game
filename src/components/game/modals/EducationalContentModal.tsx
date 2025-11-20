@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import CountyShapeDisplay from '../../county/CountyShapeDisplay';
 import { County } from '@/types';
+import { useFocusTrap } from '../../../hooks/useFocusTrap';
+import { decorativeEmoji } from '../../../utils/accessibility';
 
 interface EducationalContent {
   overview?: string;
@@ -69,6 +71,14 @@ export default function EducationalContentModal({
   const [activeTab, setActiveTab] = useState<
     'overview' | 'history' | 'economy' | 'culture' | 'geography' | 'memory'
   >('overview');
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Implement focus trap for accessibility (WCAG 2.1.1, 2.4.3)
+  useFocusTrap({
+    isOpen,
+    dialogRef,
+    onEscape: onClose,
+  });
 
   useEffect(() => {
     // Reset to overview when county changes
@@ -86,7 +96,13 @@ export default function EducationalContentModal({
       />
 
       {/* Modal Content */}
-      <div className="relative w-full max-w-5xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden animate-slideInUp">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="educational-modal-title"
+        className="relative w-full max-w-5xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden animate-slideInUp"
+      >
         {/* Header - Clean solid background */}
         <div className="bg-blue-600 dark:bg-blue-800 text-white p-6">
           <div className="flex justify-between items-start">
@@ -95,7 +111,7 @@ export default function EducationalContentModal({
                 <CountyShapeDisplay countyId={county.id} size={70} className="" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-white">{county.name} County</h2>
+                <h2 id="educational-modal-title" className="text-3xl font-bold text-white">{county.name} County</h2>
                 <p className="text-blue-100 dark:text-blue-200 mt-1">
                   Complete Educational Resource
                 </p>
@@ -149,8 +165,11 @@ export default function EducationalContentModal({
                   ? 'border-b-3 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-900'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
+              aria-label={`${tab.label} tab`}
+              aria-selected={activeTab === tab.id}
+              role="tab"
             >
-              <span className="text-lg">{tab.icon}</span>
+              {decorativeEmoji(tab.icon)}
               <span>{tab.label}</span>
             </button>
           ))}
@@ -165,7 +184,7 @@ export default function EducationalContentModal({
                 {/* County Seat - Blue governance theme */}
                 <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700">
                   <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
-                    <span>🏛️</span> County Seat
+                    {decorativeEmoji('🏛️')} County Seat
                   </h4>
                   <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                     {county.capital || county.countySeat || 'N/A'}
@@ -175,7 +194,7 @@ export default function EducationalContentModal({
                 {/* Established - Warm historical theme */}
                 <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-200 dark:border-amber-700">
                   <h4 className="font-semibold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
-                    <span>📅</span> Established
+                    {decorativeEmoji('📅')} Established
                   </h4>
                   <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">
                     {county.founded || county.established || 'Unknown'}
@@ -185,7 +204,7 @@ export default function EducationalContentModal({
                 {/* Known For - Neutral with accent */}
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
                   <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
-                    <span>⭐</span> Known For
+                    {decorativeEmoji('⭐')} Known For
                   </h4>
                   <p className="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
                     {county.knownFor ||

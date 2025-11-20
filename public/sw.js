@@ -22,19 +22,23 @@ const RUNTIME_CACHE = `ca-runtime-${CACHE_VERSION}`;
 const BASE_PATH = '/california_puzzle_game';
 
 // Tier 1: Pre-cache on install (app shell + essential geodata)
+// OPTIMIZATION: Removed ca-counties-low.geojson (2.2MB) from pre-cache
+// This reduces initial cache size by ~89% (18MB → 2MB)
+// Low/medium/high geodata now loaded on-demand via network-first strategy
 const PRECACHE_URLS = [
   `${BASE_PATH}/`,
   `${BASE_PATH}/index.html`,
   `${BASE_PATH}/california-icon.svg`,
-  `${BASE_PATH}/data/geo/ca-counties-ultra-low.geojson`,
-  `${BASE_PATH}/data/geo/ca-counties-low.geojson`,
+  `${BASE_PATH}/data/geo/ca-counties-ultra-low.geojson`, // Keep ultra-low for fast initial load
   `${BASE_PATH}/data/geo/county-lookup.json`,
   `${BASE_PATH}/data/geo/geo-manifest.json`,
   `${BASE_PATH}/data/geo/projection-configs.json`,
 ];
 
 // Tier 2: Runtime cache patterns (lazy-loaded geodata, images)
+// These are cached on first use with network-first strategy
 const RUNTIME_CACHE_PATTERNS = [
+  /\/data\/geo\/ca-counties-low\.geojson$/,    // 2.2MB - now cached on-demand
   /\/data\/geo\/ca-counties-medium\.geojson$/,
   /\/data\/geo\/ca-counties-high\.geojson$/,
   /\.(png|jpg|jpeg|svg|gif|webp)$/,

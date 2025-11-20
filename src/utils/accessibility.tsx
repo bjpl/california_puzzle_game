@@ -3,6 +3,8 @@
  * WCAG 2.1 AAA compliance utilities for the California puzzle game
  */
 
+import { ReactElement } from 'react';
+
 export type TouchTargetSize = 'default' | 'large' | 'extra-large';
 
 export interface TouchTargetConfig {
@@ -358,4 +360,28 @@ export function testColorCompliance(): Record<string, { ratio: number; passes: b
   });
 
   return results;
+}
+
+/**
+ * Wraps decorative emojis with proper ARIA attributes
+ *
+ * Decorative emojis should be hidden from screen readers as they
+ * don't provide meaningful information to users.
+ *
+ * @param emoji - The emoji character(s) to wrap
+ * @returns React element with aria-hidden attribute
+ *
+ * @example
+ * ```tsx
+ * <h2>
+ *   {decorativeEmoji('🎯')} Target County
+ * </h2>
+ * ```
+ */
+export function decorativeEmoji(emoji: string): ReactElement {
+  return (
+    <span aria-hidden="true" role="presentation">
+      {emoji}
+    </span>
+  );
 }

@@ -1,6 +1,7 @@
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useState, memo, useRef } from 'react';
 import { geographicHints, getCountyCharacteristics } from '../../../data/californiaGeographicHints';
 import { County } from '@/types';
+import { useFocusTrap } from '../../../hooks/useFocusTrap';
 
 interface HintModalProps {
   isOpen: boolean;
@@ -11,6 +12,14 @@ interface HintModalProps {
 
 function HintModal({ isOpen, onClose, county, hintLevel }: HintModalProps) {
   const [showContent, setShowContent] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Implement focus trap for accessibility (WCAG 2.1.1, 2.4.3)
+  useFocusTrap({
+    isOpen,
+    dialogRef,
+    onEscape: onClose,
+  });
 
   useEffect(() => {
     if (isOpen) {
@@ -33,8 +42,8 @@ function HintModal({ isOpen, onClose, county, hintLevel }: HintModalProps) {
     if (!hints) {
       return (
         <>
-          <div className="text-6xl mb-4 animate-bounce">🗺️</div>
-          <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-gray-500 to-gray-600 dark:from-gray-400 dark:to-gray-500 bg-clip-text text-transparent">
+          <div className="text-6xl mb-4 animate-bounce" aria-hidden="true" role="presentation">🗺️</div>
+          <h3 id="hint-modal-title" className="text-2xl font-bold mb-3 bg-gradient-to-r from-gray-500 to-gray-600 dark:from-gray-400 dark:to-gray-500 bg-clip-text text-transparent">
             {county.name} County
           </h3>
           <div className="space-y-4">
@@ -298,6 +307,10 @@ function HintModal({ isOpen, onClose, county, hintLevel }: HintModalProps) {
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-[9999] pointer-events-none">
         <div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="hint-modal-title"
           className={`bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6 transform transition-all pointer-events-auto border border-gray-100 dark:border-gray-800 ${
             showContent ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
           }`}

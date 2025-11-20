@@ -5,6 +5,13 @@
     <link rel="icon" type="image/svg+xml" href="/california-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
+    <!-- Performance: DNS Prefetch for external domains -->
+    <!-- Reduces DNS lookup time by ~50-150ms per request -->
+    <link rel="dns-prefetch" href="//pfwberdnxkuvuupjmauq.supabase.co" />
+    <link rel="preconnect" href="//pfwberdnxkuvuupjmauq.supabase.co" crossorigin />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';

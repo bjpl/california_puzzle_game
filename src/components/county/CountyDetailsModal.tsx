@@ -1,7 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import CountyShapeDisplay from '../county/CountyShapeDisplay';
 import { County } from '../../types';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { decorativeEmoji } from '../../utils/accessibility';
 
 interface CountyDetailsModalProps {
   isOpen: boolean;
@@ -20,25 +22,25 @@ export default function CountyDetailsModal({
   memoryAid: _memoryAid,
   onViewEducationalContent,
 }: CountyDetailsModalProps) {
-  // Handle ESC key to close modal
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
+  const dialogRef = useRef<HTMLDivElement>(null);
 
+  // Implement focus trap for accessibility (WCAG 2.1.1, 2.4.3)
+  useFocusTrap({
+    isOpen,
+    dialogRef,
+    onEscape: onClose,
+  });
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
     if (isOpen) {
-      document.addEventListener('keydown', handleEsc);
-      // Prevent body scroll when modal is open
       document.body.style.overflow = 'hidden';
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEsc);
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen || !county) return null;
 
@@ -69,6 +71,10 @@ export default function CountyDetailsModal({
 
       {/* Modal Content */}
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="county-modal-title"
         className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden z-[10000]"
         onClick={(e) => e.stopPropagation()}
         style={{
@@ -103,7 +109,7 @@ export default function CountyDetailsModal({
               <CountyShapeDisplay countyId={county.id} size={90} className="flex-shrink-0" />
             </div>
             <div className="flex-1">
-              <h2 className="text-4xl font-bold mb-2 text-white dark:text-gray-100">
+              <h2 id="county-modal-title" className="text-4xl font-bold mb-2 text-white dark:text-gray-100">
                 {county.name}
               </h2>
               <p className="text-blue-100 dark:text-blue-200 text-xl">{county.region}</p>
@@ -165,7 +171,7 @@ export default function CountyDetailsModal({
           {county.funFacts && county.funFacts.length > 0 && (
             <div className="relative">
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                <span>🎉</span> Fun Facts
+                {decorativeEmoji('🎉')} Fun Facts
               </h3>
               <div className="space-y-2">
                 {county.funFacts.slice(0, 3).map((fact: string, idx: number) => (
@@ -185,7 +191,7 @@ export default function CountyDetailsModal({
           {county.naturalFeatures && county.naturalFeatures.length > 0 && (
             <div className="relative">
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                <span>🏔️</span> Natural Features
+                {decorativeEmoji('🏔️')} Natural Features
               </h3>
               <div className="flex flex-wrap gap-2">
                 {county.naturalFeatures.map((feature: string, idx: number) => (
@@ -204,7 +210,7 @@ export default function CountyDetailsModal({
           {county.economicFocus && county.economicFocus.length > 0 && (
             <div className="relative">
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                <span>💼</span> Economic Focus
+                {decorativeEmoji('💼')} Economic Focus
               </h3>
               <div className="flex flex-wrap gap-2">
                 {county.economicFocus.map((focus: string, idx: number) => (

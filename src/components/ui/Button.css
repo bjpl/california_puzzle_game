@@ -22,23 +22,59 @@
 }
 
 .ca-button:focus-visible {
+  outline: 2px solid var(--color-primary, #2563eb);
+  outline-offset: 2px;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
-/* Size Variants */
+.dark .ca-button:focus-visible {
+  outline-color: var(--color-primary, #60a5fa);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .ca-button:focus-visible {
+    outline-width: 3px;
+    outline-color: currentColor;
+  }
+}
+
+/* Size Variants - WCAG 2.5.5 Touch Target Compliance (44x44px minimum on mobile) */
 .ca-button--small {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   font-size: 0.875rem;
+  min-height: 44px; /* WCAG AAA touch target */
 }
 
 .ca-button--medium {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.5rem;
   font-size: 0.9375rem;
+  min-height: 44px; /* WCAG AAA touch target */
 }
 
 .ca-button--large {
   padding: 1rem 2rem;
   font-size: 1.125rem;
+  min-height: 48px; /* Extra comfortable touch target */
+}
+
+/* Desktop-optimized sizes (reduce padding when not on touch devices) */
+@media (min-width: 768px) and (pointer: fine) {
+  .ca-button--small {
+    padding: 0.5rem 1rem;
+    min-height: auto;
+  }
+
+  .ca-button--medium {
+    padding: 0.75rem 1.5rem;
+    min-height: auto;
+  }
+
+  .ca-button--large {
+    padding: 1rem 2rem;
+    min-height: auto;
+  }
 }
 
 /* Color Variants */
@@ -188,9 +224,19 @@
 /* States */
 .ca-button:disabled,
 .ca-button--disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
+  background-color: #9ca3af !important; /* gray-400 - ensures 3:1 contrast on white */
+  color: #374151 !important; /* gray-700 - maintains readability */
+  border-color: #9ca3af !important;
+}
+
+.dark .ca-button:disabled,
+.dark .ca-button--disabled {
+  background-color: #6b7280 !important; /* gray-500 - maintains contrast in dark mode */
+  color: #1f2937 !important; /* gray-800 - high contrast text */
+  border-color: #6b7280 !important;
 }
 
 .ca-button--full-width {
