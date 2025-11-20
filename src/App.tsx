@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from 'react';
 import { GameProvider } from './context/GameContext';
 import { ErrorBoundary } from './components/shared/ErrorBoundary';
 import { LoadingSpinner } from './components/shared/LoadingSpinner';
+import { ToastContainer } from './components/ui/ToastContainer';
 import { useAuth } from './hooks/useAuth';
 import { useGameStore } from './stores/gameStore';
 import {
@@ -10,6 +11,9 @@ import {
   setupFocusRefresh,
 } from './stores/authStore';
 import './styles/globals.css';
+
+// Accessibility components
+import SkipNavigation from './components/accessibility/SkipNavigation';
 
 // Lazy load heavy components for code splitting and improved performance
 // This reduces initial bundle size by 20-30%
@@ -62,11 +66,14 @@ function App() {
         <AnalyticsProvider>
           <GameProvider>
             <AuthIntegration />
+            {/* Skip navigation for keyboard accessibility (WCAG 2.4.1) */}
+            <SkipNavigation />
             <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800 flex flex-col">
               <Suspense fallback={<LoadingSpinner />}>
-                <div className="flex-1">
+                {/* Main content area with ID for skip navigation */}
+                <main id="main-content" tabIndex={-1} className="flex-1">
                   <GameContainer />
-                </div>
+                </main>
                 <footer className="py-4 px-6 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
                   <div className="max-w-7xl mx-auto flex justify-center">
                     <SecurityBadge />
@@ -76,6 +83,7 @@ function App() {
                 <FeedbackWidget />
                 <CookieConsent />
                 <SyncStatusIndicator />
+                <ToastContainer />
               </Suspense>
             </div>
           </GameProvider>

@@ -143,8 +143,8 @@ def transform_to_viewbox(coordinates: List, target_width: float = 800, target_he
         ]
 
 def main():
-    # Read the GeoJSON file
-    with open('california_counties.geojson', 'r') as f:
+    # Read the GeoJSON file from the correct location
+    with open('public/data/geo/ca-counties-raw.geojson', 'r') as f:
         data = json.load(f)
 
     counties_data = []

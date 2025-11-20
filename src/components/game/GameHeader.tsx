@@ -162,7 +162,7 @@ export default function GameHeader() {
 
           <button
             onClick={toggleSound}
-            className={`${isMobile ? 'p-1.5' : 'p-2'} rounded-xl transition-all ${
+            className={`${isMobile ? 'p-2.5' : 'p-2'} rounded-xl transition-all ${
               soundEnabled
                 ? 'bg-green-100 text-green-600 hover:bg-green-200'
                 : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
@@ -193,7 +193,7 @@ export default function GameHeader() {
 
           <button
             onClick={handlePausePlay}
-            className={`${isMobile ? 'p-1.5' : 'p-2'} rounded-xl transition-all ${
+            className={`${isMobile ? 'p-2.5' : 'p-2'} rounded-xl transition-all ${
               isPaused
                 ? 'bg-green-100 text-green-600 hover:bg-green-200'
                 : 'bg-blue-100 text-blue-600 hover:bg-blue-200'
@@ -241,7 +241,7 @@ export default function GameHeader() {
 
           <button
             onClick={() => setShowSettings(true)}
-            className={`${isMobile ? 'p-1.5' : 'p-2'} rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all`}
+            className={`${isMobile ? 'p-2.5' : 'p-2'} rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all`}
             title="Settings"
             aria-label="Open user settings including account and data export options"
           >
