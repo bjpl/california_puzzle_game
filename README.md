@@ -9,19 +9,19 @@
 
 An interactive educational puzzle game for learning California geography. Players drag and drop county pieces to their correct locations on a California map using D3.js visualizations and React.
 
-## ✨ Recent Improvements
+## Recent Improvements
 
-- **🔒 Security & Privacy Features (NEW - Oct 16)** - User account management, data export (GDPR compliance), delete account, security badge in footer
-- **🌐 Progressive Web App (Oct 9)** - Complete PWA with offline gameplay, installable on iOS/Android, Service Worker caching
-- **🌙 Dark Mode (Oct 9)** - Full dark theme with OLED optimization (40-60% battery savings), system preference sync, WCAG AA compliant
-- **📱 Mobile Foundation** - Complete mobile-optimized infrastructure with touch interactions, responsive layouts, and gesture detection
-- **🎯 100% Test Pass Rate** - Achieved perfect test suite reliability (1,792/1,792 tests)
-- **♿ Accessibility Testing** - jest-axe integration for WCAG compliance validation
+- **Security and Privacy Features (Oct 16)** - User account management, data export (GDPR compliance), delete account, security badge in footer
+- **Progressive Web App (Oct 9)** - Complete PWA with offline gameplay, installable on iOS/Android, Service Worker caching
+- **Dark Mode (Oct 9)** - Full dark theme with OLED optimization (40-60% battery savings), system preference sync, WCAG AA compliant
+- **Mobile Foundation** - Complete mobile-optimized infrastructure with touch interactions, responsive layouts, and gesture detection
+- **100% Test Pass Rate** - Achieved perfect test suite reliability (1,792/1,792 tests)
+- **Accessibility Testing** - jest-axe integration for WCAG compliance validation
 - **Component Library** - New UI component system with Button, Badge, Card, Progress, and Typography components
 - **Design System** - Comprehensive style guide with region-specific theming
 - **Tailwind CSS Integration** - Modern utility-first CSS framework for consistent styling
 
-## 🎮 Features
+## Features
 
 ### Core Gameplay
 
@@ -54,9 +54,9 @@ An interactive educational puzzle game for learning California geography. Player
 - **Design System**: Comprehensive component library with consistent theming
 - **Regional Theming**: Color-coded UI based on California's 7 geographic regions
 
-### 📱 Mobile Features
+### Mobile Features
 
-- **Progressive Web App (PWA)** ⭐ NEW
+- **Progressive Web App (PWA)**
   - Install on iOS/Android home screen
   - Works completely offline after first load
   - Auto-updates with user notifications
@@ -64,7 +64,7 @@ An interactive educational puzzle game for learning California geography. Player
   - Standalone mode detection
   - Platform-specific install prompts
 
-- **Dark Mode** 🌙 NEW
+- **Dark Mode**
   - Three modes: Light, Dark, System (auto-detects OS preference)
   - OLED optimization (#121212 base = 40-60% battery savings)
   - WCAG AA compliant (4.5:1+ contrast ratios)
@@ -87,7 +87,7 @@ An interactive educational puzzle game for learning California geography. Player
 
 See [Mobile Documentation](src/mobile/README.md) for complete API reference and usage examples.
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Frontend
 
@@ -130,7 +130,7 @@ See [Mobile Documentation](src/mobile/README.md) for complete API reference and 
 - **Prettier 3.6** - Code formatting (auto-format on commit)
 - **Husky 9.1** - Git hooks ✅ **Working without --no-verify**
 
-### Testing Stack ✅ Enhanced
+### Testing Stack
 
 - **@testing-library/react 16.0** - Component testing
 - **jest-axe 10.0** - Accessibility validation (WCAG AA)
@@ -140,7 +140,7 @@ See [Mobile Documentation](src/mobile/README.md) for complete API reference and 
 
 See [Technology Stack Analysis](docs/ad_hoc_reports/technology_stack.md) for comprehensive details.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -161,7 +161,7 @@ npm install
 npm run dev
 ```
 
-### 📱 Installing as Progressive Web App
+### Installing as Progressive Web App
 
 **Android Chrome:**
 
@@ -218,7 +218,7 @@ npm run geodata:build    # Build geographic data
 npm run geodata:serve    # Serve geographic data on port 8080
 ```
 
-## 🗺️ Game Regions
+## Game Regions
 
 ### Available Regions
 
@@ -237,7 +237,7 @@ npm run geodata:serve    # Serve geographic data on port 8080
 - **Hard**: All counties, minimal outlines, limited hints
 - **Expert**: All counties, no outlines, rotated pieces, no hints
 
-## 🎯 Scoring System
+## Scoring System
 
 ### Base Scoring
 
@@ -262,7 +262,7 @@ npm run geodata:serve    # Serve geographic data on port 8080
 - **Regional Master**: Complete a region on Expert difficulty
 - **California Expert**: Complete all regions on Expert
 
-## 🏗️ Architecture
+## Architecture
 
 ### Project Structure
 
@@ -321,7 +321,7 @@ Uses D3.js Mercator projection specifically configured for California:
 - **Scale**: 2400 (optimized for gameplay visibility)
 - **Bounds**: Automatically calculated based on container size
 
-## 🧪 Testing
+## Testing
 
 ### Test Structure
 
@@ -354,7 +354,7 @@ npm run test:integration       # Integration tests only
 npm run test:performance       # Performance tests only
 ```
 
-## 🎨 Design System
+## Design System
 
 ### Component Library
 
@@ -387,7 +387,7 @@ import { Button, Card, Badge, Progress, Heading, Text } from '@/components/ui';
 - **Progressive Difficulty**: Adaptive hint system
 - **Accessibility**: ARIA labels, keyboard navigation, screen reader support
 
-## 🌐 Deployment
+## Deployment
 
 ### CI/CD Pipeline
 
@@ -433,7 +433,7 @@ For automated deployment, configure these secrets in repository settings:
 - `NETLIFY_SITE_ID` - Netlify site ID
 - `CODECOV_TOKEN` - Codecov upload token (optional)
 
-## 🤝 Contributing
+## Contributing
 
 ### Development Setup
 
@@ -461,25 +461,19 @@ For automated deployment, configure these secrets in repository settings:
 4. Add appropriate tests
 5. Update documentation
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **California Open Data**: Geographic boundary data
 - **D3.js Community**: Mapping and visualization techniques
 - **React Community**: Component patterns and best practices
 - **Educational Resources**: Geography learning methodologies
 
-## 📞 Support
+## Support
 
 - **Issues**: Report bugs and request features via GitHub Issues
 - **Documentation**: See inline code comments and type definitions
 - **Community**: Join discussions in GitHub Discussions
-
----
-
-**Built with ❤️ for California geography education**
-
-# Test pre-commit
