@@ -28,7 +28,6 @@ Intelligent release automation and orchestration using AI swarms for comprehensi
 ## Quick Start
 
 ### Simple Release Flow
-
 ```bash
 # Plan and create a release
 gh release create v2.0.0 \
@@ -44,7 +43,6 @@ npx claude-flow github release-create \
 ```
 
 ### Full Automated Release
-
 ```bash
 # Initialize release swarm
 npx claude-flow swarm init --topology hierarchical
@@ -58,28 +56,24 @@ npx claude-flow sparc pipeline "Release v2.0.0 with full validation"
 ## Core Capabilities
 
 ### 1. Release Planning & Version Management
-
 - Semantic version analysis and suggestion
 - Breaking change detection from commits
 - Release timeline generation
 - Multi-package version coordination
 
 ### 2. Automated Testing & Validation
-
 - Multi-stage test orchestration
 - Cross-platform compatibility testing
 - Performance regression detection
 - Security vulnerability scanning
 
 ### 3. Build & Deployment Orchestration
-
 - Multi-platform build coordination
 - Parallel artifact generation
 - Progressive deployment strategies
 - Automated rollback mechanisms
 
 ### 4. Documentation & Communication
-
 - Automated changelog generation
 - Release notes with categorization
 - Migration guide creation
@@ -92,7 +86,6 @@ npx claude-flow sparc pipeline "Release v2.0.0 with full validation"
 ### Essential Release Commands
 
 #### Create Release Draft
-
 ```bash
 # Get last release tag
 LAST_TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName')
@@ -110,7 +103,6 @@ gh release create v2.0.0 \
 ```
 
 #### Basic Version Bump
-
 ```bash
 # Update package.json version
 npm version patch  # or minor, major
@@ -120,7 +112,6 @@ git push --follow-tags
 ```
 
 #### Simple Deployment
-
 ```bash
 # Build and publish npm package
 npm run build
@@ -132,7 +123,6 @@ gh release create $(npm pkg get version) \
 ```
 
 ### Quick Integration Example
-
 ```javascript
 // Simple release preparation in Claude Code
 [Single Message]:
@@ -157,7 +147,6 @@ gh release create $(npm pkg get version) \
 ### AI Swarm Release Orchestration
 
 #### Initialize Release Swarm
-
 ```javascript
 // Set up coordinated release team
 [Single Message - Swarm Initialization]:
@@ -177,7 +166,6 @@ gh release create $(npm pkg get version) \
 ```
 
 #### Coordinated Release Workflow
-
 ```javascript
 [Single Message - Full Release Coordination]:
   // Create release branch
@@ -231,7 +219,6 @@ gh release create $(npm pkg get version) \
 ### Release Agent Specializations
 
 #### Changelog Agent
-
 ```bash
 # Get merged PRs between versions
 PRS=$(gh pr list --state merged --base main --json number,title,labels,author,mergedAt \
@@ -252,7 +239,6 @@ npx claude-flow github changelog \
 ```
 
 **Capabilities:**
-
 - Semantic commit analysis
 - Breaking change detection
 - Contributor attribution
@@ -260,7 +246,6 @@ npx claude-flow github changelog \
 - Multi-language support
 
 #### Version Agent
-
 ```bash
 # Intelligent version suggestion
 npx claude-flow github version-suggest \
@@ -271,7 +256,6 @@ npx claude-flow github version-suggest \
 ```
 
 **Logic:**
-
 - Analyzes commit messages and PR labels
 - Detects breaking changes via keywords
 - Suggests appropriate version bump
@@ -279,7 +263,6 @@ npx claude-flow github version-suggest \
 - Validates version constraints
 
 #### Build Agent
-
 ```bash
 # Multi-platform build coordination
 npx claude-flow github release-build \
@@ -290,7 +273,6 @@ npx claude-flow github release-build \
 ```
 
 **Features:**
-
 - Cross-platform compilation
 - Parallel build execution
 - Artifact optimization and compression
@@ -298,7 +280,6 @@ npx claude-flow github release-build \
 - Build caching and reuse
 
 #### Test Agent
-
 ```bash
 # Comprehensive pre-release testing
 npx claude-flow github release-test \
@@ -309,7 +290,6 @@ npx claude-flow github release-test \
 ```
 
 #### Deploy Agent
-
 ```bash
 # Multi-target deployment orchestration
 npx claude-flow github release-deploy \
@@ -326,7 +306,6 @@ npx claude-flow github release-deploy \
 ### Multi-Package Release Coordination
 
 #### Monorepo Release Strategy
-
 ```javascript
 [Single Message - Multi-Package Release]:
   // Initialize mesh topology for cross-package coordination
@@ -357,7 +336,6 @@ npx claude-flow github release-deploy \
 ### Progressive Deployment Strategy
 
 #### Staged Rollout Configuration
-
 ```yaml
 # .github/release-deployment.yml
 deployment:
@@ -389,7 +367,6 @@ deployment:
 ```
 
 #### Execute Staged Deployment
-
 ```bash
 # Deploy with progressive rollout
 npx claude-flow github release-deploy \
@@ -403,7 +380,6 @@ npx claude-flow github release-deploy \
 ### Multi-Repository Coordination
 
 #### Coordinated Multi-Repo Release
-
 ```bash
 # Synchronize releases across repositories
 npx claude-flow github multi-release \
@@ -415,7 +391,6 @@ npx claude-flow github multi-release \
 ```
 
 #### Cross-Repo Dependency Management
-
 ```javascript
 [Single Message - Cross-Repo Release]:
   // Initialize star topology for centralized coordination
@@ -439,7 +414,6 @@ npx claude-flow github multi-release \
 ### Hotfix Emergency Procedures
 
 #### Emergency Hotfix Workflow
-
 ```bash
 # Fast-track critical bug fix
 npx claude-flow github emergency-release \
@@ -453,7 +427,6 @@ npx claude-flow github emergency-release \
 ```
 
 #### Automated Hotfix Process
-
 ```javascript
 [Single Message - Emergency Hotfix]:
   // Create hotfix branch from last stable release
@@ -488,7 +461,6 @@ npx claude-flow github emergency-release \
 ### Release Configuration Management
 
 #### Comprehensive Release Config
-
 ```yaml
 # .github/release-swarm.yml
 version: 2.0.0
@@ -604,7 +576,6 @@ release:
 ### Advanced Testing Strategies
 
 #### Comprehensive Validation Suite
-
 ```bash
 # Pre-release validation with all checks
 npx claude-flow github release-validate \
@@ -624,7 +595,6 @@ npx claude-flow github release-validate \
 ```
 
 #### Backward Compatibility Testing
-
 ```bash
 # Test against previous versions
 npx claude-flow github compat-test \
@@ -636,7 +606,6 @@ npx claude-flow github compat-test \
 ```
 
 #### Performance Regression Detection
-
 ```bash
 # Benchmark against baseline
 npx claude-flow github performance-test \
@@ -650,7 +619,6 @@ npx claude-flow github performance-test \
 ### Release Monitoring & Analytics
 
 #### Real-Time Release Monitoring
-
 ```bash
 # Monitor release health post-deployment
 npx claude-flow github release-monitor \
@@ -662,7 +630,6 @@ npx claude-flow github release-monitor \
 ```
 
 #### Release Analytics & Insights
-
 ```bash
 # Analyze release performance and adoption
 npx claude-flow github release-analytics \
@@ -674,7 +641,6 @@ npx claude-flow github release-analytics \
 ```
 
 #### Automated Rollback Configuration
-
 ```bash
 # Configure intelligent auto-rollback
 npx claude-flow github rollback-config \
@@ -692,7 +658,6 @@ npx claude-flow github rollback-config \
 ### Security & Compliance
 
 #### Security Scanning
-
 ```bash
 # Comprehensive security validation
 npx claude-flow github release-security \
@@ -705,7 +670,6 @@ npx claude-flow github release-security \
 ```
 
 #### Compliance Validation
-
 ```bash
 # Ensure regulatory compliance
 npx claude-flow github release-compliance \
@@ -721,7 +685,6 @@ npx claude-flow github release-compliance \
 ## GitHub Actions Integration
 
 ### Complete Release Workflow
-
 ```yaml
 # .github/workflows/release.yml
 name: Intelligent Release Workflow
@@ -872,7 +835,6 @@ jobs:
 ```
 
 ### Hotfix Workflow
-
 ```yaml
 # .github/workflows/hotfix.yml
 name: Emergency Hotfix Workflow
@@ -915,21 +877,18 @@ jobs:
 ### Release Planning Guidelines
 
 #### 1. Regular Release Cadence
-
 - **Weekly**: Patch releases with bug fixes
 - **Bi-weekly**: Minor releases with features
 - **Quarterly**: Major releases with breaking changes
 - **On-demand**: Hotfixes for critical issues
 
 #### 2. Feature Freeze Strategy
-
 - Code freeze 3 days before release
 - Only critical bug fixes allowed
 - Beta testing period for major releases
 - Stakeholder communication plan
 
 #### 3. Version Management Rules
-
 - Strict semantic versioning compliance
 - Breaking changes only in major versions
 - Deprecation warnings one minor version ahead
@@ -938,21 +897,18 @@ jobs:
 ### Automation Recommendations
 
 #### 1. Comprehensive CI/CD Pipeline
-
 - Automated testing at every stage
 - Security scanning before release
 - Performance benchmarking
 - Documentation generation
 
 #### 2. Progressive Deployment
-
 - Canary releases for early detection
 - Staged rollouts with monitoring
 - Automated health checks
 - Quick rollback mechanisms
 
 #### 3. Monitoring & Observability
-
 - Real-time error tracking
 - Performance metrics collection
 - User adoption analytics
@@ -961,21 +917,18 @@ jobs:
 ### Documentation Standards
 
 #### 1. Changelog Requirements
-
 - Categorized changes by type
 - Breaking changes highlighted
 - Migration guides for major versions
 - Contributor attribution
 
 #### 2. Release Notes Content
-
 - High-level feature summaries
 - Detailed technical changes
 - Upgrade instructions
 - Known issues and limitations
 
 #### 3. API Documentation
-
 - Automated API doc generation
 - Example code updates
 - Deprecation notices
@@ -986,7 +939,6 @@ jobs:
 ## Troubleshooting & Common Issues
 
 ### Issue: Failed Release Build
-
 ```bash
 # Debug build failures
 npx claude-flow@alpha diagnostic-run \
@@ -999,7 +951,6 @@ docker run --rm -v $(pwd):/app node:20 \
 ```
 
 ### Issue: Test Failures in CI
-
 ```bash
 # Run tests with detailed output
 npm run test -- --verbose --coverage
@@ -1014,7 +965,6 @@ npx claude-flow@alpha github compat-test \
 ```
 
 ### Issue: Deployment Rollback Needed
-
 ```bash
 # Immediate rollback to previous version
 npx claude-flow@alpha github rollback \
@@ -1030,7 +980,6 @@ npx claude-flow@alpha github release-analytics \
 ```
 
 ### Issue: Version Conflicts
-
 ```bash
 # Check and resolve version conflicts
 npx claude-flow@alpha github release-validate \
@@ -1048,7 +997,6 @@ npx claude-flow@alpha github version-sync \
 ## Performance Metrics & Benchmarks
 
 ### Expected Performance
-
 - **Release Planning**: < 2 minutes
 - **Build Process**: 3-8 minutes (varies by project)
 - **Test Execution**: 5-15 minutes
@@ -1056,14 +1004,12 @@ npx claude-flow@alpha github version-sync \
 - **Complete Pipeline**: 15-30 minutes
 
 ### Optimization Tips
-
 1. **Parallel Execution**: Use swarm coordination for concurrent tasks
 2. **Caching**: Enable build and dependency caching
 3. **Incremental Builds**: Only rebuild changed components
 4. **Test Optimization**: Run critical tests first, full suite in parallel
 
 ### Success Metrics
-
 - **Release Frequency**: Target weekly minor releases
 - **Lead Time**: < 2 hours from commit to production
 - **Failure Rate**: < 2% of releases require rollback
@@ -1074,21 +1020,18 @@ npx claude-flow@alpha github version-sync \
 ## Related Resources
 
 ### Documentation
-
 - [GitHub CLI Documentation](https://cli.github.com/manual/)
 - [Semantic Versioning Spec](https://semver.org/)
 - [Claude Flow SPARC Guide](../../docs/sparc-methodology.md)
 - [Swarm Coordination Patterns](../../docs/swarm-patterns.md)
 
 ### Related Skills
-
 - **github-pr-management**: PR review and merge automation
 - **github-workflow-automation**: CI/CD workflow orchestration
 - **multi-repo-coordination**: Cross-repository synchronization
 - **deployment-orchestration**: Advanced deployment strategies
 
 ### Support & Community
-
 - Issues: https://github.com/ruvnet/claude-flow/issues
 - Discussions: https://github.com/ruvnet/claude-flow/discussions
 - Documentation: https://claude-flow.dev/docs
@@ -1098,7 +1041,6 @@ npx claude-flow@alpha github version-sync \
 ## Appendix: Release Checklist Template
 
 ### Pre-Release Checklist
-
 - [ ] Version numbers updated across all packages
 - [ ] Changelog generated and reviewed
 - [ ] Breaking changes documented with migration guide
@@ -1111,7 +1053,6 @@ npx claude-flow@alpha github version-sync \
 - [ ] Deployment plan reviewed and approved
 
 ### Release Checklist
-
 - [ ] Release branch created and validated
 - [ ] CI/CD pipeline completed successfully
 - [ ] Artifacts built and verified
@@ -1124,7 +1065,6 @@ npx claude-flow@alpha github version-sync \
 - [ ] Health checks passing
 
 ### Post-Release Checklist
-
 - [ ] Release announcement published
 - [ ] Monitoring dashboards reviewed
 - [ ] Error rates within normal range

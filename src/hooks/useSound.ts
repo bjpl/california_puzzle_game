@@ -3,11 +3,13 @@
  *
  * This hook provides a convenient way to integrate the sound system
  * into React components with proper lifecycle management.
+ * Migrated to domain stores for better separation of concerns.
  */
 
 import { useEffect, useCallback, useRef } from 'react';
 import { logger } from '../utils/logger';
-import { useGameStore } from '../stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useSettingsStore } from '../stores/gameSettingsStore';
 import { playSound, SoundType, soundManager as _soundManager } from '../utils/soundManager';
 import {
   initializeSoundSystem,
@@ -46,15 +48,14 @@ export const useSound = (options: UseSoundOptions = {}): UseSoundReturn => {
   } = options;
 
   const isInitializedRef = useRef(false);
-  const gameStore = useGameStore();
-
+  // Migrated from monolithic gameStore to settingsStore
   const {
     settings,
     toggleMute,
     startBackgroundMusic,
     stopBackgroundMusic,
     updateSoundSettings: _updateSoundSettings,
-  } = gameStore;
+  } = useSettingsStore();
 
   const { soundSettings } = settings;
 
@@ -206,9 +207,9 @@ export const useGameSounds = () => {
  * Hook for sound settings management
  */
 export const useSoundSettings = () => {
-  const gameStore = useGameStore();
+  // Migrated from monolithic gameStore to domain stores
   const { settings, updateSoundSettings, toggleMute, startBackgroundMusic, stopBackgroundMusic } =
-    gameStore;
+    useSettingsStore();
 
   const { soundSettings } = settings;
 

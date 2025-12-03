@@ -15,7 +15,8 @@
 import { syncManager } from '../syncManager';
 import { supabase, Database } from '../supabase';
 import { logger } from '../../utils/logger';
-import { useGameStore } from '../../stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useSettingsStore } from '../../stores/gameSettingsStore';
 import type { GameSettings, DifficultyLevel, CaliforniaRegion } from '../../types';
 
 type GameSettingsRow = Database['public']['Tables']['game_settings']['Row'];
@@ -86,7 +87,7 @@ class GameSettingsSync {
       return;
     }
 
-    const currentSettings = settings || useGameStore.getState().settings;
+    const currentSettings = settings || useSettingsStore.getState().settings;
 
     logger.info('[GameSettingsSync] Syncing settings to server...');
 
@@ -167,7 +168,7 @@ class GameSettingsSync {
 
       // Deserialize and update local store
       const settings = this.deserializeSettings(data);
-      useGameStore.getState().updateSettings(settings);
+      useSettingsStore.getState().updateSettings(settings);
     }
   }
 
@@ -195,7 +196,7 @@ class GameSettingsSync {
         if (serverSettings.user_id === this.userId) {
           // Update local store with server data
           const settings = this.deserializeSettings(serverSettings);
-          useGameStore.getState().updateSettings(settings);
+          useSettingsStore.getState().updateSettings(settings);
 
           logger.info('[GameSettingsSync] Local settings updated from server');
         }

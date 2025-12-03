@@ -14,7 +14,6 @@ Comprehensive performance analysis suite for identifying bottlenecks, profiling 
 ## Overview
 
 This skill consolidates all performance analysis capabilities:
-
 - **Bottleneck Detection**: Identify performance bottlenecks across communication, processing, memory, and network
 - **Performance Profiling**: Real-time monitoring and historical analysis of swarm operations
 - **Report Generation**: Create comprehensive performance reports in multiple formats
@@ -23,19 +22,16 @@ This skill consolidates all performance analysis capabilities:
 ## Quick Start
 
 ### Basic Bottleneck Detection
-
 ```bash
 npx claude-flow bottleneck detect
 ```
 
 ### Generate Performance Report
-
 ```bash
 npx claude-flow analysis performance-report --format html --include-metrics
 ```
 
 ### Analyze and Auto-Fix
-
 ```bash
 npx claude-flow bottleneck detect --fix --threshold 15
 ```
@@ -45,13 +41,11 @@ npx claude-flow bottleneck detect --fix --threshold 15
 ### 1. Bottleneck Detection
 
 #### Command Syntax
-
 ```bash
 npx claude-flow bottleneck detect [options]
 ```
 
 #### Options
-
 - `--swarm-id, -s <id>` - Analyze specific swarm (default: current)
 - `--time-range, -t <range>` - Analysis period: 1h, 24h, 7d, all (default: 1h)
 - `--threshold <percent>` - Bottleneck threshold percentage (default: 20)
@@ -59,7 +53,6 @@ npx claude-flow bottleneck detect [options]
 - `--fix` - Apply automatic optimizations
 
 #### Usage Examples
-
 ```bash
 # Basic detection for current swarm
 npx claude-flow bottleneck detect
@@ -80,7 +73,6 @@ npx claude-flow bottleneck detect --threshold 10 --export critical-issues.json
 #### Metrics Analyzed
 
 **Communication Bottlenecks:**
-
 - Message queue delays
 - Agent response times
 - Coordination overhead
@@ -88,7 +80,6 @@ npx claude-flow bottleneck detect --threshold 10 --export critical-issues.json
 - Inter-agent communication latency
 
 **Processing Bottlenecks:**
-
 - Task completion times
 - Agent utilization rates
 - Parallel execution efficiency
@@ -96,7 +87,6 @@ npx claude-flow bottleneck detect --threshold 10 --export critical-issues.json
 - CPU/memory usage patterns
 
 **Memory Bottlenecks:**
-
 - Cache hit rates
 - Memory access patterns
 - Storage I/O performance
@@ -104,7 +94,6 @@ npx claude-flow bottleneck detect --threshold 10 --export critical-issues.json
 - Memory allocation efficiency
 
 **Network Bottlenecks:**
-
 - API call latency
 - MCP communication delays
 - External service timeouts
@@ -112,7 +101,6 @@ npx claude-flow bottleneck detect --threshold 10 --export critical-issues.json
 - Network throughput issues
 
 #### Output Format
-
 ```
 🔍 Bottleneck Analysis Report
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -149,9 +137,7 @@ Run with --fix to apply:
 ### 2. Performance Profiling
 
 #### Real-time Detection
-
 Automatic analysis during task execution:
-
 - Execution time vs. complexity
 - Agent utilization rates
 - Resource constraints
@@ -160,47 +146,40 @@ Automatic analysis during task execution:
 #### Common Bottleneck Patterns
 
 **Time Bottlenecks:**
-
 - Tasks taking > 5 minutes
 - Sequential operations that could parallelize
 - Redundant file operations
 - Inefficient algorithm implementations
 
 **Coordination Bottlenecks:**
-
 - Single agent for complex tasks
 - Unbalanced agent workloads
 - Poor topology selection
 - Excessive synchronization points
 
 **Resource Bottlenecks:**
-
 - High operation count (> 100)
 - Memory constraints
 - I/O limitations
 - Thread pool saturation
 
 #### MCP Integration
-
 ```javascript
 // Check for bottlenecks in Claude Code
-mcp__claude -
-  flow__bottleneck_detect({
-    timeRange: '1h',
-    threshold: 20,
-    autoFix: false,
-  });
+mcp__claude-flow__bottleneck_detect({
+  timeRange: "1h",
+  threshold: 20,
+  autoFix: false
+})
 
 // Get detailed task results with bottleneck analysis
-mcp__claude -
-  flow__task_results({
-    taskId: 'task-123',
-    format: 'detailed',
-  });
+mcp__claude-flow__task_results({
+  taskId: "task-123",
+  format: "detailed"
+})
 ```
 
 **Result Format:**
-
 ```json
 {
   "bottlenecks": [
@@ -237,13 +216,11 @@ mcp__claude -
 ### 3. Report Generation
 
 #### Command Syntax
-
 ```bash
 npx claude-flow analysis performance-report [options]
 ```
 
 #### Options
-
 - `--format <type>` - Report format: json, html, markdown (default: markdown)
 - `--include-metrics` - Include detailed metrics and charts
 - `--compare <id>` - Compare with previous swarm
@@ -252,7 +229,6 @@ npx claude-flow analysis performance-report [options]
 - `--sections <list>` - Comma-separated sections to include
 
 #### Report Sections
-
 1. **Executive Summary**
    - Overall performance score
    - Key metrics overview
@@ -285,7 +261,6 @@ npx claude-flow analysis performance-report [options]
    - Implementation guidance
 
 #### Usage Examples
-
 ```bash
 # Generate HTML report with all metrics
 npx claude-flow analysis performance-report --format html --include-metrics
@@ -313,42 +288,35 @@ npx claude-flow analysis performance-report \
 ```
 
 #### Sample Markdown Report
-
 ```markdown
 # Performance Analysis Report
 
 ## Executive Summary
-
 - **Overall Score**: 87/100
 - **Analysis Period**: Last 24 hours
 - **Swarms Analyzed**: 3
 - **Critical Issues**: 1
 
 ## Key Metrics
-
-| Metric              | Value | Trend  | Target |
-| ------------------- | ----- | ------ | ------ |
-| Avg Task Time       | 42s   | ↓ 12%  | 35s    |
-| Agent Utilization   | 78%   | ↑ 5%   | 85%    |
-| Cache Hit Rate      | 91%   | →      | 90%    |
-| Parallel Efficiency | 2.3x  | ↑ 0.4x | 2.5x   |
+| Metric | Value | Trend | Target |
+|--------|-------|-------|--------|
+| Avg Task Time | 42s | ↓ 12% | 35s |
+| Agent Utilization | 78% | ↑ 5% | 85% |
+| Cache Hit Rate | 91% | → | 90% |
+| Parallel Efficiency | 2.3x | ↑ 0.4x | 2.5x |
 
 ## Bottleneck Analysis
-
 ### Critical
-
 1. **Agent Communication Delay** (Impact: 35%)
    - Coordinator → Coder messages delayed by 2.3s avg
    - **Fix**: Switch to hierarchical topology
 
 ### Warnings
-
 1. **Memory Access Pattern** (Impact: 18%)
    - Neural pattern loading: 1.8s per access
    - **Fix**: Enable memory caching
 
 ## Recommendations
-
 1. **High Priority**: Switch to hierarchical topology (40% improvement)
 2. **Medium Priority**: Enable memory caching (25% improvement)
 3. **Low Priority**: Increase agent concurrency to 8 (20% improvement)
@@ -357,46 +325,39 @@ npx claude-flow analysis performance-report \
 ### 4. Optimization Recommendations
 
 #### Automatic Fixes
-
 When using `--fix`, the following optimizations may be applied:
 
 **1. Topology Optimization**
-
 - Switch to more efficient topology (mesh → hierarchical)
 - Adjust communication patterns
 - Reduce coordination overhead
 - Optimize message routing
 
 **2. Caching Enhancement**
-
 - Enable memory caching
 - Optimize cache strategies
 - Preload common patterns
 - Implement cache warming
 
 **3. Concurrency Tuning**
-
 - Adjust agent counts
 - Optimize parallel execution
 - Balance workload distribution
 - Implement load balancing
 
 **4. Priority Adjustment**
-
 - Reorder task queues
 - Prioritize critical paths
 - Reduce wait times
 - Implement fair scheduling
 
 **5. Resource Optimization**
-
 - Optimize memory usage
 - Reduce I/O operations
 - Batch API calls
 - Implement connection pooling
 
 #### Performance Impact
-
 Typical improvements after bottleneck resolution:
 
 - **Communication**: 30-50% faster message delivery
@@ -408,7 +369,6 @@ Typical improvements after bottleneck resolution:
 ## Advanced Usage
 
 ### Continuous Monitoring
-
 ```bash
 # Monitor performance in real-time
 npx claude-flow swarm monitor --interval 5
@@ -423,7 +383,6 @@ done
 ```
 
 ### CI/CD Integration
-
 ```yaml
 # .github/workflows/performance.yml
 name: Performance Analysis
@@ -454,7 +413,6 @@ jobs:
 ```
 
 ### Custom Analysis Scripts
-
 ```javascript
 // scripts/analyze-performance.js
 const { exec } = require('child_process');
@@ -462,20 +420,27 @@ const fs = require('fs');
 
 async function analyzePerformance() {
   // Run bottleneck detection
-  const bottlenecks = await runCommand('npx claude-flow bottleneck detect --format json');
+  const bottlenecks = await runCommand(
+    'npx claude-flow bottleneck detect --format json'
+  );
 
   // Generate performance report
-  const report = await runCommand('npx claude-flow analysis performance-report --format json');
+  const report = await runCommand(
+    'npx claude-flow analysis performance-report --format json'
+  );
 
   // Analyze results
   const analysis = {
     bottlenecks: JSON.parse(bottlenecks),
     performance: JSON.parse(report),
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 
   // Save combined analysis
-  fs.writeFileSync('analysis/combined-report.json', JSON.stringify(analysis, null, 2));
+  fs.writeFileSync(
+    'analysis/combined-report.json',
+    JSON.stringify(analysis, null, 2)
+  );
 
   // Generate alerts if needed
   if (analysis.bottlenecks.critical.length > 0) {
@@ -499,35 +464,30 @@ analyzePerformance().catch(console.error);
 ## Best Practices
 
 ### 1. Regular Analysis
-
 - Run bottleneck detection after major changes
 - Generate weekly performance reports
 - Monitor trends over time
 - Set up automated alerts
 
 ### 2. Threshold Tuning
-
 - Start with default threshold (20%)
 - Lower for production systems (10-15%)
 - Higher for development (25-30%)
 - Adjust based on requirements
 
 ### 3. Fix Strategy
-
 - Always review before applying --fix
 - Test fixes in development first
 - Apply fixes incrementally
 - Monitor impact after changes
 
 ### 4. Report Integration
-
 - Include in documentation
 - Share with team regularly
 - Track improvements over time
 - Use for capacity planning
 
 ### 5. Continuous Optimization
-
 - Learn from each analysis
 - Build performance budgets
 - Establish baselines
@@ -538,7 +498,6 @@ analyzePerformance().catch(console.error);
 ### Common Issues
 
 **High Memory Usage**
-
 ```bash
 # Analyze memory bottlenecks
 npx claude-flow bottleneck detect --threshold 10
@@ -551,7 +510,6 @@ npx claude-flow memory usage
 ```
 
 **Slow Task Execution**
-
 ```bash
 # Identify slow tasks
 npx claude-flow task status --detailed
@@ -564,7 +522,6 @@ npx claude-flow agent metrics
 ```
 
 **Poor Cache Performance**
-
 ```bash
 # Analyze cache hit rates
 npx claude-flow analysis performance-report --sections metrics

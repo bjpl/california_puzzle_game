@@ -15,7 +15,8 @@
 import { syncManager } from '../syncManager';
 import { supabase, Database } from '../supabase';
 import { logger } from '../../utils/logger';
-import { useGameStore } from '../../stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useAchievementStore } from '../../stores/achievementStore';
 import type { Achievement } from '../../types';
 
 type UserProgressRow = Database['public']['Tables']['user_progress']['Row'];
@@ -85,7 +86,7 @@ class AchievementSync {
       return;
     }
 
-    const currentAchievements = useGameStore.getState().achievements;
+    const currentAchievements = useAchievementStore.getState().achievements;
 
     logger.info('[AchievementSync] Syncing all achievements...');
 
@@ -109,7 +110,7 @@ class AchievementSync {
 
     logger.info('[AchievementSync] Syncing achievement:', achievement.id);
 
-    const currentAchievements = useGameStore.getState().achievements;
+    const currentAchievements = useAchievementStore.getState().achievements;
     await this.updateAchievementsOnServer(currentAchievements);
 
     logger.info('[AchievementSync] Achievement synced');
@@ -152,7 +153,7 @@ class AchievementSync {
 
         // Merge with local achievements
         const serverAchievementIds = new Set(progressData.achievements);
-        const localAchievements = useGameStore.getState().achievements;
+        const localAchievements = useAchievementStore.getState().achievements;
 
         const mergedAchievements = localAchievements.map((achievement) => {
           if (serverAchievementIds.has(achievement.id) && !achievement.isUnlocked) {
@@ -165,7 +166,7 @@ class AchievementSync {
           return achievement;
         });
 
-        useGameStore.setState({ achievements: mergedAchievements });
+        useAchievementStore.setState({ achievements: mergedAchievements });
       }
     }
   }
@@ -194,7 +195,7 @@ class AchievementSync {
         if (serverProgress.user_id === this.userId && serverProgress.achievements) {
           // Merge with local achievements
           const serverAchievementIds = new Set(serverProgress.achievements);
-          const localAchievements = useGameStore.getState().achievements;
+          const localAchievements = useAchievementStore.getState().achievements;
 
           const mergedAchievements = localAchievements.map((achievement) => {
             if (serverAchievementIds.has(achievement.id) && !achievement.isUnlocked) {
@@ -207,7 +208,7 @@ class AchievementSync {
             return achievement;
           });
 
-          useGameStore.setState({ achievements: mergedAchievements });
+          useAchievementStore.setState({ achievements: mergedAchievements });
 
           logger.info('[AchievementSync] Local achievements updated from server');
         }

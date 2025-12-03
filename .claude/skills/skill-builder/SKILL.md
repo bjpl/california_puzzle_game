@@ -1,6 +1,6 @@
 ---
-name: 'Skill Builder'
-description: 'Create new Claude Code Skills with proper YAML frontmatter, progressive disclosure structure, and complete directory organization. Use when you need to build custom skills for specific workflows, generate skill templates, or understand the Claude Skills specification.'
+name: "Skill Builder"
+description: "Create new Claude Code Skills with proper YAML frontmatter, progressive disclosure structure, and complete directory organization. Use when you need to build custom skills for specific workflows, generate skill templates, or understand the Claude Skills specification."
 ---
 
 # Skill Builder
@@ -62,7 +62,6 @@ and when Claude should use it."       # Include BOTH what & when
 #### Field Requirements
 
 **`name`** (REQUIRED):
-
 - **Type**: String
 - **Max Length**: 64 characters
 - **Format**: Human-friendly display name
@@ -76,7 +75,6 @@ and when Claude should use it."       # Include BOTH what & when
   - ❌ "This is a very long skill name that exceeds sixty-four characters" (too long)
 
 **`description`** (REQUIRED):
-
 - **Type**: String
 - **Max Length**: 1024 characters
 - **Format**: Plain text or minimal markdown
@@ -126,7 +124,6 @@ tags: ["dev", "api"]   # NOT part of spec
 ### 📂 Directory Structure
 
 #### Minimal Skill (Required)
-
 ```
 ~/.claude/skills/                    # Personal skills location
 └── my-skill/                        # Skill directory (MUST be at top level!)
@@ -137,7 +134,6 @@ tags: ["dev", "api"]   # NOT part of spec
 Claude Code does NOT support nested subdirectories or namespaces!
 
 #### Full-Featured Skill (Recommended)
-
 ```
 ~/.claude/skills/
 └── my-skill/                        # Top-level skill directory
@@ -164,24 +160,20 @@ Claude Code does NOT support nested subdirectories or namespaces!
 #### Skills Locations
 
 **Personal Skills** (available across all projects):
-
 ```
 ~/.claude/skills/
 └── [your-skills]/
 ```
-
 - **Path**: `~/.claude/skills/` or `$HOME/.claude/skills/`
 - **Scope**: Available in all projects for this user
 - **Version Control**: NOT committed to git (outside repo)
 - **Use Case**: Personal productivity tools, custom workflows
 
 **Project Skills** (team-shared, version controlled):
-
 ```
 <project-root>/.claude/skills/
 └── [team-skills]/
 ```
-
 - **Path**: `.claude/skills/` in project root
 - **Scope**: Available only in this project
 - **Version Control**: SHOULD be committed to git
@@ -194,7 +186,6 @@ Claude Code does NOT support nested subdirectories or namespaces!
 Claude Code uses a **3-level progressive disclosure system** to scale to 100+ skills without context penalty:
 
 #### Level 1: Metadata (Name + Description)
-
 **Loaded**: At Claude Code startup, always
 **Size**: ~200 chars per skill
 **Purpose**: Enable autonomous skill matching
@@ -202,15 +193,14 @@ Claude Code uses a **3-level progressive disclosure system** to scale to 100+ sk
 
 ```yaml
 ---
-name: 'API Builder' # 11 chars
-description: 'Creates REST APIs...' # ~50 chars
+name: "API Builder"                   # 11 chars
+description: "Creates REST APIs..."   # ~50 chars
 ---
 # Total: ~61 chars per skill
 # 100 skills = ~6KB context (minimal!)
 ```
 
 #### Level 2: SKILL.md Body
-
 **Loaded**: When skill is triggered/matched
 **Size**: ~1-10KB typically
 **Purpose**: Main instructions and procedures
@@ -220,20 +210,16 @@ description: 'Creates REST APIs...' # ~50 chars
 # API Builder
 
 ## What This Skill Does
-
 [Main instructions - loaded only when skill is active]
 
 ## Quick Start
-
 [Basic procedures]
 
 ## Step-by-Step Guide
-
 [Detailed instructions]
 ```
 
 #### Level 3+: Referenced Files
-
 **Loaded**: On-demand as Claude navigates
 **Size**: Variable (KB to MB)
 **Purpose**: Deep reference, examples, schemas
@@ -241,7 +227,6 @@ description: 'Creates REST APIs...' # ~50 chars
 
 ```markdown
 # In SKILL.md
-
 See [Advanced Configuration](docs/ADVANCED.md) for complex scenarios.
 See [API Reference](docs/API_REFERENCE.md) for complete documentation.
 Use template: `resources/templates/api-template.js`
@@ -257,25 +242,22 @@ Use template: `resources/templates/api-template.js`
 
 #### Recommended 4-Level Structure
 
-````markdown
+```markdown
 ---
-name: 'Your Skill Name'
-description: 'What it does and when to use it'
+name: "Your Skill Name"
+description: "What it does and when to use it"
 ---
 
 # Your Skill Name
 
 ## Level 1: Overview (Always Read First)
-
 Brief 2-3 sentence description of the skill.
 
 ## Prerequisites
-
 - Requirement 1
 - Requirement 2
 
 ## What This Skill Does
-
 1. Primary function
 2. Secondary function
 3. Key benefit
@@ -285,15 +267,12 @@ Brief 2-3 sentence description of the skill.
 ## Level 2: Quick Start (For Fast Onboarding)
 
 ### Basic Usage
-
 ```bash
 # Simplest use case
 command --option value
 ```
-````
 
 ### Common Scenarios
-
 1. **Scenario 1**: How to...
 2. **Scenario 2**: How to...
 
@@ -304,37 +283,30 @@ command --option value
 ### Step-by-Step Guide
 
 #### Step 1: Initial Setup
-
 ```bash
 # Commands
 ```
-
 Expected output:
-
 ```
 Success message
 ```
 
 #### Step 2: Configuration
-
 - Configuration option 1
 - Configuration option 2
 
 #### Step 3: Execution
-
 - Run the main command
 - Verify results
 
 ### Advanced Options
 
 #### Option 1: Custom Configuration
-
 ```bash
 # Advanced usage
 ```
 
 #### Option 2: Integration
-
 ```bash
 # Integration steps
 ```
@@ -346,38 +318,30 @@ Success message
 ### Troubleshooting
 
 #### Issue: Common Problem
-
 **Symptoms**: What you see
 **Cause**: Why it happens
 **Solution**: How to fix
-
 ```bash
 # Fix command
 ```
 
 #### Issue: Another Problem
-
 **Solution**: Steps to resolve
 
 ### Complete API Reference
-
 See [API_REFERENCE.md](docs/API_REFERENCE.md)
 
 ### Examples
-
 See [examples/](resources/examples/)
 
 ### Related Skills
-
 - [Related Skill 1](#)
 - [Related Skill 2](#)
 
 ### Resources
-
 - [External Link 1](https://example.com)
 - [Documentation](https://docs.example.com)
-
-````
+```
 
 ---
 
@@ -392,10 +356,9 @@ description: "Generate TypeScript interfaces from JSON schema. Use when converti
 
 # ❌ BAD: Keywords buried
 description: "This skill helps developers who need to work with JSON schemas by providing a way to generate TypeScript interfaces."
-````
+```
 
 **Include Trigger Conditions**:
-
 ```yaml
 # ✅ GOOD: Clear "when" clause
 description: "Debug React performance issues using Chrome DevTools. Use when components re-render unnecessarily, investigating slow updates, or optimizing bundle size."
@@ -405,7 +368,6 @@ description: "Helps with React performance debugging."
 ```
 
 **Be Specific**:
-
 ```yaml
 # ✅ GOOD: Specific technologies
 description: "Create Express.js REST endpoints with Joi validation, Swagger docs, and Jest tests. Use when building new APIs or adding endpoints."
@@ -417,25 +379,19 @@ description: "Build API endpoints with proper validation and testing."
 #### Progressive Disclosure Writing
 
 **Keep Level 1 Brief** (Overview):
-
 ```markdown
 ## What This Skill Does
-
 Creates production-ready React components with TypeScript, hooks, and tests in 3 steps.
 ```
 
 **Level 2 for Common Paths** (Quick Start):
-
-````markdown
+```markdown
 ## Quick Start
-
 ```bash
 # Most common use case (80% of users)
 generate-component MyComponent
 ```
-````
-
-````
+```
 
 **Level 3 for Details** (Step-by-Step):
 ```markdown
@@ -446,13 +402,11 @@ generate-component MyComponent
 2. Choose template
 3. Customize options
 [Detailed explanations]
-````
+```
 
 **Level 4 for Edge Cases** (Reference):
-
 ```markdown
 ## Advanced Configuration
-
 For complex scenarios like HOCs, render props, or custom hooks, see [ADVANCED.md](docs/ADVANCED.md).
 ```
 
@@ -467,7 +421,6 @@ For complex scenarios like HOCs, render props, or custom hooks, see [ADVANCED.md
 **Usage**: Referenced from SKILL.md
 
 Example:
-
 ```bash
 # In skill directory
 scripts/
@@ -478,26 +431,19 @@ scripts/
 ```
 
 Reference from SKILL.md:
-
-````markdown
+```markdown
 ## Setup
-
 Run the setup script:
-
 ```bash
 ./scripts/setup.sh
 ```
-````
 
 ## Validation
-
 Validate your configuration:
-
 ```bash
 node scripts/validate.js config.json
 ```
-
-````
+```
 
 #### Resources Directory
 
@@ -519,28 +465,21 @@ resources/
 └── schemas/
     ├── config.schema.json
     └── output.schema.json
-````
+```
 
 Reference from SKILL.md:
-
-````markdown
+```markdown
 ## Templates
-
 Use the component template:
-
 ```bash
 cp resources/templates/component.tsx.template src/components/MyComponent.tsx
 ```
-````
 
 ## Examples
-
 See working examples in `resources/examples/`:
-
 - `basic-example/` - Simple component
 - `advanced-example/` - With hooks and context
-
-````
+```
 
 ---
 
@@ -552,30 +491,24 @@ Claude can navigate to referenced files automatically. Use these patterns:
 ```markdown
 See [Advanced Configuration](docs/ADVANCED.md) for complex scenarios.
 See [Troubleshooting Guide](docs/TROUBLESHOOTING.md) if you encounter errors.
-````
+```
 
 #### Relative File Paths
-
 ```markdown
 Use the template located at `resources/templates/api-template.js`
 See examples in `resources/examples/basic-usage/`
 ```
 
 #### Inline File Content
-
-````markdown
+```markdown
 ## Example Configuration
-
 See `resources/examples/config.json`:
-
 ```json
 {
   "option": "value"
 }
 ```
-````
-
-````
+```
 
 **Best Practice**: Keep SKILL.md lean (~2-5KB). Move lengthy content to separate files and reference them. Claude will load only what's needed.
 
@@ -640,28 +573,23 @@ description: "One sentence what. One sentence when to use."
 ## Quick Start
 ```bash
 # Single command to get started
-````
+```
 
 ## Step-by-Step Guide
 
 ### Step 1: Setup
-
 [Instructions]
 
 ### Step 2: Usage
-
 [Instructions]
 
 ### Step 3: Verify
-
 [Instructions]
 
 ## Troubleshooting
-
 - **Issue**: Problem description
   - **Solution**: Fix description
-
-````
+```
 
 ### Template 2: Intermediate Skill (With Scripts)
 
@@ -686,12 +614,10 @@ description: "Detailed what with key features. When to use with specific trigger
 ```bash
 ./scripts/setup.sh
 ./scripts/generate.sh my-project
-````
+```
 
 ## Configuration
-
 Edit `config.json`:
-
 ```json
 {
   "option1": "value1",
@@ -702,29 +628,23 @@ Edit `config.json`:
 ## Step-by-Step Guide
 
 ### Basic Usage
-
 [Steps for 80% use case]
 
 ### Advanced Usage
-
 [Steps for complex scenarios]
 
 ## Available Scripts
-
 - `scripts/setup.sh` - Initial setup
 - `scripts/generate.sh` - Code generation
 - `scripts/validate.sh` - Validation
 
 ## Resources
-
 - Templates: `resources/templates/`
 - Examples: `resources/examples/`
 
 ## Troubleshooting
-
 [Common issues and solutions]
-
-````
+```
 
 ### Template 3: Advanced Skill (Full-Featured)
 
@@ -756,16 +676,14 @@ description: "Comprehensive what with all features and integrations. Use when [t
 ### Installation
 ```bash
 ./scripts/install.sh
-````
+```
 
 ### First Use
-
 ```bash
 ./scripts/quickstart.sh
 ```
 
 Expected output:
-
 ```
 ✓ Setup complete
 ✓ Configuration validated
@@ -777,9 +695,7 @@ Expected output:
 ## Configuration
 
 ### Basic Configuration
-
 Edit `config.json`:
-
 ```json
 {
   "mode": "production",
@@ -788,7 +704,6 @@ Edit `config.json`:
 ```
 
 ### Advanced Configuration
-
 See [Configuration Guide](docs/CONFIGURATION.md)
 
 ---
@@ -796,15 +711,12 @@ See [Configuration Guide](docs/CONFIGURATION.md)
 ## Step-by-Step Guide
 
 ### 1. Initial Setup
-
 [Detailed steps]
 
 ### 2. Core Workflow
-
 [Main procedures]
 
 ### 3. Integration
-
 [Integration steps]
 
 ---
@@ -812,49 +724,43 @@ See [Configuration Guide](docs/CONFIGURATION.md)
 ## Advanced Features
 
 ### Feature 1: Custom Templates
-
 ```bash
 ./scripts/generate.sh --template custom
 ```
 
 ### Feature 2: Batch Processing
-
 ```bash
 ./scripts/batch.sh --input data.json
 ```
 
 ### Feature 3: CI/CD Integration
-
 See [CI/CD Guide](docs/CICD.md)
 
 ---
 
 ## Scripts Reference
 
-| Script        | Purpose               | Usage                          |
-| ------------- | --------------------- | ------------------------------ |
-| `install.sh`  | Install dependencies  | `./scripts/install.sh`         |
-| `generate.sh` | Generate code         | `./scripts/generate.sh [name]` |
-| `validate.sh` | Validate output       | `./scripts/validate.sh`        |
-| `deploy.sh`   | Deploy to environment | `./scripts/deploy.sh [env]`    |
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `install.sh` | Install dependencies | `./scripts/install.sh` |
+| `generate.sh` | Generate code | `./scripts/generate.sh [name]` |
+| `validate.sh` | Validate output | `./scripts/validate.sh` |
+| `deploy.sh` | Deploy to environment | `./scripts/deploy.sh [env]` |
 
 ---
 
 ## Resources
 
 ### Templates
-
 - `resources/templates/basic.template` - Basic template
 - `resources/templates/advanced.template` - Advanced template
 
 ### Examples
-
 - `resources/examples/basic/` - Simple example
 - `resources/examples/advanced/` - Complex example
 - `resources/examples/integration/` - Integration example
 
 ### Schemas
-
 - `resources/schemas/config.schema.json` - Configuration schema
 - `resources/schemas/output.schema.json` - Output validation
 
@@ -863,11 +769,9 @@ See [CI/CD Guide](docs/CICD.md)
 ## Troubleshooting
 
 ### Issue: Installation Failed
-
 **Symptoms**: Error during `install.sh`
 **Cause**: Missing dependencies
 **Solution**:
-
 ```bash
 # Install prerequisites
 npm install -g required-package
@@ -875,23 +779,19 @@ npm install -g required-package
 ```
 
 ### Issue: Validation Errors
-
 **Symptoms**: Validation script fails
 **Solution**: See [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
 
 ---
 
 ## API Reference
-
 Complete API documentation: [API_REFERENCE.md](docs/API_REFERENCE.md)
 
 ## Related Skills
-
 - [Related Skill 1](../related-skill-1/)
 - [Related Skill 2](../related-skill-2/)
 
 ## Resources
-
 - [Official Documentation](https://example.com/docs)
 - [GitHub Repository](https://github.com/example/repo)
 - [Community Forum](https://forum.example.com)
@@ -902,8 +802,7 @@ Complete API documentation: [API_REFERENCE.md](docs/API_REFERENCE.md)
 **Category**: Advanced
 **Difficulty**: Intermediate
 **Estimated Time**: 15-30 minutes
-
-````
+```
 
 ---
 
@@ -932,13 +831,11 @@ Creates well-structured README.md files with badges, installation, usage, and co
 # - Installation instructions
 # - Usage examples
 # - Contribution guidelines
-````
+```
 
 ## Customization
-
 Edit sections in `resources/templates/sections/` before generating.
-
-````
+```
 
 ### Example 2: Code Generation Skill
 
@@ -964,31 +861,26 @@ description: "Generate React functional components with TypeScript, hooks, tests
 # - src/components/MyComponent/MyComponent.test.tsx
 # - src/components/MyComponent/MyComponent.stories.tsx
 # - src/components/MyComponent/index.ts
-````
+```
 
 ## Step-by-Step Guide
 
 ### 1. Run Generator
-
 ```bash
 ./scripts/generate-component.sh ComponentName
 ```
 
 ### 2. Choose Template
-
 - Basic: Simple functional component
 - With State: useState hooks
 - With Context: useContext integration
 - With API: Data fetching component
 
 ### 3. Customize
-
 Edit generated files in `src/components/ComponentName/`
 
 ## Templates
-
 See `resources/templates/` for available component templates.
-
 ```
 
 ---
@@ -1016,4 +908,3 @@ See `resources/templates/` for available component templates.
 **Version**: 1.0.0
 **Maintained By**: agentic-flow team
 **License**: MIT
-```

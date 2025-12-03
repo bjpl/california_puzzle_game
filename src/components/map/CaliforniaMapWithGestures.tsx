@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useGameStore } from '../../stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useGestureStore } from '../../stores/gestureStore';
 import { useGestureRecognition, GestureType } from '../../hooks/useGestureRecognition';
 import GestureSettings from '../game/GestureSettings';
 import CaliforniaMapSimple from './CaliforniaMapSimple';
@@ -16,7 +17,7 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
     setMapPan,
     resetGestureState,
     updateGestureState,
-  } = useGameStore();
+  } = useGestureStore();
 
   const [showSettings, setShowSettings] = useState(false);
   const [showResetNotification, setShowResetNotification] = useState(false);

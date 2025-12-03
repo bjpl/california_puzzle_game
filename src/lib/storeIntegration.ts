@@ -11,7 +11,12 @@
  * Last updated: 2025-10-11
  */
 
-import { useGameStore } from '../stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useGameLifecycleStore } from '../stores/gameLifecycleStore';
+import { useCountyPlacementStore } from '../stores/countyPlacementStore';
+import { useScoringStore } from '../stores/scoringStore';
+import { useAchievementStore } from '../stores/achievementStore';
+import { useSettingsStore } from '../stores/gameSettingsStore';
 import { useStudyStore } from '../stores/studyStore';
 // import { useAuthStore } from '../stores/authStore'; // Available for future auth integration
 import { gameSettingsSync } from './sync/gameSettingsSync';
@@ -114,18 +119,18 @@ class StoreIntegrationManager {
    * PATTERN: Zustand subscriptions with selective updates
    */
   private setupGameStoreListeners(): void {
-    logger.info('[StoreIntegration] Setting up gameStore listeners...');
+    logger.info('[StoreIntegration] Setting up domain store listeners...');
 
-    let previousSettings = useGameStore.getState().settings;
-    let previousStats = useGameStore.getState().stats;
-    let previousAchievements = useGameStore.getState().achievements;
-    let wasGameActive = useGameStore.getState().isGameActive;
+    // Track previous state for change detection
+    let previousSettings = useSettingsStore.getState().settings;
+    let previousStats = useScoringStore.getState().stats;
+    let previousAchievements = useAchievementStore.getState().achievements;
+    let wasGameActive = useGameLifecycleStore.getState().isGameActive;
 
-    // Listen to all store changes and handle specific updates
-    const unsubscribeAll = useGameStore.subscribe((state) => {
+    // Listen to settings store changes
+    const unsubscribeSettings = useSettingsStore.subscribe((state) => {
       if (!this.initialized) return;
 
-      // Handle settings changes
       if (JSON.stringify(state.settings) !== JSON.stringify(previousSettings)) {
         logger.info('[StoreIntegration] Settings changed, syncing...');
         gameSettingsSync.sync(state.settings).catch((error) => {
@@ -133,8 +138,12 @@ class StoreIntegrationManager {
         });
         previousSettings = state.settings;
       }
+    });
 
-      // Handle stats changes
+    // Listen to scoring store changes (stats)
+    const unsubscribeScoring = useScoringStore.subscribe((state) => {
+      if (!this.initialized) return;
+
       if (JSON.stringify(state.stats) !== JSON.stringify(previousStats)) {
         logger.info('[StoreIntegration] Stats changed, syncing...');
         gameStatsSync.sync(state.stats).catch((error) => {
@@ -142,8 +151,12 @@ class StoreIntegrationManager {
         });
         previousStats = state.stats;
       }
+    });
 
-      // Handle achievement changes
+    // Listen to achievement store changes
+    const unsubscribeAchievements = useAchievementStore.subscribe((state) => {
+      if (!this.initialized) return;
+
       const newlyUnlocked = state.achievements.filter((achievement) => {
         const previous = previousAchievements.find((a) => a.id === achievement.id);
         return achievement.isUnlocked && (!previous || !previous.isUnlocked);
@@ -161,18 +174,26 @@ class StoreIntegrationManager {
         });
       }
       previousAchievements = state.achievements;
+    });
+
+    // Listen to game lifecycle store for game end events
+    const unsubscribeLifecycle = useGameLifecycleStore.subscribe((state) => {
+      if (!this.initialized) return;
 
       // Handle game end events for session recording
       if (wasGameActive && !state.isGameActive) {
         logger.info('[StoreIntegration] Game ended, recording session...');
 
+        const scoringState = useScoringStore.getState();
+        const countyState = useCountyPlacementStore.getState();
+
         gameStatsSync
           .recordGameSession({
-            score: state.score,
+            score: scoringState.score,
             difficulty: state.difficulty,
             region: state.selectedRegion,
             timeElapsed: state.timeElapsed,
-            accuracy: state.placedCounties.length > 0 ? 0.8 : 0, // Note: accuracy calculation to be refined
+            accuracy: countyState.placedCounties.length > 0 ? 0.8 : 0, // Note: accuracy calculation to be refined
           })
           .catch((error) => {
             logger.error('[StoreIntegration] Failed to record game session:', error);
@@ -181,9 +202,9 @@ class StoreIntegrationManager {
       wasGameActive = state.isGameActive;
     });
 
-    this.unsubscribers.push(unsubscribeAll);
+    this.unsubscribers.push(unsubscribeSettings, unsubscribeScoring, unsubscribeAchievements, unsubscribeLifecycle);
 
-    logger.info('[StoreIntegration] gameStore listeners ready');
+    logger.info('[StoreIntegration] Domain store listeners ready');
   }
 
   /**

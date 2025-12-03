@@ -1,9 +1,16 @@
 // Enhanced Game Context with Storage and Progress Integration
 // Provides centralized state management with persistent storage
+// Migrated to domain stores for better separation of concerns
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useMemo } from 'react';
 import { logger } from '../utils/logger';
-import { useGameStore } from '../stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useGameLifecycleStore } from '../stores/gameLifecycleStore';
+import { useCountyPlacementStore } from '../stores/countyPlacementStore';
+import { useScoringStore } from '../stores/scoringStore';
+// Note: Achievement and Hint stores are coordinated via storeCoordinator.ts
+// They are not directly imported here to avoid unnecessary re-renders
+import { useSettingsStore } from '../stores/gameSettingsStore';
 import { useAutoSave } from '../hooks/useAutoSave';
 import { useProgress } from '../hooks/useProgress';
 import { useAchievements, useAchievementNotifications } from '../hooks/useAchievements';
@@ -17,9 +24,32 @@ import type {
 } from '../types';
 import type { AchievementDefinition as _AchievementDefinition } from '../utils/achievements';
 
+// Import types for proper typing
+import type { CountyPiece, GameStats, GameSettings } from '../types';
+
+// Aggregated game state from domain stores
+interface AggregatedGameState {
+  // From gameLifecycleStore
+  isGameActive: boolean;
+  isPaused: boolean;
+  timeElapsed: number;
+  // From countyPlacementStore
+  placedCounties: CountyPiece[];
+  remainingCounties: CountyPiece[];
+  // From scoringStore
+  score: number;
+  streak: number;
+  stats: GameStats;
+  // From settingsStore
+  settings: GameSettings;
+  // Actions
+  updateSettings: (settings: Partial<GameSettings>) => void;
+  resetGame: () => void;
+}
+
 interface EnhancedGameContextValue {
-  // Game State
-  gameState: ReturnType<typeof useGameStore>;
+  // Game State (aggregated from domain stores)
+  gameState: AggregatedGameState;
 
   // User Management
   currentProfile: UserProfile | null;
@@ -56,8 +86,30 @@ interface EnhancedGameProviderProps {
 }
 
 export const EnhancedGameProvider: React.FC<EnhancedGameProviderProps> = ({ children }) => {
-  // Core game state
-  const gameState = useGameStore();
+  // Domain stores (migrated from monolithic gameStore)
+  const lifecycleStore = useGameLifecycleStore();
+  const countyStore = useCountyPlacementStore();
+  const scoringStore = useScoringStore();
+  const settingsStore = useSettingsStore();
+
+  // Aggregated game state for backward compatibility
+  const gameState: AggregatedGameState = useMemo(() => ({
+    isGameActive: lifecycleStore.isGameActive,
+    isPaused: lifecycleStore.isPaused,
+    timeElapsed: lifecycleStore.timeElapsed,
+    placedCounties: countyStore.placedCounties,
+    remainingCounties: countyStore.remainingCounties,
+    score: scoringStore.score,
+    streak: scoringStore.streak,
+    stats: scoringStore.stats,
+    settings: settingsStore.settings,
+    updateSettings: settingsStore.updateSettings,
+    resetGame: () => {
+      lifecycleStore.resetGame();
+      countyStore.resetCounties();
+      scoringStore.resetScore();
+    },
+  }), [lifecycleStore, countyStore, scoringStore, settingsStore]);
 
   // User management
   const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null);
@@ -112,7 +164,7 @@ export const EnhancedGameProvider: React.FC<EnhancedGameProviderProps> = ({ chil
         // Load saved settings if profile exists
         if (current) {
           const savedSettings = storageManager.loadSettings();
-          gameState.updateSettings(savedSettings);
+          settingsStore.updateSettings(savedSettings);
         }
 
         setIsInitialized(true);
@@ -165,7 +217,7 @@ export const EnhancedGameProvider: React.FC<EnhancedGameProviderProps> = ({ chil
 
       // Load profile's settings and data
       const settings = storageManager.loadSettings();
-      gameState.updateSettings(settings);
+      settingsStore.updateSettings(settings);
 
       // Refresh progress and achievements
       await progress.refreshProgress();
@@ -233,7 +285,7 @@ export const EnhancedGameProvider: React.FC<EnhancedGameProviderProps> = ({ chil
         // Refresh all hooks
         if (current) {
           const settings = storageManager.loadSettings();
-          gameState.updateSettings(settings);
+          settingsStore.updateSettings(settings);
         }
 
         await progress.refreshProgress();
@@ -264,7 +316,9 @@ export const EnhancedGameProvider: React.FC<EnhancedGameProviderProps> = ({ chil
       setError(null);
 
       // Reset game state to defaults
-      gameState.resetGame();
+      lifecycleStore.resetGame();
+      countyStore.resetCounties();
+      scoringStore.resetScore();
 
       return true;
     } catch (err) {

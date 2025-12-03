@@ -383,8 +383,17 @@ export interface StruggleData {
   suggestedHints: HintType[];
 }
 
+// Minimal game state needed by HintSystem component
+export interface HintSystemGameState {
+  remainingCounties: CountyPiece[];
+  placedCounties: CountyPiece[];
+  hintSystem: HintSystemState;
+  score: number;
+  mistakes: number;
+}
+
 export interface HintSystemProps {
-  gameState: GameState;
+  gameState: HintSystemGameState;
   onHintRequested: (type: HintType) => void;
   onHintDismissed: () => void;
   className?: string;

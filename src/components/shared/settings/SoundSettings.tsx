@@ -1,6 +1,7 @@
 import React from 'react';
 import { Volume2, VolumeX, Music, Gamepad2, Trophy, MousePointer } from 'lucide-react';
-import { useGameStore } from '../../../stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useSettingsStore } from '../../../stores/gameSettingsStore';
 import { CaliforniaButton } from '../../ui/CaliforniaButton';
 
 interface SoundSettingsProps {
@@ -10,7 +11,7 @@ interface SoundSettingsProps {
 
 export const SoundSettings: React.FC<SoundSettingsProps> = ({ className, onClose }) => {
   const { settings, updateSoundSettings, toggleMute, startBackgroundMusic, stopBackgroundMusic } =
-    useGameStore();
+    useSettingsStore();
 
   const { soundSettings } = settings;
 

@@ -41,23 +41,20 @@ Flow Nexus provides cloud-based orchestration for AI agent swarms with:
 Create a new swarm with specified topology and configuration:
 
 ```javascript
-mcp__flow -
-  nexus__swarm_init({
-    topology: 'hierarchical', // Options: mesh, ring, star, hierarchical
-    maxAgents: 8,
-    strategy: 'balanced', // Options: balanced, specialized, adaptive
-  });
+mcp__flow-nexus__swarm_init({
+  topology: "hierarchical", // Options: mesh, ring, star, hierarchical
+  maxAgents: 8,
+  strategy: "balanced" // Options: balanced, specialized, adaptive
+})
 ```
 
 **Topology Guide:**
-
 - **Hierarchical**: Tree structure with coordinator nodes (best for complex projects)
 - **Mesh**: Peer-to-peer collaboration (best for research and analysis)
 - **Ring**: Circular coordination (best for sequential workflows)
 - **Star**: Centralized hub (best for simple delegation)
 
 **Strategy Guide:**
-
 - **Balanced**: Equal distribution of workload across agents
 - **Specialized**: Agents focus on specific expertise areas
 - **Adaptive**: Dynamic adjustment based on task complexity
@@ -67,16 +64,14 @@ mcp__flow -
 Add specialized agents to the swarm:
 
 ```javascript
-mcp__flow -
-  nexus__agent_spawn({
-    type: 'researcher', // Options: researcher, coder, analyst, optimizer, coordinator
-    name: 'Lead Researcher',
-    capabilities: ['web_search', 'analysis', 'summarization'],
-  });
+mcp__flow-nexus__agent_spawn({
+  type: "researcher", // Options: researcher, coder, analyst, optimizer, coordinator
+  name: "Lead Researcher",
+  capabilities: ["web_search", "analysis", "summarization"]
+})
 ```
 
 **Agent Types:**
-
 - **Researcher**: Information gathering, web search, analysis
 - **Coder**: Code generation, refactoring, implementation
 - **Analyst**: Data analysis, pattern recognition, insights
@@ -88,17 +83,15 @@ mcp__flow -
 Distribute tasks across the swarm:
 
 ```javascript
-mcp__flow -
-  nexus__task_orchestrate({
-    task: 'Build a REST API with authentication and database integration',
-    strategy: 'parallel', // Options: parallel, sequential, adaptive
-    maxAgents: 5,
-    priority: 'high', // Options: low, medium, high, critical
-  });
+mcp__flow-nexus__task_orchestrate({
+  task: "Build a REST API with authentication and database integration",
+  strategy: "parallel", // Options: parallel, sequential, adaptive
+  maxAgents: 5,
+  priority: "high" // Options: low, medium, high, critical
+})
 ```
 
 **Execution Strategies:**
-
 - **Parallel**: Maximum concurrency for independent subtasks
 - **Sequential**: Step-by-step execution with dependencies
 - **Adaptive**: AI-powered strategy selection based on task analysis
@@ -107,29 +100,25 @@ mcp__flow -
 
 ```javascript
 // Get detailed swarm status
-mcp__flow -
-  nexus__swarm_status({
-    swarm_id: 'optional-id', // Uses active swarm if not provided
-  });
+mcp__flow-nexus__swarm_status({
+  swarm_id: "optional-id" // Uses active swarm if not provided
+})
 
 // List all active swarms
-mcp__flow -
-  nexus__swarm_list({
-    status: 'active', // Options: active, destroyed, all
-  });
+mcp__flow-nexus__swarm_list({
+  status: "active" // Options: active, destroyed, all
+})
 
 // Scale swarm up or down
-mcp__flow -
-  nexus__swarm_scale({
-    target_agents: 10,
-    swarm_id: 'optional-id',
-  });
+mcp__flow-nexus__swarm_scale({
+  target_agents: 10,
+  swarm_id: "optional-id"
+})
 
 // Gracefully destroy swarm
-mcp__flow -
-  nexus__swarm_destroy({
-    swarm_id: 'optional-id',
-  });
+mcp__flow-nexus__swarm_destroy({
+  swarm_id: "optional-id"
+})
 ```
 
 ## Workflow Automation
@@ -139,40 +128,38 @@ mcp__flow -
 Define event-driven workflows with message queue processing:
 
 ```javascript
-mcp__flow -
-  nexus__workflow_create({
-    name: 'CI/CD Pipeline',
-    description: 'Automated testing, building, and deployment',
-    steps: [
-      {
-        id: 'test',
-        action: 'run_tests',
-        agent: 'tester',
-        parallel: true,
-      },
-      {
-        id: 'build',
-        action: 'build_app',
-        agent: 'builder',
-        depends_on: ['test'],
-      },
-      {
-        id: 'deploy',
-        action: 'deploy_prod',
-        agent: 'deployer',
-        depends_on: ['build'],
-      },
-    ],
-    triggers: ['push_to_main', 'manual_trigger'],
-    metadata: {
-      priority: 10,
-      retry_policy: 'exponential_backoff',
+mcp__flow-nexus__workflow_create({
+  name: "CI/CD Pipeline",
+  description: "Automated testing, building, and deployment",
+  steps: [
+    {
+      id: "test",
+      action: "run_tests",
+      agent: "tester",
+      parallel: true
     },
-  });
+    {
+      id: "build",
+      action: "build_app",
+      agent: "builder",
+      depends_on: ["test"]
+    },
+    {
+      id: "deploy",
+      action: "deploy_prod",
+      agent: "deployer",
+      depends_on: ["build"]
+    }
+  ],
+  triggers: ["push_to_main", "manual_trigger"],
+  metadata: {
+    priority: 10,
+    retry_policy: "exponential_backoff"
+  }
+})
 ```
 
 **Workflow Features:**
-
 - **Dependency Management**: Define step dependencies with `depends_on`
 - **Parallel Execution**: Set `parallel: true` for concurrent steps
 - **Event Triggers**: GitHub events, schedules, manual triggers
@@ -184,20 +171,18 @@ mcp__flow -
 Run workflows synchronously or asynchronously:
 
 ```javascript
-mcp__flow -
-  nexus__workflow_execute({
-    workflow_id: 'workflow_id',
-    input_data: {
-      branch: 'main',
-      commit: 'abc123',
-      environment: 'production',
-    },
-    async: true, // Queue-based execution for long-running workflows
-  });
+mcp__flow-nexus__workflow_execute({
+  workflow_id: "workflow_id",
+  input_data: {
+    branch: "main",
+    commit: "abc123",
+    environment: "production"
+  },
+  async: true // Queue-based execution for long-running workflows
+})
 ```
 
 **Execution Modes:**
-
 - **Sync (async: false)**: Immediate execution, wait for completion
 - **Async (async: true)**: Message queue processing, non-blocking
 
@@ -205,28 +190,25 @@ mcp__flow -
 
 ```javascript
 // Get workflow status and metrics
-mcp__flow -
-  nexus__workflow_status({
-    workflow_id: 'id',
-    execution_id: 'specific-run-id', // Optional
-    include_metrics: true,
-  });
+mcp__flow-nexus__workflow_status({
+  workflow_id: "id",
+  execution_id: "specific-run-id", // Optional
+  include_metrics: true
+})
 
 // List workflows with filters
-mcp__flow -
-  nexus__workflow_list({
-    status: 'running', // Options: running, completed, failed, pending
-    limit: 10,
-    offset: 0,
-  });
+mcp__flow-nexus__workflow_list({
+  status: "running", // Options: running, completed, failed, pending
+  limit: 10,
+  offset: 0
+})
 
 // Get complete audit trail
-mcp__flow -
-  nexus__workflow_audit_trail({
-    workflow_id: 'id',
-    limit: 50,
-    start_time: '2025-01-01T00:00:00Z',
-  });
+mcp__flow-nexus__workflow_audit_trail({
+  workflow_id: "id",
+  limit: 50,
+  start_time: "2025-01-01T00:00:00Z"
+})
 ```
 
 ### Agent Assignment
@@ -234,16 +216,14 @@ mcp__flow -
 Intelligently assign agents to workflow tasks:
 
 ```javascript
-mcp__flow -
-  nexus__workflow_agent_assign({
-    task_id: 'task_id',
-    agent_type: 'coder', // Preferred agent type
-    use_vector_similarity: true, // AI-powered capability matching
-  });
+mcp__flow-nexus__workflow_agent_assign({
+  task_id: "task_id",
+  agent_type: "coder", // Preferred agent type
+  use_vector_similarity: true // AI-powered capability matching
+})
 ```
 
 **Vector Similarity Matching:**
-
 - Analyzes task requirements and agent capabilities
 - Finds optimal agent based on past performance
 - Considers workload and availability
@@ -253,11 +233,10 @@ mcp__flow -
 Monitor and manage message queues:
 
 ```javascript
-mcp__flow -
-  nexus__workflow_queue_status({
-    queue_name: 'optional-specific-queue',
-    include_messages: true, // Show pending messages
-  });
+mcp__flow-nexus__workflow_queue_status({
+  queue_name: "optional-specific-queue",
+  include_messages: true // Show pending messages
+})
 ```
 
 ## Agent Orchestration
@@ -266,143 +245,111 @@ mcp__flow -
 
 ```javascript
 // 1. Initialize swarm with hierarchical topology
-mcp__flow -
-  nexus__swarm_init({
-    topology: 'hierarchical',
-    maxAgents: 8,
-    strategy: 'specialized',
-  });
+mcp__flow-nexus__swarm_init({
+  topology: "hierarchical",
+  maxAgents: 8,
+  strategy: "specialized"
+})
 
 // 2. Spawn specialized agents
-mcp__flow - nexus__agent_spawn({ type: 'coordinator', name: 'Project Manager' });
-mcp__flow - nexus__agent_spawn({ type: 'coder', name: 'Backend Developer' });
-mcp__flow - nexus__agent_spawn({ type: 'coder', name: 'Frontend Developer' });
-mcp__flow - nexus__agent_spawn({ type: 'coder', name: 'Database Architect' });
-mcp__flow - nexus__agent_spawn({ type: 'analyst', name: 'QA Engineer' });
+mcp__flow-nexus__agent_spawn({ type: "coordinator", name: "Project Manager" })
+mcp__flow-nexus__agent_spawn({ type: "coder", name: "Backend Developer" })
+mcp__flow-nexus__agent_spawn({ type: "coder", name: "Frontend Developer" })
+mcp__flow-nexus__agent_spawn({ type: "coder", name: "Database Architect" })
+mcp__flow-nexus__agent_spawn({ type: "analyst", name: "QA Engineer" })
 
 // 3. Create development workflow
-mcp__flow -
-  nexus__workflow_create({
-    name: 'Full-Stack Development',
-    steps: [
-      { id: 'requirements', action: 'analyze_requirements', agent: 'coordinator' },
-      { id: 'db_design', action: 'design_schema', agent: 'Database Architect' },
-      { id: 'backend', action: 'build_api', agent: 'Backend Developer', depends_on: ['db_design'] },
-      {
-        id: 'frontend',
-        action: 'build_ui',
-        agent: 'Frontend Developer',
-        depends_on: ['requirements'],
-      },
-      {
-        id: 'integration',
-        action: 'integrate',
-        agent: 'Backend Developer',
-        depends_on: ['backend', 'frontend'],
-      },
-      { id: 'testing', action: 'qa_testing', agent: 'QA Engineer', depends_on: ['integration'] },
-    ],
-  });
+mcp__flow-nexus__workflow_create({
+  name: "Full-Stack Development",
+  steps: [
+    { id: "requirements", action: "analyze_requirements", agent: "coordinator" },
+    { id: "db_design", action: "design_schema", agent: "Database Architect" },
+    { id: "backend", action: "build_api", agent: "Backend Developer", depends_on: ["db_design"] },
+    { id: "frontend", action: "build_ui", agent: "Frontend Developer", depends_on: ["requirements"] },
+    { id: "integration", action: "integrate", agent: "Backend Developer", depends_on: ["backend", "frontend"] },
+    { id: "testing", action: "qa_testing", agent: "QA Engineer", depends_on: ["integration"] }
+  ]
+})
 
 // 4. Execute workflow
-mcp__flow -
-  nexus__workflow_execute({
-    workflow_id: 'workflow_id',
-    input_data: {
-      project: 'E-commerce Platform',
-      tech_stack: ['Node.js', 'React', 'PostgreSQL'],
-    },
-  });
+mcp__flow-nexus__workflow_execute({
+  workflow_id: "workflow_id",
+  input_data: {
+    project: "E-commerce Platform",
+    tech_stack: ["Node.js", "React", "PostgreSQL"]
+  }
+})
 ```
 
 ### Research & Analysis Pattern
 
 ```javascript
 // 1. Initialize mesh topology for collaborative research
-mcp__flow -
-  nexus__swarm_init({
-    topology: 'mesh',
-    maxAgents: 5,
-    strategy: 'balanced',
-  });
+mcp__flow-nexus__swarm_init({
+  topology: "mesh",
+  maxAgents: 5,
+  strategy: "balanced"
+})
 
 // 2. Spawn research agents
-mcp__flow - nexus__agent_spawn({ type: 'researcher', name: 'Primary Researcher' });
-mcp__flow - nexus__agent_spawn({ type: 'researcher', name: 'Secondary Researcher' });
-mcp__flow - nexus__agent_spawn({ type: 'analyst', name: 'Data Analyst' });
-mcp__flow - nexus__agent_spawn({ type: 'analyst', name: 'Insights Analyst' });
+mcp__flow-nexus__agent_spawn({ type: "researcher", name: "Primary Researcher" })
+mcp__flow-nexus__agent_spawn({ type: "researcher", name: "Secondary Researcher" })
+mcp__flow-nexus__agent_spawn({ type: "analyst", name: "Data Analyst" })
+mcp__flow-nexus__agent_spawn({ type: "analyst", name: "Insights Analyst" })
 
 // 3. Orchestrate research task
-mcp__flow -
-  nexus__task_orchestrate({
-    task: 'Research machine learning trends for 2025 and analyze market opportunities',
-    strategy: 'parallel',
-    maxAgents: 4,
-    priority: 'high',
-  });
+mcp__flow-nexus__task_orchestrate({
+  task: "Research machine learning trends for 2025 and analyze market opportunities",
+  strategy: "parallel",
+  maxAgents: 4,
+  priority: "high"
+})
 ```
 
 ### CI/CD Pipeline Pattern
 
 ```javascript
-mcp__flow -
-  nexus__workflow_create({
-    name: 'Deployment Pipeline',
-    description: 'Automated testing, building, and multi-environment deployment',
-    steps: [
-      { id: 'lint', action: 'lint_code', agent: 'code_quality', parallel: true },
-      { id: 'unit_test', action: 'unit_tests', agent: 'test_runner', parallel: true },
-      { id: 'integration_test', action: 'integration_tests', agent: 'test_runner', parallel: true },
-      {
-        id: 'build',
-        action: 'build_artifacts',
-        agent: 'builder',
-        depends_on: ['lint', 'unit_test', 'integration_test'],
-      },
-      { id: 'security_scan', action: 'security_scan', agent: 'security', depends_on: ['build'] },
-      { id: 'deploy_staging', action: 'deploy', agent: 'deployer', depends_on: ['security_scan'] },
-      {
-        id: 'smoke_test',
-        action: 'smoke_tests',
-        agent: 'test_runner',
-        depends_on: ['deploy_staging'],
-      },
-      { id: 'deploy_prod', action: 'deploy', agent: 'deployer', depends_on: ['smoke_test'] },
-    ],
-    triggers: ['github_push', 'github_pr_merged'],
-    metadata: {
-      priority: 10,
-      auto_rollback: true,
-    },
-  });
+mcp__flow-nexus__workflow_create({
+  name: "Deployment Pipeline",
+  description: "Automated testing, building, and multi-environment deployment",
+  steps: [
+    { id: "lint", action: "lint_code", agent: "code_quality", parallel: true },
+    { id: "unit_test", action: "unit_tests", agent: "test_runner", parallel: true },
+    { id: "integration_test", action: "integration_tests", agent: "test_runner", parallel: true },
+    { id: "build", action: "build_artifacts", agent: "builder", depends_on: ["lint", "unit_test", "integration_test"] },
+    { id: "security_scan", action: "security_scan", agent: "security", depends_on: ["build"] },
+    { id: "deploy_staging", action: "deploy", agent: "deployer", depends_on: ["security_scan"] },
+    { id: "smoke_test", action: "smoke_tests", agent: "test_runner", depends_on: ["deploy_staging"] },
+    { id: "deploy_prod", action: "deploy", agent: "deployer", depends_on: ["smoke_test"] }
+  ],
+  triggers: ["github_push", "github_pr_merged"],
+  metadata: {
+    priority: 10,
+    auto_rollback: true
+  }
+})
 ```
 
 ### Data Processing Pipeline Pattern
 
 ```javascript
-mcp__flow -
-  nexus__workflow_create({
-    name: 'ETL Pipeline',
-    description: 'Extract, Transform, Load data processing',
-    steps: [
-      { id: 'extract', action: 'extract_data', agent: 'data_extractor' },
-      { id: 'validate_raw', action: 'validate_data', agent: 'validator', depends_on: ['extract'] },
-      {
-        id: 'transform',
-        action: 'transform_data',
-        agent: 'transformer',
-        depends_on: ['validate_raw'],
-      },
-      { id: 'enrich', action: 'enrich_data', agent: 'enricher', depends_on: ['transform'] },
-      { id: 'load', action: 'load_data', agent: 'loader', depends_on: ['enrich'] },
-      { id: 'validate_final', action: 'validate_data', agent: 'validator', depends_on: ['load'] },
-    ],
-    triggers: ['schedule:0 2 * * *'], // Daily at 2 AM
-    metadata: {
-      retry_policy: 'exponential_backoff',
-      max_retries: 3,
-    },
-  });
+mcp__flow-nexus__workflow_create({
+  name: "ETL Pipeline",
+  description: "Extract, Transform, Load data processing",
+  steps: [
+    { id: "extract", action: "extract_data", agent: "data_extractor" },
+    { id: "validate_raw", action: "validate_data", agent: "validator", depends_on: ["extract"] },
+    { id: "transform", action: "transform_data", agent: "transformer", depends_on: ["validate_raw"] },
+    { id: "enrich", action: "enrich_data", agent: "enricher", depends_on: ["transform"] },
+    { id: "load", action: "load_data", agent: "loader", depends_on: ["enrich"] },
+    { id: "validate_final", action: "validate_data", agent: "validator", depends_on: ["load"] }
+  ],
+  triggers: ["schedule:0 2 * * *"], // Daily at 2 AM
+  metadata: {
+    retry_policy: "exponential_backoff",
+    max_retries: 3
+  }
+})
 ```
 
 ## Templates & Patterns
@@ -411,41 +358,36 @@ mcp__flow -
 
 ```javascript
 // Create swarm from template
-mcp__flow -
-  nexus__swarm_create_from_template({
-    template_name: 'full-stack-dev',
-    overrides: {
-      maxAgents: 6,
-      strategy: 'specialized',
-    },
-  });
+mcp__flow-nexus__swarm_create_from_template({
+  template_name: "full-stack-dev",
+  overrides: {
+    maxAgents: 6,
+    strategy: "specialized"
+  }
+})
 
 // List available templates
-mcp__flow -
-  nexus__swarm_templates_list({
-    category: 'quickstart', // Options: quickstart, specialized, enterprise, custom, all
-    includeStore: true,
-  });
+mcp__flow-nexus__swarm_templates_list({
+  category: "quickstart", // Options: quickstart, specialized, enterprise, custom, all
+  includeStore: true
+})
 ```
 
 **Available Template Categories:**
 
 **Quickstart Templates:**
-
 - `full-stack-dev`: Complete web development swarm
 - `research-team`: Research and analysis swarm
 - `code-review`: Automated code review swarm
 - `data-pipeline`: ETL and data processing
 
 **Specialized Templates:**
-
 - `ml-development`: Machine learning project swarm
 - `mobile-dev`: Mobile app development
 - `devops-automation`: Infrastructure and deployment
 - `security-audit`: Security analysis and testing
 
 **Enterprise Templates:**
-
 - `enterprise-migration`: Large-scale system migration
 - `multi-repo-sync`: Multi-repository coordination
 - `compliance-review`: Regulatory compliance workflows
@@ -461,41 +403,36 @@ Save successful swarm configurations as reusable templates for future projects.
 
 ```javascript
 // Subscribe to execution streams
-mcp__flow -
-  nexus__execution_stream_subscribe({
-    stream_type: 'claude-flow-swarm',
-    deployment_id: 'deployment_id',
-  });
+mcp__flow-nexus__execution_stream_subscribe({
+  stream_type: "claude-flow-swarm",
+  deployment_id: "deployment_id"
+})
 
 // Get execution status
-mcp__flow -
-  nexus__execution_stream_status({
-    stream_id: 'stream_id',
-  });
+mcp__flow-nexus__execution_stream_status({
+  stream_id: "stream_id"
+})
 
 // List files created during execution
-mcp__flow -
-  nexus__execution_files_list({
-    stream_id: 'stream_id',
-    created_by: 'claude-flow',
-  });
+mcp__flow-nexus__execution_files_list({
+  stream_id: "stream_id",
+  created_by: "claude-flow"
+})
 ```
 
 ### Swarm Metrics & Analytics
 
 ```javascript
 // Get swarm performance metrics
-mcp__flow -
-  nexus__swarm_status({
-    swarm_id: 'id',
-  });
+mcp__flow-nexus__swarm_status({
+  swarm_id: "id"
+})
 
 // Analyze workflow efficiency
-mcp__flow -
-  nexus__workflow_status({
-    workflow_id: 'id',
-    include_metrics: true,
-  });
+mcp__flow-nexus__workflow_status({
+  workflow_id: "id",
+  include_metrics: true
+})
 ```
 
 ### Multi-Swarm Coordination
@@ -504,28 +441,22 @@ Coordinate multiple swarms for complex, multi-phase projects:
 
 ```javascript
 // Phase 1: Research swarm
-const researchSwarm =
-  (await mcp__flow) -
-  nexus__swarm_init({
-    topology: 'mesh',
-    maxAgents: 4,
-  });
+const researchSwarm = await mcp__flow-nexus__swarm_init({
+  topology: "mesh",
+  maxAgents: 4
+})
 
 // Phase 2: Development swarm
-const devSwarm =
-  (await mcp__flow) -
-  nexus__swarm_init({
-    topology: 'hierarchical',
-    maxAgents: 8,
-  });
+const devSwarm = await mcp__flow-nexus__swarm_init({
+  topology: "hierarchical",
+  maxAgents: 8
+})
 
 // Phase 3: Testing swarm
-const testSwarm =
-  (await mcp__flow) -
-  nexus__swarm_init({
-    topology: 'star',
-    maxAgents: 5,
-  });
+const testSwarm = await mcp__flow-nexus__swarm_init({
+  topology: "star",
+  maxAgents: 5
+})
 ```
 
 ## Best Practices
@@ -534,27 +465,26 @@ const testSwarm =
 
 ```javascript
 // Simple projects: Star
-mcp__flow - nexus__swarm_init({ topology: 'star', maxAgents: 3 });
+mcp__flow-nexus__swarm_init({ topology: "star", maxAgents: 3 })
 
 // Collaborative work: Mesh
-mcp__flow - nexus__swarm_init({ topology: 'mesh', maxAgents: 5 });
+mcp__flow-nexus__swarm_init({ topology: "mesh", maxAgents: 5 })
 
 // Complex projects: Hierarchical
-mcp__flow - nexus__swarm_init({ topology: 'hierarchical', maxAgents: 10 });
+mcp__flow-nexus__swarm_init({ topology: "hierarchical", maxAgents: 10 })
 
 // Sequential workflows: Ring
-mcp__flow - nexus__swarm_init({ topology: 'ring', maxAgents: 4 });
+mcp__flow-nexus__swarm_init({ topology: "ring", maxAgents: 4 })
 ```
 
 ### 2. Optimize Agent Assignment
 
 ```javascript
 // Use vector similarity for optimal matching
-mcp__flow -
-  nexus__workflow_agent_assign({
-    task_id: 'complex-task',
-    use_vector_similarity: true,
-  });
+mcp__flow-nexus__workflow_agent_assign({
+  task_id: "complex-task",
+  use_vector_similarity: true
+})
 ```
 
 ### 3. Implement Proper Error Handling
@@ -576,11 +506,11 @@ mcp__flow-nexus__workflow_create({
 
 ```javascript
 // Regular monitoring
-const status = (await mcp__flow) - nexus__swarm_status();
+const status = await mcp__flow-nexus__swarm_status()
 
 // Scale based on workload
 if (status.workload > 0.8) {
-  (await mcp__flow) - nexus__swarm_scale({ target_agents: status.agents + 2 });
+  await mcp__flow-nexus__swarm_scale({ target_agents: status.agents + 2 })
 }
 ```
 
@@ -588,32 +518,30 @@ if (status.workload > 0.8) {
 
 ```javascript
 // Long-running workflows should use message queues
-mcp__flow -
-  nexus__workflow_execute({
-    workflow_id: 'data-pipeline',
-    async: true, // Non-blocking execution
-  });
+mcp__flow-nexus__workflow_execute({
+  workflow_id: "data-pipeline",
+  async: true // Non-blocking execution
+})
 
 // Monitor progress
-mcp__flow - nexus__workflow_queue_status({ include_messages: true });
+mcp__flow-nexus__workflow_queue_status({ include_messages: true })
 ```
 
 ### 6. Clean Up Resources
 
 ```javascript
 // Destroy swarm when complete
-mcp__flow - nexus__swarm_destroy({ swarm_id: 'id' });
+mcp__flow-nexus__swarm_destroy({ swarm_id: "id" })
 ```
 
 ### 7. Leverage Templates
 
 ```javascript
 // Use proven templates instead of building from scratch
-mcp__flow -
-  nexus__swarm_create_from_template({
-    template_name: 'code-review',
-    overrides: { maxAgents: 4 },
-  });
+mcp__flow-nexus__swarm_create_from_template({
+  template_name: "code-review",
+  overrides: { maxAgents: 4 }
+})
 ```
 
 ## Integration with Claude Flow
@@ -631,31 +559,26 @@ npx claude-flow@alpha hooks post-task --task-id "swarm-execution"
 ## Common Use Cases
 
 ### 1. Multi-Repo Development
-
 - Coordinate development across multiple repositories
 - Synchronized testing and deployment
 - Cross-repo dependency management
 
 ### 2. Research Projects
-
 - Distributed information gathering
 - Parallel analysis of different data sources
 - Collaborative synthesis and reporting
 
 ### 3. DevOps Automation
-
 - Infrastructure as Code deployment
 - Multi-environment testing
 - Automated rollback and recovery
 
 ### 4. Code Quality Workflows
-
 - Automated code review
 - Security scanning
 - Performance benchmarking
 
 ### 5. Data Processing
-
 - Large-scale ETL pipelines
 - Real-time data transformation
 - Data validation and quality checks

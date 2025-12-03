@@ -7,7 +7,8 @@
 
 import { soundManager, preloadSounds } from './soundManager';
 import { soundLogger } from './logger';
-import { useGameStore } from '../stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useSettingsStore } from '../stores/gameSettingsStore';
 
 /**
  * Initialize the sound system with the current game settings
@@ -17,8 +18,8 @@ export const initializeSoundSystem = async (): Promise<void> => {
     soundLogger.debug('🔊 Initializing sound system...');
 
     // Get current sound settings from the store
-    const gameStore = useGameStore.getState();
-    const { soundSettings } = gameStore.settings;
+    const settingsStore = useSettingsStore.getState();
+    const { soundSettings } = settingsStore.settings;
 
     // Apply current volume settings to the sound manager
     soundManager.setVolumeSettings({
@@ -50,8 +51,8 @@ export const initializeSoundSystem = async (): Promise<void> => {
 export const setupAudioContextResume = (): void => {
   const resumeAudioContext = async () => {
     try {
-      const gameStore = useGameStore.getState();
-      const { soundSettings } = gameStore.settings;
+      const settingsStore = useSettingsStore.getState();
+      const { soundSettings } = settingsStore.settings;
 
       // Resume audio context if needed
       if (soundManager['audioContext']?.state === 'suspended') {

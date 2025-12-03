@@ -5,6 +5,7 @@ import { reportWebVitals } from './utils/webVitals';
 import { preloadCaliforniaGeoData } from './utils/geoDataCache';
 import { registerServiceWorker, prefetchGeodata } from './utils/sw-registration';
 import { initializeThemeSync } from './stores/themeStore';
+import { initializeStoreCoordination } from './stores/storeCoordinator';
 
 // Global styles with dark mode support
 const globalStyles = `
@@ -273,6 +274,10 @@ document.head.appendChild(styleSheet);
 
 // Initialize theme BEFORE React renders (prevents FOUC)
 initializeThemeSync();
+
+// Initialize store coordination (Zustand subscriptions for cross-store communication)
+// This wires up: countyPlacement -> achievement checking without circular imports
+initializeStoreCoordination();
 
 // Render app
 ReactDOM.createRoot(document.getElementById('root')!).render(

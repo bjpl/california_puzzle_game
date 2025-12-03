@@ -14,7 +14,13 @@ import {
   Achievement,
   HintType,
 } from '@/types';
-import { useGameStore } from '@/stores/gameStore';
+// Migrated to domain stores (breaking apart monolithic gameStore)
+import { useGameLifecycleStore } from '@/stores/gameLifecycleStore';
+import { useCountyPlacementStore } from '@/stores/countyPlacementStore';
+import { useScoringStore } from '@/stores/scoringStore';
+import { useAchievementStore } from '@/stores/achievementStore';
+import { useHintStore } from '@/stores/hintSystemStore';
+import { useSettingsStore } from '@/stores/gameSettingsStore';
 import { getCountiesByRegion } from '@/utils/californiaData';
 
 interface GameContainerState {
@@ -32,38 +38,45 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
   initialSettings: _initialSettings,
   onGameComplete,
 }) => {
+  // Domain stores (migrated from monolithic gameStore)
   const {
-    // Game state
     isGameActive: _isGameActive,
     isPaused,
-    score: _score,
     timeElapsed: _timeElapsed,
-    streak: _streak,
-    placedCounties: _placedCounties,
-    remainingCounties,
-    currentHint: _currentHint,
-
-    // Actions
     startGame,
     pauseGame,
     resumeGame,
     endGame,
-    resetGame,
-    placeCounty,
-    removeCounty: _removeCounty,
-    moveCounty: _moveCounty,
+    resetGame: resetLifecycle,
     updateTimer,
-    useHint: requestHint,
+  } = useGameLifecycleStore();
 
-    // Settings
-    settings: _settings,
-    updateSettings,
+  const {
+    placedCounties: _placedCounties,
+    remainingCounties,
+    placeCounty,
+    resetCounties,
+  } = useCountyPlacementStore();
 
-    // Stats and achievements
+  const {
+    score: _score,
+    streak: _streak,
     stats: _stats,
-    achievements: _achievements,
-    checkAchievements,
-  } = useGameStore();
+    resetScore,
+  } = useScoringStore();
+
+  const { achievements: _achievements, checkAchievements } = useAchievementStore();
+
+  const { useHint: requestHint } = useHintStore();
+
+  const { settings: _settings, updateSettings } = useSettingsStore();
+
+  // Combined reset that calls all stores
+  const resetGame = useCallback(() => {
+    resetLifecycle();
+    resetCounties();
+    resetScore();
+  }, [resetLifecycle, resetCounties, resetScore]);
 
   const [containerState, setContainerState] = useState<GameContainerState>({
     gameStarted: false,

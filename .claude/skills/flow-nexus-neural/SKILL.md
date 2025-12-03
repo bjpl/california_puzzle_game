@@ -36,7 +36,6 @@ npx flow-nexus@latest login
 Train neural networks with custom architectures and configurations.
 
 **Available Architectures:**
-
 - `feedforward` - Standard fully-connected networks
 - `lstm` - Long Short-Term Memory for sequences
 - `gan` - Generative Adversarial Networks
@@ -44,7 +43,6 @@ Train neural networks with custom architectures and configurations.
 - `transformer` - Attention-based models
 
 **Training Tiers:**
-
 - `nano` - Minimal resources (fast, limited)
 - `mini` - Small models
 - `small` - Standard models
@@ -54,88 +52,85 @@ Train neural networks with custom architectures and configurations.
 #### Example: Train Custom Classifier
 
 ```javascript
-mcp__flow -
-  nexus__neural_train({
-    config: {
-      architecture: {
-        type: 'feedforward',
-        layers: [
-          { type: 'dense', units: 256, activation: 'relu' },
-          { type: 'dropout', rate: 0.3 },
-          { type: 'dense', units: 128, activation: 'relu' },
-          { type: 'dropout', rate: 0.2 },
-          { type: 'dense', units: 64, activation: 'relu' },
-          { type: 'dense', units: 10, activation: 'softmax' },
-        ],
-      },
-      training: {
-        epochs: 100,
-        batch_size: 32,
-        learning_rate: 0.001,
-        optimizer: 'adam',
-      },
-      divergent: {
-        enabled: true,
-        pattern: 'lateral', // quantum, chaotic, associative, evolutionary
-        factor: 0.5,
-      },
+mcp__flow-nexus__neural_train({
+  config: {
+    architecture: {
+      type: "feedforward",
+      layers: [
+        { type: "dense", units: 256, activation: "relu" },
+        { type: "dropout", rate: 0.3 },
+        { type: "dense", units: 128, activation: "relu" },
+        { type: "dropout", rate: 0.2 },
+        { type: "dense", units: 64, activation: "relu" },
+        { type: "dense", units: 10, activation: "softmax" }
+      ]
     },
-    tier: 'small',
-    user_id: 'your_user_id',
-  });
+    training: {
+      epochs: 100,
+      batch_size: 32,
+      learning_rate: 0.001,
+      optimizer: "adam"
+    },
+    divergent: {
+      enabled: true,
+      pattern: "lateral", // quantum, chaotic, associative, evolutionary
+      factor: 0.5
+    }
+  },
+  tier: "small",
+  user_id: "your_user_id"
+})
 ```
 
 #### Example: LSTM for Time Series
 
 ```javascript
-mcp__flow -
-  nexus__neural_train({
-    config: {
-      architecture: {
-        type: 'lstm',
-        layers: [
-          { type: 'lstm', units: 128, return_sequences: true },
-          { type: 'dropout', rate: 0.2 },
-          { type: 'lstm', units: 64 },
-          { type: 'dense', units: 1, activation: 'linear' },
-        ],
-      },
-      training: {
-        epochs: 150,
-        batch_size: 64,
-        learning_rate: 0.01,
-        optimizer: 'adam',
-      },
+mcp__flow-nexus__neural_train({
+  config: {
+    architecture: {
+      type: "lstm",
+      layers: [
+        { type: "lstm", units: 128, return_sequences: true },
+        { type: "dropout", rate: 0.2 },
+        { type: "lstm", units: 64 },
+        { type: "dense", units: 1, activation: "linear" }
+      ]
     },
-    tier: 'medium',
-  });
+    training: {
+      epochs: 150,
+      batch_size: 64,
+      learning_rate: 0.01,
+      optimizer: "adam"
+    }
+  },
+  tier: "medium"
+})
 ```
 
 #### Example: Transformer Architecture
 
 ```javascript
-mcp__flow -
-  nexus__neural_train({
-    config: {
-      architecture: {
-        type: 'transformer',
-        layers: [
-          { type: 'embedding', vocab_size: 10000, embedding_dim: 512 },
-          { type: 'transformer_encoder', num_heads: 8, ff_dim: 2048 },
-          { type: 'global_average_pooling' },
-          { type: 'dense', units: 128, activation: 'relu' },
-          { type: 'dense', units: 2, activation: 'softmax' },
-        ],
-      },
-      training: {
-        epochs: 50,
-        batch_size: 16,
-        learning_rate: 0.0001,
-        optimizer: 'adam',
-      },
+mcp__flow-nexus__neural_train({
+  config: {
+    architecture: {
+      type: "transformer",
+      layers: [
+        { type: "embedding", vocab_size: 10000, embedding_dim: 512 },
+        { type: "transformer_encoder", num_heads: 8, ff_dim: 2048 },
+        { type: "global_average_pooling" },
+        { type: "dense", units: 128, activation: "relu" },
+        { type: "dense", units: 2, activation: "softmax" }
+      ]
     },
-    tier: 'large',
-  });
+    training: {
+      epochs: 50,
+      batch_size: 16,
+      learning_rate: 0.0001,
+      optimizer: "adam"
+    }
+  },
+  tier: "large"
+})
 ```
 
 ### 2. Model Inference
@@ -143,20 +138,18 @@ mcp__flow -
 Run predictions on trained models.
 
 ```javascript
-mcp__flow -
-  nexus__neural_predict({
-    model_id: 'model_abc123',
-    input: [
-      [0.5, 0.3, 0.2, 0.1],
-      [0.8, 0.1, 0.05, 0.05],
-      [0.2, 0.6, 0.15, 0.05],
-    ],
-    user_id: 'your_user_id',
-  });
+mcp__flow-nexus__neural_predict({
+  model_id: "model_abc123",
+  input: [
+    [0.5, 0.3, 0.2, 0.1],
+    [0.8, 0.1, 0.05, 0.05],
+    [0.2, 0.6, 0.15, 0.05]
+  ],
+  user_id: "your_user_id"
+})
 ```
 
 **Response:**
-
 ```json
 {
   "predictions": [
@@ -176,17 +169,15 @@ Browse and deploy pre-trained models from the marketplace.
 #### List Available Templates
 
 ```javascript
-mcp__flow -
-  nexus__neural_list_templates({
-    category: 'classification', // timeseries, regression, nlp, vision, anomaly, generative
-    tier: 'free', // or "paid"
-    search: 'sentiment',
-    limit: 20,
-  });
+mcp__flow-nexus__neural_list_templates({
+  category: "classification", // timeseries, regression, nlp, vision, anomaly, generative
+  tier: "free", // or "paid"
+  search: "sentiment",
+  limit: 20
+})
 ```
 
 **Response:**
-
 ```json
 {
   "templates": [
@@ -215,17 +206,16 @@ mcp__flow -
 #### Deploy Template
 
 ```javascript
-mcp__flow -
-  nexus__neural_deploy_template({
-    template_id: 'sentiment-analysis-v2',
-    custom_config: {
-      training: {
-        epochs: 50,
-        learning_rate: 0.0001,
-      },
-    },
-    user_id: 'your_user_id',
-  });
+mcp__flow-nexus__neural_deploy_template({
+  template_id: "sentiment-analysis-v2",
+  custom_config: {
+    training: {
+      epochs: 50,
+      learning_rate: 0.0001
+    }
+  },
+  user_id: "your_user_id"
+})
 ```
 
 ### 4. Distributed Training Clusters
@@ -235,19 +225,17 @@ Train large models across multiple E2B sandboxes with distributed computing.
 #### Initialize Cluster
 
 ```javascript
-mcp__flow -
-  nexus__neural_cluster_init({
-    name: 'large-model-cluster',
-    architecture: 'transformer', // transformer, cnn, rnn, gnn, hybrid
-    topology: 'mesh', // mesh, ring, star, hierarchical
-    consensus: 'proof-of-learning', // byzantine, raft, gossip
-    daaEnabled: true, // Decentralized Autonomous Agents
-    wasmOptimization: true,
-  });
+mcp__flow-nexus__neural_cluster_init({
+  name: "large-model-cluster",
+  architecture: "transformer", // transformer, cnn, rnn, gnn, hybrid
+  topology: "mesh", // mesh, ring, star, hierarchical
+  consensus: "proof-of-learning", // byzantine, raft, gossip
+  daaEnabled: true, // Decentralized Autonomous Agents
+  wasmOptimization: true
+})
 ```
 
 **Response:**
-
 ```json
 {
   "cluster_id": "cluster_xyz789",
@@ -263,94 +251,85 @@ mcp__flow -
 
 ```javascript
 // Deploy parameter server
-mcp__flow -
-  nexus__neural_node_deploy({
-    cluster_id: 'cluster_xyz789',
-    node_type: 'parameter_server',
-    model: 'large',
-    template: 'nodejs',
-    capabilities: ['parameter_management', 'gradient_aggregation'],
-    autonomy: 0.8,
-  });
+mcp__flow-nexus__neural_node_deploy({
+  cluster_id: "cluster_xyz789",
+  node_type: "parameter_server",
+  model: "large",
+  template: "nodejs",
+  capabilities: ["parameter_management", "gradient_aggregation"],
+  autonomy: 0.8
+})
 
 // Deploy worker nodes
-mcp__flow -
-  nexus__neural_node_deploy({
-    cluster_id: 'cluster_xyz789',
-    node_type: 'worker',
-    model: 'xl',
-    role: 'worker',
-    capabilities: ['training', 'inference'],
-    layers: [
-      { type: 'transformer_encoder', num_heads: 16 },
-      { type: 'feed_forward', units: 4096 },
-    ],
-    autonomy: 0.9,
-  });
+mcp__flow-nexus__neural_node_deploy({
+  cluster_id: "cluster_xyz789",
+  node_type: "worker",
+  model: "xl",
+  role: "worker",
+  capabilities: ["training", "inference"],
+  layers: [
+    { type: "transformer_encoder", num_heads: 16 },
+    { type: "feed_forward", units: 4096 }
+  ],
+  autonomy: 0.9
+})
 
 // Deploy aggregator
-mcp__flow -
-  nexus__neural_node_deploy({
-    cluster_id: 'cluster_xyz789',
-    node_type: 'aggregator',
-    model: 'large',
-    capabilities: ['gradient_aggregation', 'model_synchronization'],
-  });
+mcp__flow-nexus__neural_node_deploy({
+  cluster_id: "cluster_xyz789",
+  node_type: "aggregator",
+  model: "large",
+  capabilities: ["gradient_aggregation", "model_synchronization"]
+})
 ```
 
 #### Connect Cluster Topology
 
 ```javascript
-mcp__flow -
-  nexus__neural_cluster_connect({
-    cluster_id: 'cluster_xyz789',
-    topology: 'mesh', // Override default if needed
-  });
+mcp__flow-nexus__neural_cluster_connect({
+  cluster_id: "cluster_xyz789",
+  topology: "mesh" // Override default if needed
+})
 ```
 
 #### Start Distributed Training
 
 ```javascript
-mcp__flow -
-  nexus__neural_train_distributed({
-    cluster_id: 'cluster_xyz789',
-    dataset: 'imagenet', // or custom dataset identifier
-    epochs: 100,
-    batch_size: 128,
-    learning_rate: 0.001,
-    optimizer: 'adam', // sgd, rmsprop, adagrad
-    federated: true, // Enable federated learning
-  });
+mcp__flow-nexus__neural_train_distributed({
+  cluster_id: "cluster_xyz789",
+  dataset: "imagenet", // or custom dataset identifier
+  epochs: 100,
+  batch_size: 128,
+  learning_rate: 0.001,
+  optimizer: "adam", // sgd, rmsprop, adagrad
+  federated: true // Enable federated learning
+})
 ```
 
 **Federated Learning Example:**
-
 ```javascript
-mcp__flow -
-  nexus__neural_train_distributed({
-    cluster_id: 'cluster_xyz789',
-    dataset: 'medical_images_distributed',
-    epochs: 200,
-    batch_size: 64,
-    learning_rate: 0.0001,
-    optimizer: 'adam',
-    federated: true, // Data stays on local nodes
-    aggregation_rounds: 50,
-    min_nodes_per_round: 5,
-  });
+mcp__flow-nexus__neural_train_distributed({
+  cluster_id: "cluster_xyz789",
+  dataset: "medical_images_distributed",
+  epochs: 200,
+  batch_size: 64,
+  learning_rate: 0.0001,
+  optimizer: "adam",
+  federated: true, // Data stays on local nodes
+  aggregation_rounds: 50,
+  min_nodes_per_round: 5
+})
 ```
 
 #### Monitor Cluster Status
 
 ```javascript
-mcp__flow -
-  nexus__neural_cluster_status({
-    cluster_id: 'cluster_xyz789',
-  });
+mcp__flow-nexus__neural_cluster_status({
+  cluster_id: "cluster_xyz789"
+})
 ```
 
 **Response:**
-
 ```json
 {
   "cluster_id": "cluster_xyz789",
@@ -382,24 +361,22 @@ mcp__flow -
 #### Run Distributed Inference
 
 ```javascript
-mcp__flow -
-  nexus__neural_predict_distributed({
-    cluster_id: 'cluster_xyz789',
-    input_data: JSON.stringify([
-      [0.1, 0.2, 0.3],
-      [0.4, 0.5, 0.6],
-    ]),
-    aggregation: 'ensemble', // mean, majority, weighted, ensemble
-  });
+mcp__flow-nexus__neural_predict_distributed({
+  cluster_id: "cluster_xyz789",
+  input_data: JSON.stringify([
+    [0.1, 0.2, 0.3],
+    [0.4, 0.5, 0.6]
+  ]),
+  aggregation: "ensemble" // mean, majority, weighted, ensemble
+})
 ```
 
 #### Terminate Cluster
 
 ```javascript
-mcp__flow -
-  nexus__neural_cluster_terminate({
-    cluster_id: 'cluster_xyz789',
-  });
+mcp__flow-nexus__neural_cluster_terminate({
+  cluster_id: "cluster_xyz789"
+})
 ```
 
 ### 5. Model Management
@@ -407,15 +384,13 @@ mcp__flow -
 #### List Your Models
 
 ```javascript
-mcp__flow -
-  nexus__neural_list_models({
-    user_id: 'your_user_id',
-    include_public: true,
-  });
+mcp__flow-nexus__neural_list_models({
+  user_id: "your_user_id",
+  include_public: true
+})
 ```
 
 **Response:**
-
 ```json
 {
   "models": [
@@ -442,14 +417,12 @@ mcp__flow -
 #### Check Training Status
 
 ```javascript
-mcp__flow -
-  nexus__neural_training_status({
-    job_id: 'job_training_xyz',
-  });
+mcp__flow-nexus__neural_training_status({
+  job_id: "job_training_xyz"
+})
 ```
 
 **Response:**
-
 ```json
 {
   "job_id": "job_training_xyz",
@@ -465,15 +438,13 @@ mcp__flow -
 #### Performance Benchmarking
 
 ```javascript
-mcp__flow -
-  nexus__neural_performance_benchmark({
-    model_id: 'model_abc123',
-    benchmark_type: 'comprehensive', // inference, throughput, memory, comprehensive
-  });
+mcp__flow-nexus__neural_performance_benchmark({
+  model_id: "model_abc123",
+  benchmark_type: "comprehensive" // inference, throughput, memory, comprehensive
+})
 ```
 
 **Response:**
-
 ```json
 {
   "model_id": "model_abc123",
@@ -492,12 +463,11 @@ mcp__flow -
 #### Create Validation Workflow
 
 ```javascript
-mcp__flow -
-  nexus__neural_validation_workflow({
-    model_id: 'model_abc123',
-    user_id: 'your_user_id',
-    validation_type: 'comprehensive', // performance, accuracy, robustness, comprehensive
-  });
+mcp__flow-nexus__neural_validation_workflow({
+  model_id: "model_abc123",
+  user_id: "your_user_id",
+  validation_type: "comprehensive" // performance, accuracy, robustness, comprehensive
+})
 ```
 
 ### 6. Publishing and Marketplace
@@ -505,27 +475,25 @@ mcp__flow -
 #### Publish Model as Template
 
 ```javascript
-mcp__flow -
-  nexus__neural_publish_template({
-    model_id: 'model_abc123',
-    name: 'High-Accuracy Sentiment Classifier',
-    description: 'Fine-tuned BERT model for sentiment analysis with 94% accuracy',
-    category: 'nlp',
-    price: 0, // 0 for free, or credits amount
-    user_id: 'your_user_id',
-  });
+mcp__flow-nexus__neural_publish_template({
+  model_id: "model_abc123",
+  name: "High-Accuracy Sentiment Classifier",
+  description: "Fine-tuned BERT model for sentiment analysis with 94% accuracy",
+  category: "nlp",
+  price: 0, // 0 for free, or credits amount
+  user_id: "your_user_id"
+})
 ```
 
 #### Rate a Template
 
 ```javascript
-mcp__flow -
-  nexus__neural_rate_template({
-    template_id: 'sentiment-analysis-v2',
-    rating: 5,
-    review: 'Excellent model! Achieved 95% accuracy on my dataset.',
-    user_id: 'your_user_id',
-  });
+mcp__flow-nexus__neural_rate_template({
+  template_id: "sentiment-analysis-v2",
+  rating: 5,
+  review: "Excellent model! Achieved 95% accuracy on my dataset.",
+  user_id: "your_user_id"
+})
 ```
 
 ## Common Use Cases
@@ -534,138 +502,120 @@ mcp__flow -
 
 ```javascript
 // Initialize cluster for large-scale image training
-const cluster =
-  (await mcp__flow) -
-  nexus__neural_cluster_init({
-    name: 'image-classification-cluster',
-    architecture: 'cnn',
-    topology: 'hierarchical',
-    wasmOptimization: true,
-  });
+const cluster = await mcp__flow-nexus__neural_cluster_init({
+  name: "image-classification-cluster",
+  architecture: "cnn",
+  topology: "hierarchical",
+  wasmOptimization: true
+})
 
 // Deploy worker nodes
-(await mcp__flow) -
-  nexus__neural_node_deploy({
-    cluster_id: cluster.cluster_id,
-    node_type: 'worker',
-    model: 'large',
-    capabilities: ['training', 'data_augmentation'],
-  });
+await mcp__flow-nexus__neural_node_deploy({
+  cluster_id: cluster.cluster_id,
+  node_type: "worker",
+  model: "large",
+  capabilities: ["training", "data_augmentation"]
+})
 
 // Start training
-(await mcp__flow) -
-  nexus__neural_train_distributed({
-    cluster_id: cluster.cluster_id,
-    dataset: 'custom_images',
-    epochs: 100,
-    batch_size: 64,
-    learning_rate: 0.001,
-    optimizer: 'adam',
-  });
+await mcp__flow-nexus__neural_train_distributed({
+  cluster_id: cluster.cluster_id,
+  dataset: "custom_images",
+  epochs: 100,
+  batch_size: 64,
+  learning_rate: 0.001,
+  optimizer: "adam"
+})
 ```
 
 ### NLP Sentiment Analysis
 
 ```javascript
 // Use pre-built template
-const deployment =
-  (await mcp__flow) -
-  nexus__neural_deploy_template({
-    template_id: 'sentiment-analysis-v2',
-    custom_config: {
-      training: {
-        epochs: 30,
-        batch_size: 16,
-      },
-    },
-  });
+const deployment = await mcp__flow-nexus__neural_deploy_template({
+  template_id: "sentiment-analysis-v2",
+  custom_config: {
+    training: {
+      epochs: 30,
+      batch_size: 16
+    }
+  }
+})
 
 // Run inference
-const result =
-  (await mcp__flow) -
-  nexus__neural_predict({
-    model_id: deployment.model_id,
-    input: ['This product is amazing!', 'Terrible experience.'],
-  });
+const result = await mcp__flow-nexus__neural_predict({
+  model_id: deployment.model_id,
+  input: ["This product is amazing!", "Terrible experience."]
+})
 ```
 
 ### Time Series Forecasting
 
 ```javascript
 // Train LSTM model
-const training =
-  (await mcp__flow) -
-  nexus__neural_train({
-    config: {
-      architecture: {
-        type: 'lstm',
-        layers: [
-          { type: 'lstm', units: 128, return_sequences: true },
-          { type: 'dropout', rate: 0.2 },
-          { type: 'lstm', units: 64 },
-          { type: 'dense', units: 1 },
-        ],
-      },
-      training: {
-        epochs: 150,
-        batch_size: 64,
-        learning_rate: 0.01,
-        optimizer: 'adam',
-      },
+const training = await mcp__flow-nexus__neural_train({
+  config: {
+    architecture: {
+      type: "lstm",
+      layers: [
+        { type: "lstm", units: 128, return_sequences: true },
+        { type: "dropout", rate: 0.2 },
+        { type: "lstm", units: 64 },
+        { type: "dense", units: 1 }
+      ]
     },
-    tier: 'medium',
-  });
+    training: {
+      epochs: 150,
+      batch_size: 64,
+      learning_rate: 0.01,
+      optimizer: "adam"
+    }
+  },
+  tier: "medium"
+})
 
 // Monitor progress
-const status =
-  (await mcp__flow) -
-  nexus__neural_training_status({
-    job_id: training.job_id,
-  });
+const status = await mcp__flow-nexus__neural_training_status({
+  job_id: training.job_id
+})
 ```
 
 ### Federated Learning for Privacy
 
 ```javascript
 // Initialize federated cluster
-const cluster =
-  (await mcp__flow) -
-  nexus__neural_cluster_init({
-    name: 'federated-medical-cluster',
-    architecture: 'transformer',
-    topology: 'mesh',
-    consensus: 'proof-of-learning',
-    daaEnabled: true,
-  });
+const cluster = await mcp__flow-nexus__neural_cluster_init({
+  name: "federated-medical-cluster",
+  architecture: "transformer",
+  topology: "mesh",
+  consensus: "proof-of-learning",
+  daaEnabled: true
+})
 
 // Deploy nodes across different locations
 for (let i = 0; i < 5; i++) {
-  (await mcp__flow) -
-    nexus__neural_node_deploy({
-      cluster_id: cluster.cluster_id,
-      node_type: 'worker',
-      model: 'large',
-      autonomy: 0.9,
-    });
+  await mcp__flow-nexus__neural_node_deploy({
+    cluster_id: cluster.cluster_id,
+    node_type: "worker",
+    model: "large",
+    autonomy: 0.9
+  })
 }
 
 // Train with federated learning (data never leaves nodes)
-(await mcp__flow) -
-  nexus__neural_train_distributed({
-    cluster_id: cluster.cluster_id,
-    dataset: 'medical_records_distributed',
-    epochs: 200,
-    federated: true,
-    aggregation_rounds: 100,
-  });
+await mcp__flow-nexus__neural_train_distributed({
+  cluster_id: cluster.cluster_id,
+  dataset: "medical_records_distributed",
+  epochs: 200,
+  federated: true,
+  aggregation_rounds: 100
+})
 ```
 
 ## Architecture Patterns
 
 ### Feedforward Networks
-
 Best for: Classification, regression, simple pattern recognition
-
 ```javascript
 {
   type: "feedforward",
@@ -679,9 +629,7 @@ Best for: Classification, regression, simple pattern recognition
 ```
 
 ### LSTM Networks
-
 Best for: Time series, sequences, forecasting
-
 ```javascript
 {
   type: "lstm",
@@ -694,9 +642,7 @@ Best for: Time series, sequences, forecasting
 ```
 
 ### Transformers
-
 Best for: NLP, attention mechanisms, large-scale text
-
 ```javascript
 {
   type: "transformer",
@@ -710,9 +656,7 @@ Best for: NLP, attention mechanisms, large-scale text
 ```
 
 ### GANs
-
 Best for: Generative tasks, image synthesis
-
 ```javascript
 {
   type: "gan",
@@ -722,9 +666,7 @@ Best for: Generative tasks, image synthesis
 ```
 
 ### Autoencoders
-
 Best for: Dimensionality reduction, anomaly detection
-
 ```javascript
 {
   type: "autoencoder",
@@ -753,24 +695,19 @@ Best for: Dimensionality reduction, anomaly detection
 ## Troubleshooting
 
 ### Training Stalled
-
 ```javascript
 // Check cluster status
-const status =
-  (await mcp__flow) -
-  nexus__neural_cluster_status({
-    cluster_id: 'cluster_id',
-  });
+const status = await mcp__flow-nexus__neural_cluster_status({
+  cluster_id: "cluster_id"
+})
 
 // Terminate and restart if needed
-(await mcp__flow) -
-  nexus__neural_cluster_terminate({
-    cluster_id: 'cluster_id',
-  });
+await mcp__flow-nexus__neural_cluster_terminate({
+  cluster_id: "cluster_id"
+})
 ```
 
 ### Low Accuracy
-
 - Increase epochs
 - Adjust learning rate
 - Add regularization (dropout)
@@ -778,7 +715,6 @@ const status =
 - Use data augmentation
 
 ### Out of Memory
-
 - Reduce batch size
 - Use smaller model tier
 - Enable gradient accumulation

@@ -9,8 +9,29 @@ import {
   useSensors,
   PointerSensor,
   TouchSensor,
+  KeyboardSensor,
   closestCenter,
+  KeyboardCoordinateGetter,
 } from '@dnd-kit/core';
+
+// Custom keyboard coordinate getter for map-based drag (not sortable list)
+const customKeyboardCoordinates: KeyboardCoordinateGetter = (
+  event,
+  { currentCoordinates }
+) => {
+  const delta = 20; // pixels to move per keypress
+  switch (event.code) {
+    case 'ArrowRight':
+      return { ...currentCoordinates, x: currentCoordinates.x + delta };
+    case 'ArrowLeft':
+      return { ...currentCoordinates, x: currentCoordinates.x - delta };
+    case 'ArrowDown':
+      return { ...currentCoordinates, y: currentCoordinates.y + delta };
+    case 'ArrowUp':
+      return { ...currentCoordinates, y: currentCoordinates.y - delta };
+  }
+  return undefined;
+};
 import { useGame } from '../../context/GameContext';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { Button, Card, Heading, Text } from '../ui';
@@ -74,7 +95,7 @@ export default function GameContainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Use both touch and pointer sensors for better compatibility
+  // Use touch, pointer, and keyboard sensors for full accessibility (WCAG 2.1.1)
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -86,6 +107,9 @@ export default function GameContainer() {
         delay: 250, // Delay for touch to prevent accidental drags
         tolerance: 5,
       },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: customKeyboardCoordinates, // Use custom for map drag (not sortable)
     })
   );
 

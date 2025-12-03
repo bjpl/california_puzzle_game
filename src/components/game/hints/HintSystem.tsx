@@ -5,7 +5,9 @@ import {
   HintType,
   Hint
 } from '@/types';
-import { useGameStore } from '@/stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useHintStore } from '@/stores/hintSystemStore';
+import { useSettingsStore } from '@/stores/gameSettingsStore';
 import { generateHint, analyzeStruggle } from '@/utils/hintEngine';
 
 interface HintButtonProps {
@@ -212,7 +214,9 @@ const HintSystem: React.FC<HintSystemProps> = ({
   const [showHintMenu, setShowHintMenu] = useState(false);
   const [cooldownProgress, setCooldownProgress] = useState(0);
 
-  const { hintSystem, settings, updateHintSystem, useHint: requestHint, analyzePlayerStruggle: _analyzePlayerStruggle } = useGameStore();
+  // Migrated to domain stores
+  const { hintSystem, updateHintSystem, useHint: requestHint, analyzePlayerStruggle: _analyzePlayerStruggle } = useHintStore();
+  const { settings } = useSettingsStore();
 
   // Cooldown timer effect
   useEffect(() => {

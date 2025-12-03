@@ -15,7 +15,8 @@
 import { syncManager } from '../syncManager';
 import { supabase, Database } from '../supabase';
 import { logger } from '../../utils/logger';
-import { useGameStore } from '../../stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useScoringStore } from '../../stores/scoringStore';
 import type { GameStats } from '../../types';
 
 type UserProgressRow = Database['public']['Tables']['user_progress']['Row'];
@@ -86,7 +87,7 @@ class GameStatsSync {
       return;
     }
 
-    const currentStats = stats || useGameStore.getState().stats;
+    const currentStats = stats || useScoringStore.getState().stats;
 
     logger.info('[GameStatsSync] Syncing stats to server...');
 
@@ -120,34 +121,8 @@ class GameStatsSync {
         previousData: existingProgress as Record<string, unknown>,
       });
 
-      // Update local store with merged values
-      useGameStore.getState().updateStats = (placement) => {
-        // Update stats based on placement
-        const state = useGameStore.getState();
-        const newCountiesLearned = new Set(state.stats.countiesLearned);
-        if (placement.isCorrect) {
-          newCountiesLearned.add(placement.county.id);
-        }
-
-        const totalPlacements = state.stats.totalGamesPlayed * 10;
-        const newAverageAccuracy =
-          totalPlacements > 0
-            ? (state.stats.averageAccuracy * (totalPlacements - 1) + placement.accuracy) /
-              totalPlacements
-            : placement.accuracy;
-
-        useGameStore.setState({
-          stats: {
-            ...mergedStats,
-            averageAccuracy: newAverageAccuracy,
-            countiesLearned: newCountiesLearned,
-            perfectPlacements:
-              placement.accuracy === 1
-                ? state.stats.perfectPlacements + 1
-                : state.stats.perfectPlacements,
-          },
-        });
-      };
+      // Note: updatePlacementStats is handled by useScoringStore, no need to override
+      // The store coordinator handles achievement checking via subscriptions
     } else {
       // Insert new progress
       const statsData = this.serializeStats(currentStats);
@@ -238,10 +213,11 @@ class GameStatsSync {
 
       // Deserialize and merge with local store
       const serverStats = this.deserializeStats(data);
-      const localStats = useGameStore.getState().stats;
+      const localStats = useScoringStore.getState().stats;
       const mergedStats = this.mergeStats(localStats, serverStats);
 
-      useGameStore.setState({ stats: mergedStats });
+      // Update stats via store action (setState not available directly)
+      useScoringStore.setState({ stats: mergedStats });
     }
   }
 
@@ -269,10 +245,11 @@ class GameStatsSync {
         if (serverProgress.user_id === this.userId) {
           // Merge with local stats
           const serverStats = this.deserializeStats(serverProgress);
-          const localStats = useGameStore.getState().stats;
+          const localStats = useScoringStore.getState().stats;
           const mergedStats = this.mergeStats(localStats, serverStats);
 
-          useGameStore.setState({ stats: mergedStats });
+          // Update stats via store action (setState not available directly)
+      useScoringStore.setState({ stats: mergedStats });
 
           logger.info('[GameStatsSync] Local stats updated from server');
         }
@@ -328,7 +305,7 @@ class GameStatsSync {
    * PATTERN: Data transformation
    */
   private deserializeStats(data: UserProgressRow): GameStats {
-    const state = useGameStore.getState();
+    const state = useScoringStore.getState();
 
     return {
       totalGamesPlayed: data.total_games,

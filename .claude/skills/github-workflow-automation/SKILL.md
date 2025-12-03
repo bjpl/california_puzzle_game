@@ -34,7 +34,6 @@ This skill provides comprehensive GitHub Actions automation with AI swarm coordi
 <summary>💡 Basic Usage - Click to expand</summary>
 
 ### Initialize GitHub Workflow Automation
-
 ```bash
 # Start with a simple workflow
 npx ruv-swarm actions generate-workflow \
@@ -44,7 +43,6 @@ npx ruv-swarm actions generate-workflow \
 ```
 
 ### Common Commands
-
 ```bash
 # Optimize existing workflow
 npx ruv-swarm actions optimize \
@@ -67,9 +65,7 @@ gh run view <run-id> --json jobs,conclusion | \
 <summary>Available GitHub Integration Modes</summary>
 
 #### 1. gh-coordinator
-
 **GitHub workflow orchestration and coordination**
-
 - **Coordination Mode**: Hierarchical
 - **Max Parallel Operations**: 10
 - **Batch Optimized**: Yes
@@ -82,9 +78,7 @@ npx claude-flow@alpha github gh-coordinator \
 ```
 
 #### 2. pr-manager
-
 **Pull request management and review coordination**
-
 - **Review Mode**: Automated
 - **Multi-reviewer**: Yes
 - **Conflict Resolution**: Intelligent
@@ -98,9 +92,7 @@ gh pr create --title "Feature: New capability" \
 ```
 
 #### 3. issue-tracker
-
 **Issue management and project coordination**
-
 - **Issue Workflow**: Automated
 - **Label Management**: Smart
 - **Progress Tracking**: Real-time
@@ -112,9 +104,7 @@ npx claude-flow@alpha github issue-tracker \
 ```
 
 #### 4. release-manager
-
 **Release coordination and deployment**
-
 - **Release Pipeline**: Automated
 - **Versioning**: Semantic
 - **Deployment**: Multi-stage
@@ -126,9 +116,7 @@ npx claude-flow@alpha github release-manager \
 ```
 
 #### 5. repo-architect
-
 **Repository structure and organization**
-
 - **Structure Optimization**: Yes
 - **Multi-repo Support**: Yes
 - **Template Management**: Advanced
@@ -140,9 +128,7 @@ npx claude-flow@alpha github repo-architect \
 ```
 
 #### 6. code-reviewer
-
 **Automated code review and quality assurance**
-
 - **Review Quality**: Deep
 - **Security Analysis**: Yes
 - **Performance Check**: Automated
@@ -156,9 +142,7 @@ gh pr view 123 --json files | \
 ```
 
 #### 7. ci-orchestrator
-
 **CI/CD pipeline coordination**
-
 - **Pipeline Management**: Advanced
 - **Test Coordination**: Parallel
 - **Deployment**: Automated
@@ -170,9 +154,7 @@ npx claude-flow@alpha github ci-orchestrator \
 ```
 
 #### 8. security-guardian
-
 **Security and compliance management**
-
 - **Security Scan**: Automated
 - **Compliance Check**: Continuous
 - **Vulnerability Management**: Proactive
@@ -193,7 +175,6 @@ npx ruv-swarm actions security \
 <summary>Production-Ready GitHub Actions Templates</summary>
 
 #### 1. Intelligent CI with Swarms
-
 ```yaml
 # .github/workflows/swarm-ci.yml
 name: Intelligent CI with Swarms
@@ -220,7 +201,6 @@ jobs:
 ```
 
 #### 2. Multi-Language Detection
-
 ```yaml
 # .github/workflows/polyglot-swarm.yml
 name: Polyglot Project Handler
@@ -246,7 +226,6 @@ jobs:
 ```
 
 #### 3. Adaptive Security Scanning
-
 ```yaml
 # .github/workflows/security-swarm.yml
 name: Intelligent Security Scan
@@ -277,7 +256,6 @@ jobs:
 ```
 
 #### 4. Self-Healing Pipeline
-
 ```yaml
 # .github/workflows/self-healing.yml
 name: Self-Healing Pipeline
@@ -297,7 +275,6 @@ jobs:
 ```
 
 #### 5. Progressive Deployment
-
 ```yaml
 # .github/workflows/smart-deployment.yml
 name: Smart Deployment
@@ -324,7 +301,6 @@ jobs:
 ```
 
 #### 6. Performance Regression Detection
-
 ```yaml
 # .github/workflows/performance-guard.yml
 name: Performance Guard
@@ -343,7 +319,6 @@ jobs:
 ```
 
 #### 7. PR Validation Swarm
-
 ```yaml
 # .github/workflows/pr-validation.yml
 name: PR Validation Swarm
@@ -367,7 +342,6 @@ jobs:
 ```
 
 #### 8. Intelligent Release
-
 ```yaml
 # .github/workflows/intelligent-release.yml
 name: Intelligent Release
@@ -396,7 +370,6 @@ jobs:
 <summary>Workflow Analysis & Optimization</summary>
 
 #### Workflow Analytics
-
 ```bash
 # Analyze workflow performance
 npx ruv-swarm actions analytics \
@@ -407,7 +380,6 @@ npx ruv-swarm actions analytics \
 ```
 
 #### Cost Optimization
-
 ```bash
 # Optimize GitHub Actions costs
 npx ruv-swarm actions cost-optimize \
@@ -417,7 +389,6 @@ npx ruv-swarm actions cost-optimize \
 ```
 
 #### Failure Pattern Analysis
-
 ```bash
 # Identify failure patterns
 npx ruv-swarm actions failure-patterns \
@@ -427,7 +398,6 @@ npx ruv-swarm actions failure-patterns \
 ```
 
 #### Resource Management
-
 ```bash
 # Optimize resource usage
 npx ruv-swarm actions resources \
@@ -446,7 +416,6 @@ npx ruv-swarm actions resources \
 <summary>Intelligent Test Selection & Execution</summary>
 
 #### Smart Test Selection
-
 ```yaml
 # Automatically select relevant tests
 - name: Swarm Test Selection
@@ -458,7 +427,6 @@ npx ruv-swarm actions resources \
 ```
 
 #### Dynamic Test Matrix
-
 ```yaml
 # Generate test matrix from code analysis
 jobs:
@@ -480,7 +448,6 @@ jobs:
 ```
 
 #### Intelligent Parallelization
-
 ```bash
 # Determine optimal parallelization
 npx ruv-swarm actions parallel-strategy \
@@ -497,7 +464,6 @@ npx ruv-swarm actions parallel-strategy \
 <summary>AI-Powered Workflow Predictions</summary>
 
 #### Predictive Failures
-
 ```bash
 # Predict potential failures
 npx ruv-swarm actions predict \
@@ -507,7 +473,6 @@ npx ruv-swarm actions predict \
 ```
 
 #### Workflow Recommendations
-
 ```bash
 # Get workflow recommendations
 npx ruv-swarm actions recommend \
@@ -517,7 +482,6 @@ npx ruv-swarm actions recommend \
 ```
 
 #### Automated Optimization
-
 ```bash
 # Continuously optimize workflows
 npx ruv-swarm actions auto-optimize \
@@ -534,15 +498,17 @@ npx ruv-swarm actions auto-optimize \
 <summary>Build Your Own Swarm Actions</summary>
 
 #### Custom Swarm Action Template
-
 ```javascript
 // action.yml
-name: 'Swarm Custom Action';
-description: 'Custom swarm-powered action';
-inputs: task: description: 'Task for swarm';
-required: true;
-runs: using: 'node16';
-main: 'dist/index.js';
+name: 'Swarm Custom Action'
+description: 'Custom swarm-powered action'
+inputs:
+  task:
+    description: 'Task for swarm'
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
 
 // index.js
 const { SwarmAction } = require('ruv-swarm');
@@ -550,13 +516,13 @@ const { SwarmAction } = require('ruv-swarm');
 async function run() {
   const swarm = new SwarmAction({
     topology: 'mesh',
-    agents: ['analyzer', 'optimizer'],
+    agents: ['analyzer', 'optimizer']
   });
 
   await swarm.execute(core.getInput('task'));
 }
 
-run().catch((error) => core.setFailed(error.message));
+run().catch(error => core.setFailed(error.message));
 ```
 
 </details>
@@ -569,7 +535,6 @@ run().catch((error) => core.setFailed(error.message));
 <summary>MCP-Based GitHub Workflow Coordination</summary>
 
 #### Initialize GitHub Swarm
-
 ```javascript
 // Step 1: Initialize swarm coordination
 mcp__claude-flow__swarm_init {
@@ -592,7 +557,6 @@ mcp__claude-flow__task_orchestrate {
 ```
 
 #### GitHub Hooks Integration
-
 ```bash
 # Pre-task: Setup GitHub context
 npx claude-flow@alpha hooks pre-task \
@@ -618,7 +582,6 @@ npx claude-flow@alpha hooks post-task \
 <summary>Concurrent GitHub Operations</summary>
 
 #### Parallel GitHub CLI Commands
-
 ```javascript
 // Single message with all GitHub operations
 [Concurrent Execution]:
@@ -644,7 +607,6 @@ npx claude-flow@alpha hooks post-task \
 <summary>Structure Your GitHub Workflows</summary>
 
 #### 1. Use Reusable Workflows
-
 ```yaml
 # .github/workflows/reusable-swarm.yml
 name: Reusable Swarm Workflow
@@ -665,7 +627,6 @@ jobs:
 ```
 
 #### 2. Implement Proper Caching
-
 ```yaml
 - name: Cache Swarm Dependencies
   uses: actions/cache@v3
@@ -675,7 +636,6 @@ jobs:
 ```
 
 #### 3. Set Appropriate Timeouts
-
 ```yaml
 jobs:
   swarm-task:
@@ -686,7 +646,6 @@ jobs:
 ```
 
 #### 4. Use Workflow Dependencies
-
 ```yaml
 jobs:
   setup:
@@ -709,7 +668,6 @@ jobs:
 <summary>Secure Your GitHub Workflows</summary>
 
 #### 1. Store Configurations Securely
-
 ```yaml
 - name: Setup Swarm
   env:
@@ -720,7 +678,6 @@ jobs:
 ```
 
 #### 2. Use OIDC Authentication
-
 ```yaml
 permissions:
   id-token: write
@@ -734,7 +691,6 @@ permissions:
 ```
 
 #### 3. Implement Least-Privilege
-
 ```yaml
 permissions:
   contents: read
@@ -743,7 +699,6 @@ permissions:
 ```
 
 #### 4. Audit Swarm Operations
-
 ```yaml
 - name: Audit Swarm Actions
   run: |
@@ -760,7 +715,6 @@ permissions:
 <summary>Maximize Workflow Performance</summary>
 
 #### 1. Cache Swarm Dependencies
-
 ```yaml
 - uses: actions/cache@v3
   with:
@@ -771,7 +725,6 @@ permissions:
 ```
 
 #### 2. Use Appropriate Runner Sizes
-
 ```yaml
 jobs:
   heavy-task:
@@ -781,7 +734,6 @@ jobs:
 ```
 
 #### 3. Implement Early Termination
-
 ```yaml
 - name: Quick Fail Check
   run: |
@@ -792,7 +744,6 @@ jobs:
 ```
 
 #### 4. Optimize Parallel Execution
-
 ```yaml
 strategy:
   matrix:
@@ -816,7 +767,6 @@ strategy:
 <summary>Debug GitHub Workflow Issues</summary>
 
 #### Debug Mode
-
 ```yaml
 - name: Debug Swarm
   run: |
@@ -829,7 +779,6 @@ strategy:
 ```
 
 #### Performance Profiling
-
 ```bash
 # Profile workflow performance
 npx ruv-swarm actions profile \
@@ -839,7 +788,6 @@ npx ruv-swarm actions profile \
 ```
 
 #### Failure Analysis
-
 ```bash
 # Analyze failed runs
 gh run view <run-id> --json jobs,conclusion | \
@@ -849,7 +797,6 @@ gh run view <run-id> --json jobs,conclusion | \
 ```
 
 #### Log Analysis
-
 ```bash
 # Download and analyze logs
 gh run download <run-id>
@@ -868,7 +815,6 @@ npx ruv-swarm actions analyze-logs \
 <summary>Production-Ready Integration Examples</summary>
 
 #### Example 1: Full-Stack Application CI/CD
-
 ```yaml
 name: Full-Stack CI/CD with Swarms
 on:
@@ -933,7 +879,6 @@ jobs:
 ```
 
 #### Example 2: Monorepo Management
-
 ```yaml
 name: Monorepo Coordination
 on: push
@@ -970,7 +915,6 @@ jobs:
 ```
 
 #### Example 3: Multi-Repo Synchronization
-
 ```bash
 # Synchronize multiple repositories
 npx claude-flow@alpha github sync-coordinator \
@@ -992,7 +936,6 @@ npx claude-flow@alpha github sync-coordinator \
 <summary>All Available Commands</summary>
 
 #### Workflow Generation
-
 ```bash
 npx ruv-swarm actions generate-workflow [options]
   --analyze-codebase       Analyze repository structure
@@ -1001,7 +944,6 @@ npx ruv-swarm actions generate-workflow [options]
 ```
 
 #### Optimization
-
 ```bash
 npx ruv-swarm actions optimize [options]
   --workflow <path>        Path to workflow file
@@ -1011,7 +953,6 @@ npx ruv-swarm actions optimize [options]
 ```
 
 #### Analysis
-
 ```bash
 npx ruv-swarm actions analyze [options]
   --commit <sha>           Analyze specific commit
@@ -1020,7 +961,6 @@ npx ruv-swarm actions analyze [options]
 ```
 
 #### Testing
-
 ```bash
 npx ruv-swarm actions smart-test [options]
   --changed-files <files>  Files that changed
@@ -1029,7 +969,6 @@ npx ruv-swarm actions smart-test [options]
 ```
 
 #### Security
-
 ```bash
 npx ruv-swarm actions security [options]
   --deep-scan             Deep security analysis
@@ -1038,7 +977,6 @@ npx ruv-swarm actions security [options]
 ```
 
 #### Deployment
-
 ```bash
 npx ruv-swarm actions deploy [options]
   --strategy <type>       Deployment strategy
@@ -1047,7 +985,6 @@ npx ruv-swarm actions deploy [options]
 ```
 
 #### Monitoring
-
 ```bash
 npx ruv-swarm actions analytics [options]
   --workflow <name>       Workflow to analyze
@@ -1075,7 +1012,6 @@ npx ruv-swarm actions analytics [options]
 - [ ] Runner permissions verified
 
 #### Quick Setup Script
-
 ```bash
 #!/bin/bash
 # setup-github-automation.sh

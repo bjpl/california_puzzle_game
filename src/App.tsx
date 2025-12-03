@@ -4,7 +4,8 @@ import { ErrorBoundary } from './components/shared/ErrorBoundary';
 import { LoadingSpinner } from './components/shared/LoadingSpinner';
 import { ToastContainer } from './components/ui/ToastContainer';
 import { useAuth } from './hooks/useAuth';
-import { useGameStore } from './stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useSettingsStore } from './stores/gameSettingsStore';
 import {
   setupAuthListeners,
   setupVisibilityRefresh,
@@ -34,7 +35,7 @@ const SecurityBadge = lazy(() => import('./components/shared/SecurityBadge').the
  */
 function AuthIntegration() {
   const { user, isAuthenticated, initialize } = useAuth();
-  const setUserId = useGameStore((state) => state.setUserId);
+  const setUserId = useSettingsStore((state) => state.setUserId);
 
   // Initialize auth on mount
   useEffect(() => {

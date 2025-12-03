@@ -4,7 +4,12 @@ import HintSystem from './hints/HintSystem';
 import HintVisualIndicators from './hints/HintVisualIndicators';
 import { HintType, Position, Hint } from '@/types';
 import { County, toCountyPiece, SimpleCounty } from '@/types/game-types';
-import { useGameStore } from '@/stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useSettingsStore } from '@/stores/gameSettingsStore';
+import { useCountyPlacementStore } from '@/stores/countyPlacementStore';
+import { useHintStore } from '@/stores/hintSystemStore';
+import { useScoringStore } from '@/stores/scoringStore';
+import { useGameLifecycleStore } from '@/stores/gameLifecycleStore';
 import { generateHint } from '@/utils/hintEngine';
 import type * as GeoJSON from 'geojson';
 
@@ -19,20 +24,12 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
   height = 600,
   className = '',
 }) => {
-  const gameStore = useGameStore();
-  const {
-    settings,
-    hintSystem,
-    remainingCounties,
-    placedCounties,
-    score,
-    mistakes,
-    useHint: requestHint,
-    updateHintSystem,
-    analyzePlayerStruggle,
-    startGame,
-    placeCounty,
-  } = gameStore;
+  // Migrated from monolithic gameStore to domain stores
+  const { settings } = useSettingsStore();
+  const { hintSystem, useHint: requestHint, updateHintSystem, analyzePlayerStruggle } = useHintStore();
+  const { remainingCounties, placedCounties, placeCounty } = useCountyPlacementStore();
+  const { score, mistakes } = useScoringStore();
+  const { startGame } = useGameLifecycleStore();
 
   const [activeHint, setActiveHint] = useState<Hint | null>(null);
   const [showVisualIndicators, setShowVisualIndicators] = useState(false);
@@ -336,7 +333,13 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
       {/* Hint System Component */}
       <div className="hint-system-container fixed bottom-6 right-6">
         <HintSystem
-          gameState={gameStore}
+          gameState={{
+            hintSystem,
+            remainingCounties,
+            placedCounties,
+            score,
+            mistakes,
+          }}
           onHintRequested={handleHintRequested}
           onHintDismissed={handleHintDismissed}
         />

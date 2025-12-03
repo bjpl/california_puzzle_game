@@ -8,7 +8,12 @@ import {
   PointerSensor,
 } from '@dnd-kit/core';
 import { GameModeConfiguration, GameContainerProps, County, CountyPiece, Position } from '@/types';
-import { useGameStore } from '@/stores/gameStore';
+// Migrated from monolithic gameStore to domain stores
+import { useGameLifecycleStore } from '@/stores/gameLifecycleStore';
+import { useCountyPlacementStore } from '@/stores/countyPlacementStore';
+import { useScoringStore } from '@/stores/scoringStore';
+import { useAchievementStore } from '@/stores/achievementStore';
+import { useSettingsStore } from '@/stores/gameSettingsStore';
 import { GameModeSelector } from './GameModeSelector';
 import { DifficultySystem, useDifficultySettings } from '../game/DifficultySystem';
 import { ProgressionSystem } from '../game/ProgressionSystem';
@@ -29,29 +34,36 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
   onGameComplete,
   onModeChange,
 }) => {
-  // Game Store
+  // Domain Stores - Migrated from monolithic gameStore
   const {
     isGameActive: _isGameActive,
     currentMode,
-    placedCounties,
-    remainingCounties: _remainingCounties,
-    score,
     timeElapsed,
-    streak,
-    mistakes,
     difficulty,
-    settings: _settings,
-    stats,
-    achievements,
     availableModes,
     startGameWithMode,
     endGame,
     resetGame,
-    placeCounty,
     setCurrentMode,
     updateModeProgress,
     unlockMode,
-  } = useGameStore();
+  } = useGameLifecycleStore();
+
+  const {
+    placedCounties,
+    remainingCounties: _remainingCounties,
+    placeCounty,
+  } = useCountyPlacementStore();
+
+  const {
+    score,
+    streak,
+    mistakes,
+    stats,
+  } = useScoringStore();
+
+  const { achievements } = useAchievementStore();
+  const { settings: _settings } = useSettingsStore();
 
   // Local State
   const [gamePhase, setGamePhase] = useState<GamePhase>('mode_selection');
