@@ -43,7 +43,7 @@ export function useAuth(): UseAuthReturn {
       logger.info('[useAuth] Auto-initializing auth...');
       store.initialize();
     }
-  }, [store.initialized, store.isLoading]);
+  }, [store.initialized, store.isLoading, store]);
 
   // Compute derived values
   const isAuthenticated = !!store.user && !!store.session;

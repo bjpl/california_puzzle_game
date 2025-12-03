@@ -38,8 +38,8 @@ const geodataCache = new Map<string, any>();
  */
 export function useViewportGeodata({
   counties,
-  viewport,
-  loadingThreshold = 200,
+  viewport: _viewport,
+  loadingThreshold: _loadingThreshold = 200,
 }: UseViewportGeodataOptions): ViewportGeodataResult {
   const [loadedCounties, setLoadedCounties] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
@@ -80,7 +80,9 @@ export function useViewportGeodata({
     // For now, return all counties as visible
     // Real implementation would check if county bounds intersect with viewport
     return new Set(counties.map((c) => c.id));
-  }, [counties, viewport, loadingThreshold]);
+    // Note: viewport and loadingThreshold would be used in real implementation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [counties]);
 
   /**
    * Preload geodata for all visible counties

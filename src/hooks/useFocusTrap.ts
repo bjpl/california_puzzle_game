@@ -13,7 +13,7 @@
  * - Finds all focusable elements dynamically
  */
 
-import { useEffect, useRef, RefObject } from 'react';
+import { useEffect, useRef, useCallback, RefObject } from 'react';
 
 // Focusable element selectors per WCAG guidelines
 const FOCUSABLE_SELECTORS = [
@@ -66,8 +66,8 @@ export function useFocusTrap({
   // Store the element that triggered the modal
   const returnFocusRef = useRef<HTMLElement | null>(null);
 
-  // Get all focusable elements within the dialog
-  const getFocusableElements = (): HTMLElement[] => {
+  // Get all focusable elements within the dialog - memoized for deps
+  const getFocusableElements = useCallback((): HTMLElement[] => {
     if (!dialogRef.current) return [];
 
     const elements = Array.from(
@@ -81,7 +81,7 @@ export function useFocusTrap({
       const tabIndex = parseInt(el.getAttribute('tabindex') || '0', 10);
       return isVisible && tabIndex >= 0;
     });
-  };
+  }, [dialogRef]);
 
   // Handle keyboard events for focus trapping
   useEffect(() => {
@@ -159,7 +159,7 @@ export function useFocusTrap({
         }, 10);
       }
     };
-  }, [isOpen, dialogRef, onEscape, autoFocus]);
+  }, [isOpen, dialogRef, onEscape, autoFocus, getFocusableElements]);
 
   // Announce modal open/close to screen readers
   useEffect(() => {

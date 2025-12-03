@@ -6,9 +6,12 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { GestureState } from '@/types';
+import type { GestureConfig } from '@/hooks/useGestureRecognition';
 
 export interface GestureStoreState {
   gestureState: GestureState;
+  gesturePreferences: Partial<GestureConfig> | null;
+  helpSeen: boolean;
 }
 
 interface GestureActions {
@@ -18,6 +21,9 @@ interface GestureActions {
   setMapZoom: (zoom: number) => void;
   setMapPan: (pan: { x: number; y: number }) => void;
   toggleGestureEnabled: () => void;
+  setGesturePreferences: (prefs: Partial<GestureConfig>) => void;
+  clearGesturePreferences: () => void;
+  setHelpSeen: (seen: boolean) => void;
 }
 
 export type GestureStore = GestureStoreState & GestureActions;
@@ -35,6 +41,8 @@ export const useGestureStore = create<GestureStore>()(
       (set) => ({
         // Initial state
         gestureState: defaultGestureState,
+        gesturePreferences: null,
+        helpSeen: false,
 
         updateGestureState: (updates: Partial<GestureState>) => {
           set((state) => ({
@@ -74,11 +82,25 @@ export const useGestureStore = create<GestureStore>()(
             },
           }));
         },
+
+        setGesturePreferences: (prefs: Partial<GestureConfig>) => {
+          set({ gesturePreferences: prefs });
+        },
+
+        clearGesturePreferences: () => {
+          set({ gesturePreferences: null });
+        },
+
+        setHelpSeen: (seen: boolean) => {
+          set({ helpSeen: seen });
+        },
       }),
       {
         name: 'california-puzzle-gestures',
         partialize: (state) => ({
           gestureState: state.gestureState,
+          gesturePreferences: state.gesturePreferences,
+          helpSeen: state.helpSeen,
         }),
       }
     ),

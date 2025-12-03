@@ -13,7 +13,7 @@
  * Last updated: 2025-11-19
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useToastStore, type Toast as ToastData } from '../../stores/toastStore';
 
 interface ToastProps {
@@ -105,14 +105,14 @@ export const Toast: React.FC<ToastProps> = ({ toast }) => {
   const removeToast = useToastStore((state) => state.removeToast);
   const [isExiting, setIsExiting] = useState(false);
 
-  // Handle exit animation before removal
-  const handleDismiss = () => {
+  // Handle exit animation before removal - memoized for deps
+  const handleDismiss = useCallback(() => {
     setIsExiting(true);
     // Wait for animation to complete before removing
     setTimeout(() => {
       removeToast(toast.id);
     }, 200);
-  };
+  }, [removeToast, toast.id]);
 
   // Keyboard accessibility
   useEffect(() => {
@@ -124,7 +124,7 @@ export const Toast: React.FC<ToastProps> = ({ toast }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toast.dismissible]);
+  }, [toast.dismissible, handleDismiss]);
 
   return (
     <div

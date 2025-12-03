@@ -16,6 +16,7 @@ import { setVolume, soundManager } from '@/utils/soundManager';
 export interface SettingsState {
   settings: GameSettings;
   userId: string | null;
+  highContrastEnabled: boolean;
 }
 
 interface SettingsActions {
@@ -26,6 +27,7 @@ interface SettingsActions {
   stopBackgroundMusic: () => void;
   setUserId: (userId: string | null) => void;
   resetSettings: () => void;
+  setHighContrastEnabled: (enabled: boolean) => void;
 }
 
 export type SettingsStore = SettingsState & SettingsActions;
@@ -68,6 +70,7 @@ export const useSettingsStore = create<SettingsStore>()(
         // Initial state
         settings: defaultSettings,
         userId: null,
+        highContrastEnabled: false,
 
         updateSettings: (newSettings: Partial<GameSettings>) => {
           set((state) => ({
@@ -131,12 +134,17 @@ export const useSettingsStore = create<SettingsStore>()(
         resetSettings: () => {
           set({ settings: defaultSettings });
         },
+
+        setHighContrastEnabled: (enabled: boolean) => {
+          set({ highContrastEnabled: enabled });
+        },
       }),
       {
         name: 'california-puzzle-settings',
         partialize: (state) => ({
           settings: state.settings,
           userId: state.userId,
+          highContrastEnabled: state.highContrastEnabled,
         }),
       }
     ),

@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useState, useCallback } from 'react';
+import { useSettingsStore } from '../stores/gameSettingsStore';
 
 export interface HighContrastColors {
   background: string;
@@ -22,8 +23,6 @@ export interface HighContrastState {
   enabled: boolean;
   colors: HighContrastColors;
 }
-
-const HIGH_CONTRAST_STORAGE_KEY = 'ca-high-contrast-mode';
 
 // WCAG AAA compliant high contrast colors (7:1 ratio)
 const HIGH_CONTRAST_COLORS: HighContrastColors = {
@@ -54,17 +53,20 @@ const NORMAL_COLORS: HighContrastColors = {
 };
 
 export function useHighContrast() {
-  const [state, setState] = useState<HighContrastState>(() => {
-    // Check local storage for saved preference
-    const saved = localStorage.getItem(HIGH_CONTRAST_STORAGE_KEY);
-    const enabled = saved === 'true';
+  // Use Zustand persist store for high contrast preference
+  const { highContrastEnabled, setHighContrastEnabled } = useSettingsStore((state) => ({
+    highContrastEnabled: state.highContrastEnabled ?? false,
+    setHighContrastEnabled: state.setHighContrastEnabled,
+  }));
 
-    // Check system preference
+  const [state, setState] = useState<HighContrastState>(() => {
+    // Check system preference as fallback
     const prefersHighContrast = window.matchMedia('(prefers-contrast: high)').matches;
+    const enabled = highContrastEnabled || prefersHighContrast;
 
     return {
-      enabled: enabled || prefersHighContrast,
-      colors: enabled || prefersHighContrast ? HIGH_CONTRAST_COLORS : NORMAL_COLORS,
+      enabled,
+      colors: enabled ? HIGH_CONTRAST_COLORS : NORMAL_COLORS,
     };
   });
 
@@ -126,9 +128,8 @@ export function useHighContrast() {
     const mediaQuery = window.matchMedia('(prefers-contrast: high)');
 
     const handleChange = (e: MediaQueryListEvent) => {
-      // Only auto-enable if user hasn't manually set preference
-      const userPreference = localStorage.getItem(HIGH_CONTRAST_STORAGE_KEY);
-      if (!userPreference) {
+      // Only auto-enable if user hasn't manually set preference via store
+      if (!highContrastEnabled) {
         setState(prev => ({
           ...prev,
           enabled: e.matches,
@@ -142,7 +143,7 @@ export function useHighContrast() {
     return () => {
       mediaQuery.removeEventListener('change', handleChange);
     };
-  }, []);
+  }, [highContrastEnabled]);
 
   // Toggle high contrast mode
   const toggleHighContrast = useCallback(() => {
@@ -150,15 +151,15 @@ export function useHighContrast() {
       const newEnabled = !prev.enabled;
       const newColors = newEnabled ? HIGH_CONTRAST_COLORS : NORMAL_COLORS;
 
-      // Save preference
-      localStorage.setItem(HIGH_CONTRAST_STORAGE_KEY, String(newEnabled));
+      // Save preference to Zustand persist store
+      setHighContrastEnabled(newEnabled);
 
       return {
         enabled: newEnabled,
         colors: newColors,
       };
     });
-  }, []);
+  }, [setHighContrastEnabled]);
 
   // Enable high contrast mode
   const enableHighContrast = useCallback(() => {
@@ -166,8 +167,8 @@ export function useHighContrast() {
       enabled: true,
       colors: HIGH_CONTRAST_COLORS,
     });
-    localStorage.setItem(HIGH_CONTRAST_STORAGE_KEY, 'true');
-  }, []);
+    setHighContrastEnabled(true);
+  }, [setHighContrastEnabled]);
 
   // Disable high contrast mode
   const disableHighContrast = useCallback(() => {
@@ -175,8 +176,8 @@ export function useHighContrast() {
       enabled: false,
       colors: NORMAL_COLORS,
     });
-    localStorage.setItem(HIGH_CONTRAST_STORAGE_KEY, 'false');
-  }, []);
+    setHighContrastEnabled(false);
+  }, [setHighContrastEnabled]);
 
   // Get contrast ratio (for testing)
   const getContrastRatio = useCallback((fg: string, bg: string): number => {

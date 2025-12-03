@@ -1,9 +1,23 @@
 import { useState } from 'react';
 // Migrated from monolithic gameStore to domain stores
 import { useGestureStore } from '../../stores/gestureStore';
-import { useGestureRecognition, GestureType } from '../../hooks/useGestureRecognition';
+import { useGestureRecognition, GestureType, type GestureConfig } from '../../hooks/useGestureRecognition';
 import GestureSettings from '../game/GestureSettings';
 import CaliforniaMapSimple from './CaliforniaMapSimple';
+
+const DEFAULT_GESTURE_CONFIG: GestureConfig = {
+  enableRotation: true,
+  enablePinchZoom: true,
+  enableThreeFingerSwipe: true,
+  enableDoubleTap: true,
+  enableLongPress: true,
+  minScale: 1,
+  maxScale: 3,
+  doubleTapDelay: 300,
+  longPressDelay: 500,
+  rotationThreshold: 5,
+  pinchThreshold: 0.05,
+};
 
 interface CaliforniaMapWithGesturesProps {
   isDragging: boolean;
@@ -22,20 +36,8 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
   const [showSettings, setShowSettings] = useState(false);
   const [showResetNotification, setShowResetNotification] = useState(false);
 
-  // Load gesture preferences from localStorage
-  const loadGesturePreferences = () => {
-    const saved = localStorage.getItem('gesture-preferences');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        // Failed to load gesture preferences
-      }
-    }
-    return {};
-  };
-
-  const gesturePreferences = loadGesturePreferences();
+  // Load gesture preferences from Zustand persist store
+  const { gesturePreferences = {}, helpSeen, setHelpSeen } = useGestureStore();
 
   // Gesture callbacks
   const { handlers, gestureState: currentGesture, updateConfig } = useGestureRecognition(
@@ -99,11 +101,11 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
         // Gesture ended
       },
     },
-    gesturePreferences
+    gesturePreferences ?? undefined
   );
 
   // Handle settings change
-  const handleConfigChange = (config: Record<string, unknown>) => {
+  const handleConfigChange = (config: Partial<import('../../hooks/useGestureRecognition').GestureConfig>) => {
     updateConfig(config);
     updateGestureState({ gestureEnabled: true });
   };
@@ -205,7 +207,7 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
       )}
 
       {/* Gesture Help Overlay (shows on first use) */}
-      {!localStorage.getItem('gesture-help-seen') && (
+      {!helpSeen && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md p-6 m-4">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
@@ -260,7 +262,7 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
             </div>
             <button
               onClick={() => {
-                localStorage.setItem('gesture-help-seen', 'true');
+                setHelpSeen(true);
                 setShowResetNotification(false);
               }}
               className="w-full mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
@@ -275,7 +277,7 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
       <GestureSettings
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
-        currentConfig={gesturePreferences}
+        currentConfig={{ ...DEFAULT_GESTURE_CONFIG, ...gesturePreferences }}
         onConfigChange={handleConfigChange}
       />
 

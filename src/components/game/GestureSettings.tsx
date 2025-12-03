@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GestureConfig } from '../../hooks/useGestureRecognition';
+import { useGestureStore } from '../../stores/gestureStore';
 
 interface GestureSettingsProps {
   isOpen: boolean;
@@ -29,23 +30,18 @@ export default function GestureSettings({
   onConfigChange,
 }: GestureSettingsProps) {
   const [localConfig, setLocalConfig] = useState<GestureConfig>(currentConfig);
+  const { gesturePreferences, setGesturePreferences, clearGesturePreferences } = useGestureStore();
 
   useEffect(() => {
     setLocalConfig(currentConfig);
   }, [currentConfig]);
 
   useEffect(() => {
-    // Load saved preferences from localStorage
-    const saved = localStorage.getItem('gesture-preferences');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setLocalConfig({ ...DEFAULT_GESTURE_CONFIG, ...parsed });
-      } catch (error) {
-        console.error('Failed to parse gesture preferences:', error);
-      }
+    // Load saved preferences from Zustand persist store
+    if (gesturePreferences) {
+      setLocalConfig({ ...DEFAULT_GESTURE_CONFIG, ...gesturePreferences });
     }
-  }, []);
+  }, [gesturePreferences]);
 
   const handleChange = (key: keyof GestureConfig, value: boolean | number) => {
     const newConfig = { ...localConfig, [key]: value };
@@ -53,8 +49,8 @@ export default function GestureSettings({
   };
 
   const handleSave = () => {
-    // Save to localStorage
-    localStorage.setItem('gesture-preferences', JSON.stringify(localConfig));
+    // Save to Zustand persist store
+    setGesturePreferences(localConfig);
     // Apply changes
     onConfigChange(localConfig);
     onClose();
@@ -62,7 +58,7 @@ export default function GestureSettings({
 
   const handleReset = () => {
     setLocalConfig(DEFAULT_GESTURE_CONFIG);
-    localStorage.removeItem('gesture-preferences');
+    clearGesturePreferences();
     onConfigChange(DEFAULT_GESTURE_CONFIG);
   };
 
