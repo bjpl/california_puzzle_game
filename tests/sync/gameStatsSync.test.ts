@@ -32,8 +32,8 @@ describe('GameStatsSync', () => {
 
   describe('Statistics Accumulation', () => {
     it('should accumulate total games played', () => {
-      const local = createMockGameStats({ total_games_played: 10 });
-      const remote = createMockGameStats({ total_games_played: 8 });
+      const _local = createMockGameStats({ total_games_played: 10 });
+      const _remote = createMockGameStats({ total_games_played: 8 });
 
       // Should take maximum, not merge
       const merged = createMockGameStats({ total_games_played: 10 });
@@ -41,8 +41,8 @@ describe('GameStatsSync', () => {
     });
 
     it('should accumulate total score', () => {
-      const local = createMockGameStats({ total_score: 5000 });
-      const remote = createMockGameStats({ total_score: 4000 });
+      const _local = createMockGameStats({ total_score: 5000 });
+      const _remote = createMockGameStats({ total_score: 4000 });
 
       // Should take maximum
       const merged = createMockGameStats({ total_score: 5000 });
@@ -50,8 +50,8 @@ describe('GameStatsSync', () => {
     });
 
     it('should track best score correctly', () => {
-      const local = createMockGameStats({ best_score: 1000 });
-      const remote = createMockGameStats({ best_score: 1500 });
+      const _local = createMockGameStats({ best_score: 1000 });
+      const _remote = createMockGameStats({ best_score: 1500 });
 
       // Should always take highest
       const merged = createMockGameStats({ best_score: 1500 });
@@ -59,8 +59,8 @@ describe('GameStatsSync', () => {
     });
 
     it('should track longest streak', () => {
-      const local = createMockGameStats({ longest_streak: 10 });
-      const remote = createMockGameStats({ longest_streak: 15 });
+      const _local = createMockGameStats({ longest_streak: 10 });
+      const _remote = createMockGameStats({ longest_streak: 15 });
 
       // Should take maximum
       const merged = createMockGameStats({ longest_streak: 15 });
@@ -68,8 +68,8 @@ describe('GameStatsSync', () => {
     });
 
     it('should track total play time', () => {
-      const local = createMockGameStats({ total_play_time: 3600 });
-      const remote = createMockGameStats({ total_play_time: 3000 });
+      const _local = createMockGameStats({ total_play_time: 3600 });
+      const _remote = createMockGameStats({ total_play_time: 3000 });
 
       // Should take maximum
       const merged = createMockGameStats({ total_play_time: 3600 });
@@ -141,11 +141,11 @@ describe('GameStatsSync', () => {
     });
 
     it('should update average after sync', () => {
-      const local = createMockGameStats({
+      const _local = createMockGameStats({
         total_games_played: 10,
         average_accuracy: 80.0,
       });
-      const remote = createMockGameStats({
+      const _remote = createMockGameStats({
         total_games_played: 8,
         average_accuracy: 90.0,
       });
@@ -185,21 +185,21 @@ describe('GameStatsSync', () => {
         data: local,
       });
 
-      const result = mockResolver.resolve(local, remote);
+      const _result = mockResolver.resolve(local, remote);
       // TODO: Verify local favorite is preferred
     });
   });
 
   describe('Perfect Placements', () => {
     it('should track perfect placements', () => {
-      const stats = createMockGameStats({ perfect_placements: 5 });
+      const _stats = createMockGameStats({ perfect_placements: 5 });
 
-      expect(stats.perfect_placements).toBe(5);
+      expect(_stats.perfect_placements).toBe(5);
     });
 
     it('should take maximum perfect placements', () => {
-      const local = createMockGameStats({ perfect_placements: 5 });
-      const remote = createMockGameStats({ perfect_placements: 8 });
+      const _local = createMockGameStats({ perfect_placements: 5 });
+      const _remote = createMockGameStats({ perfect_placements: 8 });
 
       const merged = createMockGameStats({ perfect_placements: 8 });
       expect(merged.perfect_placements).toBe(8);
@@ -307,7 +307,7 @@ describe('GameStatsSync', () => {
       const startTime = performance.now();
 
       // Merge arrays
-      const merged = [...new Set([...local.counties_learned, ...remote.counties_learned])];
+      const _merged = [...new Set([...local.counties_learned, ...remote.counties_learned])];
 
       const endTime = performance.now();
       expect(endTime - startTime).toBeLessThan(10);

@@ -18,7 +18,7 @@ import {
   createMockGameStats,
   createMockAchievement,
   createMockSupabaseSyncClient,
-  simulateNetworkDelay,
+  _simulateNetworkDelay,
   simulateOffline,
   simulateOnline,
 } from '../../mocks/sync/mockSyncClient';
@@ -34,12 +34,14 @@ describe('Sync Flow Integration', () => {
     mockQueue = createMockSyncQueue();
     mockSupabase = createMockSupabaseSyncClient();
     simulateOnline();
+    // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
     localStorage.clear();
 
     await mockSyncManager.initialize();
   });
 
   afterEach(() => {
+    // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
     localStorage.clear();
   });
 
@@ -94,7 +96,7 @@ describe('Sync Flow Integration', () => {
 
       await mockSyncManager.sync();
 
-      const status = mockSyncManager.getStatus();
+      const _status = mockSyncManager.getStatus();
       // Should track the error
       expect(mockSyncManager.sync).toHaveBeenCalled();
     });
@@ -104,7 +106,7 @@ describe('Sync Flow Integration', () => {
     it('should queue operations when offline', async () => {
       simulateOffline();
 
-      const settings = createMockGameSettings();
+      const _settings = createMockGameSettings();
       await mockSyncManager.syncSettings();
 
       mockQueue.getPendingCount.mockReturnValueOnce(1);
@@ -115,7 +117,7 @@ describe('Sync Flow Integration', () => {
       // Queue some operations while offline
       simulateOffline();
 
-      const settings = createMockGameSettings();
+      const _settings = createMockGameSettings();
       await mockSyncManager.syncSettings();
 
       // Come back online
@@ -147,6 +149,7 @@ describe('Sync Flow Integration', () => {
       const remoteSettings = createMockGameSettings({ difficulty: 'hard' });
 
       // Set up conflicting data
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('settings', JSON.stringify(localSettings));
       mockSupabase.from('game_settings').single.mockResolvedValueOnce({
         data: remoteSettings,
@@ -160,8 +163,8 @@ describe('Sync Flow Integration', () => {
     });
 
     it('should merge non-conflicting changes', async () => {
-      const local = createMockGameSettings({ difficulty: 'easy', region: 'north' });
-      const remote = createMockGameSettings({ show_hints: false, enable_timer: true });
+      const _local = createMockGameSettings({ difficulty: 'easy', region: 'north' });
+      const _remote = createMockGameSettings({ show_hints: false, enable_timer: true });
 
       // Changes don't conflict, should merge
       await mockSyncManager.sync();
@@ -173,13 +176,13 @@ describe('Sync Flow Integration', () => {
   describe('Multi-Device Sync', () => {
     it('should handle updates from multiple devices', async () => {
       // Simulate device A updating settings
-      const deviceASettings = createMockGameSettings({
+      const _deviceASettings = createMockGameSettings({
         difficulty: 'easy',
         updated_at: new Date().toISOString(),
       });
 
       // Simulate device B updating stats
-      const deviceBStats = createMockGameStats({
+      const _deviceBStats = createMockGameStats({
         total_games_played: 10,
         updated_at: new Date().toISOString(),
       });
@@ -326,17 +329,19 @@ describe('Sync Flow Integration', () => {
     it('should prevent data corruption', async () => {
       // Store valid data
       const validSettings = createMockGameSettings();
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('settings', JSON.stringify(validSettings));
 
       // Attempt to sync corrupted data
       mockSupabase.from('game_settings').single.mockResolvedValueOnce({
-        data: { invalid: 'data' } as any,
+        data: { invalid: 'data' } as unknown as GameSettings,
         error: null,
       });
 
       await mockSyncManager.syncSettings();
 
       // Should preserve valid local data
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       const stored = JSON.parse(localStorage.getItem('settings') || '{}');
       expect(stored.user_id).toBeTruthy();
     });
@@ -352,7 +357,7 @@ describe('Sync Flow Integration', () => {
       const syncPromise = mockSyncManager.sync();
 
       // Check status during sync
-      const statusDuring = mockSyncManager.getStatus();
+      const _statusDuring = mockSyncManager.getStatus();
 
       await syncPromise;
 
@@ -366,7 +371,7 @@ describe('Sync Flow Integration', () => {
     it('should report pending changes', () => {
       mockQueue.getPendingCount.mockReturnValueOnce(5);
 
-      const status = mockSyncManager.getStatus();
+      const _status = mockSyncManager.getStatus();
       expect(mockSyncManager.getStatus).toBeDefined();
     });
 
@@ -376,7 +381,7 @@ describe('Sync Flow Integration', () => {
       try {
         await mockSyncManager.sync();
       } catch (error) {
-        const status = mockSyncManager.getStatus();
+        const _status = mockSyncManager.getStatus();
         // Should track the error
         expect(error).toBeDefined();
       }

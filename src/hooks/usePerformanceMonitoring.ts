@@ -12,6 +12,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { trackEvent, AnalyticsEvent } from '../services/analytics';
+import { logger } from '../utils/logger';
 
 interface PerformanceMetrics {
   fps: number;
@@ -120,7 +121,13 @@ export function usePerformanceMonitoring(
   useEffect(() => {
     const checkMemory = () => {
       if ('memory' in performance) {
-        const memory = (performance as any).memory;
+        // Chrome's non-standard memory API
+        interface PerformanceMemory {
+          usedJSHeapSize: number;
+          totalJSHeapSize: number;
+          jsHeapSizeLimit: number;
+        }
+        const memory = (performance as Performance & { memory: PerformanceMemory }).memory;
         const usedMB = Math.round(memory.usedJSHeapSize / 1048576);
 
         setMetrics(prev => ({
@@ -203,7 +210,7 @@ export function usePerformanceMonitoring(
         return duration;
       }
     } catch (error) {
-      console.error('[Performance] Failed to measure:', error);
+      logger.error('[Performance] Failed to measure:', error);
     }
 
     return 0;

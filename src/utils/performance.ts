@@ -34,7 +34,7 @@ export async function measureAsyncPerformance<T>(
 /**
  * Create a debounced function
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -56,7 +56,7 @@ export function debounce<T extends (...args: any[]) => any>(
 /**
  * Create a throttled function
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
@@ -83,7 +83,11 @@ export function logRenderTime(_componentName: string, _renderTime: number): void
  */
 export function isLowEndDevice(): boolean {
   const cores = navigator.hardwareConcurrency || 1;
-  const memory = (navigator as any).deviceMemory || 4; // GB
+  // Navigator with deviceMemory property (Chrome/Edge only)
+  interface NavigatorWithMemory extends Navigator {
+    deviceMemory?: number;
+  }
+  const memory = (navigator as NavigatorWithMemory).deviceMemory || 4; // GB
 
   return cores <= 2 || memory <= 2;
 }

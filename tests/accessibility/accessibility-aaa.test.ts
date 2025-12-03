@@ -4,7 +4,6 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'vitest-axe';
 import {
   getContrastRatio,
@@ -143,14 +142,10 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
     });
 
     it('should have semantic HTML structure', () => {
-      const main = document.querySelector('main');
-      const nav = document.querySelector('nav');
-      const header = document.querySelector('header');
-
       // These would exist in actual app
-      // expect(main).toBeTruthy();
-      // expect(nav).toBeTruthy();
-      // expect(header).toBeTruthy();
+      // expect(document.querySelector('main')).toBeTruthy();
+      // expect(document.querySelector('nav')).toBeTruthy();
+      // expect(document.querySelector('header')).toBeTruthy();
       expect(true).toBe(true);
     });
 
@@ -346,12 +341,10 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
       const buttons = document.querySelectorAll('button');
 
       buttons.forEach((button) => {
-        const rect = button.getBoundingClientRect();
-        const minSize = 44;
-
         // In actual app, buttons should meet this
-        // expect(rect.width).toBeGreaterThanOrEqual(minSize);
-        // expect(rect.height).toBeGreaterThanOrEqual(minSize);
+        // const rect = button.getBoundingClientRect();
+        // expect(rect.width).toBeGreaterThanOrEqual(44);
+        // expect(rect.height).toBeGreaterThanOrEqual(44);
       });
 
       expect(true).toBe(true);

@@ -5,7 +5,7 @@
  * and user preference detection.
  */
 
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useDeviceInfo } from '../../../src/mobile/hooks/useDeviceInfo';
 import { DeviceType, Orientation } from '../../../src/mobile/config/breakpoints';

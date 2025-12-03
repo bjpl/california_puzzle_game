@@ -18,10 +18,6 @@ import React from 'react';
 // Components under test
 import { UserSettings } from '@/components/shared/settings/UserSettings';
 import { SecurityBadge } from '@/components/shared/SecurityBadge';
-import { ExportData } from '@/components/shared/settings/ExportData';
-
-// Mocks
-import { vi as vitestVi } from 'vitest';
 
 // Mock dependencies
 vi.mock('@/hooks/useAuth', () => ({
@@ -79,10 +75,12 @@ describe('UserSettings Component', () => {
     vi.clearAllMocks();
 
     // Setup mocks
+    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
     const { deleteUserAccount, exportUserData } = require('@/services/supabase/auth');
     deleteUserAccount.mockImplementation(mockDeleteUserAccount);
     exportUserData.mockImplementation(mockExportUserData);
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
     const { announceToScreenReader } = require('@/utils/accessibility');
     announceToScreenReader.mockImplementation(mockAnnounceToScreenReader);
   });
@@ -120,6 +118,7 @@ describe('UserSettings Component', () => {
     });
 
     it('should show "Please sign in" when not authenticated', () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
       const useAuth = require('@/hooks/useAuth').useAuth;
       useAuth.mockReturnValue({
         user: null,
@@ -432,15 +431,15 @@ describe('UserSettings Component', () => {
 
       // Mock DOM methods
       const mockClick = vi.fn();
-      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
       const mockCreateElement = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
         }
         return document.createElement(tag);
       });
@@ -622,7 +621,7 @@ describe('SecurityBadge Component', () => {
       const user = userEvent.setup();
       render(<SecurityBadge />);
 
-      const button = screen.getByRole('button');
+      const _button = screen.getByRole('button');
       await user.tab(); // Focus the button
 
       await waitFor(() => {

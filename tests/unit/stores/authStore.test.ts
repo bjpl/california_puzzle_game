@@ -171,8 +171,9 @@ describe('Auth Store', () => {
   describe('Auth Listeners', () => {
     it('should set up auth state change listeners', () => {
       const { supabase } = vi.mocked(
+        // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
         require('../../../src/lib/supabase')
-      ) as any;
+      ) as unknown;
 
       setupAuthListeners();
 

@@ -18,8 +18,6 @@ import {
   createMockGameStats,
   createMockAchievement,
   createMockSyncError,
-  simulateNetworkDelay,
-  simulateNetworkError,
   simulateOffline,
   simulateOnline,
 } from '../mocks/sync/mockSyncClient';
@@ -33,11 +31,13 @@ describe('SyncManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockSyncManager = createMockSyncManager();
+    // eslint-disable-next-line no-restricted-globals
     localStorage.clear();
     simulateOnline();
   });
 
   afterEach(() => {
+    // eslint-disable-next-line no-restricted-globals
     localStorage.clear();
   });
 
@@ -50,7 +50,7 @@ describe('SyncManager', () => {
 
     it('should initialize with custom configuration', async () => {
       // TODO: Implement with config options
-      const config = {
+      const _config = {
         syncInterval: 30000,
         maxRetries: 5,
         retryDelay: 2000,
@@ -61,6 +61,7 @@ describe('SyncManager', () => {
 
     it('should load persisted sync metadata on init', async () => {
       const metadata = createMockSyncMetadata({ pendingChanges: 5 });
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('sync-metadata', JSON.stringify(metadata));
 
       await mockSyncManager.initialize();
@@ -96,7 +97,7 @@ describe('SyncManager', () => {
     });
 
     it('should sync settings data', async () => {
-      const settings = createMockGameSettings();
+      const _settings = createMockGameSettings();
       const result = await mockSyncManager.syncSettings();
 
       expect(result.synced).toBe(true);
@@ -105,7 +106,7 @@ describe('SyncManager', () => {
     });
 
     it('should sync stats data', async () => {
-      const stats = createMockGameStats();
+      const _stats = createMockGameStats();
       const result = await mockSyncManager.syncStats();
 
       expect(result.synced).toBe(true);
@@ -114,7 +115,7 @@ describe('SyncManager', () => {
     });
 
     it('should sync achievements data', async () => {
-      const achievements = [createMockAchievement()];
+      const _achievements = [createMockAchievement()];
       const result = await mockSyncManager.syncAchievements();
 
       expect(result.synced).toBe(true);
@@ -145,7 +146,7 @@ describe('SyncManager', () => {
     it('should skip sync when offline', async () => {
       simulateOffline();
 
-      const result = await mockSyncManager.sync();
+      const _result = await mockSyncManager.sync();
       // Should queue instead of sync
       expect(mockSyncManager.sync).toHaveBeenCalled();
     });
@@ -153,10 +154,10 @@ describe('SyncManager', () => {
     it('should queue changes when offline', async () => {
       simulateOffline();
 
-      const settings = createMockGameSettings();
+      const _settings = createMockGameSettings();
       await mockSyncManager.syncSettings();
 
-      const status = mockSyncManager.getStatus();
+      const _status = mockSyncManager.getStatus();
       // Changes should be queued
       expect(mockSyncManager.syncSettings).toHaveBeenCalled();
     });
@@ -201,7 +202,7 @@ describe('SyncManager', () => {
 
     it('should handle rate limiting errors', async () => {
       const rateLimitError = new Error('Rate limit exceeded');
-      (rateLimitError as any).status = 429;
+      (rateLimitError as unknown as { status: number }).status = 429;
       mockSyncManager.sync.mockRejectedValueOnce(rateLimitError);
 
       await expect(mockSyncManager.sync()).rejects.toThrow('Rate limit exceeded');
@@ -209,7 +210,7 @@ describe('SyncManager', () => {
 
     it('should handle authentication errors', async () => {
       const authError = new Error('Unauthorized');
-      (authError as any).status = 401;
+      (authError as unknown as { status: number }).status = 401;
       mockSyncManager.sync.mockRejectedValueOnce(authError);
 
       await expect(mockSyncManager.sync()).rejects.toThrow('Unauthorized');
@@ -248,7 +249,7 @@ describe('SyncManager', () => {
 
       // Successful sync should clear errors
       await mockSyncManager.sync();
-      const status = mockSyncManager.getStatus();
+      const _status = mockSyncManager.getStatus();
       // TODO: Verify errors are cleared
     });
   });
@@ -301,6 +302,7 @@ describe('SyncManager', () => {
     });
 
     it('should clear sync metadata on reset', async () => {
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('sync-metadata', JSON.stringify(createMockSyncMetadata()));
 
       await mockSyncManager.reset();

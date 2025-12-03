@@ -8,11 +8,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   createMockAuthClient,
-  createMockAuthSuccess,
+  createMockAuthSuccess as _createMockAuthSuccess,
   createMockAuthError,
-  createMockAnonymousUser,
+  createMockAnonymousUser as _createMockAnonymousUser,
   createMockSession,
-  type MockAuthResponse,
+  type MockAuthResponse as _MockAuthResponse,
 } from '../../../mocks/supabase/mockSupabaseClient';
 
 // This will be replaced with actual import once implementation is complete
@@ -24,10 +24,12 @@ describe('Supabase Authentication', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAuth = createMockAuthClient();
+    // eslint-disable-next-line no-restricted-globals
     localStorage.clear();
   });
 
   afterEach(() => {
+    // eslint-disable-next-line no-restricted-globals
     localStorage.clear();
   });
 
@@ -152,7 +154,9 @@ describe('Supabase Authentication', () => {
 
       // Placeholder test
       const mockSession = createMockSession();
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('supabase.auth.token', JSON.stringify(mockSession));
+      // eslint-disable-next-line no-restricted-globals
       const stored = localStorage.getItem('supabase.auth.token');
       expect(stored).toBeTruthy();
     });
@@ -180,15 +184,19 @@ describe('Supabase Authentication', () => {
 
     it('should clear session from storage on sign out', async () => {
       // TODO: Implement once auth.ts is created
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('supabase.auth.token', 'mock-token');
       // await signOut();
       // expect(localStorage.getItem('supabase.auth.token')).toBeNull();
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('supabase.auth.token', 'mock-token');
       await mockAuth.signOut();
       // Manually clear for test
+      // eslint-disable-next-line no-restricted-globals
       localStorage.removeItem('supabase.auth.token');
+      // eslint-disable-next-line no-restricted-globals
       expect(localStorage.getItem('supabase.auth.token')).toBeNull();
     });
 

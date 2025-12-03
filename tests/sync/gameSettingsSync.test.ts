@@ -84,7 +84,7 @@ describe('GameSettingsSync', () => {
       const localSettings = createMockGameSettings();
 
       // TODO: Verify updated_at is set to current time
-      const after = Date.now();
+      const _after = Date.now();
       expect(new Date(localSettings.updated_at).getTime()).toBeGreaterThanOrEqual(before);
     });
 
@@ -155,7 +155,7 @@ describe('GameSettingsSync', () => {
     });
 
     it('should reject invalid difficulty values', () => {
-      const invalid = createMockGameSettings({ difficulty: 'invalid' as any });
+      const invalid = createMockGameSettings({ difficulty: 'invalid' as unknown as string });
 
       // TODO: Should throw validation error
       expect(invalid.difficulty).toBe('invalid');
@@ -205,7 +205,7 @@ describe('GameSettingsSync', () => {
 
   describe('Performance', () => {
     it('should sync settings quickly', async () => {
-      const settings = createMockGameSettings();
+      const _settings = createMockGameSettings();
 
       const startTime = performance.now();
       await simulateNetworkDelay(50);
@@ -249,7 +249,7 @@ describe('GameSettingsSync', () => {
 
     it('should handle corrupted remote data', async () => {
       mockSupabase.from('game_settings').single.mockResolvedValueOnce({
-        data: { invalid: 'data' } as any,
+        data: { invalid: 'data' } as unknown as GameSettings,
         error: null,
       });
 

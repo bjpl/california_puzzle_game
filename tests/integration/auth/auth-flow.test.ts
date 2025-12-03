@@ -2,12 +2,11 @@
  * Integration Tests for Complete Auth Flow
  *
  * Tests the end-to-end authentication flow from sign-in to session persistence
- * Coverage: Anonymous sign-in ’ session storage ’ persistence ’ app initialization
+ * Coverage: Anonymous sign-in ï¿½ session storage ï¿½ persistence ï¿½ app initialization
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
-  createMockSupabaseClient,
   createMockAuthClient,
   createMockAnonymousUser,
   createMockSession,
@@ -24,6 +23,7 @@ describe('Complete Authentication Flow', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // eslint-disable-next-line no-restricted-globals -- Required for test setup to clear browser storage
     localStorage.clear();
     sessionStorage.clear();
     Object.assign(import.meta.env, mockSupabaseEnv);
@@ -31,6 +31,7 @@ describe('Complete Authentication Flow', () => {
   });
 
   afterEach(() => {
+    // eslint-disable-next-line no-restricted-globals -- Required for test cleanup to clear browser storage
     localStorage.clear();
     sessionStorage.clear();
     clearSupabaseEnv();
@@ -39,7 +40,7 @@ describe('Complete Authentication Flow', () => {
   describe('Initial Anonymous Sign-In Flow', () => {
     it('should complete full anonymous sign-in flow', async () => {
       // TODO: Implement once auth service and store are created
-      // 1. User opens app ’ triggers anonymous sign-in
+      // 1. User opens app ï¿½ triggers anonymous sign-in
       // const result = await signInAnonymously();
       // expect(result.data.user).toBeDefined();
       // expect(result.data.session).toBeDefined();
@@ -77,6 +78,7 @@ describe('Complete Authentication Flow', () => {
       // expect(result.data.session?.expires_at).toBeGreaterThan(now);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       expect(localStorage.getItem('auth-storage')).toBeNull();
       const result = await mockAuth.signInAnonymously();
       expect(result.data.user?.app_metadata.provider).toBe('anonymous');
@@ -109,6 +111,7 @@ describe('Complete Authentication Flow', () => {
       const mockSession = createMockSession(mockUser);
 
       // await signInAnonymously();
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: mockSession },
         version: 1,
@@ -122,6 +125,7 @@ describe('Complete Authentication Flow', () => {
       // expect(newStore.session).toEqual(mockSession);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       const stored = localStorage.getItem('auth-storage');
       expect(stored).toBeTruthy();
     });
@@ -133,6 +137,7 @@ describe('Complete Authentication Flow', () => {
       const expiredSession = createMockSession(mockUser, { expires_at: now - 1000 });
 
       // 1. Store expired session
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: expiredSession },
       }));
@@ -153,6 +158,7 @@ describe('Complete Authentication Flow', () => {
       const mockSession = createMockSession(mockUser);
 
       // 1. Sign in on tab 1
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: mockSession },
       }));
@@ -165,6 +171,7 @@ describe('Complete Authentication Flow', () => {
       // expect(JSON.parse(stored!).state.session.access_token).toBe(mockSession.access_token);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       const stored = localStorage.getItem('auth-storage');
       expect(stored).toBeTruthy();
     });
@@ -216,6 +223,7 @@ describe('Complete Authentication Flow', () => {
     it('should clear corrupted session data and re-authenticate', async () => {
       // TODO: Implement once auth service and store are created
       // 1. Store corrupted data
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', 'corrupted-data');
 
       // 2. Try to initialize
@@ -227,9 +235,13 @@ describe('Complete Authentication Flow', () => {
       // expect(store.isAuthenticated).toBe(true);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       localStorage.setItem('auth-storage', 'corrupted-data');
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       expect(localStorage.getItem('auth-storage')).toBe('corrupted-data');
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       localStorage.removeItem('auth-storage');
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       expect(localStorage.getItem('auth-storage')).toBeNull();
     });
   });
@@ -241,6 +253,7 @@ describe('Complete Authentication Flow', () => {
       const mockSession = createMockSession(mockUser);
 
       // 1. Existing session in storage
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: mockSession },
       }));
@@ -253,6 +266,7 @@ describe('Complete Authentication Flow', () => {
       // expect(mockAuth.signInAnonymously).not.toHaveBeenCalled();
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       const stored = localStorage.getItem('auth-storage');
       expect(stored).toBeTruthy();
     });
@@ -260,6 +274,7 @@ describe('Complete Authentication Flow', () => {
     it('should sign in automatically when no session exists', async () => {
       // TODO: Implement once auth service and store are created
       // 1. No existing session
+      // eslint-disable-next-line no-restricted-globals -- Required for auth storage test
       expect(localStorage.getItem('auth-storage')).toBeNull();
 
       // 2. App initializes and triggers auto sign-in
@@ -270,6 +285,7 @@ describe('Complete Authentication Flow', () => {
       // expect(store.isAuthenticated).toBe(true);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       expect(localStorage.getItem('auth-storage')).toBeNull();
     });
 

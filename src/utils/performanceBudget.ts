@@ -9,6 +9,7 @@
  */
 
 import { trackEvent, AnalyticsEvent } from '../services/analytics';
+import { logger } from './logger';
 
 /**
  * Performance budgets
@@ -190,7 +191,7 @@ export function monitorPerformanceBudgets(): void {
   const bundleCheck = checkBundleBudget();
 
   if (!bundleCheck.withinBudget) {
-    console.warn('[Performance Budget] Bundle violations:', bundleCheck.violations);
+    logger.warn('[Performance Budget] Bundle violations:', bundleCheck.violations);
 
     // Track violations
     trackEvent(AnalyticsEvent.BUDGET_VIOLATION, {
@@ -202,13 +203,19 @@ export function monitorPerformanceBudgets(): void {
 
   // Check runtime performance
   if ('memory' in performance) {
-    const memory = (performance as any).memory;
+    // Chrome's non-standard memory API
+    interface PerformanceMemory {
+      usedJSHeapSize: number;
+      totalJSHeapSize: number;
+      jsHeapSizeLimit: number;
+    }
+    const memory = (performance as Performance & { memory: PerformanceMemory }).memory;
     const memoryMB = Math.round(memory.usedJSHeapSize / 1048576);
 
     const runtimeCheck = checkRuntimeBudget({ memoryMB });
 
     if (!runtimeCheck.withinBudget) {
-      console.warn('[Performance Budget] Runtime violations:', runtimeCheck.violations);
+      logger.warn('[Performance Budget] Runtime violations:', runtimeCheck.violations);
 
       trackEvent(AnalyticsEvent.BUDGET_VIOLATION, {
         type: 'runtime',
@@ -263,5 +270,5 @@ export function initPerformanceBudgetMonitoring(): void {
   // Check periodically (every 30 seconds)
   setInterval(monitorPerformanceBudgets, 30000);
 
-  console.info('[Performance Budget] Monitoring initialized');
+  logger.info('[Performance Budget] Monitoring initialized');
 }

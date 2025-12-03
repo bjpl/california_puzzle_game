@@ -8,6 +8,7 @@
  */
 
 import { trackEvent, AnalyticsEvent } from '../services/analytics';
+import { logger } from './logger';
 
 // Re-export from web-vitals package
 export interface Metric {
@@ -59,7 +60,7 @@ function trackMetric(metric: Metric): void {
 
   // Log in development
   if (import.meta.env.DEV) {
-    console.log(
+    logger.info(
       `[Web Vitals] ${metric.name}: ${metric.value.toFixed(0)}ms (${metric.rating})`
     );
   }
@@ -88,7 +89,7 @@ export async function initWebVitals(): Promise<void> {
 
       // Alert if poor LCP
       if (rating === 'poor') {
-        console.warn('[Performance] Poor LCP detected:', metric.value);
+        logger.warn('[Performance] Poor LCP detected:', metric.value);
       }
     });
 
@@ -116,9 +117,9 @@ export async function initWebVitals(): Promise<void> {
       trackMetric({ ...metric, rating });
     });
 
-    console.info('[Web Vitals] Tracking initialized');
+    logger.info('[Web Vitals] Tracking initialized');
   } catch (error) {
-    console.error('[Web Vitals] Failed to initialize:', error);
+    logger.error('[Web Vitals] Failed to initialize:', error);
   }
 }
 
@@ -135,7 +136,7 @@ export function getWebVitalsSnapshot(): Promise<{
   TTFB?: number;
 }> {
   return new Promise((resolve) => {
-    const vitals: any = {};
+    const vitals: Record<string, number> = {};
 
     // Get paint timing
     const paintEntries = performance.getEntriesByType('paint') as PerformancePaintTiming[];

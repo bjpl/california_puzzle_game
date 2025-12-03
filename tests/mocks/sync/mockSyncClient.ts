@@ -280,8 +280,8 @@ export const simulateNetworkError = (): Promise<never> => {
 };
 
 export const simulateRateLimitError = (): Promise<never> => {
-  const error = new Error('Rate limit exceeded');
-  (error as any).status = 429;
+  const error = new Error('Rate limit exceeded') as Error & { status?: number };
+  error.status = 429;
   return Promise.reject(error);
 };
 

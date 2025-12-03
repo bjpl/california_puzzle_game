@@ -81,7 +81,11 @@ function detectPlatform(): InstallPlatform {
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
   // Check if already installed
-  if (isStandalone || (window.navigator as any).standalone) {
+  // Navigator with standalone property for iOS Safari
+  interface NavigatorStandalone extends Navigator {
+    standalone?: boolean;
+  }
+  if (isStandalone || (window.navigator as NavigatorStandalone).standalone) {
     return 'desktop'; // Will be marked as installed
   }
 
@@ -110,7 +114,11 @@ function checkIsInstalled(): boolean {
   if (typeof window === 'undefined') return false;
 
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-  const isIosStandalone = (window.navigator as any).standalone === true;
+  // Navigator with standalone property for iOS Safari
+  interface NavigatorStandalone extends Navigator {
+    standalone?: boolean;
+  }
+  const isIosStandalone = (window.navigator as NavigatorStandalone).standalone === true;
 
   return isStandalone || isIosStandalone;
 }
@@ -120,6 +128,7 @@ function checkIsInstalled(): boolean {
  */
 function loadMetrics(): InstallMetrics {
   try {
+    // eslint-disable-next-line no-restricted-globals -- Required for PWA install metrics persistence
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       return JSON.parse(stored);
@@ -143,6 +152,7 @@ function loadMetrics(): InstallMetrics {
  */
 function saveMetrics(metrics: InstallMetrics): void {
   try {
+    // eslint-disable-next-line no-restricted-globals -- Required for PWA install metrics persistence
     localStorage.setItem(STORAGE_KEY, JSON.stringify(metrics));
   } catch (error) {
     logger.warn('Failed to save install metrics:', error);

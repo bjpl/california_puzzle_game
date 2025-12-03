@@ -12,6 +12,7 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from './types';
+import { logger } from '../../utils/logger';
 
 /**
  * Singleton instance of Supabase client
@@ -69,7 +70,7 @@ export function getSupabaseClient(): SupabaseClient<Database> | null {
 
   if (!url || !anonKey) {
     if (import.meta.env.DEV) {
-      console.info(
+      logger.info(
         '[Supabase] Not configured - running in offline mode. ' +
           'Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to enable sync.'
       );
@@ -102,7 +103,7 @@ export function getSupabaseClient(): SupabaseClient<Database> | null {
     });
 
     if (import.meta.env.DEV) {
-      console.info('[Supabase] Client initialized successfully', {
+      logger.info('[Supabase] Client initialized successfully', {
         url: url.replace(/https?:\/\//, '').split('.')[0] + '.supabase.co',
         hasAuth: true,
       });
@@ -110,7 +111,7 @@ export function getSupabaseClient(): SupabaseClient<Database> | null {
 
     return supabaseClient;
   } catch (error) {
-    console.error('[Supabase] Failed to initialize client:', error);
+    logger.error('[Supabase] Failed to initialize client:', error);
     return null;
   }
 }

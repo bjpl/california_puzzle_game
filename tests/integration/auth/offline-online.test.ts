@@ -23,6 +23,7 @@ describe('Offline/Online Auth Transitions', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
     localStorage.clear();
     sessionStorage.clear();
     Object.assign(import.meta.env, mockSupabaseEnv);
@@ -34,6 +35,7 @@ describe('Offline/Online Auth Transitions', () => {
   });
 
   afterEach(() => {
+    // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
     localStorage.clear();
     sessionStorage.clear();
     clearSupabaseEnv();
@@ -46,6 +48,7 @@ describe('Offline/Online Auth Transitions', () => {
       const mockSession = createMockSession(mockUser);
 
       // 1. Prepare cached session
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: mockSession },
       }));
@@ -62,6 +65,7 @@ describe('Offline/Online Auth Transitions', () => {
       // expect(store.user).toEqual(mockUser);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       const stored = localStorage.getItem('auth-storage');
       expect(stored).toBeTruthy();
       expect(navigator.onLine).toBe(false);
@@ -70,6 +74,7 @@ describe('Offline/Online Auth Transitions', () => {
     it('should handle offline start with no cached session', async () => {
       // TODO: Implement once auth service and store are created
       // 1. No cached session
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       expect(localStorage.getItem('auth-storage')).toBeNull();
 
       // 2. Go offline
@@ -132,6 +137,7 @@ describe('Offline/Online Auth Transitions', () => {
       // const store = useAuthStore.getState();
       // store.setAuth(mockUser, mockSession);
 
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: mockSession },
       }));
@@ -145,6 +151,7 @@ describe('Offline/Online Auth Transitions', () => {
       // expect(store.session).toEqual(mockSession);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       const stored = localStorage.getItem('auth-storage');
       expect(stored).toBeTruthy();
     });
@@ -153,7 +160,7 @@ describe('Offline/Online Auth Transitions', () => {
       // TODO: Implement once auth service and store are created
       const now = Math.floor(Date.now() / 1000);
       const mockUser = createMockAnonymousUser();
-      const expiringSession = createMockSession(mockUser, { expires_at: now + 300 });
+      const _expiringSession = createMockSession(mockUser, { expires_at: now + 300 });
 
       // 1. Session expiring soon but offline
       Object.defineProperty(navigator, 'onLine', { value: false });
@@ -179,6 +186,7 @@ describe('Offline/Online Auth Transitions', () => {
 
       // 1. Offline with expiring session
       Object.defineProperty(navigator, 'onLine', { value: false });
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: oldSession },
       }));
@@ -285,6 +293,7 @@ describe('Offline/Online Auth Transitions', () => {
       const mockSession = createMockSession(mockUser);
 
       // 1. Online with fresh session
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: mockSession },
         timestamp: Date.now(),
@@ -300,6 +309,7 @@ describe('Offline/Online Auth Transitions', () => {
       // expect(store.isDataStale()).toBe(true);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       const stored = JSON.parse(localStorage.getItem('auth-storage')!);
       expect(stored.timestamp).toBeDefined();
     });
@@ -310,6 +320,7 @@ describe('Offline/Online Auth Transitions', () => {
       const staleSession = createMockSession(mockUser);
 
       // 1. Offline with stale data
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: staleSession },
         timestamp: Date.now() - 3600000, // 1 hour ago
@@ -333,6 +344,7 @@ describe('Offline/Online Auth Transitions', () => {
       // expect(mockAuth.getSession).toHaveBeenCalled();
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       const stored = JSON.parse(localStorage.getItem('auth-storage')!);
       expect(Date.now() - stored.timestamp).toBeGreaterThan(3000000);
     });

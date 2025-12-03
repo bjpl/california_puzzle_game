@@ -7,6 +7,7 @@
  */
 import { useCountyPlacementStore } from './countyPlacementStore';
 import { useAchievementStore } from './achievementStore';
+import { logger } from '../utils/logger';
 
 // Track if coordinator has been initialized
 let isInitialized = false;
@@ -17,7 +18,7 @@ let isInitialized = false;
  */
 export function initializeStoreCoordination(): () => void {
   if (isInitialized) {
-    console.warn('Store coordination already initialized');
+    logger.warn('Store coordination already initialized');
     return () => {};
   }
 
@@ -42,13 +43,13 @@ export function initializeStoreCoordination(): () => void {
   unsubscribers.push(unsubPlacement);
 
   isInitialized = true;
-  console.log('[StoreCoordinator] Subscriptions initialized');
+  logger.info('[StoreCoordinator] Subscriptions initialized');
 
   // Return cleanup function
   return () => {
     unsubscribers.forEach((unsub) => unsub());
     isInitialized = false;
-    console.log('[StoreCoordinator] Subscriptions cleaned up');
+    logger.info('[StoreCoordinator] Subscriptions cleaned up');
   };
 }
 

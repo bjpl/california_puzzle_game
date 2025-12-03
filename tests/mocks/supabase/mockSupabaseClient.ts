@@ -125,7 +125,7 @@ export const createMockAuthClient = () => ({
     error: null,
   }),
   refreshSession: vi.fn().mockResolvedValue(createMockAuthSuccess()),
-  onAuthStateChange: vi.fn((callback) => {
+  onAuthStateChange: vi.fn((_callback) => {
     // Return subscription object
     return {
       data: {

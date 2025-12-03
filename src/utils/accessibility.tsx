@@ -38,6 +38,7 @@ const TOUCH_TARGET_STORAGE_KEY = 'ca-touch-target-size';
  * Get saved touch target size preference
  */
 export function getTouchTargetSize(): TouchTargetSize {
+  // eslint-disable-next-line no-restricted-globals -- Required for accessibility preferences persistence
   const saved = localStorage.getItem(TOUCH_TARGET_STORAGE_KEY);
   return (saved as TouchTargetSize) || 'default';
 }
@@ -46,6 +47,7 @@ export function getTouchTargetSize(): TouchTargetSize {
  * Save touch target size preference
  */
 export function setTouchTargetSize(size: TouchTargetSize): void {
+  // eslint-disable-next-line no-restricted-globals -- Required for accessibility preferences persistence
   localStorage.setItem(TOUCH_TARGET_STORAGE_KEY, size);
   applyTouchTargetSize(size);
 }

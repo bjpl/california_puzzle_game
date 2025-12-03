@@ -12,7 +12,7 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-// Logger removed - using console directly for Supabase client
+import { logger } from '../utils/logger';
 
 /**
  * Database schema type definition
@@ -101,7 +101,7 @@ function getEnvVar(key: string, defaultValue?: string): string {
 
   if (!value) {
     const errorMsg = `Missing required environment variable: ${key}`;
-    console.error('[Supabase]', errorMsg);
+    logger.error('[Supabase]', errorMsg);
     throw new Error(errorMsg);
   }
 
@@ -160,14 +160,14 @@ export async function checkSupabaseHealth(): Promise<boolean> {
     const { error } = await supabase.auth.getSession();
 
     if (error) {
-      console.error('[Supabase] Health check failed:', error);
+      logger.error('[Supabase] Health check failed:', error);
       return false;
     }
 
-    console.info('[Supabase] Health check passed');
+    logger.info('[Supabase] Health check passed');
     return true;
   } catch (error) {
-    console.error('[Supabase] Health check exception:', error);
+    logger.error('[Supabase] Health check exception:', error);
     return false;
   }
 }
@@ -180,7 +180,7 @@ export async function checkSupabaseHealth(): Promise<boolean> {
  * PATTERN: Masked logging
  */
 export function logSupabaseConfig(): void {
-  console.info('[Supabase] Configuration:', {
+  logger.info('[Supabase] Configuration:', {
     url: supabaseUrl,
     anonKey: supabaseAnonKey.substring(0, 20) + '...',
     autoRefresh: true,
@@ -192,10 +192,10 @@ export function logSupabaseConfig(): void {
 if (import.meta.env.DEV) {
   checkSupabaseHealth().then((healthy) => {
     if (healthy) {
-      console.info('[Supabase] Client initialized successfully');
+      logger.info('[Supabase] Client initialized successfully');
       logSupabaseConfig();
     } else {
-      console.warn('[Supabase] Client initialization with warnings');
+      logger.warn('[Supabase] Client initialization with warnings');
     }
   });
 }

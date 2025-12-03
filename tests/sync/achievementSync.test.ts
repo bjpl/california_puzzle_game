@@ -52,9 +52,9 @@ describe('AchievementSync', () => {
 
     it('should prefer earlier unlock timestamp', () => {
       const earlyUnlock = new Date('2025-01-01').toISOString();
-      const lateUnlock = new Date('2025-01-02').toISOString();
+      const _lateUnlock = new Date('2025-01-02').toISOString();
 
-      const local = createMockAchievement({ unlocked_at: lateUnlock });
+      const _local = createMockAchievement({ unlocked_at: _lateUnlock });
       const remote = createMockAchievement({ unlocked_at: earlyUnlock });
 
       mockResolver.resolve.mockResolvedValueOnce({
@@ -79,7 +79,7 @@ describe('AchievementSync', () => {
     });
 
     it('should take maximum progress', () => {
-      const local = createMockAchievement({ progress: 60 });
+      const _local = createMockAchievement({ progress: 60 });
       const remote = createMockAchievement({ progress: 80 });
 
       mockResolver.resolve.mockResolvedValueOnce({
@@ -103,7 +103,7 @@ describe('AchievementSync', () => {
 
     it('should not decrease progress', () => {
       const local = createMockAchievement({ progress: 80 });
-      const remote = createMockAchievement({ progress: 60 });
+      const _remote = createMockAchievement({ progress: 60 });
 
       mockResolver.resolve.mockResolvedValueOnce({
         resolved: true,
@@ -145,7 +145,7 @@ describe('AchievementSync', () => {
     });
 
     it('should handle duplicate achievement IDs', () => {
-      const local = createMockAchievement({
+      const _local = createMockAchievement({
         achievement_id: 'first_perfect',
         progress: 80,
       });
@@ -277,7 +277,7 @@ describe('AchievementSync', () => {
 
   describe('Batch Operations', () => {
     it('should sync multiple achievements efficiently', async () => {
-      const achievements = Array(10)
+      const _achievements = Array(10)
         .fill(null)
         .map((_, i) => createMockAchievement({ achievement_id: `achievement-${i}` }));
 

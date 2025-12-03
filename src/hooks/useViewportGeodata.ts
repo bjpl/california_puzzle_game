@@ -1,14 +1,20 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { logger } from '../utils/logger';
 
 /**
  * Hook for lazy loading geodata only for visible counties
  * Implements viewport-based loading to reduce initial bundle size
  */
 
+interface CountyGeometry {
+  type: string;
+  coordinates: number[][][] | number[][][][];
+}
+
 interface County {
   id: string;
   name: string;
-  geometry?: any;
+  geometry?: CountyGeometry;
 }
 
 interface UseViewportGeodataOptions {
@@ -31,7 +37,7 @@ interface ViewportGeodataResult {
 }
 
 // Cache for loaded geodata
-const geodataCache = new Map<string, any>();
+const geodataCache = new Map<string, CountyGeometry>();
 
 /**
  * Lazy load county geodata based on viewport visibility
@@ -66,7 +72,7 @@ export function useViewportGeodata({
         setLoadedCounties((prev) => new Set(prev).add(countyId));
       }
     } catch (error) {
-      console.warn(`Failed to load geodata for county ${countyId}:`, error);
+      logger.warn(`Failed to load geodata for county ${countyId}:`, error);
     } finally {
       setIsLoading(false);
     }
@@ -81,7 +87,6 @@ export function useViewportGeodata({
     // Real implementation would check if county bounds intersect with viewport
     return new Set(counties.map((c) => c.id));
     // Note: viewport and loadingThreshold would be used in real implementation
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [counties]);
 
   /**

@@ -11,7 +11,7 @@
  * Coverage target: >90%
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach as _afterEach, vi } from 'vitest';
 import {
   createMockConflictResolver,
   createMockConflict,
@@ -152,7 +152,7 @@ describe('ConflictResolver', () => {
     });
 
     it('should handle missing timestamps', () => {
-      const local = createMockGameSettings({ updated_at: undefined as any });
+      const local = createMockGameSettings({ updated_at: undefined as unknown as string });
       const remote = createMockGameSettings({ updated_at: new Date().toISOString() });
 
       mockResolver.resolveByTimestamp.mockReturnValueOnce(remote);
@@ -185,7 +185,7 @@ describe('ConflictResolver', () => {
     });
 
     it('should handle missing version numbers', () => {
-      const local = createMockGameSettings({ version: undefined as any });
+      const local = createMockGameSettings({ version: undefined as unknown as number });
       const remote = createMockGameSettings({ version: 1 });
 
       mockResolver.resolveByVersion.mockReturnValueOnce(remote);
@@ -282,16 +282,16 @@ describe('ConflictResolver', () => {
         data: remote,
       });
 
-      const result = mockResolver.resolve(local, remote);
+      const _result = mockResolver.resolve(local, remote);
       // TODO: Verify custom rules are applied
     });
 
     it('should combine statistics fields correctly', () => {
-      const local = createMockGameStats({
+      const _local = createMockGameStats({
         total_games_played: 10,
         total_score: 5000,
       });
-      const remote = createMockGameStats({
+      const _remote = createMockGameStats({
         total_games_played: 8,
         total_score: 4000,
       });
@@ -309,8 +309,8 @@ describe('ConflictResolver', () => {
     });
 
     it('should preserve user preferences', () => {
-      const local = createMockGameSettings({ theme: 'dark' });
-      const remote = createMockGameSettings({ theme: 'light' });
+      const _local = createMockGameSettings({ theme: 'dark' });
+      const _remote = createMockGameSettings({ theme: 'light' });
 
       // User preferences should prefer local
       mockResolver.resolve.mockResolvedValueOnce({
@@ -384,7 +384,7 @@ describe('ConflictResolver', () => {
 
   describe('Edge Cases', () => {
     it('should handle null values', () => {
-      const local = createMockGameSettings({ favorite_difficulty: null as any });
+      const _local = createMockGameSettings({ favorite_difficulty: null as unknown as string });
       const remote = createMockGameSettings({ favorite_difficulty: 'medium' });
 
       mockResolver.resolve.mockResolvedValueOnce({
@@ -397,7 +397,7 @@ describe('ConflictResolver', () => {
     });
 
     it('should handle undefined values', () => {
-      const local = createMockGameSettings({ region: undefined as any });
+      const _local = createMockGameSettings({ region: undefined as unknown as string });
       const remote = createMockGameSettings({ region: 'north' });
 
       mockResolver.resolve.mockResolvedValueOnce({
@@ -410,8 +410,8 @@ describe('ConflictResolver', () => {
     });
 
     it('should handle empty objects', () => {
-      const local = {};
-      const remote = createMockGameSettings();
+      const _local = {};
+      const _remote = createMockGameSettings();
 
       mockResolver.resolve.mockResolvedValueOnce({
         resolved: true,

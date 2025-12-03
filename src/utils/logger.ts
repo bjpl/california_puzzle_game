@@ -51,6 +51,7 @@ class Logger {
    */
   debug(message: string, ...args: unknown[]): void {
     if (this.shouldLog('debug')) {
+      // eslint-disable-next-line no-console -- Logger utility intentionally uses console.debug
       console.debug(`[DEBUG] ${this.formatMessage(message)}`, ...args);
     }
   }
@@ -61,6 +62,7 @@ class Logger {
    */
   info(message: string, ...args: unknown[]): void {
     if (this.shouldLog('info')) {
+      // eslint-disable-next-line no-console -- Logger utility intentionally uses console.info
       console.info(`[INFO] ${this.formatMessage(message)}`, ...args);
     }
   }

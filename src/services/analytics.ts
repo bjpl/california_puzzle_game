@@ -16,6 +16,8 @@
  * - GDPR/CCPA compliant
  */
 
+import { logger } from '../utils/logger';
+
 // Analytics event types
 export enum AnalyticsEvent {
   // Game Events
@@ -118,15 +120,13 @@ class AnalyticsService {
 
     // Check if analytics is enabled by user consent
     if (!this.config.enabled) {
-      // eslint-disable-next-line no-console
-      console.info('[Analytics] User has opted out');
+      logger.info('[Analytics] User has opted out');
       return;
     }
 
     // Skip in localhost unless explicitly enabled
     if (window.location.hostname === 'localhost' && !this.config.trackLocalhost) {
-      // eslint-disable-next-line no-console
-      console.info('[Analytics] Skipping on localhost');
+      logger.info('[Analytics] Skipping on localhost');
       return;
     }
 
@@ -138,10 +138,9 @@ class AnalyticsService {
       // Process queued events
       this.processEventQueue();
 
-      // eslint-disable-next-line no-console
-      console.info('[Analytics] Initialized successfully');
+      logger.info('[Analytics] Initialized successfully');
     } catch (error) {
-      console.error('[Analytics] Failed to initialize:', error);
+      logger.error('[Analytics] Failed to initialize:', error);
     }
   }
 
@@ -187,18 +186,21 @@ class AnalyticsService {
     }
 
     try {
+      // Plausible window interface
+      interface PlausibleWindow extends Window {
+        plausible?: (event: string, options?: { props?: AnalyticsProperties }) => void;
+      }
       // Send to Plausible
-      if (typeof window !== 'undefined' && (window as any).plausible) {
-        (window as any).plausible(event, { props: properties });
+      if (typeof window !== 'undefined' && (window as PlausibleWindow).plausible) {
+        (window as PlausibleWindow).plausible!(event, { props: properties });
       }
 
       // Log in development
       if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.info(`[Analytics] ${event}`, properties);
+        logger.info(`[Analytics] ${event}`, properties);
       }
     } catch (error) {
-      console.error('[Analytics] Failed to track event:', error);
+      logger.error('[Analytics] Failed to track event:', error);
     }
   }
 
@@ -216,13 +218,17 @@ class AnalyticsService {
     if (!this.config.enabled || !this.isInitialized) return;
 
     try {
-      if (typeof window !== 'undefined' && (window as any).plausible) {
-        (window as any).plausible('pageview', {
+      // Plausible window interface
+      interface PlausibleWindow extends Window {
+        plausible?: (event: string, options?: { props?: Record<string, string | undefined> }) => void;
+      }
+      if (typeof window !== 'undefined' && (window as PlausibleWindow).plausible) {
+        (window as PlausibleWindow).plausible!('pageview', {
           props: page ? { page } : undefined
         });
       }
     } catch (error) {
-      console.error('[Analytics] Failed to track page view:', error);
+      logger.error('[Analytics] Failed to track page view:', error);
     }
   }
 
@@ -241,6 +247,7 @@ class AnalyticsService {
    */
   private getConsentStatus(): boolean {
     try {
+      // eslint-disable-next-line no-restricted-globals -- Required for analytics consent persistence
       const consent = localStorage.getItem('analytics_consent');
       return consent === 'true';
     } catch {
@@ -253,6 +260,7 @@ class AnalyticsService {
    */
   setConsent(enabled: boolean): void {
     try {
+      // eslint-disable-next-line no-restricted-globals -- Required for analytics consent persistence
       localStorage.setItem('analytics_consent', String(enabled));
       this.config.enabled = enabled;
 
@@ -260,10 +268,9 @@ class AnalyticsService {
         this.initialize();
       }
 
-      // eslint-disable-next-line no-console
-      console.info(`[Analytics] Consent ${enabled ? 'granted' : 'revoked'}`);
+      logger.info(`[Analytics] Consent ${enabled ? 'granted' : 'revoked'}`);
     } catch (error) {
-      console.error('[Analytics] Failed to save consent:', error);
+      logger.error('[Analytics] Failed to save consent:', error);
     }
   }
 

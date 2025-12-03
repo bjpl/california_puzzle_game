@@ -15,11 +15,11 @@ import {
   createMockSyncManager,
   createMockSyncQueue,
   createMockGameSettings,
-  createMockGameStats,
+  createMockGameStats as _createMockGameStats,
   createMockSyncQueueItem,
   simulateOffline,
   simulateOnline,
-  simulateNetworkDelay,
+  simulateNetworkDelay as _simulateNetworkDelay,
   mockLocalStorage,
 } from '../../mocks/sync/mockSyncClient';
 
@@ -56,7 +56,7 @@ describe('Offline/Online Transitions', () => {
     it('should queue operations when going offline', async () => {
       simulateOffline();
 
-      const settings = createMockGameSettings();
+      const _settings = createMockGameSettings();
       await mockSyncManager.syncSettings();
 
       mockQueue.getPendingCount.mockReturnValueOnce(1);
@@ -66,7 +66,7 @@ describe('Offline/Online Transitions', () => {
     it('should persist queue to localStorage', async () => {
       simulateOffline();
 
-      const settings = createMockGameSettings();
+      const _settings = createMockGameSettings();
       await mockSyncManager.syncSettings();
 
       // Queue should be persisted
@@ -320,7 +320,7 @@ describe('Offline/Online Transitions', () => {
       storage.setItem('settings', JSON.stringify(localSettings));
 
       // Simulate remote changes
-      const remoteSettings = createMockGameSettings({ difficulty: 'hard' });
+      const _remoteSettings = createMockGameSettings({ difficulty: 'hard' });
 
       simulateOnline();
 
@@ -353,7 +353,7 @@ describe('Offline/Online Transitions', () => {
       const localChanges = createMockGameSettings({ difficulty: 'easy' });
       storage.setItem('settings', JSON.stringify(localChanges));
 
-      const remoteChanges = createMockGameSettings({ region: 'north' });
+      const _remoteChanges = createMockGameSettings({ region: 'north' });
 
       simulateOnline();
 
@@ -501,7 +501,7 @@ describe('Offline/Online Transitions', () => {
     it('should handle clock skew', async () => {
       // Simulate incorrect local time
       const futureTime = new Date(Date.now() + 86400000).toISOString();
-      const settings = createMockGameSettings({ updated_at: futureTime });
+      const _settings = createMockGameSettings({ updated_at: futureTime });
 
       await mockSyncManager.syncSettings();
 

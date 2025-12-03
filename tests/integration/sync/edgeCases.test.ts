@@ -16,11 +16,11 @@ import {
   createMockSyncManager,
   createMockGameSettings,
   createMockGameStats,
-  createMockAchievement,
+  _createMockAchievement,
   simulateNetworkDelay,
-  simulateNetworkError,
+  _simulateNetworkError,
   simulateRateLimitError,
-  simulateOffline,
+  _simulateOffline,
   simulateOnline,
   mockLocalStorage,
 } from '../../mocks/sync/mockSyncClient';
@@ -66,6 +66,7 @@ describe('Edge Cases and Concurrent Updates', () => {
           key: 'settings',
           oldValue: JSON.stringify(originalSettings),
           newValue: JSON.stringify(updatedSettings),
+          // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
           storageArea: localStorage,
         })
       );
@@ -84,6 +85,7 @@ describe('Edge Cases and Concurrent Updates', () => {
         new StorageEvent('storage', {
           key: 'settings',
           newValue: JSON.stringify(tab2Settings),
+          // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
           storageArea: localStorage,
         })
       );
@@ -94,7 +96,7 @@ describe('Edge Cases and Concurrent Updates', () => {
     });
 
     it('should prevent conflicting writes', async () => {
-      const settings = createMockGameSettings();
+      const _settings = createMockGameSettings();
 
       // Simulate concurrent writes from two tabs
       const write1 = mockSyncManager.syncSettings();
@@ -110,7 +112,7 @@ describe('Edge Cases and Concurrent Updates', () => {
       const time1 = new Date(Date.now() - 1000);
       const time2 = new Date();
 
-      const settings1 = createMockGameSettings({
+      const _settings1 = createMockGameSettings({
         difficulty: 'easy',
         updated_at: time1.toISOString(),
       });
@@ -249,8 +251,8 @@ describe('Edge Cases and Concurrent Updates', () => {
     });
 
     it('should handle write-write race', async () => {
-      const settings1 = createMockGameSettings({ difficulty: 'easy' });
-      const settings2 = createMockGameSettings({ difficulty: 'hard' });
+      const _settings1 = createMockGameSettings({ difficulty: 'easy' });
+      const _settings2 = createMockGameSettings({ difficulty: 'hard' });
 
       // Concurrent writes
       const write1 = mockSyncManager.syncSettings();
@@ -298,8 +300,8 @@ describe('Edge Cases and Concurrent Updates', () => {
 
     it('should handle invalid data types', () => {
       const invalid = createMockGameSettings({
-        difficulty: 123 as any, // Should be string
-        show_hints: 'yes' as any, // Should be boolean
+        difficulty: 123 as unknown as string, // Should be string
+        show_hints: 'yes' as unknown as boolean, // Should be boolean
       });
 
       // Should validate and coerce or reject
@@ -322,14 +324,14 @@ describe('Edge Cases and Concurrent Updates', () => {
 
   describe('Memory and Resource Leaks', () => {
     it('should not leak memory with many syncs', async () => {
-      const initialMemory = (performance as any).memory?.usedJSHeapSize || 0;
+      const initialMemory = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize || 0;
 
       // Perform many syncs
       for (let i = 0; i < 100; i++) {
         await mockSyncManager.sync();
       }
 
-      const finalMemory = (performance as any).memory?.usedJSHeapSize || 0;
+      const finalMemory = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize || 0;
       const memoryIncrease = finalMemory - initialMemory;
 
       // Should not leak significantly
@@ -432,7 +434,7 @@ describe('Edge Cases and Concurrent Updates', () => {
 
     it('should use server time when available', async () => {
       // Client time might be wrong
-      const clientTime = new Date(Date.now() + 3600000).toISOString();
+      const _clientTime = new Date(Date.now() + 3600000).toISOString();
 
       // Server time is authoritative
       const serverTime = new Date().toISOString();
@@ -452,7 +454,7 @@ describe('Edge Cases and Concurrent Updates', () => {
 
   describe('Extreme Load', () => {
     it('should handle very large datasets', async () => {
-      const hugeStats = createMockGameStats({
+      const _hugeStats = createMockGameStats({
         counties_learned: Array(1000)
           .fill(null)
           .map((_, i) => `County-${i}`),
@@ -481,7 +483,7 @@ describe('Edge Cases and Concurrent Updates', () => {
       vi.useFakeTimers();
 
       // Make many requests rapidly
-      const syncs = Array(100)
+      const _syncs = Array(100)
         .fill(null)
         .map(() => mockSyncManager.sync());
 

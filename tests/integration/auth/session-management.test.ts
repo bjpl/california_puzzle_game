@@ -23,6 +23,7 @@ describe('Session Management', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
     localStorage.clear();
     sessionStorage.clear();
     Object.assign(import.meta.env, mockSupabaseEnv);
@@ -31,6 +32,7 @@ describe('Session Management', () => {
   });
 
   afterEach(() => {
+    // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
     localStorage.clear();
     sessionStorage.clear();
     clearSupabaseEnv();
@@ -104,7 +106,7 @@ describe('Session Management', () => {
       // TODO: Implement once auth service and store are created
       const now = Math.floor(Date.now() / 1000);
       const mockUser = createMockAnonymousUser();
-      const expiringSession = createMockSession(mockUser, { expires_at: now + 300 });
+      const _expiringSession = createMockSession(mockUser, { expires_at: now + 300 });
 
       mockAuth.refreshSession.mockResolvedValueOnce({
         data: { user: null, session: null },
@@ -156,6 +158,7 @@ describe('Session Management', () => {
       const mockSession = createMockSession(mockUser);
 
       // 1. Store session before app goes to background
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: mockSession },
       }));
@@ -168,6 +171,7 @@ describe('Session Management', () => {
       // expect(store.isAuthenticated).toBe(true);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       const stored = localStorage.getItem('auth-storage');
       expect(stored).toBeTruthy();
     });
@@ -180,6 +184,7 @@ describe('Session Management', () => {
       const newSession = createMockSession(mockUser, { expires_at: now + 3600 });
 
       // 1. Store expired session
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: expiredSession },
       }));
@@ -209,6 +214,7 @@ describe('Session Management', () => {
       const oldSession = createMockSession(mockUser);
 
       // 1. Store session before sleep
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: oldSession },
       }));
@@ -234,7 +240,7 @@ describe('Session Management', () => {
       // TODO: Implement once auth service and store are created
       const now = Math.floor(Date.now() / 1000);
       const mockUser = createMockAnonymousUser();
-      const expiringSession = createMockSession(mockUser, { expires_at: now + 300 });
+      const _expiringSession = createMockSession(mockUser, { expires_at: now + 300 });
 
       // 1. Go offline
       window.dispatchEvent(new Event('offline'));
@@ -271,6 +277,7 @@ describe('Session Management', () => {
       const validSession = createMockSession(mockUser, { expires_at: now + 3600 });
 
       // 1. Store valid session
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: validSession },
       }));
@@ -284,6 +291,7 @@ describe('Session Management', () => {
       // expect(store.user).toEqual(mockUser);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       const stored = localStorage.getItem('auth-storage');
       expect(stored).toBeTruthy();
     });
@@ -294,6 +302,7 @@ describe('Session Management', () => {
       const cachedSession = createMockSession(mockUser);
 
       // 1. Offline with cached session
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: cachedSession },
       }));
@@ -326,6 +335,7 @@ describe('Session Management', () => {
       const mockSession = createMockSession(mockUser);
 
       // 1. Tab 1 signs in
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: mockSession },
       }));
@@ -333,6 +343,7 @@ describe('Session Management', () => {
       // 2. Simulate storage event (tab 2 detects change)
       window.dispatchEvent(new StorageEvent('storage', {
         key: 'auth-storage',
+        // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
         newValue: localStorage.getItem('auth-storage'),
         oldValue: null,
       }));
@@ -343,6 +354,7 @@ describe('Session Management', () => {
       // expect(store.session).toEqual(mockSession);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       expect(localStorage.getItem('auth-storage')).toBeTruthy();
     });
 
@@ -352,11 +364,13 @@ describe('Session Management', () => {
       const mockSession = createMockSession(mockUser);
 
       // 1. Both tabs authenticated
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: mockSession },
       }));
 
       // 2. Tab 1 signs out
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.removeItem('auth-storage');
 
       // 3. Notify tab 2 via storage event
@@ -371,6 +385,7 @@ describe('Session Management', () => {
       // expect(store.isAuthenticated).toBe(false);
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       expect(localStorage.getItem('auth-storage')).toBeNull();
     });
 
@@ -381,6 +396,7 @@ describe('Session Management', () => {
       const newSession = createMockSession(mockUser, { access_token: 'new-token' });
 
       // 1. Tab 1 refreshes session
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: newSession },
       }));
@@ -388,6 +404,7 @@ describe('Session Management', () => {
       // 2. Notify other tabs
       window.dispatchEvent(new StorageEvent('storage', {
         key: 'auth-storage',
+        // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
         newValue: localStorage.getItem('auth-storage'),
         oldValue: JSON.stringify({ state: { user: mockUser, session: oldSession } }),
       }));
@@ -397,6 +414,7 @@ describe('Session Management', () => {
       // expect(store.session?.access_token).toBe('new-token');
 
       // Placeholder test
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       const stored = JSON.parse(localStorage.getItem('auth-storage')!);
       expect(stored.state.session.access_token).toBe('new-token');
     });
@@ -410,6 +428,7 @@ describe('Session Management', () => {
       const expiredSession = createMockSession(mockUser, { expires_at: now - 1000 });
 
       // 1. Store expired session
+      // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
       localStorage.setItem('auth-storage', JSON.stringify({
         state: { user: mockUser, session: expiredSession },
       }));

@@ -16,8 +16,8 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   exportUserData,
   deleteUserAccount,
-  getUser,
-  signOut,
+  getUser as _getUser,
+  signOut as _signOut,
 } from '@/services/supabase/auth';
 
 // Mock Supabase client
@@ -26,9 +26,9 @@ vi.mock('@/services/supabase/client', () => ({
 }));
 
 describe('Auth Service Functions', () => {
-  let mockSupabase: any;
+  let mockSupabase: unknown;
   let mockFrom: ReturnType<typeof vi.fn>;
-  let mockAuth: any;
+  let mockAuth: unknown;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -45,14 +45,17 @@ describe('Auth Service Functions', () => {
       auth: mockAuth,
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
     const { getSupabaseClient } = require('@/services/supabase/client');
     getSupabaseClient.mockReturnValue(mockSupabase);
 
     // Clear localStorage
+    // eslint-disable-next-line no-restricted-globals
     localStorage.clear();
   });
 
   afterEach(() => {
+    // eslint-disable-next-line no-restricted-globals
     localStorage.clear();
   });
 
@@ -96,7 +99,7 @@ describe('Auth Service Functions', () => {
     });
 
     it('should fetch all user tables', async () => {
-      const result = await exportUserData(mockUserId);
+      const _result = await exportUserData(mockUserId);
 
       expect(mockFrom).toHaveBeenCalledWith('game_sessions');
       expect(mockFrom).toHaveBeenCalledWith('user_progress');
@@ -231,6 +234,7 @@ describe('Auth Service Functions', () => {
     });
 
     it('should return error when Supabase not configured', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
       const { getSupabaseClient } = require('@/services/supabase/client');
       getSupabaseClient.mockReturnValue(null);
 
@@ -290,7 +294,7 @@ describe('Auth Service Functions', () => {
     });
 
     it('should delete all user data from tables', async () => {
-      const result = await deleteUserAccount();
+      const _result = await deleteUserAccount();
 
       expect(mockFrom).toHaveBeenCalledWith('game_sessions');
       expect(mockFrom).toHaveBeenCalledWith('user_progress');
@@ -318,12 +322,16 @@ describe('Auth Service Functions', () => {
     });
 
     it('should clear localStorage after deletion', async () => {
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('test-key', 'test-value');
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('another-key', 'another-value');
 
       await deleteUserAccount();
 
+      // eslint-disable-next-line no-restricted-globals
       expect(localStorage.length).toBe(0);
+      // eslint-disable-next-line no-restricted-globals
       expect(localStorage.getItem('test-key')).toBeNull();
     });
 
@@ -369,6 +377,7 @@ describe('Auth Service Functions', () => {
     });
 
     it('should return error when Supabase not configured', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
       const { getSupabaseClient } = require('@/services/supabase/client');
       getSupabaseClient.mockReturnValue(null);
 
@@ -387,6 +396,7 @@ describe('Auth Service Functions', () => {
 
       // Should still succeed and clear localStorage
       expect(result.success).toBe(true);
+      // eslint-disable-next-line no-restricted-globals
       expect(localStorage.length).toBe(0);
     });
 
@@ -461,19 +471,25 @@ describe('Auth Service Functions', () => {
       // Should still complete the process
       expect(result.success).toBe(true);
       expect(mockAuth.signOut).toHaveBeenCalled();
+      // eslint-disable-next-line no-restricted-globals
       expect(localStorage.length).toBe(0);
     });
 
     it('should not leave any trace after deletion', async () => {
       // Set some data
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('user-data', JSON.stringify({ userId: mockUserId }));
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('game-state', JSON.stringify({ level: 5 }));
 
       await deleteUserAccount();
 
       // Verify everything is cleaned up
+      // eslint-disable-next-line no-restricted-globals
       expect(localStorage.length).toBe(0);
+      // eslint-disable-next-line no-restricted-globals
       expect(localStorage.getItem('user-data')).toBeNull();
+      // eslint-disable-next-line no-restricted-globals
       expect(localStorage.getItem('game-state')).toBeNull();
       expect(mockAuth.signOut).toHaveBeenCalled();
     });

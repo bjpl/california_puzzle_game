@@ -47,6 +47,7 @@ describe('ExportData Component', () => {
     vi.clearAllMocks();
 
     // Setup Supabase mock
+    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
     const { supabase } = require('@/lib/supabase');
     supabase.from = mockSupabaseFrom;
 
@@ -92,6 +93,7 @@ describe('ExportData Component', () => {
     });
 
     it('should show "Please sign in" when not authenticated', () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
       const useUserId = require('@/hooks/useAuth').useUserId;
       useUserId.mockReturnValue(null);
 
@@ -173,12 +175,12 @@ describe('ExportData Component', () => {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
         }
         return document.createElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
 
       render(<ExportData />);
 
@@ -203,12 +205,12 @@ describe('ExportData Component', () => {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
         }
         return document.createElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
 
       render(<ExportData />);
 
@@ -259,8 +261,8 @@ describe('ExportData Component', () => {
     it('should create downloadable JSON file', async () => {
       const user = userEvent.setup();
       const mockClick = vi.fn();
-      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
 
       let capturedElement: HTMLAnchorElement | null = null;
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
@@ -269,7 +271,7 @@ describe('ExportData Component', () => {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
           return capturedElement;
         }
         return document.createElement(tag);
@@ -299,12 +301,12 @@ describe('ExportData Component', () => {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
         }
         return document.createElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
 
       render(<ExportData />);
 
@@ -326,12 +328,12 @@ describe('ExportData Component', () => {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
         }
         return document.createElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
 
       render(<ExportData />);
 
@@ -396,12 +398,12 @@ describe('ExportData Component', () => {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
         }
         return document.createElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
 
       render(<ExportData />);
 
@@ -542,12 +544,12 @@ describe('ExportData Component', () => {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
         }
         return document.createElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
 
       render(<ExportData />);
 
@@ -569,12 +571,12 @@ describe('ExportData Component', () => {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
         }
         return document.createElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
 
       render(<ExportData />);
 
@@ -628,12 +630,12 @@ describe('ExportData Component', () => {
             click: mockClick,
             href: '',
             download: '',
-          } as any;
+          } as unknown;
         }
         return document.createElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as any);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as any);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
 
       render(<ExportData />);
 

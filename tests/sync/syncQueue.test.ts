@@ -99,7 +99,7 @@ describe('SyncQueue', () => {
       await mockQueue.enqueue(highPriority);
 
       mockQueue.dequeue.mockReturnValueOnce(highPriority);
-      const next = mockQueue.dequeue();
+      const _next = mockQueue.dequeue();
 
       // TODO: Verify high priority item is dequeued first
       expect(mockQueue.dequeue).toHaveBeenCalled();

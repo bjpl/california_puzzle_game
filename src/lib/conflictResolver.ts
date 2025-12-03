@@ -37,9 +37,9 @@ export type ConflictStrategy =
 export interface Conflict {
   table: string;
   recordId: string;
-  localData: Record<string, any>;
-  serverData: Record<string, any>;
-  previousData?: Record<string, any>; // Last known synchronized state
+  localData: Record<string, unknown>;
+  serverData: Record<string, unknown>;
+  previousData?: Record<string, unknown>; // Last known synchronized state
 }
 
 /**
@@ -51,7 +51,7 @@ export interface Conflict {
  */
 export interface ConflictResolution {
   strategy: ConflictStrategy;
-  resolvedData: Record<string, any>;
+  resolvedData: Record<string, unknown>;
   conflicts: string[]; // List of conflicting fields
   requiresUserAction: boolean;
 }
@@ -125,7 +125,7 @@ class ConflictResolver {
    * WHY: Know which fields conflict
    * PATTERN: Deep comparison
    */
-  private detectConflicts(local: Record<string, any>, server: Record<string, any>): string[] {
+  private detectConflicts(local: Record<string, unknown>, server: Record<string, unknown>): string[] {
     const conflicts: string[] = [];
     const allKeys = new Set([...Object.keys(local), ...Object.keys(server)]);
 
@@ -262,7 +262,7 @@ class ConflictResolver {
   private resolveMerge(conflict: Conflict, conflicts: string[]): ConflictResolution {
     logger.info('[ConflictResolver] Merging data');
 
-    const merged: Record<string, any> = { ...conflict.serverData };
+    const merged: Record<string, unknown> = { ...conflict.serverData };
 
     // For numeric fields, use the maximum value
     for (const key of conflicts) {
@@ -316,7 +316,7 @@ class ConflictResolver {
    * WHY: Compare data freshness
    * PATTERN: Field lookup with fallback
    */
-  private getTimestamp(data: Record<string, any>): number | null {
+  private getTimestamp(data: Record<string, unknown>): number | null {
     // Try common timestamp fields
     const timestampFields = ['updated_at', 'modified_at', 'timestamp', 'last_modified'];
 
