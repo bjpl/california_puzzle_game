@@ -1,0 +1,285 @@
+{
+  "analysis": {
+    "currentState": {
+      "monolithExists": false,
+      "domainStoresCreated": true,
+      "importsUpdated": true,
+      "testsPass": true,
+      "migrationComplete": true,
+      "gradeA": true,
+      "architectureGrade": "A-",
+      "storeLOC": 2778,
+      "testCoverage": "unknown",
+      "lintPasses": "unknown",
+      "bundleOptimized": false
+    },
+    "goalState": {
+      "lintPasses": true,
+      "testCoverage": ">=80%",
+      "bundleOptimized": true,
+      "docsUpdated": true,
+      "architectureGrade": "A"
+    }
+  },
+  "aStarSearch": {
+    "algorithm": "A* with heuristic = remaining_goals_count",
+    "explored": [
+      {
+        "state": "initial",
+        "heuristic": 5,
+        "cost": 0,
+        "total": 5
+      },
+      {
+        "state": "after_run_lint",
+        "heuristic": 4,
+        "cost": 2,
+        "total": 6,
+        "note": "Assumes lint passes first try"
+      },
+      {
+        "state": "after_run_tests",
+        "heuristic": 3,
+        "cost": 5,
+        "total": 8
+      },
+      {
+        "state": "after_analyze_bundle",
+        "heuristic": 3,
+        "cost": 7,
+        "total": 10
+      },
+      {
+        "state": "after_optimize_imports",
+        "heuristic": 2,
+        "cost": 10,
+        "total": 12
+      },
+      {
+        "state": "after_update_docs",
+        "heuristic": 1,
+        "cost": 12,
+        "total": 13
+      },
+      {
+        "state": "goal_reached",
+        "heuristic": 0,
+        "cost": 12,
+        "total": 12
+      }
+    ]
+  },
+  "optimalPlan": {
+    "path": [
+      {
+        "step": 1,
+        "action": "run_lint",
+        "preconditions": ["any"],
+        "effects": ["lintPasses = true/false"],
+        "cost": 2,
+        "reasoning": "Must discover lint status first to determine if fixes needed",
+        "expectedOutcome": "Discover lint errors (if any) - likely need fixes due to imports refactor"
+      },
+      {
+        "step": 2,
+        "action": "fix_lint_errors",
+        "preconditions": ["lintPasses = false"],
+        "effects": ["lintPasses = true"],
+        "cost": 3,
+        "reasoning": "Conditional step - only if lint fails. High probability given Phase 1 changes.",
+        "expectedOutcome": "Resolve unused imports, type issues from migration",
+        "contingency": "If lint passes, skip this step and reduce total cost to 9"
+      },
+      {
+        "step": 3,
+        "action": "run_tests",
+        "preconditions": ["any"],
+        "effects": ["testCoverage = measured"],
+        "cost": 3,
+        "reasoning": "Measure current coverage to determine if additional tests needed",
+        "expectedOutcome": "Discover coverage gap (stores likely under-tested)"
+      },
+      {
+        "step": 4,
+        "action": "add_missing_tests",
+        "preconditions": ["testCoverage < 80%"],
+        "effects": ["testCoverage >= 80%"],
+        "cost": 5,
+        "reasoning": "Conditional step - only if coverage below 80%. High probability given new stores.",
+        "expectedOutcome": "Bring store test coverage to 80%+ (6 stores × ~50 LOC tests = 300 LOC)",
+        "contingency": "If coverage already >= 80%, skip and reduce total cost to 7"
+      },
+      {
+        "step": 5,
+        "action": "analyze_bundle",
+        "preconditions": ["any"],
+        "effects": ["bundleAnalyzed = true"],
+        "cost": 2,
+        "reasoning": "Required precondition for optimize_imports",
+        "expectedOutcome": "Identify bundle size, unused code, optimization opportunities"
+      },
+      {
+        "step": 6,
+        "action": "optimize_imports",
+        "preconditions": ["bundleAnalyzed = true"],
+        "effects": ["bundleOptimized = true"],
+        "cost": 3,
+        "reasoning": "Reduce bundle size via tree-shaking, dynamic imports",
+        "expectedOutcome": "10-20% bundle size reduction, improved load times"
+      },
+      {
+        "step": 7,
+        "action": "update_docs",
+        "preconditions": ["migrationComplete = true"],
+        "effects": ["docsUpdated = true"],
+        "cost": 2,
+        "reasoning": "Document new store architecture for maintainability",
+        "expectedOutcome": "Architecture docs reflect domain stores pattern"
+      }
+    ],
+    "totalCost": {
+      "bestCase": 9,
+      "expectedCase": 12,
+      "worstCase": 20,
+      "note": "Best case assumes lint passes and coverage already >= 80%"
+    }
+  },
+  "optimizationAnalysis": {
+    "parallelizationOpportunities": [
+      {
+        "parallel": ["run_lint", "run_tests", "analyze_bundle"],
+        "reasoning": "These 3 actions have no dependencies on each other",
+        "wallClockReduction": "From 7 time units to max(2,3,2) = 3 time units"
+      },
+      {
+        "parallel": ["fix_lint_errors", "add_missing_tests"],
+        "reasoning": "Independent conditional actions, can run in parallel",
+        "wallClockReduction": "From 8 time units to max(3,5) = 5 time units"
+      }
+    ],
+    "criticalPath": [
+      "run_tests → add_missing_tests",
+      "analyze_bundle → optimize_imports"
+    ],
+    "optimizedWallClock": {
+      "sequential": 20,
+      "parallel": 13,
+      "improvement": "35% faster"
+    }
+  },
+  "expectedOutcome": {
+    "architectureGrade": "A",
+    "improvements": {
+      "lintPasses": "true (from unknown)",
+      "testCoverage": "80%+ (from unknown)",
+      "bundleOptimized": "true (from false)",
+      "docsUpdated": "true (from false)",
+      "gradeIncrease": "A- → A"
+    },
+    "deliverables": [
+      "Lint-clean codebase",
+      "80%+ test coverage on stores",
+      "Optimized production bundle",
+      "Updated architecture documentation",
+      "Production-ready Phase 2 completion"
+    ]
+  },
+  "riskAssessment": {
+    "risks": [
+      {
+        "risk": "Test coverage below 80% requires significant test writing",
+        "probability": "high",
+        "impact": "high cost (+5)",
+        "mitigation": "Focus on critical store logic, use snapshot tests for UI"
+      },
+      {
+        "risk": "Lint errors from import refactor",
+        "probability": "high",
+        "impact": "medium cost (+3)",
+        "mitigation": "Auto-fix via ESLint --fix where possible"
+      },
+      {
+        "risk": "Bundle optimization reveals circular dependencies",
+        "probability": "medium",
+        "impact": "high cost (+5)",
+        "mitigation": "Dependency graph analysis before optimization"
+      }
+    ],
+    "confidenceLevel": "high",
+    "successProbability": "95%"
+  },
+  "actionDependencyGraph": {
+    "nodes": [
+      "run_lint",
+      "fix_lint_errors",
+      "run_tests",
+      "add_missing_tests",
+      "analyze_bundle",
+      "optimize_imports",
+      "update_docs"
+    ],
+    "edges": [
+      ["run_lint", "fix_lint_errors"],
+      ["run_tests", "add_missing_tests"],
+      ["analyze_bundle", "optimize_imports"]
+    ],
+    "parallelizable": [
+      ["run_lint", "run_tests", "analyze_bundle"],
+      ["fix_lint_errors", "add_missing_tests"]
+    ]
+  },
+  "executionStrategy": {
+    "phase": "2",
+    "approach": "SPARC-enhanced GOAP with parallel execution",
+    "methodology": {
+      "specification": "Define success criteria for each action",
+      "pseudocode": "Design test algorithms and optimization strategies",
+      "architecture": "Structure bundle optimization and test architecture",
+      "refinement": "TDD for missing tests, iterative optimization",
+      "completion": "Integration testing, documentation, validation"
+    },
+    "sparcIntegration": [
+      {
+        "action": "run_lint + fix_lint_errors",
+        "sparcPhase": "refinement",
+        "command": "npm run lint -- --fix"
+      },
+      {
+        "action": "run_tests + add_missing_tests",
+        "sparcPhase": "refinement",
+        "command": "npm run test:coverage"
+      },
+      {
+        "action": "analyze_bundle + optimize_imports",
+        "sparcPhase": "architecture + refinement",
+        "command": "npm run build && npm run analyze"
+      },
+      {
+        "action": "update_docs",
+        "sparcPhase": "completion",
+        "command": "manual documentation update"
+      }
+    ]
+  },
+  "metricsTracking": {
+    "beforePhase2": {
+      "architectureGrade": "A-",
+      "lintStatus": "unknown",
+      "testCoverage": "unknown",
+      "bundleSize": "unknown"
+    },
+    "afterPhase2": {
+      "architectureGrade": "A",
+      "lintStatus": "passing",
+      "testCoverage": "80%+",
+      "bundleSize": "optimized (-10-20%)"
+    },
+    "successCriteria": [
+      "All lint rules pass",
+      "Test coverage >= 80% on stores",
+      "Bundle size reduced",
+      "Documentation current",
+      "Architecture grade = A"
+    ]
+  }
+}
