@@ -232,16 +232,18 @@ describe('storeCoordinator', () => {
         remainingCounties: [],
       });
 
-      const checkAchievementsSpy = vi.spyOn(useAchievementStore.getState(), 'checkAchievements');
-
+      // Initialize coordination FIRST so it captures the initial lastPlacementResult
       initializeStoreCoordination();
 
-      // Trigger another state update with same result
+      // NOW create the spy after coordination is set up
+      const checkAchievementsSpy = vi.spyOn(useAchievementStore.getState(), 'checkAchievements');
+
+      // Trigger another state update with same lastPlacementResult (only remainingCounties changes)
       useCountyPlacementStore.setState({
         remainingCounties: ['other'],
       });
 
-      // Should not call because lastPlacementResult didn't change
+      // Should not call because lastPlacementResult didn't change (same object reference)
       expect(checkAchievementsSpy).not.toHaveBeenCalled();
     });
 

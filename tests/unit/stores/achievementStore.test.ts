@@ -8,14 +8,8 @@ import { useAchievementStore } from '../../../src/stores/achievementStore';
 import { useGameLifecycleStore } from '../../../src/stores/gameLifecycleStore';
 import { useScoringStore } from '../../../src/stores/scoringStore';
 import * as soundManager from '../../../src/utils/soundManager';
-import type {
-  AchievementCategory,
-  CaliforniaRegion,
-  DifficultyLevel,
-  PlacementResult,
-  County,
-  CountyPiece,
-} from '../../../src/types/index';
+import { AchievementCategory, CaliforniaRegion, DifficultyLevel } from '../../../src/types/index';
+import type { PlacementResult, County, CountyPiece } from '../../../src/types/index';
 
 // Mock the sound manager
 vi.mock('../../../src/utils/soundManager', () => ({
@@ -74,7 +68,7 @@ describe('achievementStore', () => {
     it('should have all achievements locked initially', () => {
       const state = useAchievementStore.getState();
 
-      state.achievements.forEach(achievement => {
+      state.achievements.forEach((achievement) => {
         expect(achievement.isUnlocked).toBe(false);
         expect(achievement.progress).toBe(0);
         expect(achievement.unlockedAt).toBeUndefined();
@@ -84,7 +78,7 @@ describe('achievementStore', () => {
     it('should have required properties for each achievement', () => {
       const state = useAchievementStore.getState();
 
-      state.achievements.forEach(achievement => {
+      state.achievements.forEach((achievement) => {
         expect(achievement).toHaveProperty('id');
         expect(achievement).toHaveProperty('name');
         expect(achievement).toHaveProperty('description');
@@ -105,7 +99,7 @@ describe('achievementStore', () => {
   describe('Achievement Definitions', () => {
     it('should have first_county achievement', () => {
       const state = useAchievementStore.getState();
-      const achievement = state.achievements.find(a => a.id === 'first_county');
+      const achievement = state.achievements.find((a) => a.id === 'first_county');
 
       expect(achievement).toBeDefined();
       expect(achievement?.name).toBe('First Steps');
@@ -114,7 +108,7 @@ describe('achievementStore', () => {
 
     it('should have perfect_placement achievement', () => {
       const state = useAchievementStore.getState();
-      const achievement = state.achievements.find(a => a.id === 'perfect_placement');
+      const achievement = state.achievements.find((a) => a.id === 'perfect_placement');
 
       expect(achievement).toBeDefined();
       expect(achievement?.name).toBe('Bullseye');
@@ -123,7 +117,7 @@ describe('achievementStore', () => {
 
     it('should have speed_demon achievement', () => {
       const state = useAchievementStore.getState();
-      const achievement = state.achievements.find(a => a.id === 'speed_demon');
+      const achievement = state.achievements.find((a) => a.id === 'speed_demon');
 
       expect(achievement).toBeDefined();
       expect(achievement?.name).toBe('Speed Demon');
@@ -132,7 +126,7 @@ describe('achievementStore', () => {
 
     it('should have bay_area_master achievement', () => {
       const state = useAchievementStore.getState();
-      const achievement = state.achievements.find(a => a.id === 'bay_area_master');
+      const achievement = state.achievements.find((a) => a.id === 'bay_area_master');
 
       expect(achievement).toBeDefined();
       expect(achievement?.name).toBe('Bay Area Master');
@@ -141,7 +135,7 @@ describe('achievementStore', () => {
 
     it('should have streak_10 achievement', () => {
       const state = useAchievementStore.getState();
-      const achievement = state.achievements.find(a => a.id === 'streak_10');
+      const achievement = state.achievements.find((a) => a.id === 'streak_10');
 
       expect(achievement).toBeDefined();
       expect(achievement?.name).toBe('On Fire');
@@ -150,7 +144,7 @@ describe('achievementStore', () => {
 
     it('should have california_expert achievement', () => {
       const state = useAchievementStore.getState();
-      const achievement = state.achievements.find(a => a.id === 'california_expert');
+      const achievement = state.achievements.find((a) => a.id === 'california_expert');
 
       expect(achievement).toBeDefined();
       expect(achievement?.name).toBe('California Expert');
@@ -163,16 +157,16 @@ describe('achievementStore', () => {
       const state = useAchievementStore.getState();
 
       const accuracyAchievements = state.achievements.filter(
-        a => a.category === AchievementCategory.ACCURACY
+        (a) => a.category === AchievementCategory.ACCURACY
       );
       const speedAchievements = state.achievements.filter(
-        a => a.category === AchievementCategory.SPEED
+        (a) => a.category === AchievementCategory.SPEED
       );
       const completionAchievements = state.achievements.filter(
-        a => a.category === AchievementCategory.COMPLETION
+        (a) => a.category === AchievementCategory.COMPLETION
       );
       const streakAchievements = state.achievements.filter(
-        a => a.category === AchievementCategory.STREAK
+        (a) => a.category === AchievementCategory.STREAK
       );
 
       expect(accuracyAchievements.length).toBeGreaterThan(0);
@@ -185,7 +179,7 @@ describe('achievementStore', () => {
       const state = useAchievementStore.getState();
       const validCategories = Object.values(AchievementCategory);
 
-      state.achievements.forEach(achievement => {
+      state.achievements.forEach((achievement) => {
         expect(validCategories).toContain(achievement.category);
       });
     });
@@ -197,9 +191,9 @@ describe('achievementStore', () => {
 
       store.unlockAchievement('first_county');
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'first_county'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'first_county');
 
       expect(achievement?.isUnlocked).toBe(true);
       expect(achievement?.progress).toBe(1);
@@ -211,9 +205,9 @@ describe('achievementStore', () => {
 
       store.unlockAchievement('first_county');
 
-      const otherAchievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'perfect_placement'
-      );
+      const otherAchievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'perfect_placement');
 
       expect(otherAchievement?.isUnlocked).toBe(false);
       expect(otherAchievement?.progress).toBe(0);
@@ -231,14 +225,14 @@ describe('achievementStore', () => {
       const store = useAchievementStore.getState();
 
       store.unlockAchievement('first_county');
-      const firstUnlock = useAchievementStore.getState().achievements.find(
-        a => a.id === 'first_county'
-      )?.unlockedAt;
+      const firstUnlock = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'first_county')?.unlockedAt;
 
       store.unlockAchievement('first_county');
-      const secondUnlock = useAchievementStore.getState().achievements.find(
-        a => a.id === 'first_county'
-      )?.unlockedAt;
+      const secondUnlock = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'first_county')?.unlockedAt;
 
       // Should update the unlocked date
       expect(firstUnlock).toBeDefined();
@@ -254,7 +248,7 @@ describe('achievementStore', () => {
 
       // All achievements should remain locked
       const state = useAchievementStore.getState();
-      const unlockedCount = state.achievements.filter(a => a.isUnlocked).length;
+      const unlockedCount = state.achievements.filter((a) => a.isUnlocked).length;
       expect(unlockedCount).toBe(0);
     });
   });
@@ -277,9 +271,9 @@ describe('achievementStore', () => {
       expect(unlocked.length).toBe(1);
       expect(unlocked[0].id).toBe('first_county');
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'first_county'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'first_county');
       expect(achievement?.isUnlocked).toBe(true);
       expect(achievement?.progress).toBe(1);
     });
@@ -300,9 +294,9 @@ describe('achievementStore', () => {
 
       expect(unlocked.length).toBe(0);
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'first_county'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'first_county');
       expect(achievement?.isUnlocked).toBe(false);
     });
 
@@ -339,12 +333,12 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement);
 
-      const perfectAchievement = unlocked.find(a => a.id === 'perfect_placement');
+      const perfectAchievement = unlocked.find((a) => a.id === 'perfect_placement');
       expect(perfectAchievement).toBeDefined();
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'perfect_placement'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'perfect_placement');
       expect(achievement?.isUnlocked).toBe(true);
       expect(achievement?.progress).toBe(1);
     });
@@ -363,12 +357,12 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement);
 
-      const perfectAchievement = unlocked.find(a => a.id === 'perfect_placement');
+      const perfectAchievement = unlocked.find((a) => a.id === 'perfect_placement');
       expect(perfectAchievement).toBeUndefined();
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'perfect_placement'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'perfect_placement');
       expect(achievement?.isUnlocked).toBe(false);
     });
   });
@@ -388,12 +382,12 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement);
 
-      const speedAchievement = unlocked.find(a => a.id === 'speed_demon');
+      const speedAchievement = unlocked.find((a) => a.id === 'speed_demon');
       expect(speedAchievement).toBeDefined();
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'speed_demon'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'speed_demon');
       expect(achievement?.isUnlocked).toBe(true);
       expect(achievement?.progress).toBe(1);
     });
@@ -412,7 +406,7 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement);
 
-      const speedAchievement = unlocked.find(a => a.id === 'speed_demon');
+      const speedAchievement = unlocked.find((a) => a.id === 'speed_demon');
       expect(speedAchievement).toBeUndefined();
     });
 
@@ -430,7 +424,7 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement);
 
-      const speedAchievement = unlocked.find(a => a.id === 'speed_demon');
+      const speedAchievement = unlocked.find((a) => a.id === 'speed_demon');
       expect(speedAchievement).toBeUndefined();
     });
   });
@@ -440,12 +434,12 @@ describe('achievementStore', () => {
       const store = useAchievementStore.getState();
       const scoringStore = useScoringStore.getState();
 
-      // Mock a streak of 5
-      scoringStore.addPoints(100);
-      scoringStore.addPoints(100);
-      scoringStore.addPoints(100);
-      scoringStore.addPoints(100);
-      scoringStore.addPoints(100);
+      // Build a streak of 5
+      scoringStore.updateStreak(true);
+      scoringStore.updateStreak(true);
+      scoringStore.updateStreak(true);
+      scoringStore.updateStreak(true);
+      scoringStore.updateStreak(true);
 
       const mockPlacement: PlacementResult = {
         county: { id: 'alameda', name: 'Alameda' } as County,
@@ -458,9 +452,9 @@ describe('achievementStore', () => {
 
       store.checkAchievements(mockPlacement);
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'streak_10'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'streak_10');
 
       // Progress should be 0.5 (5/10)
       expect(achievement?.progress).toBeGreaterThan(0);
@@ -474,7 +468,7 @@ describe('achievementStore', () => {
 
       // Build up a streak of 10
       for (let i = 0; i < 10; i++) {
-        scoringStore.addPoints(100);
+        scoringStore.updateStreak(true);
       }
 
       const mockPlacement: PlacementResult = {
@@ -488,12 +482,12 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement);
 
-      const streakAchievement = unlocked.find(a => a.id === 'streak_10');
+      const streakAchievement = unlocked.find((a) => a.id === 'streak_10');
       expect(streakAchievement).toBeDefined();
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'streak_10'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'streak_10');
       expect(achievement?.isUnlocked).toBe(true);
       expect(achievement?.progress).toBe(1);
     });
@@ -504,7 +498,7 @@ describe('achievementStore', () => {
 
       // Build up a streak of 20
       for (let i = 0; i < 20; i++) {
-        scoringStore.addPoints(100);
+        scoringStore.updateStreak(true);
       }
 
       const mockPlacement: PlacementResult = {
@@ -518,9 +512,9 @@ describe('achievementStore', () => {
 
       store.checkAchievements(mockPlacement);
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'streak_10'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'streak_10');
       expect(achievement?.progress).toBe(1);
     });
   });
@@ -528,11 +522,13 @@ describe('achievementStore', () => {
   describe('checkAchievements - bay_area_master', () => {
     it('should unlock when completing Bay Area on Expert difficulty', () => {
       const store = useAchievementStore.getState();
-      const lifecycleStore = useGameLifecycleStore.getState();
 
       // Set up Bay Area Expert game
-      lifecycleStore.setRegion(CaliforniaRegion.BAY_AREA);
-      lifecycleStore.setDifficulty(DifficultyLevel.EXPERT);
+      useGameLifecycleStore.setState({
+        selectedRegion: CaliforniaRegion.BAY_AREA,
+        difficulty: DifficultyLevel.EXPERT,
+        isGameActive: true,
+      });
 
       const mockPlacement: PlacementResult = {
         county: { id: 'alameda', name: 'Alameda' } as County,
@@ -548,22 +544,24 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement, remainingCounties);
 
-      const bayAreaAchievement = unlocked.find(a => a.id === 'bay_area_master');
+      const bayAreaAchievement = unlocked.find((a) => a.id === 'bay_area_master');
       expect(bayAreaAchievement).toBeDefined();
 
-      const achievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'bay_area_master'
-      );
+      const achievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'bay_area_master');
       expect(achievement?.isUnlocked).toBe(true);
       expect(achievement?.progress).toBe(1);
     });
 
     it('should not unlock for Bay Area on non-Expert difficulty', () => {
       const store = useAchievementStore.getState();
-      const lifecycleStore = useGameLifecycleStore.getState();
 
-      lifecycleStore.setRegion(CaliforniaRegion.BAY_AREA);
-      lifecycleStore.setDifficulty(DifficultyLevel.MEDIUM);
+      useGameLifecycleStore.setState({
+        selectedRegion: CaliforniaRegion.BAY_AREA,
+        difficulty: DifficultyLevel.MEDIUM,
+        isGameActive: true,
+      });
 
       const mockPlacement: PlacementResult = {
         county: { id: 'alameda', name: 'Alameda' } as County,
@@ -578,16 +576,18 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement, remainingCounties);
 
-      const bayAreaAchievement = unlocked.find(a => a.id === 'bay_area_master');
+      const bayAreaAchievement = unlocked.find((a) => a.id === 'bay_area_master');
       expect(bayAreaAchievement).toBeUndefined();
     });
 
     it('should not unlock for non-Bay Area region on Expert', () => {
       const store = useAchievementStore.getState();
-      const lifecycleStore = useGameLifecycleStore.getState();
 
-      lifecycleStore.setRegion(CaliforniaRegion.NORTHERN);
-      lifecycleStore.setDifficulty(DifficultyLevel.EXPERT);
+      useGameLifecycleStore.setState({
+        selectedRegion: CaliforniaRegion.NORTHERN,
+        difficulty: DifficultyLevel.EXPERT,
+        isGameActive: true,
+      });
 
       const mockPlacement: PlacementResult = {
         county: { id: 'alameda', name: 'Alameda' } as County,
@@ -602,16 +602,18 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement, remainingCounties);
 
-      const bayAreaAchievement = unlocked.find(a => a.id === 'bay_area_master');
+      const bayAreaAchievement = unlocked.find((a) => a.id === 'bay_area_master');
       expect(bayAreaAchievement).toBeUndefined();
     });
 
     it('should not unlock if counties remain', () => {
       const store = useAchievementStore.getState();
-      const lifecycleStore = useGameLifecycleStore.getState();
 
-      lifecycleStore.setRegion(CaliforniaRegion.BAY_AREA);
-      lifecycleStore.setDifficulty(DifficultyLevel.EXPERT);
+      useGameLifecycleStore.setState({
+        selectedRegion: CaliforniaRegion.BAY_AREA,
+        difficulty: DifficultyLevel.EXPERT,
+        isGameActive: true,
+      });
 
       const mockPlacement: PlacementResult = {
         county: { id: 'alameda', name: 'Alameda' } as County,
@@ -628,16 +630,18 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement, remainingCounties);
 
-      const bayAreaAchievement = unlocked.find(a => a.id === 'bay_area_master');
+      const bayAreaAchievement = unlocked.find((a) => a.id === 'bay_area_master');
       expect(bayAreaAchievement).toBeUndefined();
     });
 
     it('should handle undefined remainingCounties', () => {
       const store = useAchievementStore.getState();
-      const lifecycleStore = useGameLifecycleStore.getState();
 
-      lifecycleStore.setRegion(CaliforniaRegion.BAY_AREA);
-      lifecycleStore.setDifficulty(DifficultyLevel.EXPERT);
+      useGameLifecycleStore.setState({
+        selectedRegion: CaliforniaRegion.BAY_AREA,
+        difficulty: DifficultyLevel.EXPERT,
+        isGameActive: true,
+      });
 
       const mockPlacement: PlacementResult = {
         county: { id: 'alameda', name: 'Alameda' } as County,
@@ -651,7 +655,7 @@ describe('achievementStore', () => {
       // Don't pass remainingCounties
       const unlocked = store.checkAchievements(mockPlacement);
 
-      const bayAreaAchievement = unlocked.find(a => a.id === 'bay_area_master');
+      const bayAreaAchievement = unlocked.find((a) => a.id === 'bay_area_master');
       expect(bayAreaAchievement).toBeUndefined();
     });
   });
@@ -674,9 +678,9 @@ describe('achievementStore', () => {
 
       // Should unlock: first_county, perfect_placement, speed_demon
       expect(unlocked.length).toBe(3);
-      expect(unlocked.find(a => a.id === 'first_county')).toBeDefined();
-      expect(unlocked.find(a => a.id === 'perfect_placement')).toBeDefined();
-      expect(unlocked.find(a => a.id === 'speed_demon')).toBeDefined();
+      expect(unlocked.find((a) => a.id === 'first_county')).toBeDefined();
+      expect(unlocked.find((a) => a.id === 'perfect_placement')).toBeDefined();
+      expect(unlocked.find((a) => a.id === 'speed_demon')).toBeDefined();
     });
 
     it('should play sound for each unlocked achievement', () => {
@@ -755,7 +759,7 @@ describe('achievementStore', () => {
 
       // Build streak to 5
       for (let i = 0; i < 5; i++) {
-        scoringStore.addPoints(100);
+        scoringStore.updateStreak(true);
       }
 
       const mockPlacement: PlacementResult = {
@@ -807,7 +811,7 @@ describe('achievementStore', () => {
 
       const state = useAchievementStore.getState();
 
-      state.achievements.forEach(achievement => {
+      state.achievements.forEach((achievement) => {
         expect(achievement.isUnlocked).toBe(false);
         expect(achievement.progress).toBe(0);
         expect(achievement.unlockedAt).toBeUndefined();
@@ -817,7 +821,7 @@ describe('achievementStore', () => {
     it('should preserve achievement definitions', () => {
       const store = useAchievementStore.getState();
       const initialCount = store.achievements.length;
-      const initialIds = store.achievements.map(a => a.id);
+      const initialIds = store.achievements.map((a) => a.id);
 
       // Make some changes
       store.unlockAchievement('first_county');
@@ -839,7 +843,7 @@ describe('achievementStore', () => {
 
       // Build partial streak
       for (let i = 0; i < 5; i++) {
-        scoringStore.addPoints(100);
+        scoringStore.updateStreak(true);
       }
 
       const mockPlacement: PlacementResult = {
@@ -854,18 +858,18 @@ describe('achievementStore', () => {
       store.checkAchievements(mockPlacement);
 
       // Verify progress exists
-      let streakAchievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'streak_10'
-      );
+      let streakAchievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'streak_10');
       expect(streakAchievement?.progress).toBeGreaterThan(0);
 
       // Reset
       store.resetAchievements();
 
       // Verify progress reset
-      streakAchievement = useAchievementStore.getState().achievements.find(
-        a => a.id === 'streak_10'
-      );
+      streakAchievement = useAchievementStore
+        .getState()
+        .achievements.find((a) => a.id === 'streak_10');
       expect(streakAchievement?.progress).toBe(0);
     });
   });
@@ -885,7 +889,7 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement);
 
-      unlocked.forEach(achievement => {
+      unlocked.forEach((achievement) => {
         expect(achievement.unlockedAt).toBeInstanceOf(Date);
       });
     });
@@ -904,7 +908,7 @@ describe('achievementStore', () => {
 
       const unlocked = store.checkAchievements(mockPlacement);
 
-      unlocked.forEach(achievement => {
+      unlocked.forEach((achievement) => {
         expect(achievement).toHaveProperty('id');
         expect(achievement).toHaveProperty('name');
         expect(achievement).toHaveProperty('description');
@@ -933,7 +937,7 @@ describe('achievementStore', () => {
       const unlocked = store.checkAchievements(mockPlacement);
 
       // Simulate notification system accessing achievement details
-      unlocked.forEach(achievement => {
+      unlocked.forEach((achievement) => {
         const notificationData = {
           title: achievement.name,
           message: achievement.description,
@@ -989,8 +993,8 @@ describe('achievementStore', () => {
 
       // Verify state consistency
       const state = useAchievementStore.getState();
-      const unlockedCount = state.achievements.filter(a => a.isUnlocked).length;
-      const fullyProgressedCount = state.achievements.filter(a => a.progress === 1).length;
+      const unlockedCount = state.achievements.filter((a) => a.isUnlocked).length;
+      const fullyProgressedCount = state.achievements.filter((a) => a.progress === 1).length;
 
       expect(unlockedCount).toBe(fullyProgressedCount);
     });

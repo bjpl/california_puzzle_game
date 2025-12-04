@@ -108,31 +108,31 @@ describe('Scoring Store', () => {
       it('should calculate score with EASY difficulty (1.0x)', () => {
         const { calculateScore } = useScoringStore.getState();
         const score = calculateScore(DifficultyLevel.EASY, 1.0, 5000);
-        // Base: 100, Accuracy: 1.0, Speed: 1.5 (<5s), Difficulty: 1.0, Streak: 1.0
-        // Total: 100 * 1.0 * 1.5 * 1.0 * 1.0 = 150
-        expect(score).toBe(150);
+        // Base: 100, Accuracy: 1.0, Speed: 1.2 (5000ms = NOT < 5000), Difficulty: 1.0, Streak: 1.0
+        // Total: 100 * 1.0 * 1.2 * 1.0 * 1.0 = 120
+        expect(score).toBe(120);
       });
 
       it('should calculate score with MEDIUM difficulty (1.5x)', () => {
         const { calculateScore } = useScoringStore.getState();
         const score = calculateScore(DifficultyLevel.MEDIUM, 1.0, 5000);
-        // Base: 100, Accuracy: 1.0, Speed: 1.5, Difficulty: 1.5, Streak: 1.0
-        // Total: 100 * 1.0 * 1.5 * 1.5 * 1.0 = 225
-        expect(score).toBe(225);
+        // Base: 100, Accuracy: 1.0, Speed: 1.2, Difficulty: 1.5, Streak: 1.0
+        // Total: 100 * 1.0 * 1.2 * 1.5 * 1.0 = 180
+        expect(score).toBe(180);
       });
 
       it('should calculate score with HARD difficulty (2.0x)', () => {
         const { calculateScore } = useScoringStore.getState();
         const score = calculateScore(DifficultyLevel.HARD, 1.0, 5000);
-        // Total: 100 * 1.0 * 1.5 * 2.0 * 1.0 = 300
-        expect(score).toBe(300);
+        // Total: 100 * 1.0 * 1.2 * 2.0 * 1.0 = 240
+        expect(score).toBe(240);
       });
 
       it('should calculate score with EXPERT difficulty (3.0x)', () => {
         const { calculateScore } = useScoringStore.getState();
         const score = calculateScore(DifficultyLevel.EXPERT, 1.0, 5000);
-        // Total: 100 * 1.0 * 1.5 * 3.0 * 1.0 = 450
-        expect(score).toBe(450);
+        // Total: 100 * 1.0 * 1.2 * 3.0 * 1.0 = 360
+        expect(score).toBe(360);
       });
     });
 
@@ -140,27 +140,27 @@ describe('Scoring Store', () => {
       it('should calculate score with perfect accuracy (1.0)', () => {
         const { calculateScore } = useScoringStore.getState();
         const score = calculateScore(DifficultyLevel.EASY, 1.0, 10000);
-        // Base: 100, Accuracy: 1.0, Speed: 1.2, Difficulty: 1.0, Streak: 1.0
-        expect(score).toBe(120);
+        // Base: 100, Accuracy: 1.0, Speed: 1.0 (10000ms = NOT < 10000), Difficulty: 1.0, Streak: 1.0
+        expect(score).toBe(100);
       });
 
       it('should calculate score with 75% accuracy', () => {
         const { calculateScore } = useScoringStore.getState();
         const score = calculateScore(DifficultyLevel.EASY, 0.75, 10000);
-        // Base: 100, Accuracy: 0.75, Speed: 1.2, Difficulty: 1.0, Streak: 1.0
-        expect(score).toBe(90);
+        // Base: 100, Accuracy: 0.75, Speed: 1.0, Difficulty: 1.0, Streak: 1.0
+        expect(score).toBe(75);
       });
 
       it('should calculate score with 50% accuracy', () => {
         const { calculateScore } = useScoringStore.getState();
         const score = calculateScore(DifficultyLevel.EASY, 0.5, 10000);
-        expect(score).toBe(60);
+        expect(score).toBe(50);
       });
 
       it('should calculate score with 25% accuracy', () => {
         const { calculateScore } = useScoringStore.getState();
         const score = calculateScore(DifficultyLevel.EASY, 0.25, 10000);
-        expect(score).toBe(30);
+        expect(score).toBe(25);
       });
 
       it('should handle zero accuracy', () => {
@@ -443,7 +443,10 @@ describe('Scoring Store', () => {
     });
 
     it('should update longestStreak when current streak is higher', () => {
-      useScoringStore.setState({ streak: 5, stats: { ...useScoringStore.getState().stats, longestStreak: 3 } });
+      useScoringStore.setState({
+        streak: 5,
+        stats: { ...useScoringStore.getState().stats, longestStreak: 3 },
+      });
       const { updatePlacementStats } = useScoringStore.getState();
       const placement = createPlacementResult();
       updatePlacementStats(placement);
@@ -451,7 +454,10 @@ describe('Scoring Store', () => {
     });
 
     it('should not update longestStreak when current streak is lower', () => {
-      useScoringStore.setState({ streak: 2, stats: { ...useScoringStore.getState().stats, longestStreak: 10 } });
+      useScoringStore.setState({
+        streak: 2,
+        stats: { ...useScoringStore.getState().stats, longestStreak: 10 },
+      });
       const { updatePlacementStats } = useScoringStore.getState();
       const placement = createPlacementResult();
       updatePlacementStats(placement);
@@ -542,42 +548,59 @@ describe('Scoring Store', () => {
 
   describe('finalizeGame', () => {
     it('should update bestScore when current score is higher', () => {
-      useScoringStore.setState({ score: 500, stats: { ...useScoringStore.getState().stats, bestScore: 300 } });
+      useScoringStore.setState({
+        score: 500,
+        stats: { ...useScoringStore.getState().stats, bestScore: 300 },
+      });
       const { finalizeGame } = useScoringStore.getState();
       finalizeGame(60000);
       expect(useScoringStore.getState().stats.bestScore).toBe(500);
     });
 
     it('should not update bestScore when current score is lower', () => {
-      useScoringStore.setState({ score: 200, stats: { ...useScoringStore.getState().stats, bestScore: 500 } });
+      useScoringStore.setState({
+        score: 200,
+        stats: { ...useScoringStore.getState().stats, bestScore: 500 },
+      });
       const { finalizeGame } = useScoringStore.getState();
       finalizeGame(60000);
       expect(useScoringStore.getState().stats.bestScore).toBe(500);
     });
 
     it('should add current score to totalScore', () => {
-      useScoringStore.setState({ score: 300, stats: { ...useScoringStore.getState().stats, totalScore: 1000 } });
+      useScoringStore.setState({
+        score: 300,
+        stats: { ...useScoringStore.getState().stats, totalScore: 1000 },
+      });
       const { finalizeGame } = useScoringStore.getState();
       finalizeGame(60000);
       expect(useScoringStore.getState().stats.totalScore).toBe(1300);
     });
 
     it('should add timeElapsed to totalPlayTime', () => {
-      useScoringStore.setState({ stats: { ...useScoringStore.getState().stats, totalPlayTime: 120000 } });
+      useScoringStore.setState({
+        stats: { ...useScoringStore.getState().stats, totalPlayTime: 120000 },
+      });
       const { finalizeGame } = useScoringStore.getState();
       finalizeGame(60000);
       expect(useScoringStore.getState().stats.totalPlayTime).toBe(180000);
     });
 
     it('should update longestStreak when current streak is higher', () => {
-      useScoringStore.setState({ streak: 8, stats: { ...useScoringStore.getState().stats, longestStreak: 5 } });
+      useScoringStore.setState({
+        streak: 8,
+        stats: { ...useScoringStore.getState().stats, longestStreak: 5 },
+      });
       const { finalizeGame } = useScoringStore.getState();
       finalizeGame(60000);
       expect(useScoringStore.getState().stats.longestStreak).toBe(8);
     });
 
     it('should not update longestStreak when current streak is lower', () => {
-      useScoringStore.setState({ streak: 3, stats: { ...useScoringStore.getState().stats, longestStreak: 10 } });
+      useScoringStore.setState({
+        streak: 3,
+        stats: { ...useScoringStore.getState().stats, longestStreak: 10 },
+      });
       const { finalizeGame } = useScoringStore.getState();
       finalizeGame(60000);
       expect(useScoringStore.getState().stats.longestStreak).toBe(10);
@@ -769,7 +792,9 @@ describe('Scoring Store', () => {
       });
 
       it('should handle very large game counts', () => {
-        useScoringStore.setState({ stats: { ...useScoringStore.getState().stats, totalGamesPlayed: 999999 } });
+        useScoringStore.setState({
+          stats: { ...useScoringStore.getState().stats, totalGamesPlayed: 999999 },
+        });
         const { incrementGamesPlayed } = useScoringStore.getState();
         incrementGamesPlayed();
         expect(useScoringStore.getState().stats.totalGamesPlayed).toBe(1000000);

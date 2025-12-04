@@ -11,6 +11,8 @@ import { logger } from '../utils/logger';
 
 // Track if coordinator has been initialized
 let isInitialized = false;
+// Store cleanup function for proper teardown
+let cleanupFunction: (() => void) | null = null;
 
 /**
  * Initialize store coordination subscriptions.
@@ -34,10 +36,9 @@ export function initializeStoreCoordination(): () => void {
     if (lastPlacementResult && lastPlacementResult !== prevPlacementResult) {
       prevPlacementResult = lastPlacementResult;
       // Pass remainingCounties as parameter to avoid circular import in achievementStore
-      useAchievementStore.getState().checkAchievements(
-        lastPlacementResult,
-        state.remainingCounties
-      );
+      useAchievementStore
+        .getState()
+        .checkAchievements(lastPlacementResult, state.remainingCounties);
     }
   });
   unsubscribers.push(unsubPlacement);
@@ -45,12 +46,15 @@ export function initializeStoreCoordination(): () => void {
   isInitialized = true;
   logger.info('[StoreCoordinator] Subscriptions initialized');
 
-  // Return cleanup function
-  return () => {
+  // Return cleanup function and store it for resetCoordination
+  cleanupFunction = () => {
     unsubscribers.forEach((unsub) => unsub());
     isInitialized = false;
+    cleanupFunction = null;
     logger.info('[StoreCoordinator] Subscriptions cleaned up');
   };
+
+  return cleanupFunction;
 }
 
 /**
@@ -62,7 +66,13 @@ export function isCoordinationInitialized(): boolean {
 
 /**
  * Reset coordination state (for testing)
+ * Calls cleanup if coordination is active
  */
 export function resetCoordination(): void {
-  isInitialized = false;
+  if (cleanupFunction) {
+    cleanupFunction();
+  } else {
+    isInitialized = false;
+    cleanupFunction = null;
+  }
 }
