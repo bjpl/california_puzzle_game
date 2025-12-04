@@ -340,7 +340,7 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
     it('should have minimum 44x44px touch targets', () => {
       const buttons = document.querySelectorAll('button');
 
-      buttons.forEach((button) => {
+      buttons.forEach((_button) => {
         // In actual app, buttons should meet this
         // const rect = button.getBoundingClientRect();
         // expect(rect.width).toBeGreaterThanOrEqual(44);

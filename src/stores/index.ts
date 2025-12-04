@@ -30,6 +30,12 @@ export { useSettingsStore, type SettingsStore } from './gameSettingsStore';
 // Store coordination (call initializeStoreCoordination() at app startup)
 export { initializeStoreCoordination, isCoordinationInitialized } from './storeCoordinator';
 
-// Legacy export for backward compatibility
-// Components using useGameStore should migrate to individual stores
-export { useGameStore } from './gameStore';
+// DEPRECATED: Legacy gameStore removed in Phase 1 refactoring (2025-12-03)
+// All components now use domain-specific stores:
+// - useGameLifecycleStore: Game state transitions
+// - useCountyPlacementStore: County piece management
+// - useScoringStore: Score calculation
+// - useAchievementStore: Achievement system
+// - useHintStore: Hint management
+// - useGestureStore: Map gestures
+// - useSettingsStore: User preferences

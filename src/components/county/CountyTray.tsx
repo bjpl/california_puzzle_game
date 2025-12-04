@@ -1,21 +1,30 @@
 import { memo, useMemo, useCallback } from 'react';
 import { useDraggable } from '@dnd-kit/core';
-import { useGame } from '../../context/GameContext';
+import { useCountyPlacementStore } from '@/stores/countyPlacementStore';
+import { County } from '@/types';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 // import { getRegionColor } from '../../config/regionColors'; // Available if needed
 import { Badge, Heading, Text } from '../ui';
-import { County } from '../../data/californiaCountiesComplete';
 import { MobileCountySelector } from './MobileCountySelector';
 import './CountyTray.css';
 
 // Memoized draggable county component
 const DraggableCounty = memo(
   ({ county }: { county: County }) => {
-    const { placedCounties, selectCounty, currentCounty } = useGame();
+    const placedCounties = useCountyPlacementStore((state) => state.placedCounties);
+    const currentHint = useCountyPlacementStore((state) => state.currentHint);
+    const setCurrentHint = useCountyPlacementStore((state) => state.setCurrentHint);
     const sound = useSoundEffect();
-    const isPlaced = placedCounties.has(county.id);
-    const isSelected = currentCounty?.id === county.id;
+
+    // Convert placedCounties array to Set for lookup
+    const placedCountiesSet = useMemo(
+      () => new Set(placedCounties.map((c) => c.id)),
+      [placedCounties]
+    );
+
+    const isPlaced = placedCountiesSet.has(county.id);
+    const isSelected = currentHint?.id === county.id;
 
     const {
       attributes,
@@ -45,10 +54,10 @@ const DraggableCounty = memo(
         e.stopPropagation();
         if (!isPlaced && !isSelected) {
           sound.playSound('pickup', 0.5);
-          selectCounty(county);
+          setCurrentHint(county);
         }
       },
-      [isPlaced, isSelected, sound, selectCounty, county]
+      [isPlaced, isSelected, sound, setCurrentHint, county]
     );
 
     // Memoize title
@@ -101,9 +110,22 @@ const DraggableCounty = memo(
 DraggableCounty.displayName = 'DraggableCounty';
 
 const CountyTray = memo(() => {
-  const { counties, placedCounties } = useGame();
+  const placedCounties = useCountyPlacementStore((state) => state.placedCounties);
+  const remainingCounties = useCountyPlacementStore((state) => state.remainingCounties);
   const deviceInfo = useDeviceInfo();
   const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
+
+  // Convert placedCounties array to Set for lookup
+  const placedCountiesSet = useMemo(
+    () => new Set(placedCounties.map((c) => c.id)),
+    [placedCounties]
+  );
+
+  // Combine remaining and placed counties to show full list
+  const counties = useMemo(
+    () => [...remainingCounties, ...placedCounties],
+    [remainingCounties, placedCounties]
+  );
 
   // Memoize grouped counties to prevent recalculation
   const countiesByRegion = useMemo(
@@ -145,8 +167,8 @@ const CountyTray = memo(() => {
                 isMobile ? (
                   <MobileCountySelector
                     key={county.id}
-                    county={county}
-                    isPlaced={placedCounties.has(county.id)}
+                    county={county as unknown as Parameters<typeof MobileCountySelector>[0]['county']} // Type compatibility
+                    isPlaced={placedCountiesSet.has(county.id)}
                   />
                 ) : (
                   <DraggableCounty key={county.id} county={county} />

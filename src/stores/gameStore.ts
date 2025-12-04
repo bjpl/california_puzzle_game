@@ -1,3 +1,23 @@
+/**
+ * @deprecated LEGACY STORE - DO NOT USE IN NEW CODE
+ *
+ * This monolithic store has been deprecated as of 2025-12-03.
+ * All functionality has been migrated to domain-specific stores:
+ *
+ * - useGameLifecycleStore: Game state transitions (start, pause, end)
+ * - useCountyPlacementStore: County piece management
+ * - useScoringStore: Score calculation and statistics
+ * - useAchievementStore: Achievement system
+ * - useHintStore: Hint management
+ * - useGestureStore: Map gesture controls
+ * - useSettingsStore: User preferences
+ *
+ * Architecture Assessment (2025-12-03): Grade B- → B+
+ * See: docs/architecture/ARCHITECTURE_ASSESSMENT.md
+ *
+ * TODO: Delete this file after verifying all dependencies are migrated
+ * Migration Ticket: Phase 1 Critical Cleanup
+ */
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { playSound, SoundType, setVolume, soundManager } from '../utils/soundManager';
