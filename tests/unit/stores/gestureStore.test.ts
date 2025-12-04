@@ -262,7 +262,7 @@ describe('gestureStore', () => {
   describe('State persistence', () => {
     it('should have persist middleware configured', () => {
       // Check that the store name is set for persistence
-      const storeName = 'california-puzzle-gestures';
+      const _storeName = 'california-puzzle-gestures';
 
       // The store should be partializing state for persistence
       const state = useGestureStore.getState();

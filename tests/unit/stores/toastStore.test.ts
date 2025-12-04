@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { useToastStore, TOAST_DURATIONS, type Toast } from '../../../src/stores/toastStore';
+import { useToastStore, TOAST_DURATIONS } from '../../../src/stores/toastStore';
 
 describe('toastStore', () => {
   beforeEach(() => {
