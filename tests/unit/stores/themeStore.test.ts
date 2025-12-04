@@ -25,13 +25,91 @@ vi.mock('../../../src/config/theme', () => ({
   }),
 }));
 
-// Mock logger
+// Mock logger - all exported loggers
 vi.mock('../../../src/utils/logger', () => ({
   logger: {
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
     debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  mapLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  gameLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  studyLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  soundLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  storageLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  achievementLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
   },
 }));
 
@@ -74,7 +152,9 @@ vi.spyOn(document, 'createElement').mockImplementation(() => {
   return mockMetaTag as unknown as HTMLElement;
 });
 
-vi.spyOn(document.head, 'appendChild').mockImplementation(() => mockMetaTag as unknown as HTMLElement);
+vi.spyOn(document.head, 'appendChild').mockImplementation(
+  () => mockMetaTag as unknown as HTMLElement
+);
 
 describe('themeStore', () => {
   beforeEach(() => {
@@ -183,15 +263,13 @@ describe('themeStore', () => {
       expect(state.resolvedTheme).toBe('dark');
     });
 
-    it('should not re-initialize if already initialized', () => {
+    it('should not re-initialize if already initialized', async () => {
       useThemeStore.setState({ mode: 'light', initialized: true });
       const { logger } = vi.mocked(await import('../../../src/utils/logger'));
 
       useThemeStore.getState().initializeTheme();
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        '[Theme] Already initialized, skipping'
-      );
+      expect(logger.warn).toHaveBeenCalledWith('[Theme] Already initialized, skipping');
     });
 
     it('should set up system theme watcher in system mode', async () => {
@@ -212,24 +290,34 @@ describe('themeStore', () => {
 
     it('should select resolved theme', () => {
       const state = { mode: 'system' as const, resolvedTheme: 'light' as const, initialized: true };
-      expect(themeSelectors.resolved(state as ReturnType<typeof useThemeStore.getState>)).toBe('light');
+      expect(themeSelectors.resolved(state as ReturnType<typeof useThemeStore.getState>)).toBe(
+        'light'
+      );
     });
 
     it('should determine isDark correctly', () => {
       expect(
-        themeSelectors.isDark({ resolvedTheme: 'dark' } as ReturnType<typeof useThemeStore.getState>)
+        themeSelectors.isDark({ resolvedTheme: 'dark' } as ReturnType<
+          typeof useThemeStore.getState
+        >)
       ).toBe(true);
       expect(
-        themeSelectors.isDark({ resolvedTheme: 'light' } as ReturnType<typeof useThemeStore.getState>)
+        themeSelectors.isDark({ resolvedTheme: 'light' } as ReturnType<
+          typeof useThemeStore.getState
+        >)
       ).toBe(false);
     });
 
     it('should determine isLight correctly', () => {
       expect(
-        themeSelectors.isLight({ resolvedTheme: 'light' } as ReturnType<typeof useThemeStore.getState>)
+        themeSelectors.isLight({ resolvedTheme: 'light' } as ReturnType<
+          typeof useThemeStore.getState
+        >)
       ).toBe(true);
       expect(
-        themeSelectors.isLight({ resolvedTheme: 'dark' } as ReturnType<typeof useThemeStore.getState>)
+        themeSelectors.isLight({ resolvedTheme: 'dark' } as ReturnType<
+          typeof useThemeStore.getState
+        >)
       ).toBe(false);
     });
 
@@ -267,10 +355,7 @@ describe('themeStore', () => {
     });
 
     it('should read from localStorage', () => {
-      localStorageMock.setItem(
-        'theme-storage',
-        JSON.stringify({ state: { mode: 'dark' } })
-      );
+      localStorageMock.setItem('theme-storage', JSON.stringify({ state: { mode: 'dark' } }));
 
       initializeThemeSync();
 

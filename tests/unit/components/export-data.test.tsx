@@ -33,8 +33,87 @@ vi.mock('@/lib/supabase', () => ({
 vi.mock('@/utils/logger', () => ({
   logger: {
     info: vi.fn(),
-    error: vi.fn(),
     warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  mapLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  gameLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  studyLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  soundLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  storageLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  achievementLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
   },
 }));
 
@@ -239,7 +318,9 @@ describe('ExportData Component', () => {
       await user.click(exportButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/Please select at least one data type to export/)).toBeInTheDocument();
+        expect(
+          screen.getByText(/Please select at least one data type to export/)
+        ).toBeInTheDocument();
       });
     });
   });
@@ -261,8 +342,12 @@ describe('ExportData Component', () => {
     it('should create downloadable JSON file', async () => {
       const user = userEvent.setup();
       const mockClick = vi.fn();
-      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
+      const mockAppendChild = vi
+        .spyOn(document.body, 'appendChild')
+        .mockImplementation(() => null as unknown);
+      const mockRemoveChild = vi
+        .spyOn(document.body, 'removeChild')
+        .mockImplementation(() => null as unknown);
 
       let capturedElement: HTMLAnchorElement | null = null;
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
@@ -595,7 +680,9 @@ describe('ExportData Component', () => {
       render(<ExportData />);
 
       expect(screen.getByText('About Data Export')).toBeInTheDocument();
-      expect(screen.getByText(/Your data is exported in a standard JSON format/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Your data is exported in a standard JSON format/)
+      ).toBeInTheDocument();
       expect(screen.getByText(/This is part of your data privacy rights/)).toBeInTheDocument();
     });
   });

@@ -2,19 +2,91 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeAll, afterAll, beforeEach } from 'vitest';
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 
-// Mock the logger to prevent stack overflow
+// Mock the logger to prevent stack overflow - all exported loggers
 vi.mock('@/utils/logger', () => ({
   logger: {
-    error: vi.fn(),
-    warn: vi.fn(),
     info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
     debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
   },
   mapLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
     error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
   },
   gameLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
     error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  studyLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  soundLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  storageLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  achievementLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
   },
 }));
 
@@ -89,10 +161,10 @@ describe('ErrorBoundary', () => {
     expect(onError).toHaveBeenCalled();
     expect(onError).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Custom error message'
+        message: 'Custom error message',
       }),
       expect.objectContaining({
-        componentStack: expect.any(String)
+        componentStack: expect.any(String),
       })
     );
   });

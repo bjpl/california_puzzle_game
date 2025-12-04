@@ -12,13 +12,91 @@ import {
 import { useCountyPlacementStore } from '../../../src/stores/countyPlacementStore';
 import { useAchievementStore } from '../../../src/stores/achievementStore';
 
-// Mock logger
+// Mock logger - all exported loggers
 vi.mock('../../../src/utils/logger', () => ({
   logger: {
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
     debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  mapLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  gameLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  studyLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  soundLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  storageLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  achievementLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
   },
 }));
 
@@ -109,10 +187,7 @@ describe('storeCoordinator', () => {
 
   describe('County Placement → Achievement subscription', () => {
     it('should trigger achievement check when county is placed', () => {
-      const checkAchievementsSpy = vi.spyOn(
-        useAchievementStore.getState(),
-        'checkAchievements'
-      );
+      const checkAchievementsSpy = vi.spyOn(useAchievementStore.getState(), 'checkAchievements');
 
       initializeStoreCoordination();
 
@@ -131,10 +206,7 @@ describe('storeCoordinator', () => {
     });
 
     it('should not trigger achievement check when lastPlacementResult is null', () => {
-      const checkAchievementsSpy = vi.spyOn(
-        useAchievementStore.getState(),
-        'checkAchievements'
-      );
+      const checkAchievementsSpy = vi.spyOn(useAchievementStore.getState(), 'checkAchievements');
 
       initializeStoreCoordination();
 
@@ -160,10 +232,7 @@ describe('storeCoordinator', () => {
         remainingCounties: [],
       });
 
-      const checkAchievementsSpy = vi.spyOn(
-        useAchievementStore.getState(),
-        'checkAchievements'
-      );
+      const checkAchievementsSpy = vi.spyOn(useAchievementStore.getState(), 'checkAchievements');
 
       initializeStoreCoordination();
 
@@ -177,10 +246,7 @@ describe('storeCoordinator', () => {
     });
 
     it('should pass remainingCounties to checkAchievements', () => {
-      const checkAchievementsSpy = vi.spyOn(
-        useAchievementStore.getState(),
-        'checkAchievements'
-      );
+      const checkAchievementsSpy = vi.spyOn(useAchievementStore.getState(), 'checkAchievements');
 
       initializeStoreCoordination();
 

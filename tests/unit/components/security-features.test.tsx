@@ -61,8 +61,87 @@ vi.mock('@/utils/accessibility', () => ({
 vi.mock('@/utils/logger', () => ({
   logger: {
     info: vi.fn(),
-    error: vi.fn(),
     warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  mapLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  gameLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  studyLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  soundLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  storageLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
+  },
+  achievementLogger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    })),
   },
 }));
 
@@ -128,7 +207,9 @@ describe('UserSettings Component', () => {
 
       render(<UserSettings />);
 
-      expect(screen.getByText('Please sign in to manage your account settings.')).toBeInTheDocument();
+      expect(
+        screen.getByText('Please sign in to manage your account settings.')
+      ).toBeInTheDocument();
     });
   });
 
@@ -196,7 +277,9 @@ describe('UserSettings Component', () => {
 
     it('should have Cancel and Continue buttons', () => {
       expect(screen.getByRole('button', { name: /cancel account deletion/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /proceed to final confirmation/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /proceed to final confirmation/i })
+      ).toBeInTheDocument();
     });
 
     it('should close dialog on Cancel click', async () => {
@@ -319,7 +402,9 @@ describe('UserSettings Component', () => {
 
     it('should show loading state during deletion', async () => {
       const user = userEvent.setup();
-      mockDeleteUserAccount.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
+      mockDeleteUserAccount.mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 100))
+      );
 
       const confirmButton = screen.getByRole('button', { name: /confirm and delete account/i });
       await user.click(confirmButton);
@@ -349,18 +434,21 @@ describe('UserSettings Component', () => {
       const confirmButton = screen.getByRole('button', { name: /confirm and delete account/i });
       await user.click(confirmButton);
 
-      await waitFor(() => {
-        expect(mockAnnounceToScreenReader).toHaveBeenCalledWith(
-          'Account deleted successfully. Redirecting to home page.'
-        );
-      }, { timeout: 2000 });
+      await waitFor(
+        () => {
+          expect(mockAnnounceToScreenReader).toHaveBeenCalledWith(
+            'Account deleted successfully. Redirecting to home page.'
+          );
+        },
+        { timeout: 2000 }
+      );
     });
 
     it('should display error message on failure', async () => {
       const user = userEvent.setup();
       mockDeleteUserAccount.mockResolvedValue({
         success: false,
-        error: 'Database connection failed'
+        error: 'Database connection failed',
       });
 
       const confirmButton = screen.getByRole('button', { name: /confirm and delete account/i });
@@ -395,7 +483,7 @@ describe('UserSettings Component', () => {
       const user = userEvent.setup();
       mockExportUserData.mockResolvedValue({
         success: true,
-        data: { game_sessions: [], user_progress: [] }
+        data: { game_sessions: [], user_progress: [] },
       });
 
       render(<UserSettings />);
@@ -410,7 +498,9 @@ describe('UserSettings Component', () => {
 
     it('should show loading state during export', async () => {
       const user = userEvent.setup();
-      mockExportUserData.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
+      mockExportUserData.mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 100))
+      );
 
       render(<UserSettings />);
 
@@ -431,8 +521,12 @@ describe('UserSettings Component', () => {
 
       // Mock DOM methods
       const mockClick = vi.fn();
-      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
+      const mockAppendChild = vi
+        .spyOn(document.body, 'appendChild')
+        .mockImplementation(() => null as unknown);
+      const mockRemoveChild = vi
+        .spyOn(document.body, 'removeChild')
+        .mockImplementation(() => null as unknown);
       const mockCreateElement = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
@@ -462,7 +556,7 @@ describe('UserSettings Component', () => {
       const user = userEvent.setup();
       mockExportUserData.mockResolvedValue({
         success: false,
-        error: 'Failed to fetch data'
+        error: 'Failed to fetch data',
       });
 
       render(<UserSettings />);
@@ -492,7 +586,9 @@ describe('UserSettings Component', () => {
     it('should not render close button when onClose is not provided', () => {
       render(<UserSettings />);
 
-      expect(screen.queryByRole('button', { name: /close account settings/i })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: /close account settings/i })
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -638,8 +734,12 @@ describe('SecurityBadge Component', () => {
 
       await waitFor(() => {
         const tooltip = screen.getByRole('tooltip');
-        expect(within(tooltip).getByText(/Your data is encrypted using AES-256/)).toBeInTheDocument();
-        expect(within(tooltip).getByText(/Anonymous authentication for privacy/)).toBeInTheDocument();
+        expect(
+          within(tooltip).getByText(/Your data is encrypted using AES-256/)
+        ).toBeInTheDocument();
+        expect(
+          within(tooltip).getByText(/Anonymous authentication for privacy/)
+        ).toBeInTheDocument();
         expect(within(tooltip).getByText(/No personal data collected/)).toBeInTheDocument();
         expect(within(tooltip).getByText(/Local-first data storage/)).toBeInTheDocument();
       });
