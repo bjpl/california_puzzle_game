@@ -76,7 +76,9 @@ export function applyTouchTargetSize(size: TouchTargetSize): void {
 export function getContrastRatio(fg: string, bg: string): number {
   const getLuminance = (color: string): number => {
     // Parse color string (supports hex, rgb, rgba)
-    let r = 0, g = 0, b = 0;
+    let r = 0,
+      g = 0,
+      b = 0;
 
     if (color.startsWith('#')) {
       // Hex color
@@ -95,7 +97,7 @@ export function getContrastRatio(fg: string, bg: string): number {
     }
 
     // Calculate relative luminance
-    const sRGB = [r, g, b].map(val => {
+    const sRGB = [r, g, b].map((val) => {
       return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4);
     });
 
@@ -186,11 +188,7 @@ export function createCountyPlacementAriaLabel(
 /**
  * Create descriptive ARIA label for map interaction
  */
-export function createMapAriaLabel(
-  zoomLevel: number,
-  panX: number,
-  panY: number
-): string {
+export function createMapAriaLabel(zoomLevel: number, panX: number, panY: number): string {
   return `California map. Zoom level ${Math.round(zoomLevel * 100)}%. Pan position: ${Math.round(panX)}, ${Math.round(panY)}.`;
 }
 
@@ -341,14 +339,18 @@ export function initializeAccessibility(): void {
 
 /**
  * Test all colors for WCAG AAA compliance
+ * Tests high contrast mode colors which are designed for 7:1 ratio
  */
 export function testColorCompliance(): Record<string, { ratio: number; passes: boolean }> {
+  // High contrast mode colors (from useHighContrast.ts)
   const colors = {
     'Background/Text': ['#FFFFFF', '#000000'],
-    'Primary/Background': ['#0077BE', '#FFFFFF'],
-    'Accent/Background': ['#FFD700', '#FFFFFF'],
-    'Error/Background': ['#D00000', '#FFFFFF'],
+    'Primary/Background': ['#000000', '#FFFFFF'],
+    'Accent/Background': ['#004080', '#FFFFFF'],
+    'Error/Background': ['#B30000', '#FFFFFF'],
     'Success/Background': ['#005A00', '#FFFFFF'],
+    'Warning/Background': ['#704600', '#FFFFFF'],
+    'Focus/Background': ['#B30000', '#FFFFFF'],
   };
 
   const results: Record<string, { ratio: number; passes: boolean }> = {};

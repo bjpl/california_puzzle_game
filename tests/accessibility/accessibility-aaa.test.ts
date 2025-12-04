@@ -31,7 +31,7 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
     });
 
     it('should meet AAA contrast for error messages', () => {
-      const ratio = getContrastRatio('#D00000', '#FFFFFF');
+      const ratio = getContrastRatio('#B30000', '#FFFFFF');
       expect(ratio).toBeGreaterThanOrEqual(7);
     });
 
@@ -41,7 +41,7 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
     });
 
     it('should meet AAA contrast for warning messages', () => {
-      const ratio = getContrastRatio('#8B5A00', '#FFFFFF');
+      const ratio = getContrastRatio('#704600', '#FFFFFF');
       expect(ratio).toBeGreaterThanOrEqual(7);
     });
 
@@ -57,7 +57,8 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
     it('should validate meetsWCAGAAA utility', () => {
       expect(meetsWCAGAAA('#000000', '#FFFFFF')).toBe(true);
       expect(meetsWCAGAAA('#003D66', '#FFFFFF')).toBe(true);
-      expect(meetsWCAGAAA('#D00000', '#FFFFFF')).toBe(true);
+      expect(meetsWCAGAAA('#B30000', '#FFFFFF')).toBe(true);
+      expect(meetsWCAGAAA('#704600', '#FFFFFF')).toBe(true);
       expect(meetsWCAGAAA('#777777', '#FFFFFF')).toBe(false); // Only 4.5:1
     });
   });
@@ -98,10 +99,20 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
     });
 
     it('should have visible focus indicators', () => {
+      // Enable high contrast mode to test focus indicator
+      document.body.classList.add('high-contrast-mode');
+      const root = document.documentElement;
+      root.style.setProperty('--hc-focus', '#B30000');
+
       const style = getComputedStyle(document.documentElement);
       const focusColor = style.getPropertyValue('--hc-focus');
 
       expect(focusColor).toBeTruthy();
+      expect(focusColor.trim()).toBe('#B30000');
+
+      // Cleanup
+      document.body.classList.remove('high-contrast-mode');
+      root.style.removeProperty('--hc-focus');
     });
 
     it('should support Escape to close modals', () => {

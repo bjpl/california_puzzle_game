@@ -122,8 +122,17 @@ describe('ExportData Component', () => {
   let mockCreateObjectURL: ReturnType<typeof vi.fn>;
   let mockRevokeObjectURL: ReturnType<typeof vi.fn>;
 
+  // Save original DOM methods before any mocking
+  const originalCreateElement = document.createElement.bind(document);
+  const originalAppendChild = document.body.appendChild.bind(document.body);
+  const originalRemoveChild = document.body.removeChild.bind(document.body);
+
   beforeEach(async () => {
     vi.clearAllMocks();
+
+    // Reset useUserId mock to return authenticated user
+    const { useUserId } = await import('@/hooks/useAuth');
+    useUserId.mockReturnValue('test-user-id-12345');
 
     // Setup Supabase mock
     const { supabase } = await import('@/lib/supabase');
@@ -138,6 +147,8 @@ describe('ExportData Component', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    // Restore all spies to prevent test pollution
+    vi.restoreAllMocks();
   });
 
   describe('Rendering', () => {
@@ -151,17 +162,17 @@ describe('ExportData Component', () => {
     it('should render all data type checkboxes', () => {
       render(<ExportData />);
 
-      expect(screen.getByLabelText('Include game sessions')).toBeInTheDocument();
-      expect(screen.getByLabelText('Include user progress')).toBeInTheDocument();
-      expect(screen.getByLabelText('Include game settings')).toBeInTheDocument();
+      expect(screen.getByRole('checkbox', { name: 'Include game sessions' })).toBeInTheDocument();
+      expect(screen.getByRole('checkbox', { name: 'Include user progress' })).toBeInTheDocument();
+      expect(screen.getByRole('checkbox', { name: 'Include game settings' })).toBeInTheDocument();
     });
 
     it('should have all checkboxes checked by default', () => {
       render(<ExportData />);
 
-      expect(screen.getByLabelText('Include game sessions')).toBeChecked();
-      expect(screen.getByLabelText('Include user progress')).toBeChecked();
-      expect(screen.getByLabelText('Include game settings')).toBeChecked();
+      expect(screen.getByRole('checkbox', { name: 'Include game sessions' })).toBeChecked();
+      expect(screen.getByRole('checkbox', { name: 'Include user progress' })).toBeChecked();
+      expect(screen.getByRole('checkbox', { name: 'Include game settings' })).toBeChecked();
     });
 
     it('should render Export My Data button', () => {
@@ -185,7 +196,7 @@ describe('ExportData Component', () => {
       const user = userEvent.setup();
       render(<ExportData />);
 
-      const checkbox = screen.getByLabelText('Include game sessions');
+      const checkbox = screen.getByRole('checkbox', { name: 'Include game sessions' });
       expect(checkbox).toBeChecked();
 
       await user.click(checkbox);
@@ -199,7 +210,7 @@ describe('ExportData Component', () => {
       const user = userEvent.setup();
       render(<ExportData />);
 
-      const checkbox = screen.getByLabelText('Include user progress');
+      const checkbox = screen.getByRole('checkbox', { name: 'Include user progress' });
       await user.click(checkbox);
       expect(checkbox).not.toBeChecked();
     });
@@ -208,7 +219,7 @@ describe('ExportData Component', () => {
       const user = userEvent.setup();
       render(<ExportData />);
 
-      const checkbox = screen.getByLabelText('Include game settings');
+      const checkbox = screen.getByRole('checkbox', { name: 'Include game settings' });
       await user.click(checkbox);
       expect(checkbox).not.toBeChecked();
     });
@@ -217,12 +228,12 @@ describe('ExportData Component', () => {
       const user = userEvent.setup();
       render(<ExportData />);
 
-      await user.click(screen.getByLabelText('Include game sessions'));
-      await user.click(screen.getByLabelText('Include user progress'));
+      await user.click(screen.getByRole('checkbox', { name: 'Include game sessions' }));
+      await user.click(screen.getByRole('checkbox', { name: 'Include user progress' }));
 
-      expect(screen.getByLabelText('Include game sessions')).not.toBeChecked();
-      expect(screen.getByLabelText('Include user progress')).not.toBeChecked();
-      expect(screen.getByLabelText('Include game settings')).toBeChecked();
+      expect(screen.getByRole('checkbox', { name: 'Include game sessions' })).not.toBeChecked();
+      expect(screen.getByRole('checkbox', { name: 'Include user progress' })).not.toBeChecked();
+      expect(screen.getByRole('checkbox', { name: 'Include game settings' })).toBeChecked();
     });
   });
 
@@ -243,23 +254,23 @@ describe('ExportData Component', () => {
 
     it('should fetch data from Supabase on export', async () => {
       const user = userEvent.setup();
-
-      // Mock createElement and appendChild
       const mockClick = vi.fn();
+
+      render(<ExportData />);
+
+      // Mock createElement and appendChild AFTER render to avoid breaking React
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
         }
-        return document.createElement(tag);
+        return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
-
-      render(<ExportData />);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
@@ -273,26 +284,26 @@ describe('ExportData Component', () => {
 
     it('should only fetch selected data types', async () => {
       const user = userEvent.setup();
-
-      // Mock createElement and appendChild
       const mockClick = vi.fn();
+
+      render(<ExportData />);
+
+      // Mock createElement and appendChild AFTER render
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
         }
-        return document.createElement(tag);
+        return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
-
-      render(<ExportData />);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
 
       // Uncheck user progress
-      await user.click(screen.getByLabelText('Include user progress'));
+      await user.click(screen.getByRole('checkbox', { name: 'Include user progress' }));
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
@@ -308,9 +319,9 @@ describe('ExportData Component', () => {
       render(<ExportData />);
 
       // Uncheck all
-      await user.click(screen.getByLabelText('Include game sessions'));
-      await user.click(screen.getByLabelText('Include user progress'));
-      await user.click(screen.getByLabelText('Include game settings'));
+      await user.click(screen.getByRole('checkbox', { name: 'Include game sessions' }));
+      await user.click(screen.getByRole('checkbox', { name: 'Include user progress' }));
+      await user.click(screen.getByRole('checkbox', { name: 'Include game settings' }));
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
@@ -340,24 +351,36 @@ describe('ExportData Component', () => {
     it('should create downloadable JSON file', async () => {
       const user = userEvent.setup();
       const mockClick = vi.fn();
-      const mockAppendChild = vi
-        .spyOn(document.body, 'appendChild')
-        .mockImplementation(() => null as unknown);
-      const mockRemoveChild = vi
-        .spyOn(document.body, 'removeChild')
-        .mockImplementation(() => null as unknown);
+
+      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => {
+        // Only mock for anchor elements, use original for others
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalAppendChild(node);
+      });
+
+      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation((node) => {
+        // Only mock for anchor elements, use original for others
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalRemoveChild(node);
+      });
 
       let capturedElement: HTMLAnchorElement | null = null;
-      vi.spyOn(document, 'createElement').mockImplementation((tag) => {
+      const mockCreateElement = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           capturedElement = {
+            tagName: 'A',
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
           return capturedElement;
         }
-        return document.createElement(tag);
+        // Use the original implementation for other tags
+        return originalCreateElement(tag);
       });
 
       render(<ExportData />);
@@ -370,6 +393,8 @@ describe('ExportData Component', () => {
         expect(capturedElement?.download).toMatch(/california-puzzle-data-\d{4}-\d{2}-\d{2}\.json/);
       });
 
+      // Restore mocks immediately
+      mockCreateElement.mockRestore();
       mockAppendChild.mockRestore();
       mockRemoveChild.mockRestore();
     });
@@ -378,20 +403,21 @@ describe('ExportData Component', () => {
       const user = userEvent.setup();
       const mockClick = vi.fn();
 
+      render(<ExportData />);
+
+      // Mock AFTER render
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
         }
-        return document.createElement(tag);
+        return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
-
-      render(<ExportData />);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
@@ -405,20 +431,21 @@ describe('ExportData Component', () => {
       const user = userEvent.setup();
       const mockClick = vi.fn();
 
+      render(<ExportData />);
+
+      // Mock AFTER render
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
         }
-        return document.createElement(tag);
+        return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
-
-      render(<ExportData />);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
@@ -475,20 +502,22 @@ describe('ExportData Component', () => {
       }));
 
       const mockClick = vi.fn();
+
+      render(<ExportData />);
+
+      // Mock AFTER render
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
         }
-        return document.createElement(tag);
+        return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
-
-      render(<ExportData />);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
@@ -619,22 +648,23 @@ describe('ExportData Component', () => {
 
     it('should show estimated file size after export', async () => {
       const user = userEvent.setup();
-
       const mockClick = vi.fn();
+
+      render(<ExportData />);
+
+      // Mock AFTER render
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
         }
-        return document.createElement(tag);
+        return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
-
-      render(<ExportData />);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
@@ -646,22 +676,23 @@ describe('ExportData Component', () => {
 
     it('should format bytes correctly', async () => {
       const user = userEvent.setup();
-
       const mockClick = vi.fn();
+
+      render(<ExportData />);
+
+      // Mock AFTER render
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
         }
-        return document.createElement(tag);
+        return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
-
-      render(<ExportData />);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
@@ -689,9 +720,18 @@ describe('ExportData Component', () => {
     it('should have proper ARIA labels for checkboxes', () => {
       render(<ExportData />);
 
-      expect(screen.getByLabelText('Include game sessions')).toHaveAttribute('type', 'checkbox');
-      expect(screen.getByLabelText('Include user progress')).toHaveAttribute('type', 'checkbox');
-      expect(screen.getByLabelText('Include game settings')).toHaveAttribute('type', 'checkbox');
+      expect(screen.getByRole('checkbox', { name: 'Include game sessions' })).toHaveAttribute(
+        'type',
+        'checkbox'
+      );
+      expect(screen.getByRole('checkbox', { name: 'Include user progress' })).toHaveAttribute(
+        'type',
+        'checkbox'
+      );
+      expect(screen.getByRole('checkbox', { name: 'Include game settings' })).toHaveAttribute(
+        'type',
+        'checkbox'
+      );
     });
 
     it('should announce status changes with aria-live', async () => {
@@ -709,20 +749,22 @@ describe('ExportData Component', () => {
       }));
 
       const mockClick = vi.fn();
+
+      render(<ExportData />);
+
+      // Mock AFTER render
       vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
         }
-        return document.createElement(tag);
+        return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown);
-
-      render(<ExportData />);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
+      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);

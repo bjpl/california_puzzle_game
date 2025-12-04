@@ -26,16 +26,16 @@ export interface HighContrastState {
 
 // WCAG AAA compliant high contrast colors (7:1 ratio)
 const HIGH_CONTRAST_COLORS: HighContrastColors = {
-  background: '#FFFFFF',    // White background
-  foreground: '#000000',    // Black text (21:1 ratio)
-  primary: '#000000',       // Black for primary actions
-  secondary: '#1A1A1A',     // Near-black for secondary
-  accent: '#0052CC',        // Dark blue for accents (7.5:1 ratio)
-  border: '#000000',        // Black borders (3px minimum)
-  focus: '#FF0000',         // Red focus indicator (5.3:1 ratio)
-  error: '#D00000',         // Dark red for errors (7.1:1 ratio)
-  success: '#005A00',       // Dark green for success (7.1:1 ratio)
-  warning: '#8B5A00',       // Dark orange for warnings (7:1 ratio)
+  background: '#FFFFFF', // White background
+  foreground: '#000000', // Black text (21:1 ratio)
+  primary: '#000000', // Black for primary actions
+  secondary: '#1A1A1A', // Near-black for secondary
+  accent: '#004080', // Dark blue for accents (10.3:1 ratio)
+  border: '#000000', // Black borders (3px minimum)
+  focus: '#B30000', // Dark red focus indicator (7.2:1 ratio)
+  error: '#B30000', // Darker red for errors (7.2:1 ratio)
+  success: '#005A00', // Dark green for success (7.1:1 ratio)
+  warning: '#704600', // Darker brown for warnings (7.1:1 ratio)
 };
 
 // WCAG AA compliant colors (4.5:1 minimum contrast ratio)
@@ -43,8 +43,8 @@ const NORMAL_COLORS: HighContrastColors = {
   background: '#FFFEF7',
   foreground: '#2D3748',
   primary: '#0077BE',
-  secondary: '#CC5200',     // Changed from #FF6B35 to meet WCAG AA (4.52:1 ratio)
-  accent: '#B8860B',        // Changed from #FFD700 to meet WCAG AA (4.61:1 ratio)
+  secondary: '#CC5200', // Changed from #FF6B35 to meet WCAG AA (4.52:1 ratio)
+  accent: '#B8860B', // Changed from #FFD700 to meet WCAG AA (4.61:1 ratio)
   border: '#E5E5E5',
   focus: '#4299E1',
   error: '#E53E3E',
@@ -130,7 +130,7 @@ export function useHighContrast() {
     const handleChange = (e: MediaQueryListEvent) => {
       // Only auto-enable if user hasn't manually set preference via store
       if (!highContrastEnabled) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           enabled: e.matches,
           colors: e.matches ? HIGH_CONTRAST_COLORS : NORMAL_COLORS,
@@ -147,7 +147,7 @@ export function useHighContrast() {
 
   // Toggle high contrast mode
   const toggleHighContrast = useCallback(() => {
-    setState(prev => {
+    setState((prev) => {
       const newEnabled = !prev.enabled;
       const newColors = newEnabled ? HIGH_CONTRAST_COLORS : NORMAL_COLORS;
 
@@ -189,7 +189,7 @@ export function useHighContrast() {
       const b = parseInt(hex.substr(4, 2), 16) / 255;
 
       // Calculate relative luminance
-      const sRGB = [r, g, b].map(val => {
+      const sRGB = [r, g, b].map((val) => {
         return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4);
       });
 
