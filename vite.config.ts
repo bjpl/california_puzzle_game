@@ -8,11 +8,11 @@
  * Last updated: 2025-10-04
  */
 
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
-import { visualizer } from 'rollup-plugin-visualizer'
-import viteCompression from 'vite-plugin-compression'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
+import { visualizer } from 'rollup-plugin-visualizer';
+import viteCompression from 'vite-plugin-compression';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -44,7 +44,12 @@ export default defineConfig({
   base: '/california_puzzle_game/',
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': resolve(__dirname, './src'),
+      '@/lib': resolve(__dirname, './src/lib'),
+      '@/services': resolve(__dirname, './src/services'),
+      '@/components': resolve(__dirname, './src/components'),
+      '@/stores': resolve(__dirname, './src/stores'),
+      '@/utils': resolve(__dirname, './src/utils'),
     },
   },
   server: {
@@ -83,7 +88,7 @@ export default defineConfig({
             './src/components/study/EnhancedStudyMode.tsx',
             './src/components/study/StudyModeCard.tsx',
           ],
-          'achievements': [
+          achievements: [
             './src/components/game/achievements/AchievementGallery.tsx',
             './src/components/game/achievements/AchievementNotification.tsx',
           ],
@@ -109,20 +114,21 @@ export default defineConfig({
         '**/*.d.ts',
         '**/*.config.ts',
         'dist/',
-        'public/'
+        'public/',
       ],
       thresholds: {
         global: {
           branches: 80,
           functions: 80,
           lines: 80,
-          statements: 80
-        }
-      }
+          statements: 80,
+        },
+      },
     },
     include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
     // Vitest 4.x projects configuration (replaces workspace)
+    // Define shared alias configuration
     projects: [
       {
         test: {
@@ -134,7 +140,12 @@ export default defineConfig({
         },
         resolve: {
           alias: {
-            '@': resolve(__dirname, 'src'),
+            '@': resolve(__dirname, './src'),
+            '@/lib': resolve(__dirname, './src/lib'),
+            '@/services': resolve(__dirname, './src/services'),
+            '@/components': resolve(__dirname, './src/components'),
+            '@/stores': resolve(__dirname, './src/stores'),
+            '@/utils': resolve(__dirname, './src/utils'),
           },
         },
       },
@@ -149,7 +160,12 @@ export default defineConfig({
         },
         resolve: {
           alias: {
-            '@': resolve(__dirname, 'src'),
+            '@': resolve(__dirname, './src'),
+            '@/lib': resolve(__dirname, './src/lib'),
+            '@/services': resolve(__dirname, './src/services'),
+            '@/components': resolve(__dirname, './src/components'),
+            '@/stores': resolve(__dirname, './src/stores'),
+            '@/utils': resolve(__dirname, './src/utils'),
           },
         },
       },
@@ -164,7 +180,12 @@ export default defineConfig({
         },
         resolve: {
           alias: {
-            '@': resolve(__dirname, 'src'),
+            '@': resolve(__dirname, './src'),
+            '@/lib': resolve(__dirname, './src/lib'),
+            '@/services': resolve(__dirname, './src/services'),
+            '@/components': resolve(__dirname, './src/components'),
+            '@/stores': resolve(__dirname, './src/stores'),
+            '@/utils': resolve(__dirname, './src/utils'),
           },
         },
       },
@@ -179,7 +200,12 @@ export default defineConfig({
         },
         resolve: {
           alias: {
-            '@': resolve(__dirname, 'src'),
+            '@': resolve(__dirname, './src'),
+            '@/lib': resolve(__dirname, './src/lib'),
+            '@/services': resolve(__dirname, './src/services'),
+            '@/components': resolve(__dirname, './src/components'),
+            '@/stores': resolve(__dirname, './src/stores'),
+            '@/utils': resolve(__dirname, './src/utils'),
           },
         },
       },
@@ -194,10 +220,15 @@ export default defineConfig({
         },
         resolve: {
           alias: {
-            '@': resolve(__dirname, 'src'),
+            '@': resolve(__dirname, './src'),
+            '@/lib': resolve(__dirname, './src/lib'),
+            '@/services': resolve(__dirname, './src/services'),
+            '@/components': resolve(__dirname, './src/components'),
+            '@/stores': resolve(__dirname, './src/stores'),
+            '@/utils': resolve(__dirname, './src/utils'),
           },
         },
-      }
-    ]
+      },
+    ],
   },
-})
+});

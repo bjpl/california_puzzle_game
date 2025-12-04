@@ -215,6 +215,12 @@ export function useGestureRecognition(
         state.lastRotation = 0;
       }
 
+      // Initialize three-finger gesture data
+      if (touchCount === 3) {
+        state.initialCenter = getCenter(touches);
+        state.lastCenter = state.initialCenter;
+      }
+
       // Handle single tap for double-tap detection
       if (touchCount === 1 && config.enableDoubleTap) {
         const now = Date.now();
@@ -301,10 +307,7 @@ export function useGestureRecognition(
 
           if (deltaScale > config.pinchThreshold) {
             // Constrain scale to min/max
-            const constrainedScale = Math.max(
-              config.minScale,
-              Math.min(config.maxScale, scale)
-            );
+            const constrainedScale = Math.max(config.minScale, Math.min(config.maxScale, scale));
 
             if (callbacks.onPinch) {
               callbacks.onPinch(constrainedScale, currentCenter);
@@ -315,15 +318,16 @@ export function useGestureRecognition(
         }
 
         // Calculate rotation
-        if (config.enableRotation && state.initialAngle !== 0) {
+        if (config.enableRotation) {
           let rotation = currentAngle - state.initialAngle;
+
+          // Normalize rotation to -180 to 180
+          if (rotation > 180) rotation -= 360;
+          if (rotation < -180) rotation += 360;
+
           const deltaRotation = Math.abs(rotation - state.lastRotation);
 
           if (deltaRotation > config.rotationThreshold) {
-            // Normalize rotation to -180 to 180
-            if (rotation > 180) rotation -= 360;
-            if (rotation < -180) rotation += 360;
-
             if (callbacks.onRotate) {
               callbacks.onRotate(rotation, currentCenter);
             }
@@ -371,15 +375,7 @@ export function useGestureRecognition(
         }
       }
     },
-    [
-      getTouchPoints,
-      getDistance,
-      getAngle,
-      getCenter,
-      clearLongPressTimer,
-      config,
-      callbacks,
-    ]
+    [getTouchPoints, getDistance, getAngle, getCenter, clearLongPressTimer, config, callbacks]
   );
 
   // Touch end handler

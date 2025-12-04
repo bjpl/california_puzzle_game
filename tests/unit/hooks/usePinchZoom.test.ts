@@ -18,16 +18,14 @@ vi.mock('../../../src/mobile/utils/progressiveGeodata', () => {
     HIGH: 'high',
   };
 
-  // Create a proper mock constructor that returns instances with methods
-  const AdaptiveGeodataLoader = vi.fn(() => {
-    const instance = {
-      load: vi.fn().mockResolvedValue({}),
-      preloadNext: vi.fn().mockResolvedValue({}),
-      getCurrentLevel: vi.fn().mockReturnValue(GeodetaLevel.MEDIUM),
-      isLoading: vi.fn().mockReturnValue(false),
-    };
-    return instance;
-  });
+  // Create a proper mock class constructor
+  class AdaptiveGeodataLoader {
+    load = vi.fn().mockResolvedValue({});
+    preloadNext = vi.fn().mockResolvedValue({});
+    getCurrentLevel = vi.fn().mockReturnValue(GeodetaLevel.MEDIUM);
+    isLoading = vi.fn().mockReturnValue(false);
+    optimize = vi.fn();
+  }
 
   return {
     GeodetaLevel,
