@@ -75,18 +75,28 @@ function triggerVibration(pattern: number | readonly number[]): boolean {
 
   try {
     // Try standard API
-    if ('vibrate' in navigator) {
+    if ('vibrate' in navigator && typeof navigator.vibrate === 'function') {
       return navigator.vibrate(pattern as number | number[]);
     }
 
     // Try Mozilla-prefixed API
-    if ('mozVibrate' in navigator) {
+    if (
+      'mozVibrate' in navigator &&
+      typeof (
+        navigator as typeof navigator & { mozVibrate?: (pattern: number | number[]) => boolean }
+      ).mozVibrate === 'function'
+    ) {
       // @ts-expect-error - mozVibrate is a non-standard API
       return navigator.mozVibrate(pattern);
     }
 
     // Try WebKit-prefixed API
-    if ('webkitVibrate' in navigator) {
+    if (
+      'webkitVibrate' in navigator &&
+      typeof (
+        navigator as typeof navigator & { webkitVibrate?: (pattern: number | number[]) => boolean }
+      ).webkitVibrate === 'function'
+    ) {
       // @ts-expect-error - webkitVibrate is a non-standard API
       return navigator.webkitVibrate(pattern);
     }

@@ -150,17 +150,15 @@ describe('UserSettings Component', () => {
   const mockExportUserData = vi.fn();
   const mockAnnounceToScreenReader = vi.fn();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     // Setup mocks
-    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
-    const { deleteUserAccount, exportUserData } = require('@/services/supabase/auth');
+    const { deleteUserAccount, exportUserData } = await import('@/services/supabase/auth');
     deleteUserAccount.mockImplementation(mockDeleteUserAccount);
     exportUserData.mockImplementation(mockExportUserData);
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
-    const { announceToScreenReader } = require('@/utils/accessibility');
+    const { announceToScreenReader } = await import('@/utils/accessibility');
     announceToScreenReader.mockImplementation(mockAnnounceToScreenReader);
   });
 
@@ -196,9 +194,8 @@ describe('UserSettings Component', () => {
       expect(screen.getByText('1/1/2025')).toBeInTheDocument();
     });
 
-    it('should show "Please sign in" when not authenticated', () => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
-      const useAuth = require('@/hooks/useAuth').useAuth;
+    it('should show "Please sign in" when not authenticated', async () => {
+      const { useAuth } = await import('@/hooks/useAuth');
       useAuth.mockReturnValue({
         user: null,
         isAuthenticated: false,

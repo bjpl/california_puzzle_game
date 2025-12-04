@@ -23,6 +23,7 @@ import {
   _simulateOffline,
   simulateOnline,
   mockLocalStorage,
+  createStorageEvent,
 } from '../../mocks/sync/mockSyncClient';
 
 describe('Edge Cases and Concurrent Updates', () => {
@@ -61,8 +62,9 @@ describe('Edge Cases and Concurrent Updates', () => {
       const updatedSettings = createMockGameSettings({ difficulty: 'hard' });
       storage.setItem('settings', JSON.stringify(updatedSettings));
 
+      // Use JSDOM-compatible StorageEvent utility
       window.dispatchEvent(
-        new StorageEvent('storage', {
+        createStorageEvent({
           key: 'settings',
           oldValue: JSON.stringify(originalSettings),
           newValue: JSON.stringify(updatedSettings),
@@ -80,9 +82,9 @@ describe('Edge Cases and Concurrent Updates', () => {
       // Tab 2: Update settings
       const tab2Settings = createMockGameSettings({ difficulty: 'hard' });
 
-      // Simulate storage event from tab 2
+      // Use JSDOM-compatible StorageEvent utility
       window.dispatchEvent(
-        new StorageEvent('storage', {
+        createStorageEvent({
           key: 'settings',
           newValue: JSON.stringify(tab2Settings),
           // eslint-disable-next-line no-restricted-globals -- Required for test setup/cleanup
@@ -192,25 +194,29 @@ describe('Edge Cases and Concurrent Updates', () => {
     it('should handle intermittent connectivity', async () => {
       let attempts = 0;
 
-      mockSyncManager.sync.mockImplementation(async () => {
-        attempts++;
-        if (attempts % 2 === 0) {
+      // Use mockImplementationOnce to ensure sequential behavior
+      mockSyncManager.sync
+        .mockImplementationOnce(async () => {
+          attempts++;
           throw new Error('Network error');
-        }
-        return {
-          data: null,
-          error: null,
-          synced: true,
-          timestamp: new Date().toISOString(),
-        };
-      });
+        })
+        .mockImplementationOnce(async () => {
+          attempts++;
+          return {
+            data: null,
+            error: null,
+            synced: true,
+            timestamp: new Date().toISOString(),
+          };
+        });
 
       // First attempt fails
-      await expect(mockSyncManager.sync()).rejects.toThrow();
+      await expect(mockSyncManager.sync()).rejects.toThrow('Network error');
 
       // Second attempt succeeds
-      await mockSyncManager.sync();
-      expect(attempts).toBeGreaterThan(1);
+      const result = await mockSyncManager.sync();
+      expect(result.synced).toBe(true);
+      expect(attempts).toBe(2);
     });
 
     it('should handle DNS failures', async () => {
@@ -324,14 +330,18 @@ describe('Edge Cases and Concurrent Updates', () => {
 
   describe('Memory and Resource Leaks', () => {
     it('should not leak memory with many syncs', async () => {
-      const initialMemory = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize || 0;
+      const initialMemory =
+        (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory
+          ?.usedJSHeapSize || 0;
 
       // Perform many syncs
       for (let i = 0; i < 100; i++) {
         await mockSyncManager.sync();
       }
 
-      const finalMemory = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize || 0;
+      const finalMemory =
+        (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory
+          ?.usedJSHeapSize || 0;
       const memoryIncrease = finalMemory - initialMemory;
 
       // Should not leak significantly

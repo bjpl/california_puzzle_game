@@ -122,12 +122,11 @@ describe('ExportData Component', () => {
   let mockCreateObjectURL: ReturnType<typeof vi.fn>;
   let mockRevokeObjectURL: ReturnType<typeof vi.fn>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     // Setup Supabase mock
-    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
-    const { supabase } = require('@/lib/supabase');
+    const { supabase } = await import('@/lib/supabase');
     supabase.from = mockSupabaseFrom;
 
     // Mock URL methods
@@ -171,9 +170,8 @@ describe('ExportData Component', () => {
       expect(screen.getByRole('button', { name: /export my data/i })).toBeInTheDocument();
     });
 
-    it('should show "Please sign in" when not authenticated', () => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
-      const useUserId = require('@/hooks/useAuth').useUserId;
+    it('should show "Please sign in" when not authenticated', async () => {
+      const { useUserId } = await import('@/hooks/useAuth');
       useUserId.mockReturnValue(null);
 
       render(<ExportData />);

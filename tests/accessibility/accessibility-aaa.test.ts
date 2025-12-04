@@ -3,8 +3,8 @@
  * Comprehensive accessibility testing for California puzzle game
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { axe, toHaveNoViolations } from 'vitest-axe';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import {
   getContrastRatio,
   meetsWCAGAAA,
@@ -14,6 +14,7 @@ import {
   announceToScreenReader,
 } from '../../src/utils/accessibility';
 
+// Extend Vitest's expect with jest-axe matchers
 expect.extend(toHaveNoViolations);
 
 describe('WCAG 2.1 AAA Compliance Tests', () => {
@@ -182,8 +183,9 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
     it('should increase border thickness in high contrast', () => {
       document.body.classList.add('high-contrast-mode');
 
-      const borderWidth = getComputedStyle(document.documentElement)
-        .getPropertyValue('--hc-border-width');
+      const borderWidth = getComputedStyle(document.documentElement).getPropertyValue(
+        '--hc-border-width'
+      );
 
       expect(parseInt(borderWidth)).toBeGreaterThanOrEqual(3);
     });
@@ -192,8 +194,7 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
   describe('Voice Control', () => {
     it('should detect Web Speech API support', () => {
       const hasSpeechRecognition =
-        'SpeechRecognition' in window ||
-        'webkitSpeechRecognition' in window;
+        'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
 
       // Note: This will be false in test environment
       // In real browser, test would check for support
@@ -203,9 +204,7 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
 
   describe('Reduced Motion', () => {
     it('should respect prefers-reduced-motion', () => {
-      const prefersReducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      );
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
       expect(typeof prefersReducedMotion.matches).toBe('boolean');
     });
@@ -422,7 +421,7 @@ describe('WCAG 2.1 AAA Compliance Tests', () => {
 describe('AAA Success Criteria Checklist', () => {
   it('1.4.6 Contrast (Enhanced) - 7:1 ratio', () => {
     const results = testColorCompliance();
-    const allPass = Object.values(results).every(r => r.passes);
+    const allPass = Object.values(results).every((r) => r.passes);
     expect(allPass).toBe(true);
   });
 

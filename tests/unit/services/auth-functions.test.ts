@@ -30,7 +30,7 @@ describe('Auth Service Functions', () => {
   let mockFrom: ReturnType<typeof vi.fn>;
   let mockAuth: unknown;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     // Setup mock Supabase client
@@ -45,8 +45,7 @@ describe('Auth Service Functions', () => {
       auth: mockAuth,
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
-    const { getSupabaseClient } = require('@/services/supabase/client');
+    const { getSupabaseClient } = await import('@/services/supabase/client');
     getSupabaseClient.mockReturnValue(mockSupabase);
 
     // Clear localStorage
@@ -78,16 +77,12 @@ describe('Auth Service Functions', () => {
                 });
               case 'user_progress':
                 return Promise.resolve({
-                  data: [
-                    { user_id: mockUserId, total_score: 300, level: 5 },
-                  ],
+                  data: [{ user_id: mockUserId, total_score: 300, level: 5 }],
                   error: null,
                 });
               case 'game_settings':
                 return Promise.resolve({
-                  data: [
-                    { user_id: mockUserId, difficulty: 'medium', sound_enabled: true },
-                  ],
+                  data: [{ user_id: mockUserId, difficulty: 'medium', sound_enabled: true }],
                   error: null,
                 });
               default:
@@ -234,8 +229,7 @@ describe('Auth Service Functions', () => {
     });
 
     it('should return error when Supabase not configured', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
-      const { getSupabaseClient } = require('@/services/supabase/client');
+      const { getSupabaseClient } = await import('@/services/supabase/client');
       getSupabaseClient.mockReturnValue(null);
 
       const result = await exportUserData(mockUserId);
@@ -250,10 +244,8 @@ describe('Auth Service Functions', () => {
       // Add delays to simulate network latency
       mockFrom.mockImplementation(() => ({
         select: vi.fn(() => ({
-          eq: vi.fn(() =>
-            new Promise((resolve) =>
-              setTimeout(() => resolve({ data: [], error: null }), 50)
-            )
+          eq: vi.fn(
+            () => new Promise((resolve) => setTimeout(() => resolve({ data: [], error: null }), 50))
           ),
         })),
       }));
@@ -377,8 +369,7 @@ describe('Auth Service Functions', () => {
     });
 
     it('should return error when Supabase not configured', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic import for test mocking
-      const { getSupabaseClient } = require('@/services/supabase/client');
+      const { getSupabaseClient } = await import('@/services/supabase/client');
       getSupabaseClient.mockReturnValue(null);
 
       const result = await deleteUserAccount();
@@ -431,10 +422,9 @@ describe('Auth Service Functions', () => {
       // Add delays to simulate network latency
       mockFrom.mockImplementation(() => ({
         delete: vi.fn(() => ({
-          eq: vi.fn(() =>
-            new Promise((resolve) =>
-              setTimeout(() => resolve({ data: null, error: null }), 50)
-            )
+          eq: vi.fn(
+            () =>
+              new Promise((resolve) => setTimeout(() => resolve({ data: null, error: null }), 50))
           ),
         })),
       }));
@@ -497,10 +487,12 @@ describe('Auth Service Functions', () => {
 
   describe('Edge Cases', () => {
     it('should handle extremely large data exports', async () => {
-      const largeArray = Array(1000).fill(null).map((_, i) => ({
-        id: i,
-        data: 'x'.repeat(1000),
-      }));
+      const largeArray = Array(1000)
+        .fill(null)
+        .map((_, i) => ({
+          id: i,
+          data: 'x'.repeat(1000),
+        }));
 
       mockFrom.mockImplementation(() => ({
         select: vi.fn(() => ({
@@ -532,10 +524,9 @@ describe('Auth Service Functions', () => {
     it('should handle concurrent delete requests', async () => {
       mockFrom.mockImplementation(() => ({
         delete: vi.fn(() => ({
-          eq: vi.fn(() =>
-            new Promise((resolve) =>
-              setTimeout(() => resolve({ data: null, error: null }), 10)
-            )
+          eq: vi.fn(
+            () =>
+              new Promise((resolve) => setTimeout(() => resolve({ data: null, error: null }), 10))
           ),
         })),
       }));
@@ -546,11 +537,7 @@ describe('Auth Service Functions', () => {
       });
 
       // Call deleteUserAccount multiple times concurrently
-      const promises = [
-        deleteUserAccount(),
-        deleteUserAccount(),
-        deleteUserAccount(),
-      ];
+      const promises = [deleteUserAccount(), deleteUserAccount(), deleteUserAccount()];
 
       const results = await Promise.all(promises);
 
@@ -565,10 +552,9 @@ describe('Auth Service Functions', () => {
 
       mockFrom.mockImplementation(() => ({
         select: vi.fn(() => ({
-          eq: vi.fn(() =>
-            new Promise((resolve) =>
-              setTimeout(() => resolve({ data: [], error: null }), 30000)
-            )
+          eq: vi.fn(
+            () =>
+              new Promise((resolve) => setTimeout(() => resolve({ data: [], error: null }), 30000))
           ),
         })),
       }));

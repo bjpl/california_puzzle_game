@@ -173,11 +173,7 @@ export const createMockSyncQueueItem = (
 /**
  * Creates mock conflict
  */
-export const createMockConflict = <T>(
-  local: T,
-  remote: T,
-  field: string
-): MockConflict<T> => ({
+export const createMockConflict = <T>(local: T, remote: T, field: string): MockConflict<T> => ({
   local,
   remote,
   field,
@@ -248,11 +244,12 @@ export const createMockSupabaseSyncClient = () => ({
     order: vi.fn().mockReturnThis(),
     limit: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue({
-      data: table === 'game_settings'
-        ? createMockGameSettings()
-        : table === 'game_stats'
-        ? createMockGameStats()
-        : createMockAchievement(),
+      data:
+        table === 'game_settings'
+          ? createMockGameSettings()
+          : table === 'game_stats'
+            ? createMockGameStats()
+            : createMockAchievement(),
       error: null,
     }),
     then: vi.fn().mockResolvedValue({
@@ -326,4 +323,55 @@ export const mockLocalStorage = () => {
       return Object.keys(storage).length;
     },
   };
+};
+
+/**
+ * Create JSDOM-compatible StorageEvent
+ *
+ * JSDOM's StorageEvent constructor validates that storageArea must be a real Storage instance,
+ * not a mock object. This utility creates a compatible event by using Object.defineProperty
+ * to set event properties after creation.
+ *
+ * @param init - Storage event initialization options
+ * @returns JSDOM-compatible StorageEvent
+ *
+ * @example
+ * ```typescript
+ * const event = createStorageEvent({
+ *   key: 'settings',
+ *   oldValue: '{"difficulty":"easy"}',
+ *   newValue: '{"difficulty":"hard"}',
+ *   storageArea: localStorage
+ * });
+ * window.dispatchEvent(event);
+ * ```
+ */
+export const createStorageEvent = (init: {
+  key?: string | null;
+  oldValue?: string | null;
+  newValue?: string | null;
+  url?: string;
+  storageArea?: Storage | null;
+}): StorageEvent => {
+  // Create base event to avoid JSDOM StorageEvent constructor validation
+  const event = new Event('storage') as StorageEvent;
+
+  // Set properties using Object.defineProperty to make them readonly
+  if (init.key !== undefined) {
+    Object.defineProperty(event, 'key', { value: init.key, writable: false });
+  }
+  if (init.oldValue !== undefined) {
+    Object.defineProperty(event, 'oldValue', { value: init.oldValue, writable: false });
+  }
+  if (init.newValue !== undefined) {
+    Object.defineProperty(event, 'newValue', { value: init.newValue, writable: false });
+  }
+  if (init.url !== undefined) {
+    Object.defineProperty(event, 'url', { value: init.url, writable: false });
+  }
+  if (init.storageArea !== undefined) {
+    Object.defineProperty(event, 'storageArea', { value: init.storageArea, writable: false });
+  }
+
+  return event;
 };
