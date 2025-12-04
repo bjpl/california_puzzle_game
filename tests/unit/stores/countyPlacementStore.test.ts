@@ -9,24 +9,26 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { act } from '@testing-library/react';
-import {
-  useCountyPlacementStore,
-  type CountyHint
-} from '../../../src/stores/countyPlacementStore';
-import { useScoringStore } from '../../../src/stores/scoringStore';
-import { useHintStore } from '../../../src/stores/hintSystemStore';
+import { useCountyPlacementStore, type CountyHint } from '../../../src/stores/countyPlacementStore';
 import { useGameLifecycleStore } from '../../../src/stores/gameLifecycleStore';
 import type { CountyPiece, Position, PlacementResult } from '../../../src/types';
 import { DifficultyLevel, CaliforniaRegion } from '../../../src/types';
+
+// Create mock functions that persist across getState calls
+const mockCalculateScore = vi.fn(() => 100);
+const mockUpdateScore = vi.fn();
+const mockUpdateStreak = vi.fn();
+const mockUpdatePlacementStats = vi.fn();
+const mockAnalyzePlayerStruggle = vi.fn();
 
 // Mock dependencies
 vi.mock('../../../src/stores/scoringStore', () => ({
   useScoringStore: {
     getState: vi.fn(() => ({
-      calculateScore: vi.fn(() => 100),
-      updateScore: vi.fn(),
-      updateStreak: vi.fn(),
-      updatePlacementStats: vi.fn(),
+      calculateScore: mockCalculateScore,
+      updateScore: mockUpdateScore,
+      updateStreak: mockUpdateStreak,
+      updatePlacementStats: mockUpdatePlacementStats,
     })),
   },
 }));
@@ -34,7 +36,7 @@ vi.mock('../../../src/stores/scoringStore', () => ({
 vi.mock('../../../src/stores/hintSystemStore', () => ({
   useHintStore: {
     getState: vi.fn(() => ({
-      analyzePlayerStruggle: vi.fn(),
+      analyzePlayerStruggle: mockAnalyzePlayerStruggle,
     })),
   },
 }));
@@ -236,17 +238,15 @@ describe('County Placement Store', () => {
         });
       });
 
-      const scoringStore = useScoringStore.getState();
-
       act(() => {
         const { placeCounty } = useCountyPlacementStore.getState();
         placeCounty(mockCounty, placedPosition);
       });
 
-      expect(scoringStore.calculateScore).toHaveBeenCalled();
-      expect(scoringStore.updateScore).toHaveBeenCalledWith(100);
-      expect(scoringStore.updateStreak).toHaveBeenCalled();
-      expect(scoringStore.updatePlacementStats).toHaveBeenCalled();
+      expect(mockCalculateScore).toHaveBeenCalled();
+      expect(mockUpdateScore).toHaveBeenCalledWith(100);
+      expect(mockUpdateStreak).toHaveBeenCalled();
+      expect(mockUpdatePlacementStats).toHaveBeenCalled();
     });
 
     it('should update hint store with struggle analysis', () => {
@@ -258,18 +258,12 @@ describe('County Placement Store', () => {
         });
       });
 
-      const hintStore = useHintStore.getState();
-
       act(() => {
         const { placeCounty } = useCountyPlacementStore.getState();
         placeCounty(mockCounty, placedPosition);
       });
 
-      expect(hintStore.analyzePlayerStruggle).toHaveBeenCalledWith(
-        'los-angeles',
-        placedPosition,
-        false
-      );
+      expect(mockAnalyzePlayerStruggle).toHaveBeenCalledWith('los-angeles', placedPosition, false);
     });
 
     it('should handle multiple consecutive placements', () => {
@@ -399,9 +393,7 @@ describe('County Placement Store', () => {
 
       act(() => {
         useCountyPlacementStore.setState({
-          placedCounties: [
-            { ...mockCounty, isPlaced: true, currentPosition: initialPosition },
-          ],
+          placedCounties: [{ ...mockCounty, isPlaced: true, currentPosition: initialPosition }],
         });
       });
 
@@ -438,9 +430,7 @@ describe('County Placement Store', () => {
 
     it('should handle moving non-existent county gracefully', () => {
       const initialState = {
-        placedCounties: [
-          { ...mockCounty, isPlaced: true, currentPosition: { x: 100, y: 100 } },
-        ],
+        placedCounties: [{ ...mockCounty, isPlaced: true, currentPosition: { x: 100, y: 100 } }],
       };
 
       act(() => {

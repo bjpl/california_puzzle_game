@@ -189,12 +189,15 @@ export function sanitizeHtml(html: string): string {
   }
 
   return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove scripts
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '') // Remove iframes
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove scripts with closing tags
+    .replace(/<script\b[^>]*>/gi, '') // Remove script opening tags (unclosed)
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '') // Remove iframes with closing tags
+    .replace(/<iframe\b[^>]*>/gi, '') // Remove iframe opening tags (unclosed)
     .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '') // Remove event handlers
     .replace(/javascript:/gi, '')
-    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '') // Remove objects
-    .replace(/<embed\b[^<]*>/gi, '') // Remove embeds
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '') // Remove objects with closing tags
+    .replace(/<object\b[^>]*>/gi, '') // Remove object opening tags (unclosed)
+    .replace(/<embed\b[^>]*>/gi, '') // Remove embeds (self-closing)
     .trim();
 }
 
