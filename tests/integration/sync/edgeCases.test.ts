@@ -46,16 +46,18 @@ describe('Edge Cases and Concurrent Updates', () => {
   });
 
   describe('Concurrent Tab Updates', () => {
-    it('should detect changes from other tabs', (done) => {
+    it('should detect changes from other tabs', async () => {
       const originalSettings = createMockGameSettings({ difficulty: 'easy' });
       storage.setItem('settings', JSON.stringify(originalSettings));
 
-      // Simulate another tab updating storage
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'settings') {
-          expect(e.newValue).toBeTruthy();
-          done();
-        }
+      // Create a promise that resolves when the storage event fires
+      const storageEventPromise = new Promise<void>((resolve) => {
+        window.addEventListener('storage', (e) => {
+          if (e.key === 'settings') {
+            expect(e.newValue).toBeTruthy();
+            resolve();
+          }
+        });
       });
 
       // Simulate update from another tab
@@ -72,6 +74,9 @@ describe('Edge Cases and Concurrent Updates', () => {
           storageArea: localStorage,
         })
       );
+
+      // Wait for the storage event to be handled
+      await storageEventPromise;
     });
 
     it('should sync changes from other tabs', async () => {

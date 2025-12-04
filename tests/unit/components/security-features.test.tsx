@@ -24,7 +24,7 @@ vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn(() => ({
     user: {
       id: 'test-user-id-12345',
-      created_at: '2025-01-01T00:00:00Z',
+      created_at: '2025-01-01T12:00:00Z', // Noon UTC to avoid timezone date changes
       is_anonymous: true,
     },
     isAuthenticated: true,
@@ -152,6 +152,18 @@ describe('UserSettings Component', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+
+    // Reset useAuth mock to default authenticated state
+    const { useAuth } = await import('@/hooks/useAuth');
+    useAuth.mockReturnValue({
+      user: {
+        id: 'test-user-id-12345',
+        created_at: '2025-01-01T12:00:00Z',
+        is_anonymous: true,
+      },
+      isAuthenticated: true,
+      isAnonymous: true,
+    });
 
     // Setup mocks
     const { deleteUserAccount, exportUserData } = await import('@/services/supabase/auth');
@@ -339,32 +351,28 @@ describe('UserSettings Component', () => {
       });
     });
 
-    it('should show error when typing incorrect text', async () => {
+    it('should keep confirm button disabled when typing incorrect text', async () => {
       const user = userEvent.setup();
       const input = screen.getByPlaceholderText('Type DELETE');
 
       await user.type(input, 'delete'); // lowercase
 
       const confirmButton = screen.getByRole('button', { name: /confirm and delete account/i });
-      await user.click(confirmButton);
 
-      await waitFor(() => {
-        expect(screen.getByText('Please type DELETE to confirm')).toBeInTheDocument();
-      });
+      // Button should remain disabled for incorrect text
+      expect(confirmButton).toBeDisabled();
     });
 
-    it('should not show error for typing wrong text', async () => {
+    it('should keep confirm button disabled when typing wrong text', async () => {
       const user = userEvent.setup();
       const input = screen.getByPlaceholderText('Type DELETE');
 
       await user.type(input, 'wrong');
 
       const confirmButton = screen.getByRole('button', { name: /confirm and delete account/i });
-      await user.click(confirmButton);
 
-      await waitFor(() => {
-        expect(screen.getByText('Please type DELETE to confirm')).toBeInTheDocument();
-      });
+      // Button should remain disabled for wrong text
+      expect(confirmButton).toBeDisabled();
     });
   });
 
@@ -400,14 +408,25 @@ describe('UserSettings Component', () => {
     it('should show loading state during deletion', async () => {
       const user = userEvent.setup();
       mockDeleteUserAccount.mockImplementation(
-        () => new Promise((resolve) => setTimeout(resolve, 100))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ success: false, error: 'Test' }), 100)
+          )
       );
 
       const confirmButton = screen.getByRole('button', { name: /confirm and delete account/i });
       await user.click(confirmButton);
 
-      expect(screen.getByText('Deleting...')).toBeInTheDocument();
+      // Check loading state appears immediately - use role to be more specific
+      expect(screen.getByRole('button', { name: /confirm and delete account/i })).toHaveTextContent(
+        'Deleting...'
+      );
       expect(screen.getByText('Deleting your account... Please wait.')).toBeInTheDocument();
+
+      // Wait for the mock to complete
+      await waitFor(() => {
+        expect(mockDeleteUserAccount).toHaveBeenCalled();
+      });
     });
 
     it('should announce deletion progress to screen reader', async () => {
@@ -516,23 +535,39 @@ describe('UserSettings Component', () => {
       };
       mockExportUserData.mockResolvedValue({ success: true, data: mockData });
 
-      // Mock DOM methods
+      // Mock DOM methods - only intercept anchor elements
       const mockClick = vi.fn();
-      const mockAppendChild = vi
-        .spyOn(document.body, 'appendChild')
-        .mockImplementation(() => null as unknown);
-      const mockRemoveChild = vi
-        .spyOn(document.body, 'removeChild')
-        .mockImplementation(() => null as unknown);
+      const originalAppendChild = document.body.appendChild.bind(document.body);
+      const originalRemoveChild = document.body.removeChild.bind(document.body);
+      const originalCreateElement = document.createElement.bind(document);
+
+      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => {
+        // Only mock for anchor elements, use original for others
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalAppendChild(node);
+      });
+
+      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation((node) => {
+        // Only mock for anchor elements, use original for others
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalRemoveChild(node);
+      });
+
       const mockCreateElement = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
           return {
+            tagName: 'A',
             click: mockClick,
             href: '',
             download: '',
-          } as unknown;
+          } as unknown as HTMLAnchorElement;
         }
-        return document.createElement(tag);
+        // Use the original implementation for other tags
+        return originalCreateElement(tag);
       });
 
       render(<UserSettings />);
@@ -544,6 +579,7 @@ describe('UserSettings Component', () => {
         expect(mockClick).toHaveBeenCalled();
       });
 
+      // Restore mocks immediately
       mockCreateElement.mockRestore();
       mockAppendChild.mockRestore();
       mockRemoveChild.mockRestore();

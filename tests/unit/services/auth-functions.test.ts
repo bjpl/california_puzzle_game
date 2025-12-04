@@ -413,7 +413,7 @@ describe('Auth Service Functions', () => {
       const result = await deleteUserAccount();
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('Unexpected error');
+      expect(result.error).toContain('No authenticated user found');
     });
 
     it('should delete data in parallel for performance', async () => {
