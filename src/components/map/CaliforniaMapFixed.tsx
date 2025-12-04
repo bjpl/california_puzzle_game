@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useDroppable } from '@dnd-kit/core';
-import { useGame } from '../../context/GameContext';
+import { useCountyPlacementStore } from '@/stores/countyPlacementStore';
 import { getSvgTextFill } from '../../utils/colorContrast';
 import { UI_CONFIG, COUNTY_FILL_COLORS, STROKE_COLORS, GAME_CONFIG } from '@/constants';
 import { mapLogger } from '../../utils/logger';
@@ -23,19 +23,32 @@ interface CountyDropZoneProps {
 }
 
 function CountyDropZone({ county, projection }: CountyDropZoneProps) {
-  const { placedCounties, currentCounty } = useGame();
+  const placedCounties = useCountyPlacementStore((state) => state.placedCounties);
+  const currentHint = useCountyPlacementStore((state) => state.currentHint);
+
   // Ensure consistent ID formatting between drag source and drop target
   const countyName = county.properties.NAME;
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
-  const isPlaced = placedCounties.has(countyId);
+
+  // Convert placed counties array to Set for efficient lookup
+  const placedCountyIds = useMemo(
+    () => new Set(placedCounties.map(c => c.id)),
+    [placedCounties]
+  );
+  const isPlaced = placedCountyIds.has(countyId);
 
   const { isOver, setNodeRef } = useDroppable({
     id: countyId,
   });
 
-  const isActive = currentCounty?.id === countyId;
-  const isCorrectHover = isOver && currentCounty?.id === countyId;
-  const isWrongHover = isOver && currentCounty?.id !== countyId;
+  // currentHint is a County type, so we need to format its name to match countyId
+  const currentCountyId = currentHint?.name
+    ? currentHint.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')
+    : undefined;
+
+  const isActive = currentCountyId === countyId;
+  const isCorrectHover = isOver && currentCountyId === countyId;
+  const isWrongHover = isOver && currentCountyId !== countyId;
 
   let fillColor: string = COUNTY_FILL_COLORS.DEFAULT; // Default gray
   if (isPlaced)
@@ -169,7 +182,6 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
     ((coord: [number, number]) => [number, number]) | null
   >(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const { counties: _counties } = useGame();
 
   useEffect(() => {
     // Load the GeoJSON data (use different path for dev vs production)

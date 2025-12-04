@@ -121,6 +121,83 @@ export default defineConfig({
       }
     },
     include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    exclude: ['node_modules', 'dist', '.idea', '.git', '.cache']
+    exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
+    // Vitest 4.x projects configuration (replaces workspace)
+    projects: [
+      {
+        test: {
+          name: 'unit',
+          include: ['tests/unit/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+          environment: 'jsdom',
+          globals: true,
+          setupFiles: ['./tests/setup.ts'],
+        },
+        resolve: {
+          alias: {
+            '@': resolve(__dirname, 'src'),
+          },
+        },
+      },
+      {
+        test: {
+          name: 'a11y',
+          include: ['tests/accessibility/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+          environment: 'jsdom',
+          globals: true,
+          setupFiles: ['./tests/setup.ts', './tests/a11y-setup.ts'],
+          testTimeout: 30000,
+        },
+        resolve: {
+          alias: {
+            '@': resolve(__dirname, 'src'),
+          },
+        },
+      },
+      {
+        test: {
+          name: 'integration',
+          include: ['tests/integration/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+          environment: 'jsdom',
+          globals: true,
+          setupFiles: ['./tests/setup.ts'],
+          testTimeout: 60000,
+        },
+        resolve: {
+          alias: {
+            '@': resolve(__dirname, 'src'),
+          },
+        },
+      },
+      {
+        test: {
+          name: 'performance',
+          include: ['tests/performance/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+          environment: 'jsdom',
+          globals: true,
+          setupFiles: ['./tests/setup.ts'],
+          testTimeout: 120000,
+        },
+        resolve: {
+          alias: {
+            '@': resolve(__dirname, 'src'),
+          },
+        },
+      },
+      {
+        test: {
+          name: 'sync',
+          include: ['tests/sync/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+          environment: 'jsdom',
+          globals: true,
+          setupFiles: ['./tests/setup.ts'],
+          testTimeout: 60000,
+        },
+        resolve: {
+          alias: {
+            '@': resolve(__dirname, 'src'),
+          },
+        },
+      }
+    ]
   },
 })

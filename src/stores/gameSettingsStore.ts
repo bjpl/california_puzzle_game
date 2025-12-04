@@ -17,6 +17,7 @@ export interface SettingsState {
   settings: GameSettings;
   userId: string | null;
   highContrastEnabled: boolean;
+  showRegions: boolean;
 }
 
 interface SettingsActions {
@@ -28,6 +29,7 @@ interface SettingsActions {
   setUserId: (userId: string | null) => void;
   resetSettings: () => void;
   setHighContrastEnabled: (enabled: boolean) => void;
+  toggleShowRegions: () => void;
 }
 
 export type SettingsStore = SettingsState & SettingsActions;
@@ -71,6 +73,7 @@ export const useSettingsStore = create<SettingsStore>()(
         settings: defaultSettings,
         userId: null,
         highContrastEnabled: false,
+        showRegions: false,
 
         updateSettings: (newSettings: Partial<GameSettings>) => {
           set((state) => ({
@@ -138,6 +141,10 @@ export const useSettingsStore = create<SettingsStore>()(
         setHighContrastEnabled: (enabled: boolean) => {
           set({ highContrastEnabled: enabled });
         },
+
+        toggleShowRegions: () => {
+          set((state) => ({ showRegions: !state.showRegions }));
+        },
       }),
       {
         name: 'california-puzzle-settings',
@@ -145,6 +152,7 @@ export const useSettingsStore = create<SettingsStore>()(
           settings: state.settings,
           userId: state.userId,
           highContrastEnabled: state.highContrastEnabled,
+          showRegions: state.showRegions,
         }),
       }
     ),

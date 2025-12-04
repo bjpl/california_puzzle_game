@@ -1,9 +1,10 @@
-import { useGame } from '../../context/GameContext';
+import { useSettingsStore } from '@/stores/gameSettingsStore';
 import { REGION_COLORS, getRegionColor } from '../../config/regionColors';
 import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 
 export default function RegionsPanel() {
-  const { showRegions, toggleShowRegions } = useGame();
+  const showRegions = useSettingsStore((state) => state.showRegions);
+  const toggleShowRegions = useSettingsStore((state) => state.toggleShowRegions);
   const deviceInfo = useDeviceInfo();
   const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
 

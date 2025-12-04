@@ -8,16 +8,23 @@
  */
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { CountyPiece, Position, PlacementResult, County } from '@/types';
+import { CountyPiece, Position, PlacementResult } from '@/types';
 import { useScoringStore } from './scoringStore';
 import { useHintStore } from './hintSystemStore';
 import { useGameLifecycleStore } from './gameLifecycleStore';
 import { getDifficultySettings } from '@/config/gameModes';
 
+// Minimal hint type - compatible with both @/types.County and californiaCountiesComplete.County
+export interface CountyHint {
+  id: string;
+  name: string;
+  region: string;
+}
+
 export interface CountyPlacementState {
   placedCounties: CountyPiece[];
   remainingCounties: CountyPiece[];
-  currentHint: County | undefined;
+  currentHint: CountyHint | undefined;
   // Last placement result for subscribers (achievement checking)
   lastPlacementResult: PlacementResult | null;
 }
@@ -27,7 +34,7 @@ interface CountyPlacementActions {
   removeCounty: (countyId: string) => void;
   moveCounty: (countyId: string, position: Position) => void;
   setRemainingCounties: (counties: CountyPiece[]) => void;
-  setCurrentHint: (county: County | undefined) => void;
+  setCurrentHint: (county: CountyHint | undefined) => void;
   resetCounties: () => void;
 }
 
@@ -145,7 +152,7 @@ export const useCountyPlacementStore = create<CountyPlacementStore>()(
         set({ remainingCounties: counties });
       },
 
-      setCurrentHint: (county: County | undefined) => {
+      setCurrentHint: (county: CountyHint | undefined) => {
         set({ currentHint: county });
       },
 

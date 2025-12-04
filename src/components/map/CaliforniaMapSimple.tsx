@@ -1,6 +1,9 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useDroppable } from '@dnd-kit/core';
-import { useGame } from '../../context/GameContext';
+import { useCountyPlacementStore } from '@/stores/countyPlacementStore';
+import { useSettingsStore } from '@/stores/gameSettingsStore';
+import { allCaliforniaCounties } from '@/data/californiaCountiesComplete';
+import type { CountyPiece } from '@/types';
 import { mapLogger } from '../../utils/logger';
 import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
@@ -40,7 +43,19 @@ function CountyDropZone({
   onLabelPosition?: (countyId: string, position: [number, number]) => void;
   onMobilePlacement?: (targetCountyId: string) => void;
 }) {
-  const { placedCounties, currentCounty, showRegions, counties } = useGame();
+  // Zustand store subscriptions
+  const placedCountiesArray = useCountyPlacementStore((state) => state.placedCounties);
+  const currentHint = useCountyPlacementStore((state) => state.currentHint);
+  const showRegions = useSettingsStore((state) => state.showRegions);
+
+  // Convert array to Set for compatibility with existing logic
+  const placedCounties = useMemo(
+    () => new Set(placedCountiesArray.map((c) => c.id)),
+    [placedCountiesArray]
+  );
+  const counties = allCaliforniaCounties;
+  const currentCounty = currentHint;
+
   const [isHovered, setIsHovered] = useState(false);
   const deviceInfo = useDeviceInfo();
   const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
@@ -279,19 +294,22 @@ export default function CaliforniaMapSimple({
   onMobilePlacement?: (targetCountyId: string) => void;
 }) {
   mapLogger.debug('🗺️ CaliforniaMapSimple component rendering');
-  const gameContext = useGame();
-  const {
-    showRegions,
-    placedCounties,
-    counties,
-    currentCounty,
-    placeCounty,
-    score: _score,
-    timerState: _timerState,
-    mistakes: _mistakes,
-    gameSettings: _gameSettings,
-    placementHistory: _placementHistory,
-  } = gameContext;
+
+  // Zustand store subscriptions
+  const placedCountiesArray = useCountyPlacementStore((state) => state.placedCounties);
+  const currentHint = useCountyPlacementStore((state) => state.currentHint);
+  const placeCountyStore = useCountyPlacementStore((state) => state.placeCounty);
+  const showRegions = useSettingsStore((state) => state.showRegions);
+
+  // Convert array to Set for compatibility with existing logic
+  const placedCounties = useMemo(
+    () => new Set(placedCountiesArray.map((c) => c.id)),
+    [placedCountiesArray]
+  );
+  const counties = allCaliforniaCounties;
+  const currentCounty = currentHint;
+  const placeCounty = placeCountyStore;
+
   const sound = useSoundEffect();
   const deviceInfo = useDeviceInfo();
   const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
@@ -329,8 +347,38 @@ export default function CaliforniaMapSimple({
       sound.playSound('incorrect');
     }
 
-    // Place the county
-    placeCounty(currentCounty.id, isCorrect);
+    // Place the county using the Zustand store
+    // Find the target county's position from CALIFORNIA_COUNTIES data
+    const targetCounty = CALIFORNIA_COUNTIES.find((c) => c.id === targetCountyId);
+    // Get full county data for the source county
+    const sourceCounty = CALIFORNIA_COUNTIES.find((c) => c.id === currentCounty.id);
+    if (targetCounty && targetCounty.centroid && sourceCounty) {
+      const countyPiece: CountyPiece = {
+        id: currentCounty.id,
+        name: currentCounty.name,
+        region: sourceCounty.region,
+        fips: sourceCounty.fips || '',
+        geometry: sourceCounty.geometry || ({} as GeoJSON.Geometry),
+        centroid: sourceCounty.centroid || targetCounty.centroid,
+        difficulty: sourceCounty.difficulty,
+        isPlaced: false,
+        currentPosition: {
+          x: targetCounty.centroid[0],
+          y: targetCounty.centroid[1],
+        },
+        targetPosition: {
+          x: targetCounty.centroid[0],
+          y: targetCounty.centroid[1],
+        },
+        rotation: 0,
+        scale: 1,
+        zIndex: 0,
+      };
+      placeCounty(countyPiece, {
+        x: targetCounty.centroid[0],
+        y: targetCounty.centroid[1],
+      });
+    }
   };
 
   useEffect(() => {

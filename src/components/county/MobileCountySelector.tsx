@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import { useGame } from '../../context/GameContext';
+import { useCountyPlacementStore } from '@/stores/countyPlacementStore';
 import { useSoundEffect } from '../../utils/simpleSoundManager';
 import { Badge } from '../ui';
-import { County } from '../../data/californiaCountiesComplete';
+import { County } from '@/types';
 
 interface MobileCountySelectorProps {
   county: County;
@@ -16,9 +16,10 @@ interface MobileCountySelectorProps {
  */
 export const MobileCountySelector = memo<MobileCountySelectorProps>(
   ({ county, isPlaced }) => {
-    const { currentCounty, selectCounty, clearCurrentCounty } = useGame();
+    const currentHint = useCountyPlacementStore((state) => state.currentHint);
+    const setCurrentHint = useCountyPlacementStore((state) => state.setCurrentHint);
     const sound = useSoundEffect();
-    const isSelected = currentCounty?.id === county.id;
+    const isSelected = currentHint?.id === county.id;
 
     const handleTap = (e: React.MouseEvent | React.TouchEvent) => {
       e.preventDefault();
@@ -28,11 +29,11 @@ export const MobileCountySelector = memo<MobileCountySelectorProps>(
 
       if (isSelected) {
         // Deselect if already selected
-        clearCurrentCounty();
+        setCurrentHint(undefined);
         sound.playSound('pickup', 0.3);
       } else {
         // Select this county
-        selectCounty(county);
+        setCurrentHint(county);
         sound.playSound('pickup', 0.5);
       }
     };

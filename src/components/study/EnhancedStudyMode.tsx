@@ -13,7 +13,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useGame } from '../../context/GameContext';
+import { allCaliforniaCounties } from '@/data/californiaCountiesComplete';
 import { getCountyEducation } from '../../data/countyEducation';
 import { getCountyEducationComplete } from '../../data/countyEducationComplete';
 import { getMemoryAid as getMemoryAidData } from '../../data/memoryAids';
@@ -54,7 +54,7 @@ import type { ViewMode, StudyModeProps } from './EnhancedStudyMode/types';
  * - Component composition
  */
 export default function EnhancedStudyMode({ onClose, onStartGame: _onStartGame }: StudyModeProps) {
-  const { counties } = useGame();
+  const counties = allCaliforniaCounties;
   const deviceInfo = useDeviceInfo();
   const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
 

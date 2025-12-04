@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react';
-import { useGame } from '../../context/GameContext';
+import { allCaliforniaCounties } from '@/data/californiaCountiesComplete';
 import type { County } from '../../types/game-types';
 
 const StudyMode = memo(
   ({ onClose, focusCounty }: { onClose: () => void; focusCounty?: County }) => {
-    const { counties } = useGame();
+    const counties = allCaliforniaCounties;
     const [selectedRegion, setSelectedRegion] = useState<string>(
       focusCounty ? focusCounty.region : 'all'
     );

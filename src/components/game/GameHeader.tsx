@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useGame } from '../../context/GameContext';
 import { soundManager } from '../../utils/simpleSoundManager';
 import { gameLogger } from '../../utils/logger';
 import { Heading, Text, Badge, Progress } from '../ui';
@@ -10,31 +9,33 @@ import EnhancedStudyMode from '../study/EnhancedStudyMode';
 import { UserSettings } from '../shared/settings/UserSettings';
 import { UI_CONFIG, GAME_CONFIG } from '@/constants';
 import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
+import { useScoringStore } from '@/stores/scoringStore';
+import { useGameLifecycleStore } from '@/stores/gameLifecycleStore';
+import { useHintStore } from '@/stores/hintSystemStore';
+import { useCountyPlacementStore } from '@/stores/countyPlacementStore';
+import { allCaliforniaCounties } from '@/data/californiaCountiesComplete';
+import { HintType } from '@/types';
 
 export default function GameHeader() {
-  const {
-    score,
-    mistakes,
-    placedCounties,
-    counties,
-    resetGame,
-    timerState,
-    timerStarted,
-    pauseGame,
-    resumeGame,
-    isGameStarted: _isGameStarted,
-    isPaused,
-    hints,
-    useHint: requestHint,
-    currentCounty,
-  } = useGame();
+  // Zustand stores
+  const { score, mistakes } = useScoringStore();
+  const { isPaused, pauseGame, resumeGame, resetGame, timeElapsed, isGameActive } = useGameLifecycleStore();
+  const { hintSystem } = useHintStore();
+  const { placedCounties, currentHint } = useCountyPlacementStore();
+
+  // Derived values
+  const counties = allCaliforniaCounties;
+  const hints = hintSystem.availableHints;
+  const currentCounty = currentHint;
+  const timerStarted = isGameActive;
+  const timerState = { elapsed: timeElapsed };
   const [soundEnabled, setSoundEnabled] = useState(!soundManager.isMuted());
   const [showHintModal, setShowHintModal] = useState(false);
   const [showStudyMode, setShowStudyMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [hintLevel, setHintLevel] = useState(1);
   const [countyHintAttempts, setCountyHintAttempts] = useState<Record<string, number>>({});
-  const progress = Math.round((placedCounties.size / counties.length) * 100);
+  const progress = Math.round((placedCounties.length / counties.length) * 100);
   const deviceInfo = useDeviceInfo();
   const isMobile = deviceInfo.isMobile || deviceInfo.isTablet;
 
@@ -81,14 +82,16 @@ export default function GameHeader() {
 
       setHintLevel(level);
 
-      if (requestHint()) {
-        try {
-          soundManager.play('hover', UI_CONFIG.SOUND_VOLUME_PICKUP);
-        } catch (error) {
-          gameLogger.warn('Sound play failed:', error);
-        }
-        setShowHintModal(true);
+      // Use hint with appropriate type based on level
+      const hintType = level === 1 ? HintType.LOCATION : level === 2 ? HintType.NEIGHBOR : HintType.EDUCATIONAL;
+      useHintStore.getState().useHint(hintType, currentCounty.id, false);
+
+      try {
+        soundManager.play('hover', UI_CONFIG.SOUND_VOLUME_PICKUP);
+      } catch (error) {
+        gameLogger.warn('Sound play failed:', error);
       }
+      setShowHintModal(true);
     }
   };
 
@@ -303,7 +306,7 @@ export default function GameHeader() {
           )}
           <div className="flex-1">
             <Progress
-              value={placedCounties.size}
+              value={placedCounties.length}
               max={counties.length}
               variant="gradient"
               size="small"
@@ -315,7 +318,7 @@ export default function GameHeader() {
             weight="bold"
             className={`text-gray-700 dark:text-gray-300 ${isMobile ? 'text-xs' : ''}`}
           >
-            {isMobile ? `${placedCounties.size}/${counties.length}` : `${progress}%`}
+            {isMobile ? `${placedCounties.length}/${counties.length}` : `${progress}%`}
           </Text>
         </div>
 
