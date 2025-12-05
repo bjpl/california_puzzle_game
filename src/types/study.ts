@@ -9,20 +9,23 @@ export interface StudyProgress {
   masteredCounties: Set<string>;
   currentStreak: number;
   longestStreak: number;
-  lastStudyDate: Date | null;
-  studyStartDate: Date | null;
+  lastStudyDate: string | null;
+  studyStartDate: string | null;
 }
 
 export interface CountyStudyInfo {
   countyId: string;
   timesStudied: number;
-  difficulty: 'easy' | 'medium' | 'hard' | null;
+  difficulty?: 'easy' | 'medium' | 'hard' | null;
   lastStudied: Date | null;
-  nextReview: Date | null;
+  nextReview?: Date | null;
   masteryLevel: number; // 0-100
-  streakCount: number;
+  streakCount?: number;
+  correctCount: number;
   incorrectCount: number;
   averageTime: number;
+  studied: boolean;
+  mastered: boolean;
 }
 
 export interface SpacedRepetitionItem {
@@ -47,12 +50,13 @@ export interface StudySession {
 }
 
 export interface RegionProgress {
-  regionName: string;
+  regionName?: string;
   total: number;
   studied: number;
   mastered: number;
-  averageTime: number;
-  lastStudied: Date | null;
+  percentage: number;
+  averageTime?: number;
+  lastStudied?: Date | null;
 }
 
 export interface StudyStats {
@@ -70,7 +74,13 @@ export interface StudyStats {
 export interface StudyGoal {
   id: string;
   type: 'daily' | 'weekly' | 'monthly';
-  category?: 'counties_studied' | 'counties_mastered' | 'daily_streak' | 'session_count' | 'total_time' | 'weekly_progress';
+  category?:
+    | 'counties_studied'
+    | 'counties_mastered'
+    | 'daily_streak'
+    | 'session_count'
+    | 'total_time'
+    | 'weekly_progress';
   target: number;
   current: number;
   description: string;

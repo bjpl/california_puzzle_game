@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { CountyStudyInfo, RegionProgress } from '../../types/study';
-import { StudyEventType } from '../../types/study-domain.types';
+import { StudyEventType, MasteryLevel } from '../../types/study-domain.types';
 import { storeCoordinator } from '../storeCoordinator';
-import { californiaRegions } from '../../data/californiaCountiesComplete';
+import { californiaRegions, allCaliforniaCounties } from '../../data/californiaCountiesComplete';
 
 interface CountyProgressState {
   countyProgress: Map<string, CountyStudyInfo>;
@@ -75,7 +75,13 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
 
           storeCoordinator.publish(
             StudyEventType.COUNTY_STUDIED,
-            { countyCode, correct, timeMs },
+            {
+              sessionId: 'standalone', // Not from a session context
+              countyCode,
+              correct,
+              responseTimeMs: timeMs,
+              timestamp: new Date(),
+            },
             'countyProgressStore'
           );
         },
@@ -85,8 +91,8 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
         },
 
         getRegionProgress: (regionName: string): RegionProgress => {
-          const region = californiaRegions.find((r) => r.name === regionName);
-          if (!region) {
+          const regionCountyNames = californiaRegions[regionName as keyof typeof californiaRegions];
+          if (!regionCountyNames) {
             return { total: 0, studied: 0, mastered: 0, percentage: 0 };
           }
 
@@ -94,28 +100,36 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
           let studied = 0;
           let mastered = 0;
 
-          region.counties.forEach((county) => {
-            const info = countyProgress.get(county.id);
-            if (info?.studied) studied++;
-            if (info?.mastered) mastered++;
+          regionCountyNames.forEach((countyName) => {
+            // Find the county ID from the name
+            const county = allCaliforniaCounties.find((c) => c.name === countyName);
+            if (county) {
+              const info = countyProgress.get(county.id);
+              if (info?.studied) studied++;
+              if (info?.mastered) mastered++;
+            }
           });
 
           return {
-            total: region.counties.length,
+            total: regionCountyNames.length,
             studied,
             mastered,
-            percentage: (studied / region.counties.length) * 100,
+            percentage:
+              regionCountyNames.length > 0 ? (studied / regionCountyNames.length) * 100 : 0,
           };
         },
 
         updateMasteryLevel: (countyCode: string, level: number) => {
+          const existing = get().countyProgress.get(countyCode);
+          const oldLevel = existing?.masteryLevel ?? 0;
+
           set((state) => {
-            const existing = state.countyProgress.get(countyCode);
-            if (!existing) return state;
+            const existingState = state.countyProgress.get(countyCode);
+            if (!existingState) return state;
 
             const newProgress = new Map(state.countyProgress);
             newProgress.set(countyCode, {
-              ...existing,
+              ...existingState,
               masteryLevel: level,
               mastered: level >= 3,
             });
@@ -123,10 +137,23 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
             return { countyProgress: newProgress };
           });
 
-          if (level >= 3) {
+          // Publish mastery change event if level increased to mastery
+          if (level >= 3 || level !== oldLevel) {
+            const levelToMastery = (lvl: number): MasteryLevel => {
+              if (lvl >= 3) return MasteryLevel.MASTERED;
+              if (lvl >= 2) return MasteryLevel.PROFICIENT;
+              if (lvl >= 1) return MasteryLevel.FAMILIAR;
+              if (lvl > 0) return MasteryLevel.LEARNING;
+              return MasteryLevel.UNKNOWN;
+            };
             storeCoordinator.publish(
               StudyEventType.COUNTY_MASTERY_CHANGED,
-              { countyCode, level },
+              {
+                countyCode,
+                oldLevel: levelToMastery(oldLevel),
+                newLevel: levelToMastery(level),
+                timestamp: new Date(),
+              },
               'countyProgressStore'
             );
           }
@@ -152,16 +179,16 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
           countyProgress: Array.from(state.countyProgress.entries()),
           lastStudiedCounty: state.lastStudiedCounty,
         }),
-        merge: (
-          persisted:
+        merge: (persistedState: unknown, current) => {
+          const persisted = persistedState as
             | { countyProgress?: [string, CountyStudyInfo][]; lastStudiedCounty?: string | null }
-            | undefined,
-          current
-        ) => ({
-          ...current,
-          countyProgress: new Map(persisted?.countyProgress || []),
-          lastStudiedCounty: persisted?.lastStudiedCounty || null,
-        }),
+            | undefined;
+          return {
+            ...current,
+            countyProgress: new Map(persisted?.countyProgress || []),
+            lastStudiedCounty: persisted?.lastStudiedCounty || null,
+          };
+        },
       }
     ),
     { name: 'CountyProgressStore' }

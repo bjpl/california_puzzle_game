@@ -157,16 +157,16 @@ export const useSpacedRepetitionStore = create<SpacedRepetitionState & SpacedRep
           cards: Array.from(state.cards.entries()),
           reviewQueue: state.reviewQueue,
         }),
-        merge: (
-          persisted:
+        merge: (persistedState: unknown, current) => {
+          const persisted = persistedState as
             | { cards?: [string, SpacedRepetitionItem][]; reviewQueue?: string[] }
-            | undefined,
-          current
-        ) => ({
-          ...current,
-          cards: new Map(persisted?.cards || []),
-          reviewQueue: persisted?.reviewQueue || [],
-        }),
+            | undefined;
+          return {
+            ...current,
+            cards: new Map(persisted?.cards || []),
+            reviewQueue: persisted?.reviewQueue || [],
+          };
+        },
       }
     ),
     { name: 'SpacedRepetitionStore' }

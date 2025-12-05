@@ -325,8 +325,10 @@ export interface SessionResumedPayload {
 
 export interface SessionCompletedPayload {
   sessionId: SessionId;
+  mode: StudyMode;
   duration: number;
   countiesStudied: number;
+  correctCount: number;
   accuracy: number;
   timestamp: Date;
 }
