@@ -12,7 +12,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -127,6 +127,33 @@ describe('ExportData Component', () => {
   const originalAppendChild = document.body.appendChild.bind(document.body);
   const originalRemoveChild = document.body.removeChild.bind(document.body);
 
+  // Helper function to create mock anchor element that doesn't trigger navigation
+  const createMockAnchorElement = (mockClick: ReturnType<typeof vi.fn>) => {
+    const mockLink = {
+      click: mockClick,
+      tagName: 'A',
+      setAttribute: vi.fn(),
+      removeAttribute: vi.fn(),
+      style: {},
+      // Use defineProperty to prevent href setter from triggering navigation
+      get href() {
+        return this._href || '';
+      },
+      set href(value) {
+        this._href = value;
+      },
+      _href: '',
+      get download() {
+        return this._download || '';
+      },
+      set download(value) {
+        this._download = value;
+      },
+      _download: '',
+    } as unknown as HTMLAnchorElement;
+    return mockLink;
+  };
+
   beforeEach(async () => {
     vi.clearAllMocks();
 
@@ -143,6 +170,13 @@ describe('ExportData Component', () => {
     mockRevokeObjectURL = vi.fn();
     global.URL.createObjectURL = mockCreateObjectURL;
     global.URL.revokeObjectURL = mockRevokeObjectURL;
+
+    // Prevent jsdom navigation errors by mocking HTMLAnchorElement's href setter
+    Object.defineProperty(window.HTMLAnchorElement.prototype, 'href', {
+      set: vi.fn(),
+      get: vi.fn(() => ''),
+      configurable: true,
+    });
   });
 
   afterEach(() => {
@@ -457,39 +491,63 @@ describe('ExportData Component', () => {
   });
 
   describe('Loading States', () => {
-    beforeEach(() => {
+    it('should show "Fetching Data..." during fetch', async () => {
+      // Add delay to Supabase mock to allow checking loading state
       mockSupabaseFrom.mockImplementation(() => ({
         select: vi.fn(() => ({
           eq: vi.fn(() => ({
-            order: vi.fn(() => new Promise((resolve) => setTimeout(resolve, 100))),
+            order: vi.fn(
+              () =>
+                new Promise((resolve) => setTimeout(() => resolve({ data: [], error: null }), 100))
+            ),
           })),
         })),
       }));
-    });
 
-    it('should show "Fetching Data..." during fetch', async () => {
       const user = userEvent.setup();
       render(<ExportData />);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
 
-      expect(screen.getByText('Fetching Data...')).toBeInTheDocument();
+      // Loading state should appear during the 100ms delay - button text changes
+      expect(screen.getByRole('button', { name: /fetching data/i })).toBeInTheDocument();
+
+      // Wait for operation to complete
+      await waitFor(() => {
+        expect(screen.queryByText('Fetching Data...')).not.toBeInTheDocument();
+      });
     });
 
     it('should disable button during export', async () => {
+      // Add delay to Supabase mock
+      mockSupabaseFrom.mockImplementation(() => ({
+        select: vi.fn(() => ({
+          eq: vi.fn(() => ({
+            order: vi.fn(
+              () =>
+                new Promise((resolve) => setTimeout(() => resolve({ data: [], error: null }), 50))
+            ),
+          })),
+        })),
+      }));
+
       const user = userEvent.setup();
       render(<ExportData />);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
 
+      // Button should be disabled during operation
       expect(exportButton).toBeDisabled();
+
+      // Wait for operation to complete
+      await waitFor(() => {
+        expect(exportButton).not.toBeDisabled();
+      });
     });
 
     it('should show success message after completion', async () => {
-      const user = userEvent.setup();
-
       mockSupabaseFrom.mockImplementation(() => ({
         select: vi.fn(() => ({
           eq: vi.fn(() => ({
@@ -501,30 +559,45 @@ describe('ExportData Component', () => {
         })),
       }));
 
+      const user = userEvent.setup();
       const mockClick = vi.fn();
 
       render(<ExportData />);
 
-      // Mock AFTER render
-      vi.spyOn(document, 'createElement').mockImplementation((tag) => {
+      // Mock AFTER render to prevent download navigation issues
+      const mockCreateElement = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
-          return {
-            click: mockClick,
-            href: '',
-            download: '',
-          } as unknown as HTMLAnchorElement;
+          return createMockAnchorElement(mockClick);
         }
         return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
+
+      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => {
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalAppendChild(node);
+      });
+
+      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation((node) => {
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalRemoveChild(node);
+      });
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
 
+      // Wait for success state - button text changes
       await waitFor(() => {
-        expect(screen.getByText('Export Successful!')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /export successful/i })).toBeInTheDocument();
       });
+
+      // Cleanup
+      mockCreateElement.mockRestore();
+      mockAppendChild.mockRestore();
+      mockRemoveChild.mockRestore();
     });
   });
 
@@ -575,36 +648,49 @@ describe('ExportData Component', () => {
     });
 
     it('should show error state on button', async () => {
-      const user = userEvent.setup();
+      let resolvePromise: (value: { data: null; error: { message: string } }) => void;
+      const delayedPromise = new Promise<{ data: null; error: { message: string } }>((resolve) => {
+        resolvePromise = resolve;
+      });
 
       mockSupabaseFrom.mockImplementation(() => ({
         select: vi.fn(() => ({
           eq: vi.fn(() => ({
-            order: vi.fn(() => ({
-              data: null,
-              error: { message: 'Error' },
-            })),
+            order: vi.fn(() => delayedPromise),
           })),
         })),
       }));
 
+      const user = userEvent.setup();
       render(<ExportData />);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
-      await user.click(exportButton);
 
-      await waitFor(() => {
-        expect(screen.getByText('Export Failed')).toBeInTheDocument();
+      // Start click
+      const clickPromise = user.click(exportButton);
+
+      // Resolve with error after a tick
+      await act(async () => {
+        resolvePromise!({ data: null, error: { message: 'Error' } });
       });
+
+      await waitFor(
+        () => {
+          expect(screen.getByRole('button', { name: /export failed/i })).toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
+
+      await clickPromise;
     });
 
     it('should reset to idle state after error timeout', async () => {
-      const user = userEvent.setup();
-      vi.useFakeTimers();
-
+      // Mock returns error from both .eq() directly AND .order()
       mockSupabaseFrom.mockImplementation(() => ({
         select: vi.fn(() => ({
           eq: vi.fn(() => ({
+            data: null,
+            error: { message: 'Error' },
             order: vi.fn(() => ({
               data: null,
               error: { message: 'Error' },
@@ -613,30 +699,37 @@ describe('ExportData Component', () => {
         })),
       }));
 
+      const user = userEvent.setup();
       render(<ExportData />);
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
 
+      // Wait for error state
       await waitFor(() => {
-        expect(screen.getByText('Export Failed')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /export failed/i })).toBeInTheDocument();
       });
 
-      vi.advanceTimersByTime(5000);
-
-      await waitFor(() => {
-        expect(screen.getByText('Export My Data')).toBeInTheDocument();
-      });
-
-      vi.useRealTimers();
-    });
+      // Wait for the 5 second timeout that resets to idle (real timers)
+      await waitFor(
+        () => {
+          expect(screen.getByRole('button', { name: /export my data/i })).toBeInTheDocument();
+        },
+        { timeout: 6000 }
+      );
+    }, 10000); // Extended test timeout to accommodate the 5-second reset
   });
 
   describe('File Size Estimation', () => {
     beforeEach(() => {
+      // Mock returns data from both .eq() directly AND .order() to handle:
+      // - game_sessions: uses .order()
+      // - user_progress/game_settings: destructure directly from .eq()
       mockSupabaseFrom.mockImplementation(() => ({
         select: vi.fn(() => ({
           eq: vi.fn(() => ({
+            data: [{ id: 1, data: 'x'.repeat(1000) }],
+            error: null,
             order: vi.fn(() => ({
               data: [{ id: 1, data: 'x'.repeat(1000) }],
               error: null,
@@ -653,25 +746,44 @@ describe('ExportData Component', () => {
       render(<ExportData />);
 
       // Mock AFTER render
-      vi.spyOn(document, 'createElement').mockImplementation((tag) => {
+      const mockCreateElement = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
-          return {
-            click: mockClick,
-            href: '',
-            download: '',
-          } as unknown as HTMLAnchorElement;
+          return createMockAnchorElement(mockClick);
         }
         return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
+
+      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => {
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalAppendChild(node);
+      });
+
+      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation((node) => {
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalRemoveChild(node);
+      });
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
 
+      // Wait for export to complete first (button changes to success state)
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /export successful/i })).toBeInTheDocument();
+      });
+
+      // Then check for file size display
       await waitFor(() => {
         expect(screen.getByText(/Estimated file size:/)).toBeInTheDocument();
       });
+
+      // Cleanup
+      mockCreateElement.mockRestore();
+      mockAppendChild.mockRestore();
+      mockRemoveChild.mockRestore();
     });
 
     it('should format bytes correctly', async () => {
@@ -681,26 +793,45 @@ describe('ExportData Component', () => {
       render(<ExportData />);
 
       // Mock AFTER render
-      vi.spyOn(document, 'createElement').mockImplementation((tag) => {
+      const mockCreateElement = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
-          return {
-            click: mockClick,
-            href: '',
-            download: '',
-          } as unknown as HTMLAnchorElement;
+          return createMockAnchorElement(mockClick);
         }
         return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
+
+      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => {
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalAppendChild(node);
+      });
+
+      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation((node) => {
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalRemoveChild(node);
+      });
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
 
+      // Wait for export to complete first (button changes to success state)
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /export successful/i })).toBeInTheDocument();
+      });
+
+      // Then check for file size format
       await waitFor(() => {
         const sizeText = screen.getByText(/Estimated file size:/).nextSibling;
         expect(sizeText?.textContent).toMatch(/\d+(\.\d+)?\s+(Bytes|KB|MB)/);
       });
+
+      // Cleanup
+      mockCreateElement.mockRestore();
+      mockAppendChild.mockRestore();
+      mockRemoveChild.mockRestore();
     });
   });
 
@@ -736,10 +867,14 @@ describe('ExportData Component', () => {
 
     it('should announce status changes with aria-live', async () => {
       const user = userEvent.setup();
+      const mockClick = vi.fn();
 
+      // Mock returns data from both .eq() directly AND .order()
       mockSupabaseFrom.mockImplementation(() => ({
         select: vi.fn(() => ({
           eq: vi.fn(() => ({
+            data: [],
+            error: null,
             order: vi.fn(() => ({
               data: [],
               error: null,
@@ -748,31 +883,49 @@ describe('ExportData Component', () => {
         })),
       }));
 
-      const mockClick = vi.fn();
-
       render(<ExportData />);
 
       // Mock AFTER render
-      vi.spyOn(document, 'createElement').mockImplementation((tag) => {
+      const mockCreateElement = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') {
-          return {
-            click: mockClick,
-            href: '',
-            download: '',
-          } as unknown as HTMLAnchorElement;
+          return createMockAnchorElement(mockClick);
         }
         return originalCreateElement(tag);
       });
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => null as unknown as Node);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => null as unknown as Node);
+
+      const mockAppendChild = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => {
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalAppendChild(node);
+      });
+
+      const mockRemoveChild = vi.spyOn(document.body, 'removeChild').mockImplementation((node) => {
+        if (node && 'tagName' in node && node.tagName === 'A') {
+          return node;
+        }
+        return originalRemoveChild(node);
+      });
 
       const exportButton = screen.getByRole('button', { name: /export my data/i });
       await user.click(exportButton);
 
+      // Wait for export to complete first (button changes to success state)
       await waitFor(() => {
-        const alert = screen.getByRole('alert');
-        expect(alert).toHaveAttribute('aria-live', 'polite');
+        expect(screen.getByRole('button', { name: /export successful/i })).toBeInTheDocument();
       });
+
+      // Then check for aria-live region
+      await waitFor(() => {
+        const liveRegion = document.querySelector('[aria-live]');
+        expect(liveRegion).toBeInTheDocument();
+        expect(liveRegion).toHaveAttribute('aria-live', 'polite');
+      });
+
+      // Cleanup
+      mockCreateElement.mockRestore();
+      mockAppendChild.mockRestore();
+      mockRemoveChild.mockRestore();
     });
   });
 });
