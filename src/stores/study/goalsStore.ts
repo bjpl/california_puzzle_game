@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { StudyGoal } from '../../types/study';
-import { StudyEventType } from '../../types/study-domain.types';
+import { StudyGoal, StudyEventType } from '../../types/study-domain.types';
 import { storeCoordinator } from '../storeCoordinator';
 
 interface GoalsState {
@@ -54,18 +53,25 @@ export const useGoalsStore = create<GoalsState & GoalsActions>()(
             if (!goal) return state;
 
             const newGoals = new Map(state.goals);
-            newGoals.set(goalId, { ...goal, progress });
+            newGoals.set(goalId, { ...goal, currentValue: progress });
             return { goals: newGoals };
           });
         },
 
         completeGoal: (goalId: string) => {
+          const goal = get().goals.get(goalId);
+          if (!goal) return;
+
           set((state) => ({
             activeGoalIds: state.activeGoalIds.filter((id) => id !== goalId),
             completedGoalIds: [...state.completedGoalIds, goalId],
           }));
 
-          storeCoordinator.publish(StudyEventType.GOAL_COMPLETED, { goalId }, 'goalsStore');
+          storeCoordinator.publish(
+            StudyEventType.GOAL_COMPLETED,
+            { goal, completedAt: new Date() },
+            'goalsStore'
+          );
         },
 
         deleteGoal: (goalId: string) => {

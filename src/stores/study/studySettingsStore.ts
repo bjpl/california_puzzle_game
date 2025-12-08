@@ -40,8 +40,8 @@ const defaultGridSettings: GridStudySettings = {
     studied: null,
     mastered: null,
   },
+  cardsPerPage: 20,
   showDetails: true,
-  compactMode: false,
 };
 
 export const useStudySettingsStore = create<StudySettingsState & StudySettingsActions>()(

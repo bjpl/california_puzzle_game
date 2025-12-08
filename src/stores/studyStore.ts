@@ -30,8 +30,40 @@ import {
   FlashcardSettings,
   MapExplorationSettings,
   GridStudySettings,
+  StudySession as FacadeStudySession,
 } from '../types/study';
+import { StudyMode, StudySession as DomainStudySession, GoalType, GoalStatus } from '../types/study-domain.types';
 import { allCaliforniaCounties, californiaRegions } from '../data/californiaCountiesComplete';
+
+// Type conversion utilities between legacy and domain types
+const modeTypeToEnum: Record<StudyModeType, StudyMode> = {
+  'flashcard': StudyMode.FLASHCARDS,
+  'map-exploration': StudyMode.MAP_EXPLORATION,
+  'grid-study': StudyMode.GRID_STUDY,
+};
+
+const modeEnumToType: Record<StudyMode, StudyModeType> = {
+  [StudyMode.FLASHCARDS]: 'flashcard',
+  [StudyMode.MAP_EXPLORATION]: 'map-exploration',
+  [StudyMode.GRID_STUDY]: 'grid-study',
+  [StudyMode.TIMED_CHALLENGE]: 'flashcard', // fallback
+};
+
+const convertDomainSessionToFacade = (session: DomainStudySession | null): FacadeStudySession | null => {
+  if (!session) return null;
+  return {
+    id: session.id,
+    startTime: session.startTime,
+    endTime: session.endTime || null,
+    mode: modeEnumToType[session.mode],
+    countiesStudied: session.countiesStudied,
+    totalTime: Date.now() - session.startTime.getTime() - session.totalPausedDuration,
+    accuracy: session.countiesStudied.length > 0
+      ? (session.correctAnswers / session.countiesStudied.length) * 100
+      : 0,
+    completionRate: 0,
+  };
+};
 
 // Import domain stores
 import { useSessionStore } from './study/sessionStore';
@@ -92,9 +124,11 @@ export const useStudyStore = create<StudyStore>()(
         // SESSION MANAGEMENT - Delegates to sessionStore
         // ============================================================
         startStudySession: (mode: StudyModeType) => {
-          const sessionId = useSessionStore.getState().startSession(mode);
-          const session = useSessionStore.getState().currentSession;
-          set({ currentSession: session, isStudySessionActive: true });
+          const domainMode = modeTypeToEnum[mode];
+          const sessionId = useSessionStore.getState().startSession(domainMode);
+          const domainSession = useSessionStore.getState().currentSession;
+          const facadeSession = convertDomainSessionToFacade(domainSession);
+          set({ currentSession: facadeSession, isStudySessionActive: true });
           logger.info(`[StudyFacade] Session started: ${sessionId}`);
         },
 
@@ -103,12 +137,12 @@ export const useStudyStore = create<StudyStore>()(
           if (stats) {
             useStatisticsStore.getState().recordSession({
               sessionId: stats.sessionId,
-              mode: stats.mode,
+              mode: modeEnumToType[stats.mode], // Convert StudyMode enum to StudyModeType string
               duration: stats.duration,
               countiesStudied: stats.countiesStudied,
               correctCount: stats.correctCount,
               accuracy: stats.accuracy,
-              timestamp: Date.now(),
+              timestamp: stats.timestamp.getTime(), // Convert Date to epoch ms
             });
           }
           set({ currentSession: null, isStudySessionActive: false });
@@ -180,8 +214,11 @@ export const useStudyStore = create<StudyStore>()(
               nextReview: null,
               masteryLevel: 0,
               streakCount: 0,
+              correctCount: 0,
               incorrectCount: 0,
               averageTime: 0,
+              studied: false,
+              mastered: false,
             }
           );
         },
@@ -206,6 +243,7 @@ export const useStudyStore = create<StudyStore>()(
             total: regionCounties.length,
             studied,
             mastered,
+            percentage: regionCounties.length > 0 ? (studied / regionCounties.length) * 100 : 0,
             averageTime: 30,
             lastStudied: null,
           };
@@ -273,7 +311,22 @@ export const useStudyStore = create<StudyStore>()(
         // GOALS - Delegates to goalsStore
         // ============================================================
         setGoal: (goal: StudyGoal) => {
-          useGoalsStore.getState().createGoal(goal);
+          // Convert facade StudyGoal to domain StudyGoal format
+          const goalTypeMap: Record<string, GoalType> = {
+            'daily': GoalType.DAILY_COUNTIES,
+            'weekly': GoalType.WEEKLY_COUNTIES,
+            'monthly': GoalType.CUSTOM,
+          };
+          const domainGoal = {
+            type: goalTypeMap[goal.type] || GoalType.CUSTOM,
+            status: goal.completed ? GoalStatus.COMPLETED : GoalStatus.ACTIVE,
+            targetValue: goal.target,
+            currentValue: goal.current,
+            startDate: new Date(),
+            endDate: goal.deadline,
+            customDescription: goal.description,
+          };
+          useGoalsStore.getState().createGoal(domainGoal);
           get().syncFromDomainStores();
         },
 

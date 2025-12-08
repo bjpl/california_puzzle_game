@@ -45,9 +45,22 @@ export const useProgressStore = create<ProgressState & ProgressActions>()(
             };
           });
 
+          const state = get();
           storeCoordinator.publish(
             StudyEventType.PROGRESS_UPDATED,
-            { countyCode, totalStudied: get().totalStudied },
+            {
+              overallProgress: {
+                totalCounties: state.totalCounties,
+                studiedCounties: state.totalStudied,
+                masteredCounties: state.masteredCounties.size,
+                currentStreak: state.currentStreak,
+                longestStreak: state.longestStreak,
+                totalStudySessions: 0, // Not tracked in progressStore
+                totalStudyTimeMs: 0, // Not tracked in progressStore
+                lastStudyDate: state.lastStudyDate ? new Date(state.lastStudyDate) : undefined,
+              },
+              changedCounties: [countyCode],
+            },
             'progressStore'
           );
         },
@@ -61,7 +74,12 @@ export const useProgressStore = create<ProgressState & ProgressActions>()(
 
           storeCoordinator.publish(
             StudyEventType.MILESTONE_REACHED,
-            { type: 'mastery', countyCode },
+            {
+              milestoneType: 'mastery_level',
+              threshold: 1,
+              actualValue: get().masteredCounties.size,
+              timestamp: new Date(),
+            },
             'progressStore'
           );
         },
@@ -84,9 +102,15 @@ export const useProgressStore = create<ProgressState & ProgressActions>()(
             lastStudyDate: today,
           });
 
+          const streakBroken = lastStudyDate !== yesterdayStr && lastStudyDate !== null;
+          const updatedLongestStreak = get().longestStreak;
           storeCoordinator.publish(
             StudyEventType.STREAK_UPDATED,
-            { currentStreak: newStreak },
+            {
+              currentStreak: newStreak,
+              longestStreak: updatedLongestStreak,
+              streakBroken,
+            },
             'progressStore'
           );
         },
