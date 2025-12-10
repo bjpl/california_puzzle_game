@@ -1,6 +1,16 @@
 import { useCallback, useEffect } from 'react';
-import { useStudyStore } from '../stores/studyStore';
+import { useSessionStore } from '../stores/study/sessionStore';
+import { useProgressStore } from '../stores/study/progressStore';
 import { StudyModeType } from '../types/study';
+import { StudyMode } from '../types/study-domain.types';
+
+// Type conversion from domain StudyMode to legacy StudyModeType
+const modeEnumToType: Record<StudyMode, StudyModeType> = {
+  [StudyMode.FLASHCARDS]: 'flashcard',
+  [StudyMode.MAP_EXPLORATION]: 'map-exploration',
+  [StudyMode.GRID_STUDY]: 'grid-study',
+  [StudyMode.TIMED_CHALLENGE]: 'flashcard', // fallback
+};
 
 interface UseStudyNavigationProps {
   onNavigateToGame?: () => void;
@@ -13,36 +23,39 @@ export const useStudyNavigation = ({
   onNavigateToMenu,
   onModeChange
 }: UseStudyNavigationProps = {}) => {
+  // Domain stores
   const {
-    progress,
-    endStudySession,
-    isStudySessionActive,
-    currentSession
-  } = useStudyStore();
+    isActive: isStudySessionActive,
+    currentSession,
+    endSession
+  } = useSessionStore();
+
+  const { totalStudied } = useProgressStore();
 
   // Handle navigation to game with study progress check
   const navigateToGame = useCallback(() => {
     if (isStudySessionActive) {
-      endStudySession();
+      endSession();
     }
     onNavigateToGame?.();
-  }, [isStudySessionActive, endStudySession, onNavigateToGame]);
+  }, [isStudySessionActive, endSession, onNavigateToGame]);
 
   // Handle navigation to menu
   const navigateToMenu = useCallback(() => {
     if (isStudySessionActive) {
-      endStudySession();
+      endSession();
     }
     onNavigateToMenu?.();
-  }, [isStudySessionActive, endStudySession, onNavigateToMenu]);
+  }, [isStudySessionActive, endSession, onNavigateToMenu]);
 
   // Handle mode changes
   const handleModeChange = useCallback((mode: StudyModeType) => {
-    if (isStudySessionActive && currentSession?.mode !== mode) {
-      endStudySession();
+    const currentModeType = currentSession ? modeEnumToType[currentSession.mode] : null;
+    if (isStudySessionActive && currentModeType !== mode) {
+      endSession();
     }
     onModeChange?.(mode);
-  }, [isStudySessionActive, currentSession, endStudySession, onModeChange]);
+  }, [isStudySessionActive, currentSession, endSession, onModeChange]);
 
   // Keyboard navigation
   const handleKeyPress = useCallback((event: KeyboardEvent) => {
@@ -55,7 +68,7 @@ export const useStudyNavigation = ({
     switch (event.key) {
       case 'Escape':
         if (isStudySessionActive) {
-          endStudySession();
+          endSession();
         }
         break;
       case 'g':
@@ -73,7 +86,7 @@ export const useStudyNavigation = ({
         }
         break;
     }
-  }, [isStudySessionActive, endStudySession, navigateToGame, navigateToMenu]);
+  }, [isStudySessionActive, endSession, navigateToGame, navigateToMenu]);
 
   // Set up keyboard listeners
   useEffect(() => {
@@ -87,7 +100,7 @@ export const useStudyNavigation = ({
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (isStudySessionActive) {
-        endStudySession();
+        endSession();
       }
     };
 
@@ -95,12 +108,12 @@ export const useStudyNavigation = ({
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [isStudySessionActive, endStudySession]);
+  }, [isStudySessionActive, endSession]);
 
   // Study readiness check
   const getStudyReadiness = useCallback(() => {
     const totalCounties = 58; // Total California counties
-    const studiedPercentage = (progress.totalStudied / totalCounties) * 100;
+    const studiedPercentage = (totalStudied / totalCounties) * 100;
 
     if (studiedPercentage >= 80) {
       return {
@@ -127,7 +140,7 @@ export const useStudyNavigation = ({
         confidence: 25
       };
     }
-  }, [progress.totalStudied]);
+  }, [totalStudied]);
 
   // Game mode recommendations based on study progress
   const getRecommendedGameMode = useCallback(() => {
@@ -172,7 +185,7 @@ export const useStudyNavigation = ({
     handleModeChange,
 
     // Study progress information
-    studyProgress: progress,
+    studyProgress: { totalStudied },
     studyReadiness: getStudyReadiness(),
     recommendedGameMode: getRecommendedGameMode(),
 
@@ -181,6 +194,6 @@ export const useStudyNavigation = ({
     currentSession,
 
     // Utility functions
-    endCurrentSession: endStudySession
+    endCurrentSession: endSession
   };
 };

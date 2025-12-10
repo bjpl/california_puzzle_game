@@ -1,18 +1,21 @@
 /**
  * Study Store Facade
  *
- * This facade provides backward compatibility with the original studyStore API
- * while delegating to the new domain-specific stores. This allows gradual
- * migration of consumers to use the domain stores directly.
+ * @deprecated This facade is deprecated. Use domain-specific stores directly:
+ * - useSessionStore: Study session lifecycle (import from './study/sessionStore')
+ * - useCountyProgressStore: Per-county mastery (import from './study/countyProgressStore')
+ * - useSpacedRepetitionStore: SM-2 algorithm (import from './study/spacedRepetitionStore')
+ * - useProgressStore: Overall progress/streaks (import from './study/progressStore')
+ * - useGoalsStore: Learning objectives (import from './study/goalsStore')
+ * - useStatisticsStore: Analytics/metrics (import from './study/statisticsStore')
+ * - useStudySettingsStore: User preferences (import from './study/studySettingsStore')
  *
- * Domain Stores:
- * - sessionStore: Study session lifecycle management
- * - countyProgressStore: Per-county mastery tracking
- * - spacedRepetitionStore: SM-2 algorithm implementation
- * - progressStore: Overall progress and streaks
- * - goalsStore: Learning objectives
- * - statisticsStore: Analytics and metrics
- * - studySettingsStore: User preferences
+ * Migration completed: 2025-12-08
+ * All consumers have been migrated to use domain stores directly.
+ * This facade remains for backward compatibility with tests only.
+ *
+ * Original purpose: Backward compatibility with original studyStore API
+ * while delegating to domain-specific stores.
  */
 
 import { create } from 'zustand';

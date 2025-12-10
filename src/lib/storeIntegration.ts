@@ -17,7 +17,9 @@ import { useCountyPlacementStore } from '../stores/countyPlacementStore';
 import { useScoringStore } from '../stores/scoringStore';
 import { useAchievementStore } from '../stores/achievementStore';
 import { useSettingsStore } from '../stores/gameSettingsStore';
-import { useStudyStore } from '../stores/studyStore';
+// Migrated from legacy studyStore facade to domain stores
+import { useSessionStore } from '../stores/study/sessionStore';
+import { useProgressStore } from '../stores/study/progressStore';
 // import { useAuthStore } from '../stores/authStore'; // Available for future auth integration
 import { gameSettingsSync } from './sync/gameSettingsSync';
 import { gameStatsSync } from './sync/gameStatsSync';
@@ -210,37 +212,59 @@ class StoreIntegrationManager {
   /**
    * Setup Study Store listeners
    *
-   * CONCEPT: React to studyStore changes and trigger syncs
-   * WHY: Keep study progress and settings in sync
+   * CONCEPT: React to study domain store changes and trigger syncs
+   * WHY: Keep study progress and session state in sync
    * PATTERN: Zustand subscriptions with selective updates
+   * MIGRATION: Now uses domain stores (sessionStore, progressStore) instead of legacy studyStore facade
    */
   private setupStudyStoreListeners(): void {
-    logger.info('[StoreIntegration] Setting up studyStore listeners...');
+    logger.info('[StoreIntegration] Setting up study domain store listeners...');
 
-    let previousProgress = useStudyStore.getState().progress;
-    let wasStudySessionActive = useStudyStore.getState().isStudySessionActive;
+    // Get initial state from domain stores
+    const progressState = useProgressStore.getState();
+    let previousProgress = {
+      totalStudied: progressState.totalStudied,
+      masteredCount: progressState.masteredCounties.size,
+      currentStreak: progressState.currentStreak,
+      longestStreak: progressState.longestStreak,
+      lastStudyDate: progressState.lastStudyDate,
+    };
+    let wasStudySessionActive = useSessionStore.getState().isActive;
 
-    // Listen to all study store changes
-    const unsubscribeStudy = useStudyStore.subscribe((state) => {
+    // Listen to progress store changes
+    const unsubscribeProgress = useProgressStore.subscribe((state) => {
       if (!this.initialized) return;
 
+      const currentProgress = {
+        totalStudied: state.totalStudied,
+        masteredCount: state.masteredCounties.size,
+        currentStreak: state.currentStreak,
+        longestStreak: state.longestStreak,
+        lastStudyDate: state.lastStudyDate,
+      };
+
       // Handle progress changes
-      if (JSON.stringify(state.progress) !== JSON.stringify(previousProgress)) {
+      if (JSON.stringify(currentProgress) !== JSON.stringify(previousProgress)) {
         logger.info('[StoreIntegration] Study progress changed (sync pending Phase 3)');
-        previousProgress = state.progress;
+        previousProgress = currentProgress;
       }
+    });
+
+    // Listen to session store changes
+    const unsubscribeSession = useSessionStore.subscribe((state) => {
+      if (!this.initialized) return;
 
       // Detect session end (was active, now not active)
-      if (wasStudySessionActive && !state.isStudySessionActive) {
+      if (wasStudySessionActive && !state.isActive) {
         logger.info('[StoreIntegration] Study session ended (sync pending Phase 3)');
         // Note: Study session sync will be implemented in Phase 3
       }
-      wasStudySessionActive = state.isStudySessionActive;
+      wasStudySessionActive = state.isActive;
     });
 
-    this.unsubscribers.push(unsubscribeStudy);
+    this.unsubscribers.push(unsubscribeProgress, unsubscribeSession);
 
-    logger.info('[StoreIntegration] studyStore listeners ready (Phase 3 pending)');
+    logger.info('[StoreIntegration] Study domain store listeners ready (Phase 3 pending)');
   }
 
   /**
