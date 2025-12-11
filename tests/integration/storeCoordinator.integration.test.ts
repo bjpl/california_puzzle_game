@@ -402,7 +402,7 @@ describe('StoreCoordinator Integration Tests', () => {
       const _sessionCountBefore = statsBefore.sessionHistory.length;
 
       // Start a session (publishes SESSION_STARTED)
-      const _sessionId = useSessionStore.getState().startSession(StudyMode.FLASHCARDS);
+      const sessionId = useSessionStore.getState().startSession(StudyMode.FLASHCARDS);
 
       // Allow event to propagate (microtask tick)
       await Promise.resolve();
