@@ -399,10 +399,10 @@ describe('StoreCoordinator Integration Tests', () => {
     it('should propagate SESSION_STARTED event to statistics store', async () => {
       // Track statistics store state before
       const statsBefore = useStatisticsStore.getState();
-      const sessionCountBefore = statsBefore.sessionHistory.length;
+      const _sessionCountBefore = statsBefore.sessionHistory.length;
 
       // Start a session (publishes SESSION_STARTED)
-      const sessionId = useSessionStore.getState().startSession(StudyMode.FLASHCARDS);
+      const _sessionId = useSessionStore.getState().startSession(StudyMode.FLASHCARDS);
 
       // Allow event to propagate (microtask tick)
       await Promise.resolve();
@@ -928,11 +928,7 @@ describe('StoreCoordinator Integration Tests', () => {
         throw new Error('Subscriber failed');
       };
 
-      storeCoordinator.subscribe(
-        StudyEventType.SESSION_STARTED,
-        failingSubscriber,
-        'testStore'
-      );
+      storeCoordinator.subscribe(StudyEventType.SESSION_STARTED, failingSubscriber, 'testStore');
 
       // Publish event that will trigger the failing subscriber
       storeCoordinator.publish(
@@ -1023,7 +1019,8 @@ describe('StoreCoordinator Integration Tests', () => {
       // Get initial stats
       const initialStats = storeCoordinator.getSubscriptionStats();
       const eventStats = initialStats.find((s) => s.eventType === eventType);
-      const initialCallCount = eventStats?.subscribers.reduce((sum, s) => sum + s.callCount, 0) || 0;
+      const initialCallCount =
+        eventStats?.subscribers.reduce((sum, s) => sum + s.callCount, 0) || 0;
 
       // Publish an event
       storeCoordinator.publish(
@@ -1044,7 +1041,8 @@ describe('StoreCoordinator Integration Tests', () => {
       // Get updated stats
       const updatedStats = storeCoordinator.getSubscriptionStats();
       const updatedEventStats = updatedStats.find((s) => s.eventType === eventType);
-      const updatedCallCount = updatedEventStats?.subscribers.reduce((sum, s) => sum + s.callCount, 0) || 0;
+      const updatedCallCount =
+        updatedEventStats?.subscribers.reduce((sum, s) => sum + s.callCount, 0) || 0;
 
       // Call count should have increased
       expect(updatedCallCount).toBeGreaterThan(initialCallCount);
@@ -1171,7 +1169,7 @@ describe('StoreCoordinator Integration Tests', () => {
       await Promise.resolve();
 
       // 2. Start session and study counties
-      const sessionId = useSessionStore.getState().startSession(StudyMode.FLASHCARDS);
+      const _sessionId = useSessionStore.getState().startSession(StudyMode.FLASHCARDS);
 
       const sessionStore = useSessionStore.getState();
       for (let i = 1; i <= 5; i++) {

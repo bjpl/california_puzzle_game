@@ -82,7 +82,6 @@ export default function CountyFormationAnimation() {
   const [showContinueButton, setShowContinueButton] = useState(true);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [, _forceUpdate] = useState({});
 
   const animationFrameRef = useRef<number>();
   const lastUpdateRef = useRef<number>(Date.now());
