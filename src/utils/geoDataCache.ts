@@ -66,11 +66,13 @@ export class GeoDataCache {
       ttl: 1000 * 60 * 30, // 30 minutes
       preload: ['ultra-low', 'low'],
       adaptiveLoading: true,
-      ...options
+      ...options,
     };
   }
 
-  async loadOptimizedData(detailLevel: 'ultra-low' | 'low' | 'medium' | 'high'): Promise<CachedGeoData> {
+  async loadOptimizedData(
+    detailLevel: 'ultra-low' | 'low' | 'medium' | 'high'
+  ): Promise<CachedGeoData> {
     const cacheKey = `counties-${detailLevel}`;
 
     // Check cache first
@@ -106,13 +108,14 @@ export class GeoDataCache {
   }
 
   private async fetchGeoData(detailLevel: string): Promise<CachedGeoData> {
-    const geoDataPath = `/data/geo/ca-counties-${detailLevel}.geojson`;
-    const lookupPath = '/data/geo/county-lookup.json';
+    const basePath = import.meta.env.BASE_URL || '/';
+    const geoDataPath = `${basePath}data/geo/ca-counties-${detailLevel}.geojson`;
+    const lookupPath = `${basePath}data/geo/county-lookup.json`;
 
     try {
       const [geoResponse, lookupResponse] = await Promise.all([
         fetch(geoDataPath),
-        fetch(lookupPath)
+        fetch(lookupPath),
       ]);
 
       if (!geoResponse.ok) {
@@ -120,16 +123,14 @@ export class GeoDataCache {
       }
 
       if (!lookupResponse.ok) {
-        throw new Error(`Failed to load lookup data: ${lookupResponse.status} ${lookupResponse.statusText}`);
+        throw new Error(
+          `Failed to load lookup data: ${lookupResponse.status} ${lookupResponse.statusText}`
+        );
       }
 
-      const [geoData, lookup] = await Promise.all([
-        geoResponse.json(),
-        lookupResponse.json()
-      ]);
+      const [geoData, lookup] = await Promise.all([geoResponse.json(), lookupResponse.json()]);
 
       return { geoData, lookup };
-
     } catch (error) {
       logger.error(`Failed to fetch geo data for ${detailLevel}:`, error);
       throw error;
@@ -147,7 +148,7 @@ export class GeoDataCache {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
-      size: dataSize
+      size: dataSize,
     });
   }
 
@@ -160,8 +161,9 @@ export class GeoDataCache {
   }
 
   private evictOldEntries(requiredSpace: number): void {
-    const entries = Array.from(this.cache.entries())
-      .sort((a, b) => a[1].timestamp - b[1].timestamp); // Sort by timestamp (oldest first)
+    const entries = Array.from(this.cache.entries()).sort(
+      (a, b) => a[1].timestamp - b[1].timestamp
+    ); // Sort by timestamp (oldest first)
 
     let freedSpace = 0;
     for (const [key, entry] of entries) {
@@ -169,8 +171,10 @@ export class GeoDataCache {
       freedSpace += entry.size;
 
       // Stop when we've freed enough space
-      if (freedSpace >= requiredSpace ||
-          this.getCurrentCacheSize() <= this.options.maxCacheSize * 0.7) {
+      if (
+        freedSpace >= requiredSpace ||
+        this.getCurrentCacheSize() <= this.options.maxCacheSize * 0.7
+      ) {
         break;
       }
     }
@@ -208,9 +212,9 @@ export class GeoDataCache {
       totalSize,
       totalSizeMB: totalSize / (1024 * 1024),
       utilization: totalSize / this.options.maxCacheSize,
-      oldestEntry: entries.length > 0 ? Math.min(...entries.map(e => e.timestamp)) : null,
-      newestEntry: entries.length > 0 ? Math.max(...entries.map(e => e.timestamp)) : null,
-      avgItemSize: entries.length > 0 ? totalSize / entries.length : 0
+      oldestEntry: entries.length > 0 ? Math.min(...entries.map((e) => e.timestamp)) : null,
+      newestEntry: entries.length > 0 ? Math.max(...entries.map((e) => e.timestamp)) : null,
+      avgItemSize: entries.length > 0 ? totalSize / entries.length : 0,
     };
   }
 

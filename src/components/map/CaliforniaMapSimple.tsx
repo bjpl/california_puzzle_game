@@ -382,10 +382,8 @@ export default function CaliforniaMapSimple({
   };
 
   useEffect(() => {
-    const basePath =
-      window.location.hostname === 'localhost'
-        ? '/data/geo/ca-counties-medium.geojson'
-        : '/california_puzzle_game/data/geo/ca-counties-medium.geojson';
+    // Use import.meta.env.BASE_URL to get the correct base path from Vite config
+    const basePath = `${import.meta.env.BASE_URL}data/geo/ca-counties-medium.geojson`;
 
     mapLogger.debug('Attempting to fetch GeoJSON from:', basePath);
     fetch(basePath)

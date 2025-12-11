@@ -31,10 +31,7 @@ function CountyDropZone({ county, projection }: CountyDropZoneProps) {
   const countyId = countyName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
 
   // Convert placed counties array to Set for efficient lookup
-  const placedCountyIds = useMemo(
-    () => new Set(placedCounties.map(c => c.id)),
-    [placedCounties]
-  );
+  const placedCountyIds = useMemo(() => new Set(placedCounties.map((c) => c.id)), [placedCounties]);
   const isPlaced = placedCountyIds.has(countyId);
 
   const { isOver, setNodeRef } = useDroppable({
@@ -184,11 +181,8 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    // Load the GeoJSON data (use different path for dev vs production)
-    const basePath =
-      window.location.hostname === 'localhost'
-        ? '/data/geo/ca-counties-medium.geojson'
-        : '/california_puzzle_game/data/geo/ca-counties-medium.geojson';
+    // Load the GeoJSON data - use Vite's BASE_URL for correct path in all environments
+    const basePath = `${import.meta.env.BASE_URL}data/geo/ca-counties-medium.geojson`;
 
     fetch(basePath)
       .then((response) => response.json())

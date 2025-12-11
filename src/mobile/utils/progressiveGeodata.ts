@@ -27,14 +27,18 @@ export enum GeodetaLevel {
 }
 
 /**
- * Geodata file paths
+ * Get geodata file path with correct base URL
  */
-const GEODATA_PATHS: Record<GeodetaLevel, string> = {
-  [GeodetaLevel.ULTRA_LOW]: '/data/geo/california-ultra-low.json',
-  [GeodetaLevel.LOW]: '/data/geo/california-low.json',
-  [GeodetaLevel.MEDIUM]: '/data/geo/california-medium.json',
-  [GeodetaLevel.HIGH]: '/data/geo/california-high.json',
-};
+function getGeodataPath(level: GeodetaLevel): string {
+  const basePath = import.meta.env.BASE_URL || '/';
+  const paths: Record<GeodetaLevel, string> = {
+    [GeodetaLevel.ULTRA_LOW]: `${basePath}data/geo/california-ultra-low.json`,
+    [GeodetaLevel.LOW]: `${basePath}data/geo/california-low.json`,
+    [GeodetaLevel.MEDIUM]: `${basePath}data/geo/california-medium.json`,
+    [GeodetaLevel.HIGH]: `${basePath}data/geo/california-high.json`,
+  };
+  return paths[level];
+}
 
 /**
  * Geodata file sizes (bytes) for loading decisions
@@ -187,7 +191,7 @@ export async function loadGeodata(
     return geodataCache.get(level);
   }
 
-  const path = GEODATA_PATHS[level];
+  const path = getGeodataPath(level);
   const totalSize = GEODATA_SIZES[level];
 
   try {

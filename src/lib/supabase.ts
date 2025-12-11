@@ -90,33 +90,33 @@ export interface Database {
 }
 
 /**
- * Get environment variable with validation
+ * Get optional environment variable
  *
  * CONCEPT: Safe environment variable access
- * WHY: Fail fast if required config is missing
+ * WHY: Supabase is optional - app works without it
  * PATTERN: Runtime validation with TypeScript
  */
-function getEnvVar(key: string, defaultValue?: string): string {
+function getEnvVar(key: string, defaultValue?: string): string | undefined {
   const value = import.meta.env[key] || defaultValue;
-
-  if (!value) {
-    const errorMsg = `Missing required environment variable: ${key}`;
-    logger.error('[Supabase]', errorMsg);
-    throw new Error(errorMsg);
-  }
-
-  return value;
+  return value || undefined;
 }
 
 /**
- * Supabase configuration
+ * Check if Supabase is configured
  *
- * CONCEPT: Centralized config with validation
- * WHY: Single source of truth for Supabase settings
- * PATTERN: Config object with runtime checks
+ * CONCEPT: Optional Supabase integration
+ * WHY: App should work offline or without backend
+ * PATTERN: Feature flag based on config
  */
 const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
 const supabaseAnonKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
+
+/** Whether Supabase is properly configured */
+export const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey);
+
+if (!isSupabaseConfigured) {
+  logger.info('[Supabase] Not configured - running in offline/local mode');
+}
 
 /**
  * Create typed Supabase client
@@ -124,15 +124,18 @@ const supabaseAnonKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
  * CONCEPT: Type-safe database client
  * WHY: Autocomplete and type checking for all queries
  * PATTERN: Generic client with custom database schema
+ *
+ * Note: When not configured, uses placeholder URL/key.
+ * All operations will fail gracefully - check isSupabaseConfigured first.
  */
 export const supabase: SupabaseClient<Database> = createClient<Database>(
-  supabaseUrl,
-  supabaseAnonKey,
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-anon-key',
   {
     auth: {
       // Enable anonymous sign-in
-      autoRefreshToken: true,
-      persistSession: true,
+      autoRefreshToken: isSupabaseConfigured,
+      persistSession: isSupabaseConfigured,
       detectSessionInUrl: false, // We're not using OAuth flows
       storage: window.localStorage, // Persist session in localStorage
       storageKey: 'california-puzzle-auth-token',
@@ -156,6 +159,11 @@ export const supabase: SupabaseClient<Database> = createClient<Database>(
  * PATTERN: Async validation with error handling
  */
 export async function checkSupabaseHealth(): Promise<boolean> {
+  if (!isSupabaseConfigured) {
+    logger.info('[Supabase] Not configured - skipping health check');
+    return false;
+  }
+
   try {
     const { error } = await supabase.auth.getSession();
 
@@ -181,10 +189,11 @@ export async function checkSupabaseHealth(): Promise<boolean> {
  */
 export function logSupabaseConfig(): void {
   logger.info('[Supabase] Configuration:', {
-    url: supabaseUrl,
-    anonKey: supabaseAnonKey.substring(0, 20) + '...',
-    autoRefresh: true,
-    persistSession: true,
+    configured: isSupabaseConfigured,
+    url: supabaseUrl || '(not set)',
+    anonKey: supabaseAnonKey ? supabaseAnonKey.substring(0, 20) + '...' : '(not set)',
+    autoRefresh: isSupabaseConfigured,
+    persistSession: isSupabaseConfigured,
   });
 }
 

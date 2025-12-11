@@ -172,9 +172,10 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
       const data = await cacheRef.current.loadOptimizedData(level);
 
       // Update map utilities with new data
+      const basePath = import.meta.env.BASE_URL || '/';
       await mapUtilsRef.current.loadGeoData(
-        `/data/geo/ca-counties-${level}.geojson`,
-        '/data/geo/county-lookup.json'
+        `${basePath}data/geo/ca-counties-${level}.geojson`,
+        `${basePath}data/geo/county-lookup.json`
       );
 
       // Initialize collision detector
