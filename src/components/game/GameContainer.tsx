@@ -15,10 +15,7 @@ import {
 } from '@dnd-kit/core';
 
 // Custom keyboard coordinate getter for map-based drag (not sortable list)
-const customKeyboardCoordinates: KeyboardCoordinateGetter = (
-  event,
-  { currentCoordinates }
-) => {
+const customKeyboardCoordinates: KeyboardCoordinateGetter = (event, { currentCoordinates }) => {
   const delta = 20; // pixels to move per keypress
   switch (event.code) {
     case 'ArrowRight':
@@ -47,6 +44,7 @@ import { prefetchStudyMode, prefetchGameFeatures } from '../../utils/prefetch';
 import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 import { useGameLifecycleStore } from '@/stores/gameLifecycleStore';
 import { useCountyPlacementStore } from '@/stores/countyPlacementStore';
+import { CountyPiece } from '@/types';
 import { allCaliforniaCounties, County } from '@/data/californiaCountiesComplete';
 
 // Lazy load heavy components
@@ -59,12 +57,14 @@ export default function GameContainer() {
   // County placement state (replaces counties, placedCounties, currentCounty)
   const {
     placedCounties: placedCountiesArray,
+    remainingCounties,
     setCurrentHint,
+    setRemainingCounties,
   } = useCountyPlacementStore();
 
   // Convert arrays to the format expected by the component
   const counties: County[] = allCaliforniaCounties;
-  const placedCounties = new Set(placedCountiesArray.map(c => c.id));
+  const placedCounties = new Set(placedCountiesArray.map((c) => c.id));
   const [currentCounty, setCurrentCounty] = useState<County | null>(null);
 
   // Derived state: check if game is complete
@@ -88,7 +88,7 @@ export default function GameContainer() {
   };
 
   const placeCounty = (countyId: string, _isCorrect: boolean) => {
-    const county = counties.find(c => c.id === countyId);
+    const county = counties.find((c) => c.id === countyId);
     if (!county) return;
 
     // Mark county as placed - simplified since we're tracking by ID
@@ -96,6 +96,35 @@ export default function GameContainer() {
     // For now, just clear the current county selection
     clearCurrentCounty();
   };
+
+  // Initialize remaining counties when game starts
+  useEffect(() => {
+    if (isGameStarted && remainingCounties.length === 0 && placedCountiesArray.length === 0) {
+      // Convert County[] to CountyPiece[] format expected by store
+      // Note: fips, geometry, centroid are only needed for map rendering, not for tray display
+      const countyPieces = counties.map((county, index) => ({
+        ...county,
+        // Required by CountyPiece interface but not used by CountyTray
+        fips: county.id,
+        geometry: { type: 'Point' as const, coordinates: [0, 0] },
+        centroid: [0, 0] as [number, number],
+        // CountyPiece display properties
+        isPlaced: false,
+        currentPosition: { x: 0, y: 0 },
+        targetPosition: { x: 0, y: 0 },
+        rotation: 0,
+        scale: 1,
+        zIndex: index,
+      })) as unknown as CountyPiece[];
+      setRemainingCounties(countyPieces);
+    }
+  }, [
+    isGameStarted,
+    remainingCounties.length,
+    placedCountiesArray.length,
+    counties,
+    setRemainingCounties,
+  ]);
 
   // Prefetch game features when game starts
   useEffect(() => {
