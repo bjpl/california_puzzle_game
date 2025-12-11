@@ -1,7 +1,5 @@
 # California Counties Puzzle Game
 
-<!-- Deployment trigger: 2025-10-22 -->
-
 ![CI/CD Pipeline](https://github.com/bjpl/california_puzzle_game/workflows/CI%2FCD%20Pipeline/badge.svg)
 ![GitHub Pages](https://github.com/bjpl/california_puzzle_game/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)
 ![Dependency Check](https://github.com/bjpl/california_puzzle_game/workflows/Dependency%20Check/badge.svg)
@@ -9,19 +7,19 @@
 
 An interactive educational puzzle game for learning California geography. Players drag and drop county pieces to their correct locations on a California map using D3.js visualizations and React.
 
-## Recent Improvements
+## ✨ Recent Improvements
 
-- **Security and Privacy Features (Oct 16)** - User account management, data export (GDPR compliance), delete account, security badge in footer
-- **Progressive Web App (Oct 9)** - Complete PWA with offline gameplay, installable on iOS/Android, Service Worker caching
-- **Dark Mode (Oct 9)** - Full dark theme with OLED optimization (40-60% battery savings), system preference sync, WCAG AA compliant
-- **Mobile Foundation** - Complete mobile-optimized infrastructure with touch interactions, responsive layouts, and gesture detection
-- **100% Test Pass Rate** - Achieved perfect test suite reliability (1,792/1,792 tests)
-- **Accessibility Testing** - jest-axe integration for WCAG compliance validation
+- **🔒 Security & Privacy Features (NEW - Oct 16)** - User account management, data export (GDPR compliance), delete account, security badge in footer
+- **🌐 Progressive Web App (Oct 9)** - Complete PWA with offline gameplay, installable on iOS/Android, Service Worker caching
+- **🌙 Dark Mode (Oct 9)** - Full dark theme with OLED optimization (40-60% battery savings), system preference sync, WCAG AA compliant
+- **📱 Mobile Foundation** - Complete mobile-optimized infrastructure with touch interactions, responsive layouts, and gesture detection
+- **🎯 100% Test Pass Rate** - Achieved perfect test suite reliability (1,792/1,792 tests)
+- **♿ Accessibility Testing** - jest-axe integration for WCAG compliance validation
 - **Component Library** - New UI component system with Button, Badge, Card, Progress, and Typography components
 - **Design System** - Comprehensive style guide with region-specific theming
 - **Tailwind CSS Integration** - Modern utility-first CSS framework for consistent styling
 
-## Features
+## 🎮 Features
 
 ### Core Gameplay
 
@@ -54,9 +52,9 @@ An interactive educational puzzle game for learning California geography. Player
 - **Design System**: Comprehensive component library with consistent theming
 - **Regional Theming**: Color-coded UI based on California's 7 geographic regions
 
-### Mobile Features
+### 📱 Mobile Features
 
-- **Progressive Web App (PWA)**
+- **Progressive Web App (PWA)** ⭐ NEW
   - Install on iOS/Android home screen
   - Works completely offline after first load
   - Auto-updates with user notifications
@@ -64,7 +62,7 @@ An interactive educational puzzle game for learning California geography. Player
   - Standalone mode detection
   - Platform-specific install prompts
 
-- **Dark Mode**
+- **Dark Mode** 🌙 NEW
   - Three modes: Light, Dark, System (auto-detects OS preference)
   - OLED optimization (#121212 base = 40-60% battery savings)
   - WCAG AA compliant (4.5:1+ contrast ratios)
@@ -87,21 +85,21 @@ An interactive educational puzzle game for learning California geography. Player
 
 See [Mobile Documentation](src/mobile/README.md) for complete API reference and usage examples.
 
-## Technology Stack
+## 🛠️ Technology Stack
 
 ### Frontend
 
 - **React 18** - Component framework
 - **TypeScript 5.9** - Full type safety with strict mode
 - **Vite 4.5** - Fast build tool and development server
-- **D3.js 7.8.5** - Map visualization and geographic projections
-- **@dnd-kit/core 6.3.1** - Touch-optimized drag and drop
+- **D3.js 7.8** - Map visualization and geographic projections
+- **Zustand 5.0** - State management with localStorage persistence
 - **Framer Motion 10.16** - Smooth animations and transitions
 - **Tailwind CSS 3.4** - Utility-first CSS framework with dark mode
 
 ### Backend & Services
 
-- **Supabase 2.75.0** - PostgreSQL backend with authentication and data management
+- **Supabase** - PostgreSQL backend with authentication and data management
   - ✅ Database: 6 tables (profiles, game_settings, game_stats, sessions, achievements, leaderboard)
   - ✅ Anonymous Authentication: Privacy-first user sessions
   - ✅ Data Export: GDPR/CCPA compliant user data portability
@@ -121,26 +119,23 @@ See [Mobile Documentation](src/mobile/README.md) for complete API reference and 
 ### Development Tools
 
 - **Vitest 2.0** - Fast testing framework with workspace support
-  - ✅ **Test Suite:** 1,792 tests with 100% pass rate
   - ✅ **Recent Fixes:** Test timeouts eliminated (26s vs 120s)
   - ✅ **Mocking:** Proper async operation mocking
   - 📊 **Coverage:** 80%+ thresholds on all metrics
-- **Playwright** - End-to-end testing
 - **ESLint 8** - Code linting with TypeScript support
 - **Prettier 3.6** - Code formatting (auto-format on commit)
 - **Husky 9.1** - Git hooks ✅ **Working without --no-verify**
 
-### Testing Stack
+### Testing Stack ✅ Enhanced
 
 - **@testing-library/react 16.0** - Component testing
 - **jest-axe 10.0** - Accessibility validation (WCAG AA)
 - **vitest-axe 0.1** - A11y testing integration
 - **@testing-library/user-event 14.5** - User interaction simulation
-- **Achievement:** Perfect test suite reliability (1,792/1,792 tests passing)
 
 See [Technology Stack Analysis](docs/ad_hoc_reports/technology_stack.md) for comprehensive details.
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
@@ -161,7 +156,7 @@ npm install
 npm run dev
 ```
 
-### Installing as Progressive Web App
+### 📱 Installing as Progressive Web App
 
 **Android Chrome:**
 
@@ -218,7 +213,7 @@ npm run geodata:build    # Build geographic data
 npm run geodata:serve    # Serve geographic data on port 8080
 ```
 
-## Game Regions
+## 🗺️ Game Regions
 
 ### Available Regions
 
@@ -237,7 +232,7 @@ npm run geodata:serve    # Serve geographic data on port 8080
 - **Hard**: All counties, minimal outlines, limited hints
 - **Expert**: All counties, no outlines, rotated pieces, no hints
 
-## Scoring System
+## 🎯 Scoring System
 
 ### Base Scoring
 
@@ -262,7 +257,7 @@ npm run geodata:serve    # Serve geographic data on port 8080
 - **Regional Master**: Complete a region on Expert difficulty
 - **California Expert**: Complete all regions on Expert
 
-## Architecture
+## 🏗️ Architecture
 
 ### Project Structure
 
@@ -321,7 +316,7 @@ Uses D3.js Mercator projection specifically configured for California:
 - **Scale**: 2400 (optimized for gameplay visibility)
 - **Bounds**: Automatically calculated based on container size
 
-## Testing
+## 🧪 Testing
 
 ### Test Structure
 
@@ -354,7 +349,7 @@ npm run test:integration       # Integration tests only
 npm run test:performance       # Performance tests only
 ```
 
-## Design System
+## 🎨 Design System
 
 ### Component Library
 
@@ -387,7 +382,7 @@ import { Button, Card, Badge, Progress, Heading, Text } from '@/components/ui';
 - **Progressive Difficulty**: Adaptive hint system
 - **Accessibility**: ARIA labels, keyboard navigation, screen reader support
 
-## Deployment
+## 🌐 Deployment
 
 ### CI/CD Pipeline
 
@@ -420,10 +415,10 @@ VITE_API_BASE_URL=your_api_url
 
 ### Deployment Platforms
 
-- **GitHub Pages**: Primary hosting platform
-- **Netlify**: Secondary deployment with CI/CD integration
-- **Status:** ACTIVE - Production ready with full PWA support
-- **Custom Server**: Standard static file hosting compatible
+- **Netlify**: Primary deployment platform with CI/CD integration
+- **Vercel**: Alternative optimized for React/Vite applications
+- **GitHub Pages**: Free hosting for open source projects
+- **Custom Server**: Standard static file hosting
 
 ### Required GitHub Secrets
 
@@ -433,7 +428,7 @@ For automated deployment, configure these secrets in repository settings:
 - `NETLIFY_SITE_ID` - Netlify site ID
 - `CODECOV_TOKEN` - Codecov upload token (optional)
 
-## Contributing
+## 🤝 Contributing
 
 ### Development Setup
 
@@ -461,19 +456,25 @@ For automated deployment, configure these secrets in repository settings:
 4. Add appropriate tests
 5. Update documentation
 
-## License
+## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - **California Open Data**: Geographic boundary data
 - **D3.js Community**: Mapping and visualization techniques
 - **React Community**: Component patterns and best practices
 - **Educational Resources**: Geography learning methodologies
 
-## Support
+## 📞 Support
 
 - **Issues**: Report bugs and request features via GitHub Issues
 - **Documentation**: See inline code comments and type definitions
 - **Community**: Join discussions in GitHub Discussions
+
+---
+
+**Built with ❤️ for California geography education**
+
+# Test pre-commit

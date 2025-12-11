@@ -1,3 +1,11 @@
+/**
+ * @fileoverview County Progress Tracking Store
+ * @module stores/study/countyProgressStore
+ * @description Tracks individual county study progress, mastery levels, and performance metrics.
+ * Calculates accuracy, average response time, and region-level progress aggregations.
+ * Persists data across sessions using Zustand persistence middleware.
+ */
+
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { CountyStudyInfo, RegionProgress } from '../../types/study';
@@ -5,20 +13,39 @@ import { StudyEventType, MasteryLevel } from '../../types/study-domain.types';
 import { storeCoordinator } from '../storeCoordinator';
 import { californiaRegions, allCaliforniaCounties } from '../../data/californiaCountiesComplete';
 
+/**
+ * County progress state shape
+ */
 interface CountyProgressState {
+  /** Map of county codes to their study information */
   countyProgress: Map<string, CountyStudyInfo>;
+  /** Most recently studied county code */
   lastStudiedCounty: string | null;
 }
 
+/**
+ * County progress actions
+ */
 interface CountyProgressActions {
+  /** Record a county study attempt and update metrics */
   recordStudy: (countyCode: string, correct: boolean, timeMs: number) => void;
+  /** Retrieve study info for a specific county */
   getCountyInfo: (countyCode: string) => CountyStudyInfo | undefined;
+  /** Calculate aggregate progress for a geographic region */
   getRegionProgress: (regionName: string) => RegionProgress;
+  /** Manually update a county's mastery level */
   updateMasteryLevel: (countyCode: string, level: number) => void;
+  /** Get all counties that have achieved mastery (level >= 3) */
   getMasteredCounties: () => string[];
+  /** Get all counties that have been studied at least once */
   getStudiedCounties: () => string[];
 }
 
+/**
+ * Creates default study information for a new county
+ * @param {string} countyCode - County identifier
+ * @returns {CountyStudyInfo} Initial county study data
+ */
 const createDefaultCountyInfo = (countyCode: string): CountyStudyInfo => ({
   countyId: countyCode,
   studied: false,
@@ -38,6 +65,15 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
         countyProgress: new Map(),
         lastStudiedCounty: null,
 
+        /**
+         * Record a county study attempt and automatically calculate updated metrics
+         * Calculates accuracy, mastery level (0-3), and average response time
+         * @param {string} countyCode - County identifier
+         * @param {boolean} correct - Whether the answer was correct
+         * @param {number} timeMs - Response time in milliseconds
+         * @example
+         * recordStudy('CA-001', true, 2500); // Correct answer in 2.5 seconds
+         */
         recordStudy: (countyCode: string, correct: boolean, timeMs: number) => {
           set((state) => {
             const existing =
@@ -86,10 +122,23 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
           );
         },
 
+        /**
+         * Get study information for a specific county
+         * @param {string} countyCode - County identifier
+         * @returns {CountyStudyInfo | undefined} County info or undefined if not studied
+         */
         getCountyInfo: (countyCode: string): CountyStudyInfo | undefined => {
           return get().countyProgress.get(countyCode);
         },
 
+        /**
+         * Calculate aggregate progress metrics for a geographic region
+         * @param {string} regionName - Region name (e.g., 'Bay Area', 'Southern California')
+         * @returns {RegionProgress} Counts of total, studied, and mastered counties
+         * @example
+         * const bayArea = getRegionProgress('Bay Area');
+         * // Returns ${bayArea.studied/${bayArea.total} studied`);
+         */
         getRegionProgress: (regionName: string): RegionProgress => {
           const regionCountyNames = californiaRegions[regionName as keyof typeof californiaRegions];
           if (!regionCountyNames) {
@@ -119,6 +168,12 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
           };
         },
 
+        /**
+         * Manually update a county's mastery level
+         * Publishes mastery change event if level changes
+         * @param {string} countyCode - County identifier
+         * @param {number} level - New mastery level (0-3)
+         */
         updateMasteryLevel: (countyCode: string, level: number) => {
           const existing = get().countyProgress.get(countyCode);
           const oldLevel = existing?.masteryLevel ?? 0;
@@ -159,6 +214,10 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
           }
         },
 
+        /**
+         * Get all counties that have achieved mastery (level >= 3)
+         * @returns {string[]} Array of mastered county codes
+         */
         getMasteredCounties: (): string[] => {
           const { countyProgress } = get();
           return Array.from(countyProgress.entries())
@@ -166,6 +225,10 @@ export const useCountyProgressStore = create<CountyProgressState & CountyProgres
             .map(([code]) => code);
         },
 
+        /**
+         * Get all counties that have been studied at least once
+         * @returns {string[]} Array of studied county codes
+         */
         getStudiedCounties: (): string[] => {
           const { countyProgress } = get();
           return Array.from(countyProgress.entries())

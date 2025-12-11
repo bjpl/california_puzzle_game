@@ -1,0 +1,330 @@
+{
+  "plan_metadata": {
+    "created_at": "2025-12-04T17:54:00Z",
+    "planner": "GOAP Specialist",
+    "project": "California Puzzle Game - Store Migration Completion",
+    "phase": "5 - Consumer Migration & Testing",
+    "methodology": "Goal-Oriented Action Planning (GOAP)"
+  },
+
+  "world_state": {
+    "domain_stores_exist": true,
+    "domain_stores_count": 7,
+    "study_domain_stores_exist": true,
+    "study_domain_stores_count": 7,
+    "store_coordinator_wired": true,
+    "facade_pattern_implemented": true,
+    "tests_passing": true,
+    "test_count": 475,
+    "components_migrated": false,
+    "components_using_facade": 0,
+    "components_using_domain_stores": 40,
+    "domain_store_tests": true,
+    "domain_store_test_coverage": 0.85,
+    "performance_validated": false,
+    "documentation_complete": false,
+    "architecture_grade": "B+"
+  },
+
+  "goal_state": {
+    "components_migrated": true,
+    "facade_removed": true,
+    "domain_store_tests": true,
+    "test_coverage": 0.9,
+    "performance_validated": true,
+    "documentation_complete": true,
+    "architecture_grade": "A",
+    "production_ready": true
+  },
+
+  "gap_analysis": {
+    "remaining_migrations": [
+      "3 components still use studyStore facade",
+      "studyStore facade needs removal",
+      "Study domain store integration tests needed",
+      "Performance benchmarks required",
+      "Documentation updates required"
+    ],
+    "estimated_effort": "Medium (12-16 hours)",
+    "risk_level": "Low (existing patterns established)"
+  },
+
+  "available_actions": [
+    {
+      "id": "analyze_consumers",
+      "name": "Analyze Remaining Facade Consumers",
+      "description": "Identify all components still using studyStore facade",
+      "preconditions": ["domain_stores_exist"],
+      "effects": ["consumers_identified", "migration_scope_known"],
+      "cost": 1,
+      "duration_hours": 0.5,
+      "parallel_safe": true,
+      "category": "analysis"
+    },
+    {
+      "id": "migrate_component",
+      "name": "Migrate Component to Domain Stores",
+      "description": "Refactor component to use domain stores directly",
+      "preconditions": ["consumers_identified", "domain_stores_exist"],
+      "effects": ["component_migrated", "facade_dependency_removed"],
+      "cost": 3,
+      "duration_hours": 1.5,
+      "parallel_safe": true,
+      "category": "migration",
+      "repeatable": true,
+      "instances": 3
+    },
+    {
+      "id": "add_integration_tests",
+      "name": "Add Study Domain Integration Tests",
+      "description": "Test cross-store interactions via storeCoordinator",
+      "preconditions": ["domain_stores_exist", "store_coordinator_wired"],
+      "effects": ["integration_tests_added", "coordinator_tested"],
+      "cost": 4,
+      "duration_hours": 2,
+      "parallel_safe": true,
+      "category": "testing"
+    },
+    {
+      "id": "add_e2e_tests",
+      "name": "Add End-to-End Study Flow Tests",
+      "description": "Test complete study workflows (session → progress → achievements)",
+      "preconditions": ["integration_tests_added", "components_migrated"],
+      "effects": ["e2e_tests_added", "workflows_validated"],
+      "cost": 5,
+      "duration_hours": 3,
+      "parallel_safe": false,
+      "category": "testing"
+    },
+    {
+      "id": "remove_facade",
+      "name": "Remove StudyStore Facade",
+      "description": "Delete studyStore.ts and update exports",
+      "preconditions": ["components_migrated", "integration_tests_added"],
+      "effects": ["facade_removed", "imports_cleaned"],
+      "cost": 2,
+      "duration_hours": 0.5,
+      "parallel_safe": false,
+      "category": "cleanup"
+    },
+    {
+      "id": "performance_benchmark",
+      "name": "Run Performance Benchmarks",
+      "description": "Measure store operation costs and re-render frequency",
+      "preconditions": ["facade_removed", "e2e_tests_added"],
+      "effects": ["performance_validated", "benchmarks_documented"],
+      "cost": 3,
+      "duration_hours": 2,
+      "parallel_safe": true,
+      "category": "validation"
+    },
+    {
+      "id": "update_docs",
+      "name": "Update Architecture Documentation",
+      "description": "Document migration patterns and store usage",
+      "preconditions": ["facade_removed", "performance_validated"],
+      "effects": ["documentation_complete", "patterns_documented"],
+      "cost": 2,
+      "duration_hours": 1.5,
+      "parallel_safe": true,
+      "category": "documentation"
+    },
+    {
+      "id": "validate_production",
+      "name": "Production Readiness Validation",
+      "description": "Final checks: tests pass, coverage met, docs complete",
+      "preconditions": ["documentation_complete", "performance_validated", "e2e_tests_added"],
+      "effects": ["production_ready", "architecture_grade_a"],
+      "cost": 1,
+      "duration_hours": 0.5,
+      "parallel_safe": false,
+      "category": "validation"
+    }
+  ],
+
+  "optimal_sequence": [
+    {
+      "wave": 1,
+      "parallel": true,
+      "actions": [
+        {
+          "action_id": "analyze_consumers",
+          "justification": "Must identify scope before migration"
+        },
+        {
+          "action_id": "add_integration_tests",
+          "justification": "Can test coordinator independently of migrations"
+        }
+      ],
+      "estimated_duration_hours": 2,
+      "deliverables": ["Migration scope document", "Integration test suite"]
+    },
+    {
+      "wave": 2,
+      "parallel": true,
+      "actions": [
+        {
+          "action_id": "migrate_component",
+          "instance": 1,
+          "target": "src/lib/storeIntegration.ts",
+          "justification": "Migrate highest-impact consumer first"
+        },
+        {
+          "action_id": "migrate_component",
+          "instance": 2,
+          "target": "src/hooks/useStudyNavigation.ts",
+          "justification": "Can migrate in parallel"
+        },
+        {
+          "action_id": "migrate_component",
+          "instance": 3,
+          "target": "src/stores/studyStore.ts facade cleanup",
+          "justification": "Can migrate in parallel"
+        }
+      ],
+      "estimated_duration_hours": 1.5,
+      "deliverables": ["3 components migrated to domain stores"]
+    },
+    {
+      "wave": 3,
+      "parallel": false,
+      "actions": [
+        {
+          "action_id": "add_e2e_tests",
+          "justification": "Sequential - needs migrated components"
+        }
+      ],
+      "estimated_duration_hours": 3,
+      "deliverables": ["E2E test suite for study workflows"]
+    },
+    {
+      "wave": 4,
+      "parallel": false,
+      "actions": [
+        {
+          "action_id": "remove_facade",
+          "justification": "Sequential - all consumers must be migrated"
+        }
+      ],
+      "estimated_duration_hours": 0.5,
+      "deliverables": ["studyStore facade removed", "Clean import structure"]
+    },
+    {
+      "wave": 5,
+      "parallel": true,
+      "actions": [
+        {
+          "action_id": "performance_benchmark",
+          "justification": "Can run in parallel with docs"
+        },
+        {
+          "action_id": "update_docs",
+          "justification": "Can write docs while benchmarking"
+        }
+      ],
+      "estimated_duration_hours": 2,
+      "deliverables": ["Performance report", "Architecture documentation"]
+    },
+    {
+      "wave": 6,
+      "parallel": false,
+      "actions": [
+        {
+          "action_id": "validate_production",
+          "justification": "Final validation step"
+        }
+      ],
+      "estimated_duration_hours": 0.5,
+      "deliverables": ["Production readiness certificate", "Architecture grade A"]
+    }
+  ],
+
+  "cost_analysis": {
+    "total_action_cost": 24,
+    "estimated_hours": 12,
+    "parallel_speedup": "33%",
+    "actual_calendar_time": "8 hours (with parallelization)"
+  },
+
+  "parallel_opportunities": [
+    {
+      "wave": 1,
+      "actions": ["analyze_consumers", "add_integration_tests"],
+      "speedup": "50%",
+      "reasoning": "Independent operations, no shared state"
+    },
+    {
+      "wave": 2,
+      "actions": ["migrate_component (3 instances)"],
+      "speedup": "66%",
+      "reasoning": "Different files, no interdependencies"
+    },
+    {
+      "wave": 5,
+      "actions": ["performance_benchmark", "update_docs"],
+      "speedup": "50%",
+      "reasoning": "Documentation writing while benchmarks run"
+    }
+  ],
+
+  "risk_assessment": {
+    "high_risk_actions": [],
+    "medium_risk_actions": [
+      {
+        "action": "remove_facade",
+        "risk": "Breaking changes if consumers missed",
+        "mitigation": "Comprehensive grep analysis + TypeScript compilation check"
+      }
+    ],
+    "low_risk_actions": ["migrate_component", "add_integration_tests", "update_docs"]
+  },
+
+  "success_criteria": {
+    "must_have": [
+      "All 3 facade consumers migrated",
+      "studyStore facade removed",
+      "All tests passing (475+)",
+      "Test coverage ≥ 85%"
+    ],
+    "should_have": [
+      "Integration tests for coordinator",
+      "E2E tests for study workflows",
+      "Performance benchmarks documented",
+      "Architecture documentation updated"
+    ],
+    "nice_to_have": [
+      "Migration guide for future refactors",
+      "Store interaction diagram",
+      "Performance optimization recommendations"
+    ]
+  },
+
+  "rollback_strategy": {
+    "trigger_conditions": [
+      "Test coverage drops below 75%",
+      "More than 10 tests failing",
+      "Critical production bugs discovered"
+    ],
+    "rollback_steps": [
+      "Revert facade removal",
+      "Restore component imports",
+      "Re-run test suite",
+      "Document lessons learned"
+    ],
+    "recovery_time": "< 1 hour"
+  },
+
+  "heuristic_evaluation": {
+    "estimated_distance_to_goal": 6,
+    "path_complexity": "Low",
+    "branching_factor": 2.5,
+    "notes": "Straightforward linear path with parallel opportunities. Established patterns from previous phases reduce complexity."
+  },
+
+  "execution_notes": {
+    "agent_coordination": "Use Task tool for parallel actions in waves 1, 2, and 5",
+    "testing_strategy": "Run full test suite after each wave",
+    "commit_strategy": "Commit after each wave completes successfully",
+    "monitoring": "Track test coverage and architecture grade metrics"
+  }
+}

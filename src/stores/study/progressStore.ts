@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Overall Progress and Streaks Store
+ * @module stores/study/progressStore
+ * @description Tracks overall study progress, daily streaks, and aggregate statistics.
+ * Maintains sets of studied and mastered counties, calculates streaks, and publishes milestones.
+ * Persists data across sessions.
+ */
+
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { StudyProgress } from '../../types/study';
@@ -5,15 +13,28 @@ import { StudyEventType } from '../../types/study-domain.types';
 import { storeCoordinator } from '../storeCoordinator';
 import { allCaliforniaCounties } from '../../data/californiaCountiesComplete';
 
+/**
+ * Progress state shape (extends StudyProgress interface)
+ */
 interface ProgressState extends StudyProgress {}
 
+/**
+ * Progress tracking actions
+ */
 interface ProgressActions {
+  /** Add a county to the studied set */
   incrementStudied: (countyCode: string) => void;
+  /** Mark a county as mastered */
   markMastered: (countyCode: string) => void;
+  /** Update the current study streak */
   updateStreak: () => void;
+  /** Reset all progress data to defaults */
   resetProgress: () => void;
 }
 
+/**
+ * Default progress values
+ */
 const defaultProgress: StudyProgress = {
   totalStudied: 0,
   totalCounties: allCaliforniaCounties.length,
@@ -31,6 +52,10 @@ export const useProgressStore = create<ProgressState & ProgressActions>()(
       (set, get) => ({
         ...defaultProgress,
 
+        /**
+         * Add a county to the studied set and update timestamps
+         * @param {string} countyCode - County identifier
+         */
         incrementStudied: (countyCode: string) => {
           set((state) => {
             const newStudied = new Set(state.studiedCounties);
@@ -65,6 +90,10 @@ export const useProgressStore = create<ProgressState & ProgressActions>()(
           );
         },
 
+        /**
+         * Mark a county as mastered and publish milestone event
+         * @param {string} countyCode - County identifier
+         */
         markMastered: (countyCode: string) => {
           set((state) => {
             const newMastered = new Set(state.masteredCounties);
@@ -84,6 +113,12 @@ export const useProgressStore = create<ProgressState & ProgressActions>()(
           );
         },
 
+        /**
+         * Update the current study streak based on last study date
+         * Increments streak if studied yesterday, resets to 1 if gap exists
+         * @example
+         * updateStreak(); // Call when user studies each day
+         */
         updateStreak: () => {
           const today = new Date().toISOString().split('T')[0];
           const { lastStudyDate, currentStreak, longestStreak } = get();
@@ -115,6 +150,10 @@ export const useProgressStore = create<ProgressState & ProgressActions>()(
           );
         },
 
+        /**
+         * Reset all progress data to default values
+         * Use with caution - this is irreversible
+         */
         resetProgress: () => {
           set(defaultProgress);
         },
@@ -130,6 +169,29 @@ export const useProgressStore = create<ProgressState & ProgressActions>()(
           lastStudyDate: state.lastStudyDate,
           studyStartDate: state.studyStartDate,
         }),
+        merge: (persistedState: unknown, current) => {
+          const persisted = persistedState as
+            | {
+                totalStudied?: number;
+                studiedCounties?: string[];
+                masteredCounties?: string[];
+                currentStreak?: number;
+                longestStreak?: number;
+                lastStudyDate?: string | null;
+                studyStartDate?: string | null;
+              }
+            | undefined;
+          return {
+            ...current,
+            totalStudied: persisted?.totalStudied ?? current.totalStudied,
+            studiedCounties: new Set(persisted?.studiedCounties || []),
+            masteredCounties: new Set(persisted?.masteredCounties || []),
+            currentStreak: persisted?.currentStreak ?? current.currentStreak,
+            longestStreak: persisted?.longestStreak ?? current.longestStreak,
+            lastStudyDate: persisted?.lastStudyDate ?? current.lastStudyDate,
+            studyStartDate: persisted?.studyStartDate ?? current.studyStartDate,
+          };
+        },
       }
     ),
     { name: 'ProgressStore' }
