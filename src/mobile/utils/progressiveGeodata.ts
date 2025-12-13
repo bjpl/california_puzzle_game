@@ -30,7 +30,9 @@ export enum GeodetaLevel {
  * Get geodata file path with correct base URL
  */
 function getGeodataPath(level: GeodetaLevel): string {
-  const basePath = import.meta.env.BASE_URL || '/';
+  // Detect base path from URL since import.meta.env.BASE_URL may not work at runtime
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
+  const basePath = pathname.includes('/california_puzzle_game') ? '/california_puzzle_game/' : '/';
   const paths: Record<GeodetaLevel, string> = {
     [GeodetaLevel.ULTRA_LOW]: `${basePath}data/geo/california-ultra-low.json`,
     [GeodetaLevel.LOW]: `${basePath}data/geo/california-low.json`,

@@ -181,8 +181,10 @@ export default function CaliforniaMapFixed({ isDragging }: { isDragging: boolean
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    // Load the GeoJSON data - use Vite's BASE_URL for correct path in all environments
-    const basePath = `${import.meta.env.BASE_URL}data/geo/ca-counties-medium.geojson`;
+    // Detect base path from URL since import.meta.env.BASE_URL may not work at runtime
+    const pathname = window.location.pathname;
+    const baseUrl = pathname.includes('/california_puzzle_game') ? '/california_puzzle_game/' : '/';
+    const basePath = `${baseUrl}data/geo/ca-counties-medium.geojson`;
 
     fetch(basePath)
       .then((response) => response.json())

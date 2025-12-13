@@ -172,7 +172,11 @@ export function useCaliforniaMap(options: UseCaliforniaMapOptions = {}): UseCali
       const data = await cacheRef.current.loadOptimizedData(level);
 
       // Update map utilities with new data
-      const basePath = import.meta.env.BASE_URL || '/';
+      // Detect base path from URL since import.meta.env.BASE_URL may not work at runtime
+      const pathname = window.location.pathname;
+      const basePath = pathname.includes('/california_puzzle_game')
+        ? '/california_puzzle_game/'
+        : '/';
       await mapUtilsRef.current.loadGeoData(
         `${basePath}data/geo/ca-counties-${level}.geojson`,
         `${basePath}data/geo/county-lookup.json`

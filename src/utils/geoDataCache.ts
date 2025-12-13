@@ -108,7 +108,11 @@ export class GeoDataCache {
   }
 
   private async fetchGeoData(detailLevel: string): Promise<CachedGeoData> {
-    const basePath = import.meta.env.BASE_URL || '/';
+    // Detect base path from URL since import.meta.env.BASE_URL may not work at runtime
+    const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
+    const basePath = pathname.includes('/california_puzzle_game')
+      ? '/california_puzzle_game/'
+      : '/';
     const geoDataPath = `${basePath}data/geo/ca-counties-${detailLevel}.geojson`;
     const lookupPath = `${basePath}data/geo/county-lookup.json`;
 

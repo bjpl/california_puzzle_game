@@ -382,9 +382,13 @@ export default function CaliforniaMapSimple({
   };
 
   useEffect(() => {
-    // Use import.meta.env.BASE_URL to get the correct base path from Vite config
-    const basePath = `${import.meta.env.BASE_URL}data/geo/ca-counties-medium.geojson`;
+    // Detect the base path from the current URL since BASE_URL may not work correctly at runtime
+    // This handles both dev (localhost:3000/california_puzzle_game/) and prod (github.io/california_puzzle_game/)
+    const pathname = window.location.pathname;
+    const baseUrl = pathname.includes('/california_puzzle_game') ? '/california_puzzle_game/' : '/';
+    const basePath = `${baseUrl}data/geo/ca-counties-medium.geojson`;
 
+    mapLogger.debug('Detected baseUrl:', baseUrl);
     mapLogger.debug('Attempting to fetch GeoJSON from:', basePath);
     fetch(basePath)
       .then((response) => {

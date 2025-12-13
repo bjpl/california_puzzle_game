@@ -60,6 +60,7 @@ export default function GameContainer() {
     remainingCounties,
     setCurrentHint,
     setRemainingCounties,
+    placeCounty: placeCountyInStore,
   } = useCountyPlacementStore();
 
   // Convert arrays to the format expected by the component
@@ -87,13 +88,21 @@ export default function GameContainer() {
     setCurrentHint(undefined);
   };
 
-  const placeCounty = (countyId: string, _isCorrect: boolean) => {
+  const placeCounty = (countyId: string, isCorrect: boolean) => {
     const county = counties.find((c) => c.id === countyId);
     if (!county) return;
 
-    // Mark county as placed - simplified since we're tracking by ID
-    // The actual placement logic is handled by the drag-and-drop system
-    // For now, just clear the current county selection
+    // Only place the county if it's dropped on the correct location
+    if (isCorrect) {
+      // Find the county piece from remaining counties or create one
+      const countyPiece = remainingCounties.find((c) => c.id === countyId);
+      if (countyPiece) {
+        // Place the county at its target position
+        placeCountyInStore(countyPiece, countyPiece.targetPosition);
+      }
+    }
+
+    // Clear the current county selection
     clearCurrentCounty();
   };
 
