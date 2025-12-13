@@ -10,7 +10,7 @@ import {
   PointerSensor,
   TouchSensor,
   KeyboardSensor,
-  closestCenter,
+  pointerWithin,
   KeyboardCoordinateGetter,
 } from '@dnd-kit/core';
 
@@ -94,15 +94,12 @@ export default function GameContainer() {
 
     // Only place the county if it's dropped on the correct location
     if (isCorrect) {
-      // Find the county piece from remaining counties or create one
       const countyPiece = remainingCounties.find((c) => c.id === countyId);
       if (countyPiece) {
-        // Place the county at its target position
         placeCountyInStore(countyPiece, countyPiece.targetPosition);
       }
     }
 
-    // Clear the current county selection
     clearCurrentCounty();
   };
 
@@ -198,11 +195,8 @@ export default function GameContainer() {
     if (over) {
       const draggedId = active.id as string;
       const targetId = over.id as string;
-
-      // Check if the county was dropped on its correct position
       const isCorrect = draggedId === targetId;
 
-      // Play appropriate sound based on placement result
       if (isCorrect) {
         sound.playSound('correct');
       } else {
@@ -327,7 +321,7 @@ export default function GameContainer() {
           sensors={sensors}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
-          collisionDetection={closestCenter}
+          collisionDetection={pointerWithin}
         >
           <div
             className={`
