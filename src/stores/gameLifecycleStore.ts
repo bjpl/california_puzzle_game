@@ -29,7 +29,12 @@ interface GameLifecycleActions {
   endGame: () => void;
   resetGame: () => void;
   setCurrentMode: (mode: GameModeConfiguration) => void;
-  updateModeProgress: (modeId: string, stars: number, score: number, completionTime?: number) => void;
+  updateModeProgress: (
+    modeId: string,
+    stars: number,
+    score: number,
+    completionTime?: number
+  ) => void;
   unlockMode: (modeId: string) => void;
   updateTimer: (deltaTime: number) => void;
 }
@@ -79,10 +84,7 @@ export const useGameLifecycleStore = create<GameLifecycleStore>()(
         });
 
         // Initialize hint system based on mode settings
-        useHintStore.getState().initializeForMode(
-          difficultySettings.enableHints,
-          mode.showHints
-        );
+        useHintStore.getState().initializeForMode(difficultySettings.enableHints, mode.showHints);
         useStatsStore.getState().incrementGamesPlayed();
       },
 
@@ -114,7 +116,12 @@ export const useGameLifecycleStore = create<GameLifecycleStore>()(
         set({ currentMode: mode });
       },
 
-      updateModeProgress: (modeId: string, stars: number, score: number, completionTime?: number) => {
+      updateModeProgress: (
+        modeId: string,
+        stars: number,
+        score: number,
+        completionTime?: number
+      ) => {
         set((state) => ({
           availableModes: state.availableModes.map((mode) =>
             mode.id === modeId

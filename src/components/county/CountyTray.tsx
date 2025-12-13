@@ -167,7 +167,9 @@ const CountyTray = memo(() => {
                 isMobile ? (
                   <MobileCountySelector
                     key={county.id}
-                    county={county as unknown as Parameters<typeof MobileCountySelector>[0]['county']} // Type compatibility
+                    county={
+                      county as unknown as Parameters<typeof MobileCountySelector>[0]['county']
+                    } // Type compatibility
                     isPlaced={placedCountiesSet.has(county.id)}
                   />
                 ) : (

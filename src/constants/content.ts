@@ -111,8 +111,7 @@ export function formatMessage(
   replacements: Record<string, string | number>
 ): string {
   return Object.entries(replacements).reduce(
-    (message, [key, value]) =>
-      message.replace(new RegExp(`\\{${key}\\}`, 'g'), String(value)),
+    (message, [key, value]) => message.replace(new RegExp(`\\{${key}\\}`, 'g'), String(value)),
     template
   );
 }

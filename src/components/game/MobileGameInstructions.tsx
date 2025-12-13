@@ -20,15 +20,11 @@ export const MobileGameInstructions: React.FC = () => {
             </div>
           ) : (
             <div>
-              <p className="font-semibold text-blue-900 dark:text-blue-100">
-                How to play:
-              </p>
+              <p className="font-semibold text-blue-900 dark:text-blue-100">How to play:</p>
               <p className="text-blue-700 dark:text-blue-300">
                 1. Tap a county name below to select it
               </p>
-              <p className="text-blue-700 dark:text-blue-300">
-                2. Tap on the map to place it
-              </p>
+              <p className="text-blue-700 dark:text-blue-300">2. Tap on the map to place it</p>
             </div>
           )}
         </div>

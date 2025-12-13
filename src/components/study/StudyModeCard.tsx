@@ -26,7 +26,7 @@ const StudyModeCard: React.FC<StudyModeCardProps> = ({
   onFlip,
   autoFlip = false,
   flipDelay = 3000,
-  className = ''
+  className = '',
 }) => {
   const [internalFlipped, setInternalFlipped] = useState(false);
   const isFlipped = controlledFlipped !== undefined ? controlledFlipped : internalFlipped;
@@ -35,7 +35,7 @@ const StudyModeCard: React.FC<StudyModeCardProps> = ({
   React.useEffect(() => {
     if (autoFlip) {
       const timer = setInterval(() => {
-        setInternalFlipped(prev => !prev);
+        setInternalFlipped((prev) => !prev);
       }, flipDelay);
 
       return () => clearInterval(timer);
@@ -57,8 +57,8 @@ const StudyModeCard: React.FC<StudyModeCardProps> = ({
         type: 'spring',
         damping: 15,
         stiffness: 100,
-        duration: 0.6
-      }
+        duration: 0.6,
+      },
     },
     back: {
       rotateY: 180,
@@ -66,16 +66,16 @@ const StudyModeCard: React.FC<StudyModeCardProps> = ({
         type: 'spring',
         damping: 15,
         stiffness: 100,
-        duration: 0.6
-      }
-    }
+        duration: 0.6,
+      },
+    },
   };
 
   const contentVariants = {
     hidden: {
       opacity: 0,
       scale: 0.8,
-      rotateY: 180
+      rotateY: 180,
     },
     visible: {
       opacity: 1,
@@ -83,9 +83,9 @@ const StudyModeCard: React.FC<StudyModeCardProps> = ({
       rotateY: 0,
       transition: {
         delay: 0.3,
-        duration: 0.3
-      }
-    }
+        duration: 0.3,
+      },
+    },
   };
 
   const formatNumber = (num: number) => {
@@ -127,7 +127,11 @@ const StudyModeCard: React.FC<StudyModeCardProps> = ({
               ) : (
                 <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
                   <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                    <path
+                      fillRule="evenodd"
+                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               )}
@@ -156,7 +160,11 @@ const StudyModeCard: React.FC<StudyModeCardProps> = ({
             {/* Flip Indicator */}
             <div className="absolute bottom-2 right-2 text-gray-400 dark:text-gray-500">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
           </div>
@@ -167,7 +175,7 @@ const StudyModeCard: React.FC<StudyModeCardProps> = ({
           className="absolute inset-0 w-full h-full backface-hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600 overflow-hidden"
           style={{
             backfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg)'
+            transform: 'rotateY(180deg)',
           }}
         >
           <AnimatePresence>
@@ -234,7 +242,11 @@ const StudyModeCard: React.FC<StudyModeCardProps> = ({
                 {/* Back Indicator */}
                 <div className="absolute bottom-2 right-2 text-gray-400 dark:text-gray-500">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 9H17a1 1 0 110 2h-5.586l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                    <path
+                      fillRule="evenodd"
+                      d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 9H17a1 1 0 110 2h-5.586l4.293 4.293a1 1 0 010 1.414z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               </motion.div>

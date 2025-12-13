@@ -51,22 +51,22 @@ export const Progress: React.FC<ProgressProps> = ({
   label,
   animated = false,
   striped = false,
-  className = ''
+  className = '',
 }) => {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
-  const progressClasses = [
-    'ca-progress',
-    `ca-progress--${size}`,
-    className
-  ].filter(Boolean).join(' ');
+  const progressClasses = ['ca-progress', `ca-progress--${size}`, className]
+    .filter(Boolean)
+    .join(' ');
 
   const barClasses = [
     'ca-progress__bar',
     `ca-progress__bar--${variant}`,
     animated && 'ca-progress__bar--animated',
-    striped && 'ca-progress__bar--striped'
-  ].filter(Boolean).join(' ');
+    striped && 'ca-progress__bar--striped',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   // Format label text
   const getLabelText = () => {
@@ -84,14 +84,9 @@ export const Progress: React.FC<ProgressProps> = ({
         aria-valuemin={0}
         aria-valuemax={max}
       >
-        <div
-          className={barClasses}
-          style={{ width: `${percentage}%` }}
-        >
+        <div className={barClasses} style={{ width: `${percentage}%` }}>
           {showLabel && percentage > 20 && (
-            <span className="ca-progress__label ca-progress__label--inside">
-              {getLabelText()}
-            </span>
+            <span className="ca-progress__label ca-progress__label--inside">{getLabelText()}</span>
           )}
         </div>
       </div>
@@ -123,7 +118,7 @@ export interface GameProgressProps {
 export const GameProgress: React.FC<GameProgressProps> = ({
   completedCounties,
   totalCounties = 58,
-  showMilestones = false
+  showMilestones = false,
 }) => {
   const percentage = (completedCounties / totalCounties) * 100;
 
@@ -132,10 +127,12 @@ export const GameProgress: React.FC<GameProgressProps> = ({
     { value: 25, label: 'Explorer' },
     { value: 50, label: 'Adventurer' },
     { value: 75, label: 'Expert' },
-    { value: 100, label: 'Master' }
+    { value: 100, label: 'Master' },
   ];
 
-  const currentMilestone = milestones.find(m => percentage >= m.value && percentage < m.value + 25);
+  const currentMilestone = milestones.find(
+    (m) => percentage >= m.value && percentage < m.value + 25
+  );
 
   return (
     <div className="ca-game-progress">
@@ -150,9 +147,7 @@ export const GameProgress: React.FC<GameProgressProps> = ({
 
       {showMilestones && currentMilestone && (
         <div className="ca-game-progress__milestone">
-          <span className="ca-game-progress__milestone-badge">
-            {currentMilestone.label}
-          </span>
+          <span className="ca-game-progress__milestone-badge">{currentMilestone.label}</span>
         </div>
       )}
 
@@ -178,12 +173,5 @@ export const GameProgress: React.FC<GameProgressProps> = ({
 
 // Loading progress component
 export const LoadingProgress: React.FC<{ label?: string }> = ({ label = 'Loading...' }) => (
-  <Progress
-    value={100}
-    variant="gradient"
-    animated
-    striped
-    showLabel
-    label={label}
-  />
+  <Progress value={100} variant="gradient" animated striped showLabel label={label} />
 );

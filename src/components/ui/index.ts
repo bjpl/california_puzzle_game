@@ -18,24 +18,14 @@ export {
   SecondaryButton,
   DangerButton,
   SuccessButton,
-  type ButtonProps
+  type ButtonProps,
 } from './Button';
 
 // Badge Components
-export {
-  Badge,
-  RegionBadge,
-  StatusBadge,
-  type BadgeProps
-} from './Badge';
+export { Badge, RegionBadge, StatusBadge, type BadgeProps } from './Badge';
 
 // Card Components
-export {
-  Card,
-  CountyCard,
-  type CardProps,
-  type CountyCardProps
-} from './Card';
+export { Card, CountyCard, type CardProps, type CountyCardProps } from './Card';
 
 // Progress Components
 export {
@@ -43,7 +33,7 @@ export {
   GameProgress,
   LoadingProgress,
   type ProgressProps,
-  type GameProgressProps
+  type GameProgressProps,
 } from './Progress';
 
 // Typography Components
@@ -55,12 +45,18 @@ export {
   type HeadingProps,
   type TextProps,
   type CodeProps,
-  type LabelProps
+  type LabelProps,
 } from './Typography';
 
 // Re-export commonly used types
 export type ComponentSize = 'small' | 'medium' | 'large';
-export type ComponentVariant = 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+export type ComponentVariant =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'warning'
+  | 'danger';
 
 // Utility function to combine classNames
 export const cn = (...classes: (string | boolean | undefined | null)[]) => {

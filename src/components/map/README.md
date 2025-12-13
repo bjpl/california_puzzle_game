@@ -5,9 +5,11 @@ California map rendering using D3.js with Canvas and SVG implementations for opt
 ## Components
 
 ### CaliforniaMapSimple.tsx
+
 Primary map component for gameplay. Optimized SVG-based map with drag-and-drop support.
 
 **Features:**
+
 - D3.js geographic projection (Albers USA)
 - County click and hover interactions
 - Region color support
@@ -15,6 +17,7 @@ Primary map component for gameplay. Optimized SVG-based map with drag-and-drop s
 - Responsive sizing
 
 **Usage:**
+
 ```typescript
 import CaliforniaMapSimple from '@/components/map/CaliforniaMapSimple';
 
@@ -24,15 +27,18 @@ import CaliforniaMapSimple from '@/components/map/CaliforniaMapSimple';
 ```
 
 ### CaliforniaMapFixed.tsx
+
 SVG-based static map with full interactivity.
 
 **Features:**
+
 - Click to select counties
 - Hover highlighting
 - Region color display
 - Selected county tracking
 
 **Usage:**
+
 ```typescript
 import CaliforniaMapFixed from '@/components/map/CaliforniaMapFixed';
 
@@ -44,6 +50,7 @@ import CaliforniaMapFixed from '@/components/map/CaliforniaMapFixed';
 ```
 
 **Props:**
+
 ```typescript
 interface CaliforniaMapFixedProps {
   selectedCounties?: string[];
@@ -53,15 +60,18 @@ interface CaliforniaMapFixedProps {
 ```
 
 ### CaliforniaMapCanvas.tsx
+
 Canvas-based map for better performance with large datasets.
 
 **Features:**
+
 - High-performance rendering
 - Scales well with >100 elements
 - Lower memory footprint
 - Same visual appearance as SVG
 
 **Usage:**
+
 ```typescript
 import CaliforniaMapCanvas from '@/components/map/CaliforniaMapCanvas';
 
@@ -72,20 +82,24 @@ import CaliforniaMapCanvas from '@/components/map/CaliforniaMapCanvas';
 ```
 
 **When to use:**
+
 - Large number of interactive elements
 - Animation-heavy scenarios
 - Performance-constrained devices
 
 ### StudyModeMap.tsx
+
 Interactive map designed for learning mode.
 
 **Features:**
+
 - County information tooltips
 - Focus on specific counties
 - Highlighting for learning
 - Read-only interaction
 
 **Usage:**
+
 ```typescript
 import StudyModeMap from '@/components/map/StudyModeMap';
 
@@ -98,6 +112,7 @@ import StudyModeMap from '@/components/map/StudyModeMap';
 ## Architecture
 
 ### D3 + React Integration Pattern
+
 These components follow the "React for state, D3 for calculations" pattern:
 
 ```typescript
@@ -105,8 +120,7 @@ useEffect(() => {
   if (!svgRef.current || !mapData) return;
 
   // D3 handles projections and calculations
-  const projection = d3.geoAlbers()
-    .fitSize([width, height], mapData);
+  const projection = d3.geoAlbers().fitSize([width, height], mapData);
 
   const pathGenerator = d3.geoPath().projection(projection);
 
@@ -121,34 +135,39 @@ useEffect(() => {
 ### Performance Considerations
 
 #### SVG vs Canvas Decision Matrix
-| Scenario | Use SVG | Use Canvas |
-|----------|---------|------------|
-| <50 elements | ✅ | ❌ |
-| Interactivity needed | ✅ | ⚠️ |
-| Accessibility required | ✅ | ❌ |
-| >100 elements | ❌ | ✅ |
-| Animation-heavy | ⚠️ | ✅ |
-| Memory constrained | ❌ | ✅ |
+
+| Scenario               | Use SVG | Use Canvas |
+| ---------------------- | ------- | ---------- |
+| <50 elements           | ✅      | ❌         |
+| Interactivity needed   | ✅      | ⚠️         |
+| Accessibility required | ✅      | ❌         |
+| >100 elements          | ❌      | ✅         |
+| Animation-heavy        | ⚠️      | ✅         |
+| Memory constrained     | ❌      | ✅         |
 
 #### Optimization Techniques
+
 1. **Memoization**: Expensive calculations cached
 2. **useEffect cleanup**: Prevent memory leaks
 3. **requestAnimationFrame**: Smooth animations
 4. **Debounced resize**: Prevent excessive re-renders
 
 ### D3 Projection Setup
+
 California-optimized Albers projection:
 
 ```typescript
-const projection = d3.geoAlbers()
-  .parallels([34, 40.5])  // California-specific parallels
-  .rotate([120, 0])       // Center on California
+const projection = d3
+  .geoAlbers()
+  .parallels([34, 40.5]) // California-specific parallels
+  .rotate([120, 0]) // Center on California
   .fitSize([width, height], geoData);
 ```
 
 ## Map Data
 
 ### GeoJSON Format
+
 Counties are represented as GeoJSON features:
 
 ```typescript
@@ -167,6 +186,7 @@ interface CountyGeoJSON {
 ```
 
 ### Data Loading
+
 Map data is loaded from `/public/data/california-counties.json`:
 
 ```typescript
@@ -176,18 +196,21 @@ import mapData from '@/data/california-counties.json';
 ## Styling
 
 ### Default Colors
+
 ```typescript
 const DEFAULT_COLORS = {
-  unplaced: '#e5e7eb',      // Light gray
-  placed: '#10b981',         // Green
-  incorrect: '#ef4444',      // Red
-  hover: '#fbbf24',          // Yellow
-  dragging: '#c7d2fe',       // Light indigo
+  unplaced: '#e5e7eb', // Light gray
+  placed: '#10b981', // Green
+  incorrect: '#ef4444', // Red
+  hover: '#fbbf24', // Yellow
+  dragging: '#c7d2fe', // Light indigo
 };
 ```
 
 ### Region Colors
+
 When `showRegions` is enabled, counties use region-specific colors:
+
 - Bay Area: Blue
 - Central Valley: Green
 - Southern California: Orange
@@ -197,6 +220,7 @@ When `showRegions` is enabled, counties use region-specific colors:
 ## Interactions
 
 ### Click Handling
+
 ```typescript
 const handleCountyClick = (countyId: string) => {
   // Game logic determines if click is valid
@@ -207,6 +231,7 @@ const handleCountyClick = (countyId: string) => {
 ```
 
 ### Hover States
+
 ```typescript
 const handleMouseEnter = (countyId: string) => {
   setHoveredCounty(countyId);
@@ -219,6 +244,7 @@ const handleMouseLeave = () => {
 ```
 
 ### Drag-and-Drop Integration
+
 Maps work with DndKit for county placement:
 
 ```typescript
@@ -233,20 +259,24 @@ Maps work with DndKit for county placement:
 See [TECH_DEBT_CLEANUP_REPORT.md](../../docs/TECH_DEBT_CLEANUP_REPORT.md) for:
 
 ### Formation Animation Crash (FIXED)
+
 - **Issue**: Formation animation caused crashes and reverted to 1850
 - **Solution**: Improved null checking and state management
 
 ### Map Visibility Issue (FIXED)
+
 - **Issue**: Invisible map due to white default colors
 - **Solution**: Changed default county colors to light gray (#e5e7eb)
 
 ### Region Color State Management (FIXED)
+
 - **Issue**: Region colors persisted after "Show Regions" was toggled off
 - **Solution**: Proper state cleanup in region toggle handler
 
 ## Accessibility
 
 ### SVG Maps
+
 - **ARIA labels**: Each county has aria-label
 - **Keyboard navigation**: Tab through counties
 - **Focus indicators**: Visible stroke on focus
@@ -262,6 +292,7 @@ See [TECH_DEBT_CLEANUP_REPORT.md](../../docs/TECH_DEBT_CLEANUP_REPORT.md) for:
 ```
 
 ### Canvas Maps
+
 - **Fallback text**: Alternative text description
 - **ARIA live region**: Announces selection changes
 - **Keyboard shortcuts**: Alternative interaction method
@@ -269,6 +300,7 @@ See [TECH_DEBT_CLEANUP_REPORT.md](../../docs/TECH_DEBT_CLEANUP_REPORT.md) for:
 ## Testing
 
 ### Unit Tests
+
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/react';
 import CaliforniaMapFixed from './CaliforniaMapFixed';
@@ -285,6 +317,7 @@ test('calls onCountyClick when county is clicked', () => {
 ```
 
 ### Integration Tests
+
 ```typescript
 test('highlights selected counties', () => {
   render(<CaliforniaMapFixed selectedCounties={['alameda']} />);
@@ -298,15 +331,16 @@ test('highlights selected counties', () => {
 
 Tested on MacBook Pro (M1, 16GB RAM):
 
-| Map Type | Initial Load | Re-render | Memory |
-|----------|--------------|-----------|--------|
-| SVG (Simple) | ~80ms | ~20ms | ~15MB |
-| SVG (Fixed) | ~120ms | ~30ms | ~20MB |
-| Canvas | ~50ms | ~10ms | ~8MB |
+| Map Type     | Initial Load | Re-render | Memory |
+| ------------ | ------------ | --------- | ------ |
+| SVG (Simple) | ~80ms        | ~20ms     | ~15MB  |
+| SVG (Fixed)  | ~120ms       | ~30ms     | ~20MB  |
+| Canvas       | ~50ms        | ~10ms     | ~8MB   |
 
 ## Migration Guide
 
 ### From CaliforniaMapFixed to CaliforniaMapSimple
+
 ```typescript
 // Before
 <CaliforniaMapFixed

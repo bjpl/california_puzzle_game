@@ -17,26 +17,26 @@ import { logger } from './logger';
 export const PERFORMANCE_BUDGETS = {
   // Bundle sizes (bytes, gzipped)
   bundle: {
-    initial: 150_000,      // 150 KB initial bundle
-    total: 400_000,        // 400 KB total JS
-    css: 50_000,           // 50 KB CSS
-    images: 200_000,       // 200 KB images
+    initial: 150_000, // 150 KB initial bundle
+    total: 400_000, // 400 KB total JS
+    css: 50_000, // 50 KB CSS
+    images: 200_000, // 200 KB images
   },
 
   // Web Vitals (milliseconds)
   vitals: {
-    FCP: 1800,            // First Contentful Paint
-    LCP: 2500,            // Largest Contentful Paint
-    FID: 100,             // First Input Delay
-    TTI: 3800,            // Time to Interactive
-    CLS: 0.1,             // Cumulative Layout Shift (unitless)
+    FCP: 1800, // First Contentful Paint
+    LCP: 2500, // Largest Contentful Paint
+    FID: 100, // First Input Delay
+    TTI: 3800, // Time to Interactive
+    CLS: 0.1, // Cumulative Layout Shift (unitless)
   },
 
   // Runtime performance
   runtime: {
-    fps: 45,              // Minimum FPS
-    memoryMB: 100,        // Max memory (MB)
-    taskDuration: 50,     // Max long task (ms)
+    fps: 45, // Minimum FPS
+    memoryMB: 100, // Max memory (MB)
+    taskDuration: 50, // Max long task (ms)
   },
 };
 
@@ -124,23 +124,33 @@ export function checkVitalsBudget(vitals: {
   const violations: string[] = [];
 
   if (vitals.FCP && vitals.FCP > PERFORMANCE_BUDGETS.vitals.FCP) {
-    violations.push(`FCP exceeded budget: ${vitals.FCP.toFixed(0)}ms > ${PERFORMANCE_BUDGETS.vitals.FCP}ms`);
+    violations.push(
+      `FCP exceeded budget: ${vitals.FCP.toFixed(0)}ms > ${PERFORMANCE_BUDGETS.vitals.FCP}ms`
+    );
   }
 
   if (vitals.LCP && vitals.LCP > PERFORMANCE_BUDGETS.vitals.LCP) {
-    violations.push(`LCP exceeded budget: ${vitals.LCP.toFixed(0)}ms > ${PERFORMANCE_BUDGETS.vitals.LCP}ms`);
+    violations.push(
+      `LCP exceeded budget: ${vitals.LCP.toFixed(0)}ms > ${PERFORMANCE_BUDGETS.vitals.LCP}ms`
+    );
   }
 
   if (vitals.FID && vitals.FID > PERFORMANCE_BUDGETS.vitals.FID) {
-    violations.push(`FID exceeded budget: ${vitals.FID.toFixed(0)}ms > ${PERFORMANCE_BUDGETS.vitals.FID}ms`);
+    violations.push(
+      `FID exceeded budget: ${vitals.FID.toFixed(0)}ms > ${PERFORMANCE_BUDGETS.vitals.FID}ms`
+    );
   }
 
   if (vitals.CLS && vitals.CLS > PERFORMANCE_BUDGETS.vitals.CLS) {
-    violations.push(`CLS exceeded budget: ${vitals.CLS.toFixed(3)} > ${PERFORMANCE_BUDGETS.vitals.CLS}`);
+    violations.push(
+      `CLS exceeded budget: ${vitals.CLS.toFixed(3)} > ${PERFORMANCE_BUDGETS.vitals.CLS}`
+    );
   }
 
   if (vitals.TTI && vitals.TTI > PERFORMANCE_BUDGETS.vitals.TTI) {
-    violations.push(`TTI exceeded budget: ${vitals.TTI.toFixed(0)}ms > ${PERFORMANCE_BUDGETS.vitals.TTI}ms`);
+    violations.push(
+      `TTI exceeded budget: ${vitals.TTI.toFixed(0)}ms > ${PERFORMANCE_BUDGETS.vitals.TTI}ms`
+    );
   }
 
   return {
@@ -167,10 +177,15 @@ export function checkRuntimeBudget(metrics: {
   }
 
   if (metrics.memoryMB && metrics.memoryMB > PERFORMANCE_BUDGETS.runtime.memoryMB) {
-    violations.push(`Memory exceeded budget: ${metrics.memoryMB}MB > ${PERFORMANCE_BUDGETS.runtime.memoryMB}MB`);
+    violations.push(
+      `Memory exceeded budget: ${metrics.memoryMB}MB > ${PERFORMANCE_BUDGETS.runtime.memoryMB}MB`
+    );
   }
 
-  if (metrics.longTaskDuration && metrics.longTaskDuration > PERFORMANCE_BUDGETS.runtime.taskDuration) {
+  if (
+    metrics.longTaskDuration &&
+    metrics.longTaskDuration > PERFORMANCE_BUDGETS.runtime.taskDuration
+  ) {
     violations.push(
       `Long task duration exceeded budget: ${metrics.longTaskDuration}ms > ${PERFORMANCE_BUDGETS.runtime.taskDuration}ms`
     );

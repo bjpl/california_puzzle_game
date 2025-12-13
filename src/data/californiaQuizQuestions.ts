@@ -6,7 +6,15 @@ export interface QuizQuestion {
   countyId: string;
   countyName: string;
   region: string;
-  type: 'capital' | 'landmark' | 'geography' | 'history' | 'economy' | 'demographics' | 'nature' | 'culture';
+  type:
+    | 'capital'
+    | 'landmark'
+    | 'geography'
+    | 'history'
+    | 'economy'
+    | 'demographics'
+    | 'nature'
+    | 'culture';
   difficulty: 'easy' | 'medium' | 'hard';
   question: string;
   correctAnswer: string;
@@ -34,10 +42,15 @@ const bayAreaQuestions: QuizQuestion[] = [
     region: 'Bay Area',
     type: 'capital',
     difficulty: 'easy',
-    question: 'What is unique about San Francisco County\'s government structure?',
-    correctAnswer: 'It\'s the only consolidated city-county in California',
-    options: shuffle(['It\'s the only consolidated city-county in California', 'It has no county seat', 'It has two county seats', 'It\'s governed by the state directly']),
-    explanation: 'San Francisco is both a city and a county, making it unique in California.'
+    question: "What is unique about San Francisco County's government structure?",
+    correctAnswer: "It's the only consolidated city-county in California",
+    options: shuffle([
+      "It's the only consolidated city-county in California",
+      'It has no county seat',
+      'It has two county seats',
+      "It's governed by the state directly",
+    ]),
+    explanation: 'San Francisco is both a city and a county, making it unique in California.',
   },
   {
     id: 'sf-landmark',
@@ -60,7 +73,8 @@ const bayAreaQuestions: QuizQuestion[] = [
     question: 'San Francisco is the ___ smallest county by area in California.',
     correctAnswer: 'Second',
     options: shuffle(['Second', 'First', 'Third', 'Fourth']),
-    explanation: 'At only 47 square miles, San Francisco is the second smallest county after Alpine County.'
+    explanation:
+      'At only 47 square miles, San Francisco is the second smallest county after Alpine County.',
   },
 
   // Alameda County
@@ -154,7 +168,12 @@ const bayAreaQuestions: QuizQuestion[] = [
     difficulty: 'easy',
     question: 'Which major airport is located in San Mateo County?',
     correctAnswer: 'San Francisco International Airport (SFO)',
-    options: shuffle(['San Francisco International Airport (SFO)', 'Oakland International', 'San Jose International', 'Sacramento International']),
+    options: shuffle([
+      'San Francisco International Airport (SFO)',
+      'Oakland International',
+      'San Jose International',
+      'Sacramento International',
+    ]),
   },
 
   // Contra Costa County
@@ -190,7 +209,8 @@ const bayAreaQuestions: QuizQuestion[] = [
     question: 'What does "Contra Costa" mean in Spanish?',
     correctAnswer: 'Opposite Coast',
     options: shuffle(['Opposite Coast', 'Golden Coast', 'Beautiful Coast', 'Western Coast']),
-    explanation: 'The name refers to the county being on the opposite coast of the Bay from San Francisco.'
+    explanation:
+      'The name refers to the county being on the opposite coast of the Bay from San Francisco.',
   },
 
   // Marin County
@@ -225,7 +245,12 @@ const bayAreaQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Marin County has one of the highest ___ in California.',
     correctAnswer: 'Income per capita',
-    options: shuffle(['Income per capita', 'Population density', 'Number of beaches', 'Agricultural output']),
+    options: shuffle([
+      'Income per capita',
+      'Population density',
+      'Number of beaches',
+      'Agricultural output',
+    ]),
   },
 
   // Solano County
@@ -247,10 +272,10 @@ const bayAreaQuestions: QuizQuestion[] = [
     region: 'Bay Area',
     type: 'history',
     difficulty: 'hard',
-    question: 'Which city in Solano County briefly served as California\'s state capital?',
+    question: "Which city in Solano County briefly served as California's state capital?",
     correctAnswer: 'Vallejo',
     options: shuffle(['Vallejo', 'Benicia', 'Fairfield', 'Vacaville']),
-    explanation: 'Vallejo was the state capital in 1852 and 1853.'
+    explanation: 'Vallejo was the state capital in 1852 and 1853.',
   },
   {
     id: 'solano-landmark',
@@ -261,7 +286,12 @@ const bayAreaQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which major Air Force base is located in Solano County?',
     correctAnswer: 'Travis Air Force Base',
-    options: shuffle(['Travis Air Force Base', 'Beale Air Force Base', 'Edwards Air Force Base', 'Vandenberg Air Force Base']),
+    options: shuffle([
+      'Travis Air Force Base',
+      'Beale Air Force Base',
+      'Edwards Air Force Base',
+      'Vandenberg Air Force Base',
+    ]),
   },
 
   // Napa County
@@ -294,7 +324,7 @@ const bayAreaQuestions: QuizQuestion[] = [
     region: 'Bay Area',
     type: 'culture',
     difficulty: 'medium',
-    question: 'What is Napa Valley\'s most planted grape variety?',
+    question: "What is Napa Valley's most planted grape variety?",
     correctAnswer: 'Cabernet Sauvignon',
     options: shuffle(['Cabernet Sauvignon', 'Chardonnay', 'Pinot Noir', 'Merlot']),
   },
@@ -329,7 +359,8 @@ const bayAreaQuestions: QuizQuestion[] = [
     region: 'Bay Area',
     type: 'landmark',
     difficulty: 'medium',
-    question: 'Which coastal town in Sonoma County was the setting for Alfred Hitchcock\'s "The Birds"?',
+    question:
+      'Which coastal town in Sonoma County was the setting for Alfred Hitchcock\'s "The Birds"?',
     correctAnswer: 'Bodega Bay',
     options: shuffle(['Bodega Bay', 'Half Moon Bay', 'Monterey Bay', 'Morro Bay']),
   },
@@ -359,7 +390,7 @@ const southernCaliforniaQuestions: QuizQuestion[] = [
     question: 'Los Angeles County is the most ___ county in the United States.',
     correctAnswer: 'Populous',
     options: shuffle(['Populous', 'Wealthy', 'Diverse', 'Visited']),
-    explanation: 'With over 10 million residents, LA County has more people than 40 U.S. states.'
+    explanation: 'With over 10 million residents, LA County has more people than 40 U.S. states.',
   },
   {
     id: 'la-landmark',
@@ -381,7 +412,12 @@ const southernCaliforniaQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which famous art museum is located on Wilshire Boulevard?',
     correctAnswer: 'LACMA (Los Angeles County Museum of Art)',
-    options: shuffle(['LACMA (Los Angeles County Museum of Art)', 'The Getty Center', 'MOCA', 'The Broad']),
+    options: shuffle([
+      'LACMA (Los Angeles County Museum of Art)',
+      'The Getty Center',
+      'MOCA',
+      'The Broad',
+    ]),
   },
 
   // San Diego County
@@ -414,7 +450,7 @@ const southernCaliforniaQuestions: QuizQuestion[] = [
     region: 'Southern California',
     type: 'landmark',
     difficulty: 'easy',
-    question: 'Which world-famous zoo is located in San Diego\'s Balboa Park?',
+    question: "Which world-famous zoo is located in San Diego's Balboa Park?",
     correctAnswer: 'San Diego Zoo',
     options: shuffle(['San Diego Zoo', 'Los Angeles Zoo', 'Oakland Zoo', 'San Francisco Zoo']),
   },
@@ -427,8 +463,14 @@ const southernCaliforniaQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'San Diego is known as the birthplace of what in California?',
     correctAnswer: 'California (first Spanish mission)',
-    options: shuffle(['California (first Spanish mission)', 'Gold Rush', 'Movie industry', 'Computer technology']),
-    explanation: 'Mission San Diego de Alcalá, founded in 1769, was the first Spanish mission in California.'
+    options: shuffle([
+      'California (first Spanish mission)',
+      'Gold Rush',
+      'Movie industry',
+      'Computer technology',
+    ]),
+    explanation:
+      'Mission San Diego de Alcalá, founded in 1769, was the first Spanish mission in California.',
   },
 
   // Orange County
@@ -452,7 +494,7 @@ const southernCaliforniaQuestions: QuizQuestion[] = [
     difficulty: 'easy',
     question: 'Which famous theme park opened in Orange County in 1955?',
     correctAnswer: 'Disneyland',
-    options: shuffle(['Disneyland', 'Universal Studios', 'Six Flags', 'Knott\'s Berry Farm']),
+    options: shuffle(['Disneyland', 'Universal Studios', 'Six Flags', "Knott's Berry Farm"]),
   },
   {
     id: 'orange-geography',
@@ -523,7 +565,8 @@ const southernCaliforniaQuestions: QuizQuestion[] = [
     question: 'San Bernardino County is the ___ county by area in the United States.',
     correctAnswer: 'Largest',
     options: shuffle(['Largest', 'Second largest', 'Third largest', 'Fourth largest']),
-    explanation: 'At 20,105 square miles, it\'s larger than Vermont, New Hampshire, Massachusetts, and New Jersey combined.'
+    explanation:
+      "At 20,105 square miles, it's larger than Vermont, New Hampshire, Massachusetts, and New Jersey combined.",
   },
   {
     id: 'san-bernardino-nature',
@@ -534,7 +577,12 @@ const southernCaliforniaQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which desert comprises much of San Bernardino County?',
     correctAnswer: 'Mojave Desert',
-    options: shuffle(['Mojave Desert', 'Sonoran Desert', 'Chihuahuan Desert', 'Great Basin Desert']),
+    options: shuffle([
+      'Mojave Desert',
+      'Sonoran Desert',
+      'Chihuahuan Desert',
+      'Great Basin Desert',
+    ]),
   },
 
   // Ventura County
@@ -602,10 +650,16 @@ const southernCaliforniaQuestions: QuizQuestion[] = [
     region: 'Southern California',
     type: 'nature',
     difficulty: 'hard',
-    question: 'Imperial County contains California\'s lowest point. What is it?',
+    question: "Imperial County contains California's lowest point. What is it?",
     correctAnswer: 'Badwater Basin (-282 feet)',
-    options: shuffle(['Badwater Basin (-282 feet)', 'Death Valley (-282 feet)', 'Salton Sea (-236 feet)', 'Colorado Desert (-200 feet)']),
-    explanation: 'Part of Death Valley extends into Imperial County, containing California\'s lowest elevation.'
+    options: shuffle([
+      'Badwater Basin (-282 feet)',
+      'Death Valley (-282 feet)',
+      'Salton Sea (-236 feet)',
+      'Colorado Desert (-200 feet)',
+    ]),
+    explanation:
+      "Part of Death Valley extends into Imperial County, containing California's lowest elevation.",
   },
 ];
 
@@ -643,7 +697,12 @@ const centralValleyQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which two rivers meet in Sacramento?',
     correctAnswer: 'American and Sacramento Rivers',
-    options: shuffle(['American and Sacramento Rivers', 'Sacramento and San Joaquin Rivers', 'Feather and Sacramento Rivers', 'American and Feather Rivers']),
+    options: shuffle([
+      'American and Sacramento Rivers',
+      'Sacramento and San Joaquin Rivers',
+      'Feather and Sacramento Rivers',
+      'American and Feather Rivers',
+    ]),
   },
 
   // Fresno County
@@ -703,7 +762,7 @@ const centralValleyQuestions: QuizQuestion[] = [
     question: 'Kern County is a major producer of which energy resource?',
     correctAnswer: 'Oil',
     options: shuffle(['Oil', 'Natural gas', 'Solar power', 'Wind energy']),
-    explanation: 'Kern County produces about 70% of California\'s oil.'
+    explanation: "Kern County produces about 70% of California's oil.",
   },
   {
     id: 'kern-geography',
@@ -738,7 +797,12 @@ const centralValleyQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'San Joaquin County is located in which delta region?',
     correctAnswer: 'Sacramento-San Joaquin Delta',
-    options: shuffle(['Sacramento-San Joaquin Delta', 'Colorado River Delta', 'Klamath River Delta', 'Eel River Delta']),
+    options: shuffle([
+      'Sacramento-San Joaquin Delta',
+      'Colorado River Delta',
+      'Klamath River Delta',
+      'Eel River Delta',
+    ]),
   },
 
   // Stanislaus County
@@ -760,9 +824,14 @@ const centralValleyQuestions: QuizQuestion[] = [
     region: 'Central Valley',
     type: 'culture',
     difficulty: 'hard',
-    question: 'What is Modesto\'s city motto?',
+    question: "What is Modesto's city motto?",
     correctAnswer: 'Water, Wealth, Contentment, Health',
-    options: shuffle(['Water, Wealth, Contentment, Health', 'Gateway to Yosemite', 'Heart of the Valley', 'City of Great Neighbors']),
+    options: shuffle([
+      'Water, Wealth, Contentment, Health',
+      'Gateway to Yosemite',
+      'Heart of the Valley',
+      'City of Great Neighbors',
+    ]),
   },
 
   // Additional Central Valley counties with 2-3 questions each
@@ -787,7 +856,12 @@ const centralValleyQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which national park has an entrance in Tulare County?',
     correctAnswer: 'Sequoia National Park',
-    options: shuffle(['Sequoia National Park', 'Yosemite National Park', 'Kings Canyon National Park', 'Joshua Tree National Park']),
+    options: shuffle([
+      'Sequoia National Park',
+      'Yosemite National Park',
+      'Kings Canyon National Park',
+      'Joshua Tree National Park',
+    ]),
   },
 
   // Merced County
@@ -918,7 +992,7 @@ const centralValleyQuestions: QuizQuestion[] = [
     region: 'Central Valley',
     type: 'landmark',
     difficulty: 'hard',
-    question: 'Which unique geological feature is known as the world\'s smallest mountain range?',
+    question: "Which unique geological feature is known as the world's smallest mountain range?",
     correctAnswer: 'Sutter Buttes',
     options: shuffle(['Sutter Buttes', 'Castle Rock', 'Mount Diablo', 'Bishop Peak']),
   },
@@ -986,7 +1060,12 @@ const centralCoastQuestions: QuizQuestion[] = [
     difficulty: 'easy',
     question: 'Which famous aquarium is located in Monterey County?',
     correctAnswer: 'Monterey Bay Aquarium',
-    options: shuffle(['Monterey Bay Aquarium', 'California Academy of Sciences', 'Aquarium of the Pacific', 'SeaWorld']),
+    options: shuffle([
+      'Monterey Bay Aquarium',
+      'California Academy of Sciences',
+      'Aquarium of the Pacific',
+      'SeaWorld',
+    ]),
   },
   {
     id: 'monterey-geography',
@@ -1008,7 +1087,12 @@ const centralCoastQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which famous golf course is located in Pebble Beach, Monterey County?',
     correctAnswer: 'Pebble Beach Golf Links',
-    options: shuffle(['Pebble Beach Golf Links', 'Augusta National', 'St. Andrews', 'Torrey Pines']),
+    options: shuffle([
+      'Pebble Beach Golf Links',
+      'Augusta National',
+      'St. Andrews',
+      'Torrey Pines',
+    ]),
   },
 
   // Santa Barbara County
@@ -1033,7 +1117,8 @@ const centralCoastQuestions: QuizQuestion[] = [
     question: 'Santa Barbara County has an unusual coastline that faces which direction?',
     correctAnswer: 'South',
     options: shuffle(['South', 'West', 'North', 'East']),
-    explanation: 'Santa Barbara\'s coastline runs east-west, making it face south, unique in California.'
+    explanation:
+      "Santa Barbara's coastline runs east-west, making it face south, unique in California.",
   },
   {
     id: 'santa-barbara-culture',
@@ -1068,7 +1153,12 @@ const centralCoastQuestions: QuizQuestion[] = [
     difficulty: 'easy',
     question: 'Which famous castle is located in San Luis Obispo County?',
     correctAnswer: 'Hearst Castle',
-    options: shuffle(['Hearst Castle', 'Scotty\'s Castle', 'Napa Castle', 'Winchester Mystery House']),
+    options: shuffle([
+      'Hearst Castle',
+      "Scotty's Castle",
+      'Napa Castle',
+      'Winchester Mystery House',
+    ]),
   },
   {
     id: 'slo-nature',
@@ -1103,7 +1193,12 @@ const centralCoastQuestions: QuizQuestion[] = [
     difficulty: 'easy',
     question: 'Which famous beach boardwalk is located in Santa Cruz?',
     correctAnswer: 'Santa Cruz Beach Boardwalk',
-    options: shuffle(['Santa Cruz Beach Boardwalk', 'Venice Beach Boardwalk', 'Mission Beach Boardwalk', 'Huntington Pier']),
+    options: shuffle([
+      'Santa Cruz Beach Boardwalk',
+      'Venice Beach Boardwalk',
+      'Mission Beach Boardwalk',
+      'Huntington Pier',
+    ]),
   },
   {
     id: 'santa-cruz-culture',
@@ -1138,7 +1233,12 @@ const centralCoastQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which national park is partially located in San Benito County?',
     correctAnswer: 'Pinnacles National Park',
-    options: shuffle(['Pinnacles National Park', 'Yosemite National Park', 'Joshua Tree National Park', 'Channel Islands National Park']),
+    options: shuffle([
+      'Pinnacles National Park',
+      'Yosemite National Park',
+      'Joshua Tree National Park',
+      'Channel Islands National Park',
+    ]),
   },
 ];
 
@@ -1272,7 +1372,12 @@ const northernCaliforniaQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which volcanic national park is located in Lassen County?',
     correctAnswer: 'Lassen Volcanic National Park',
-    options: shuffle(['Lassen Volcanic National Park', 'Crater Lake National Park', 'Mount Rainier National Park', 'Yellowstone National Park']),
+    options: shuffle([
+      'Lassen Volcanic National Park',
+      'Crater Lake National Park',
+      'Mount Rainier National Park',
+      'Yellowstone National Park',
+    ]),
   },
 
   // Trinity County
@@ -1297,7 +1402,7 @@ const northernCaliforniaQuestions: QuizQuestion[] = [
     question: 'Trinity County has no incorporated cities. True or False?',
     correctAnswer: 'True',
     options: shuffle(['True', 'False', 'Has one city', 'Has two cities']),
-    explanation: 'Trinity County is one of two California counties with no incorporated cities.'
+    explanation: 'Trinity County is one of two California counties with no incorporated cities.',
   },
 ];
 
@@ -1348,8 +1453,14 @@ const sierraQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'El Dorado County was named after what?',
     correctAnswer: 'The mythical city of gold',
-    options: shuffle(['The mythical city of gold', 'A Spanish explorer', 'A Native American tribe', 'A mountain peak']),
-    explanation: 'El Dorado means "the golden one" in Spanish, referring to the legendary city of gold.'
+    options: shuffle([
+      'The mythical city of gold',
+      'A Spanish explorer',
+      'A Native American tribe',
+      'A mountain peak',
+    ]),
+    explanation:
+      'El Dorado means "the golden one" in Spanish, referring to the legendary city of gold.',
   },
 
   // Nevada County
@@ -1398,7 +1509,8 @@ const sierraQuestions: QuizQuestion[] = [
     question: 'Alpine County has the ___ population of any California county.',
     correctAnswer: 'Smallest',
     options: shuffle(['Smallest', 'Second smallest', 'Third smallest', 'Fourth smallest']),
-    explanation: 'Alpine County has fewer than 1,200 residents, making it California\'s least populated county.'
+    explanation:
+      "Alpine County has fewer than 1,200 residents, making it California's least populated county.",
   },
 
   // Mono County
@@ -1444,10 +1556,12 @@ const sierraQuestions: QuizQuestion[] = [
     region: 'Sierra Nevada',
     type: 'geography',
     difficulty: 'medium',
-    question: 'Inyo County contains both California\'s highest and lowest points. What is the highest?',
+    question:
+      "Inyo County contains both California's highest and lowest points. What is the highest?",
     correctAnswer: 'Mount Whitney',
     options: shuffle(['Mount Whitney', 'Mount Shasta', 'Mount Williamson', 'White Mountain Peak']),
-    explanation: 'Mount Whitney (14,505 ft) is the highest, and Death Valley (-282 ft) is the lowest.'
+    explanation:
+      'Mount Whitney (14,505 ft) is the highest, and Death Valley (-282 ft) is the lowest.',
   },
 
   // Additional Sierra Nevada counties
@@ -1483,7 +1597,7 @@ const sierraQuestions: QuizQuestion[] = [
     region: 'Sierra Nevada',
     type: 'culture',
     difficulty: 'medium',
-    question: 'Calaveras County is famous for Mark Twain\'s story about what?',
+    question: "Calaveras County is famous for Mark Twain's story about what?",
     correctAnswer: 'Jumping frogs',
     options: shuffle(['Jumping frogs', 'Gold mining', 'Big trees', 'Cave exploration']),
   },
@@ -1509,7 +1623,12 @@ const sierraQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which part of Yosemite National Park is in Tuolumne County?',
     correctAnswer: 'Northern part (Tuolumne Meadows)',
-    options: shuffle(['Northern part (Tuolumne Meadows)', 'Yosemite Valley', 'Southern entrance', 'Eastern entrance']),
+    options: shuffle([
+      'Northern part (Tuolumne Meadows)',
+      'Yosemite Valley',
+      'Southern entrance',
+      'Eastern entrance',
+    ]),
   },
 
   // Mariposa County
@@ -1597,7 +1716,12 @@ const northCoastQuestions: QuizQuestion[] = [
     difficulty: 'medium',
     question: 'Which national and state park system protects the redwoods in Humboldt County?',
     correctAnswer: 'Redwood National and State Parks',
-    options: shuffle(['Redwood National and State Parks', 'Muir Woods National Monument', 'Big Basin State Park', 'Sequoia National Park']),
+    options: shuffle([
+      'Redwood National and State Parks',
+      'Muir Woods National Monument',
+      'Big Basin State Park',
+      'Sequoia National Park',
+    ]),
   },
 
   // Mendocino County
@@ -1670,7 +1794,8 @@ const northCoastQuestions: QuizQuestion[] = [
     question: 'Which large natural lake gives Lake County its name?',
     correctAnswer: 'Clear Lake',
     options: shuffle(['Clear Lake', 'Lake Tahoe', 'Mono Lake', 'Eagle Lake']),
-    explanation: 'Clear Lake is California\'s largest natural freshwater lake entirely within the state.'
+    explanation:
+      "Clear Lake is California's largest natural freshwater lake entirely within the state.",
   },
 ];
 
@@ -1682,7 +1807,7 @@ export const californiaQuizDatabase: QuizQuestion[] = [
   ...centralCoastQuestions,
   ...northernCaliforniaQuestions,
   ...sierraQuestions,
-  ...northCoastQuestions
+  ...northCoastQuestions,
 ];
 
 // Helper function to get questions by region
@@ -1690,45 +1815,48 @@ export function getQuestionsByRegion(region: string): QuizQuestion[] {
   if (region === 'all') {
     return californiaQuizDatabase;
   }
-  return californiaQuizDatabase.filter(q => q.region === region);
+  return californiaQuizDatabase.filter((q) => q.region === region);
 }
 
 // Helper function to get questions by county
 export function getQuestionsByCounty(countyId: string): QuizQuestion[] {
-  return californiaQuizDatabase.filter(q => q.countyId === countyId);
+  return californiaQuizDatabase.filter((q) => q.countyId === countyId);
 }
 
 // Helper function to get questions by type
 export function getQuestionsByType(type: QuizQuestion['type']): QuizQuestion[] {
-  return californiaQuizDatabase.filter(q => q.type === type);
+  return californiaQuizDatabase.filter((q) => q.type === type);
 }
 
 // Helper function to get questions by difficulty
 export function getQuestionsByDifficulty(difficulty: QuizQuestion['difficulty']): QuizQuestion[] {
-  return californiaQuizDatabase.filter(q => q.difficulty === difficulty);
+  return californiaQuizDatabase.filter((q) => q.difficulty === difficulty);
 }
 
 // Helper function to get random questions
-export function getRandomQuestions(count: number, filters?: {
-  region?: string;
-  type?: QuizQuestion['type'];
-  difficulty?: QuizQuestion['difficulty'];
-  excludeIds?: string[];
-}): QuizQuestion[] {
+export function getRandomQuestions(
+  count: number,
+  filters?: {
+    region?: string;
+    type?: QuizQuestion['type'];
+    difficulty?: QuizQuestion['difficulty'];
+    excludeIds?: string[];
+  }
+): QuizQuestion[] {
   let pool = californiaQuizDatabase;
 
   if (filters) {
     if (filters.region && filters.region !== 'all') {
-      pool = pool.filter(q => q.region === filters.region);
+      pool = pool.filter((q) => q.region === filters.region);
     }
     if (filters.type) {
-      pool = pool.filter(q => q.type === filters.type);
+      pool = pool.filter((q) => q.type === filters.type);
     }
     if (filters.difficulty) {
-      pool = pool.filter(q => q.difficulty === filters.difficulty);
+      pool = pool.filter((q) => q.difficulty === filters.difficulty);
     }
     if (filters.excludeIds && filters.excludeIds.length > 0) {
-      pool = pool.filter(q => !filters.excludeIds!.includes(q.id));
+      pool = pool.filter((q) => !filters.excludeIds!.includes(q.id));
     }
   }
 
@@ -1749,18 +1877,18 @@ export const quizDatabaseStats = {
     'North Coast': northCoastQuestions.length,
   },
   byType: {
-    capital: californiaQuizDatabase.filter(q => q.type === 'capital').length,
-    landmark: californiaQuizDatabase.filter(q => q.type === 'landmark').length,
-    geography: californiaQuizDatabase.filter(q => q.type === 'geography').length,
-    history: californiaQuizDatabase.filter(q => q.type === 'history').length,
-    economy: californiaQuizDatabase.filter(q => q.type === 'economy').length,
-    demographics: californiaQuizDatabase.filter(q => q.type === 'demographics').length,
-    nature: californiaQuizDatabase.filter(q => q.type === 'nature').length,
-    culture: californiaQuizDatabase.filter(q => q.type === 'culture').length,
+    capital: californiaQuizDatabase.filter((q) => q.type === 'capital').length,
+    landmark: californiaQuizDatabase.filter((q) => q.type === 'landmark').length,
+    geography: californiaQuizDatabase.filter((q) => q.type === 'geography').length,
+    history: californiaQuizDatabase.filter((q) => q.type === 'history').length,
+    economy: californiaQuizDatabase.filter((q) => q.type === 'economy').length,
+    demographics: californiaQuizDatabase.filter((q) => q.type === 'demographics').length,
+    nature: californiaQuizDatabase.filter((q) => q.type === 'nature').length,
+    culture: californiaQuizDatabase.filter((q) => q.type === 'culture').length,
   },
   byDifficulty: {
-    easy: californiaQuizDatabase.filter(q => q.difficulty === 'easy').length,
-    medium: californiaQuizDatabase.filter(q => q.difficulty === 'medium').length,
-    hard: californiaQuizDatabase.filter(q => q.difficulty === 'hard').length,
-  }
+    easy: californiaQuizDatabase.filter((q) => q.difficulty === 'easy').length,
+    medium: californiaQuizDatabase.filter((q) => q.difficulty === 'medium').length,
+    hard: californiaQuizDatabase.filter((q) => q.difficulty === 'hard').length,
+  },
 };

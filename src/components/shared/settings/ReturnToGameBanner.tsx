@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
-import { shouldShowReturnToGame, generateReturnToGameUrl, loadGameState } from '../../../utils/gameStateManager';
+import {
+  shouldShowReturnToGame,
+  generateReturnToGameUrl,
+  loadGameState,
+} from '../../../utils/gameStateManager';
 
 interface ReturnToGameBannerProps {
   className?: string;
@@ -27,7 +31,7 @@ export default function ReturnToGameBanner({ className = '' }: ReturnToGameBanne
           placedCount: gameState.placedCounties.length,
           totalCount: 58, // Total California counties
           score: gameState.score,
-          timeSpent: gameState.timerState.time
+          timeSpent: gameState.timerState.time,
         });
       }
     }
@@ -47,29 +51,31 @@ export default function ReturnToGameBanner({ className = '' }: ReturnToGameBanne
   };
 
   return (
-    <div className={`bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg ${className}`}>
+    <div
+      className={`bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg ${className}`}
+    >
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="flex-shrink-0">
               <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                 </svg>
               </div>
             </div>
 
             <div>
               <h3 className="font-semibold text-lg">Game in Progress</h3>
-              <p className="text-blue-100 text-sm">
-                You have a puzzle game waiting for you!
-              </p>
+              <p className="text-blue-100 text-sm">You have a puzzle game waiting for you!</p>
             </div>
 
             {gameInfo && (
               <div className="hidden md:flex items-center gap-6 text-sm">
                 <div className="text-center">
-                  <div className="font-semibold">{gameInfo.placedCount}/{gameInfo.totalCount}</div>
+                  <div className="font-semibold">
+                    {gameInfo.placedCount}/{gameInfo.totalCount}
+                  </div>
                   <div className="text-blue-200">Counties</div>
                 </div>
                 <div className="text-center">
@@ -89,7 +95,12 @@ export default function ReturnToGameBanner({ className = '' }: ReturnToGameBanne
             className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
             Return to Game
           </button>
@@ -100,7 +111,9 @@ export default function ReturnToGameBanner({ className = '' }: ReturnToGameBanne
           <div className="md:hidden mt-3 pt-3 border-t border-white/20">
             <div className="flex justify-around text-sm">
               <div className="text-center">
-                <div className="font-semibold">{gameInfo.placedCount}/{gameInfo.totalCount}</div>
+                <div className="font-semibold">
+                  {gameInfo.placedCount}/{gameInfo.totalCount}
+                </div>
                 <div className="text-blue-200">Counties</div>
               </div>
               <div className="text-center">

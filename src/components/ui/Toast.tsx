@@ -147,9 +147,7 @@ export const Toast: React.FC<ToastProps> = ({ toast }) => {
       {getToastIcon(toast.type)}
 
       {/* Message */}
-      <span className="flex-1 text-sm font-medium leading-snug">
-        {toast.message}
-      </span>
+      <span className="flex-1 text-sm font-medium leading-snug">{toast.message}</span>
 
       {/* Dismiss Button */}
       {toast.dismissible && (

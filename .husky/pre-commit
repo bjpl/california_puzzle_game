@@ -8,7 +8,8 @@ if git diff --cached --name-only | grep -E '\.(tsx?|jsx?)$' | xargs grep -l 'TOD
 fi
 
 # Prevent commits with console.log (except in specific files)
-if git diff --cached --name-only | grep -E '\.(tsx?|jsx?)$' | xargs grep -l 'console\.log' 2>/dev/null | grep -v -E 'logger\.ts|test|spec|sw\.js|public/'; then
+# Exclude: logger, tests, service worker, public assets, and supabase auth (has console.log in JSDoc examples)
+if git diff --cached --name-only | grep -E '\.(tsx?|jsx?)$' | xargs grep -l 'console\.log' 2>/dev/null | grep -v -E 'logger\.ts|test|spec|sw\.js|public/|services/supabase/auth\.ts'; then
   echo "Error: console.log found. Use logger utility or console.warn/error instead."
   exit 1
 fi

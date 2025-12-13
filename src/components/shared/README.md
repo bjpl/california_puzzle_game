@@ -14,16 +14,20 @@ shared/
 ## Components
 
 ### RegionsPanel
+
 Allows users to:
+
 - Toggle region color overlay on the map
 - Filter counties by California regions
 - Visual legend for regions
 
 ### effects/
+
 - `HoverEffects.tsx` - Reusable hover animations and transitions
 - `PageTransition.tsx` - Smooth page/view transitions
 
 ### settings/
+
 - `SoundSettings.tsx` - Audio control panel
 - `Statistics.tsx` - Game statistics display
 - `ReturnToGameBanner.tsx` - Quick navigation back to active game

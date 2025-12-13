@@ -27,7 +27,10 @@ export interface AchievementState {
 
 interface AchievementActions {
   // Updated: now accepts remainingCounties as param to avoid circular import
-  checkAchievements: (placement?: PlacementResult, remainingCounties?: CountyPiece[]) => Achievement[];
+  checkAchievements: (
+    placement?: PlacementResult,
+    remainingCounties?: CountyPiece[]
+  ) => Achievement[];
   unlockAchievement: (achievementId: string) => void;
   getAchievementProgress: (achievementId: string) => number;
   resetAchievements: () => void;
@@ -100,7 +103,10 @@ export const useAchievementStore = create<AchievementStore>()(
         achievements: defaultAchievements,
 
         // remainingCounties passed as param to avoid circular dep with countyPlacementStore
-        checkAchievements: (placement?: PlacementResult, remainingCounties?: CountyPiece[]): Achievement[] => {
+        checkAchievements: (
+          placement?: PlacementResult,
+          remainingCounties?: CountyPiece[]
+        ): Achievement[] => {
           const state = get();
           const lifecycleState = useGameLifecycleStore.getState();
           const scoringState = useScoringStore.getState();

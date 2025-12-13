@@ -58,12 +58,7 @@ const CaliforniaGameContainer: React.FC<GameContainerProps> = ({
     resetCounties,
   } = useCountyPlacementStore();
 
-  const {
-    score: _score,
-    streak: _streak,
-    stats: _stats,
-    resetScore,
-  } = useScoringStore();
+  const { score: _score, streak: _streak, stats: _stats, resetScore } = useScoringStore();
 
   const { achievements: _achievements, checkAchievements } = useAchievementStore();
 

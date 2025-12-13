@@ -38,11 +38,7 @@ export function useToast() {
    * WHY: Support all toast types with single method
    * PATTERN: Factory function with type discrimination
    */
-  const show = (
-    type: ToastType,
-    message: string,
-    options: ToastOptions = {}
-  ) => {
+  const show = (type: ToastType, message: string, options: ToastOptions = {}) => {
     addToast({
       type,
       message,
@@ -57,32 +53,28 @@ export function useToast() {
      * Duration: 3 seconds
      * Use for: Successful actions, confirmations
      */
-    success: (message: string, options?: ToastOptions) =>
-      show('success', message, options),
+    success: (message: string, options?: ToastOptions) => show('success', message, options),
 
     /**
      * Show error toast (red)
      * Duration: 5 seconds (longer for errors)
      * Use for: Failed actions, validation errors
      */
-    error: (message: string, options?: ToastOptions) =>
-      show('error', message, options),
+    error: (message: string, options?: ToastOptions) => show('error', message, options),
 
     /**
      * Show info toast (blue)
      * Duration: 3 seconds
      * Use for: Informational messages, hints
      */
-    info: (message: string, options?: ToastOptions) =>
-      show('info', message, options),
+    info: (message: string, options?: ToastOptions) => show('info', message, options),
 
     /**
      * Show warning toast (yellow/amber)
      * Duration: 4 seconds
      * Use for: Warnings, cautionary messages
      */
-    warning: (message: string, options?: ToastOptions) =>
-      show('warning', message, options),
+    warning: (message: string, options?: ToastOptions) => show('warning', message, options),
 
     /**
      * Generic show method for custom configuration

@@ -12,7 +12,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 738.4,
     geometry: {} as GeoJSON.Geometry, // Will be loaded from TopoJSON
     centroid: [-122.0822, 37.6463],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'contra_costa',
@@ -23,7 +23,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 716.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.9018, 37.8534],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'marin',
@@ -34,7 +34,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 520.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-122.7633, 38.0834],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'napa',
@@ -45,7 +45,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 754.2,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-122.2654, 38.5025],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'san_francisco',
@@ -56,7 +56,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 46.9,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-122.4194, 37.7749],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'san_mateo',
@@ -66,8 +66,8 @@ export const CALIFORNIA_COUNTIES: County[] = [
     population: 766573,
     area: 449.2,
     geometry: {} as GeoJSON.Geometry,
-    centroid: [-122.3255, 37.5630],
-    difficulty: DifficultyLevel.MEDIUM
+    centroid: [-122.3255, 37.563],
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'santa_clara',
@@ -78,7 +78,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1290.8,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.7195, 37.2744],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'solano',
@@ -89,7 +89,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 829.3,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-122.0004, 38.3105],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'sonoma',
@@ -99,8 +99,8 @@ export const CALIFORNIA_COUNTIES: County[] = [
     population: 488863,
     area: 1575.8,
     geometry: {} as GeoJSON.Geometry,
-    centroid: [-122.8580, 38.5780],
-    difficulty: DifficultyLevel.MEDIUM
+    centroid: [-122.858, 38.578],
+    difficulty: DifficultyLevel.MEDIUM,
   },
 
   // Los Angeles Area (Southern California)
@@ -113,7 +113,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 4751.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-118.2437, 34.0522],
-    difficulty: DifficultyLevel.HARD
+    difficulty: DifficultyLevel.HARD,
   },
   {
     id: 'orange',
@@ -124,7 +124,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 948.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-117.8311, 33.7175],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'riverside',
@@ -135,7 +135,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 7208.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-116.4194, 33.7806],
-    difficulty: DifficultyLevel.HARD
+    difficulty: DifficultyLevel.HARD,
   },
   {
     id: 'san_bernardino',
@@ -146,7 +146,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 20105.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-116.4194, 34.8194],
-    difficulty: DifficultyLevel.EXPERT
+    difficulty: DifficultyLevel.EXPERT,
   },
   {
     id: 'ventura',
@@ -157,7 +157,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1845.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-119.1391, 34.3681],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
 
   // San Diego Area
@@ -170,7 +170,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 4206.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-116.7664, 32.8801],
-    difficulty: DifficultyLevel.HARD
+    difficulty: DifficultyLevel.HARD,
   },
   {
     id: 'imperial',
@@ -181,7 +181,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 4175.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-115.4734, 33.0114],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
 
   // Central Valley
@@ -194,7 +194,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 5958.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-119.2321, 36.7378],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'kern',
@@ -205,7 +205,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 8141.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-118.8597, 35.3738],
-    difficulty: DifficultyLevel.HARD
+    difficulty: DifficultyLevel.HARD,
   },
   {
     id: 'kings',
@@ -216,7 +216,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1389.6,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-119.8779, 36.0633],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'madera',
@@ -227,7 +227,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 2137.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-119.8006, 37.0085],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'merced',
@@ -238,7 +238,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1929.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-120.7463, 37.1552],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'san_joaquin',
@@ -249,7 +249,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1399.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.2501, 37.9577],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'stanislaus',
@@ -260,7 +260,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1494.7,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-120.9876, 37.5091],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'tulare',
@@ -271,7 +271,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 4839.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-118.7434, 36.2077],
-    difficulty: DifficultyLevel.HARD
+    difficulty: DifficultyLevel.HARD,
   },
 
   // Central Coast
@@ -284,7 +284,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 3281.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.0943, 36.2333],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'san_benito',
@@ -295,7 +295,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1389.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.0681, 36.5761],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'san_luis_obispo',
@@ -306,7 +306,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 3304.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-120.4358, 35.3102],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'santa_barbara',
@@ -317,7 +317,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 2737.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-119.9579, 34.5708],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'santa_cruz',
@@ -328,7 +328,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 445.2,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-122.0308, 37.0431],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
 
   // Northern California
@@ -340,8 +340,8 @@ export const CALIFORNIA_COUNTIES: County[] = [
     population: 211313,
     area: 1636.0,
     geometry: {} as GeoJSON.Geometry,
-    centroid: [-121.6169, 39.6270],
-    difficulty: DifficultyLevel.MEDIUM
+    centroid: [-121.6169, 39.627],
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'colusa',
@@ -352,7 +352,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1150.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-122.2094, 39.0145],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'el_dorado',
@@ -363,7 +363,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1708.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-120.4357, 38.7265],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'glenn',
@@ -374,7 +374,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1315.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-122.3778, 39.5885],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'lake',
@@ -384,8 +384,8 @@ export const CALIFORNIA_COUNTIES: County[] = [
     population: 64386,
     area: 1256.0,
     geometry: {} as GeoJSON.Geometry,
-    centroid: [-122.8498, 39.0840],
-    difficulty: DifficultyLevel.EASY
+    centroid: [-122.8498, 39.084],
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'mendocino',
@@ -395,8 +395,8 @@ export const CALIFORNIA_COUNTIES: County[] = [
     population: 86749,
     area: 3506.0,
     geometry: {} as GeoJSON.Geometry,
-    centroid: [-123.7983, 39.3080],
-    difficulty: DifficultyLevel.MEDIUM
+    centroid: [-123.7983, 39.308],
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'nevada',
@@ -407,7 +407,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 958.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.0153, 39.2658],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'placer',
@@ -418,7 +418,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1407.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-120.8039, 39.0916],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'sacramento',
@@ -429,7 +429,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 966.2,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.3269, 38.4747],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'shasta',
@@ -440,7 +440,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 3775.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-122.2436, 40.7751],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'sutter',
@@ -451,7 +451,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 602.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.6169, 39.1457],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'tehama',
@@ -462,7 +462,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 2951.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-122.3778, 40.0282],
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   {
     id: 'yolo',
@@ -473,7 +473,7 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 1012.0,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.9018, 38.7646],
-    difficulty: DifficultyLevel.EASY
+    difficulty: DifficultyLevel.EASY,
   },
   {
     id: 'yuba',
@@ -484,8 +484,8 @@ export const CALIFORNIA_COUNTIES: County[] = [
     area: 630.7,
     geometry: {} as GeoJSON.Geometry,
     centroid: [-121.4167, 39.2735],
-    difficulty: DifficultyLevel.EASY
-  }
+    difficulty: DifficultyLevel.EASY,
+  },
 ];
 
 // Region definitions and filters
@@ -495,10 +495,11 @@ export const REGION_FILTERS = {
   [CaliforniaRegion.SOUTHERN]: (county: County) => county.region === CaliforniaRegion.SOUTHERN,
   [CaliforniaRegion.NORTHERN]: (county: County) => county.region === CaliforniaRegion.NORTHERN,
   [CaliforniaRegion.CENTRAL]: (county: County) => county.region === CaliforniaRegion.CENTRAL,
-  [CaliforniaRegion.CENTRAL_VALLEY]: (county: County) => county.region === CaliforniaRegion.CENTRAL_VALLEY,
+  [CaliforniaRegion.CENTRAL_VALLEY]: (county: County) =>
+    county.region === CaliforniaRegion.CENTRAL_VALLEY,
   [CaliforniaRegion.COASTAL]: (county: County) => county.region === CaliforniaRegion.COASTAL,
   [CaliforniaRegion.INLAND]: (county: County) =>
-    county.region !== CaliforniaRegion.COASTAL && county.region !== CaliforniaRegion.BAY_AREA
+    county.region !== CaliforniaRegion.COASTAL && county.region !== CaliforniaRegion.BAY_AREA,
 };
 
 export const REGION_INFO = {
@@ -506,50 +507,50 @@ export const REGION_INFO = {
     name: 'All California',
     description: 'All 58 California counties',
     countyCount: 58,
-    difficulty: DifficultyLevel.EXPERT
+    difficulty: DifficultyLevel.EXPERT,
   },
   [CaliforniaRegion.BAY_AREA]: {
     name: 'Bay Area',
     description: 'San Francisco Bay Area counties',
     countyCount: 9,
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   [CaliforniaRegion.SOUTHERN]: {
     name: 'Southern California',
     description: 'Los Angeles, Orange, San Diego, and surrounding counties',
     countyCount: 7,
-    difficulty: DifficultyLevel.HARD
+    difficulty: DifficultyLevel.HARD,
   },
   [CaliforniaRegion.NORTHERN]: {
     name: 'Northern California',
     description: 'Sacramento Valley and northern mountain counties',
     countyCount: 14,
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   [CaliforniaRegion.CENTRAL]: {
     name: 'Central California',
     description: 'Central coast and inland counties',
     countyCount: 8,
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   [CaliforniaRegion.CENTRAL_VALLEY]: {
     name: 'Central Valley',
     description: 'San Joaquin and Sacramento valley counties',
     countyCount: 8,
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   [CaliforniaRegion.COASTAL]: {
     name: 'Coastal Counties',
     description: 'Pacific coast counties from Mendocino to San Diego',
     countyCount: 12,
-    difficulty: DifficultyLevel.MEDIUM
+    difficulty: DifficultyLevel.MEDIUM,
   },
   [CaliforniaRegion.INLAND]: {
     name: 'Inland Counties',
     description: 'Interior counties away from the coast',
     countyCount: 46,
-    difficulty: DifficultyLevel.HARD
-  }
+    difficulty: DifficultyLevel.HARD,
+  },
 };
 
 // Helper functions
@@ -559,11 +560,11 @@ export const getCountiesByRegion = (region: CaliforniaRegion): County[] => {
 };
 
 export const getCountyById = (id: string): County | undefined => {
-  return CALIFORNIA_COUNTIES.find(county => county.id === id);
+  return CALIFORNIA_COUNTIES.find((county) => county.id === id);
 };
 
 export const getCountiesByDifficulty = (difficulty: DifficultyLevel): County[] => {
-  return CALIFORNIA_COUNTIES.filter(county => county.difficulty === difficulty);
+  return CALIFORNIA_COUNTIES.filter((county) => county.difficulty === difficulty);
 };
 
 export const getRandomCounty = (region: CaliforniaRegion = CaliforniaRegion.ALL): County => {
@@ -576,7 +577,7 @@ export const CALIFORNIA_BOUNDS = {
   north: 42.0095,
   south: 32.5343,
   east: -114.1312,
-  west: -124.4096
+  west: -124.4096,
 };
 
 export const CALIFORNIA_CENTER: [number, number] = [-119.4179, 36.7783];
@@ -585,5 +586,5 @@ export const CALIFORNIA_PROJECTION_CONFIG = {
   type: 'mercator' as const,
   scale: 2400,
   center: CALIFORNIA_CENTER,
-  translate: [400, 300] // Will be adjusted based on container size
+  translate: [400, 300], // Will be adjusted based on container size
 };

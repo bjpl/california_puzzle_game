@@ -111,7 +111,9 @@ export default function EducationalContentModal({
                 <CountyShapeDisplay countyId={county.id} size={70} className="" />
               </div>
               <div>
-                <h2 id="educational-modal-title" className="text-3xl font-bold text-white">{county.name} County</h2>
+                <h2 id="educational-modal-title" className="text-3xl font-bold text-white">
+                  {county.name} County
+                </h2>
                 <p className="text-blue-100 dark:text-blue-200 mt-1">
                   Complete Educational Resource
                 </p>

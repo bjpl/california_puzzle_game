@@ -31,14 +31,8 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
   onInstallSuccess,
   onDismiss,
 }) => {
-  const {
-    platform,
-    canInstall,
-    isInstalled,
-    isDismissed,
-    showInstallPrompt,
-    dismissPrompt,
-  } = useInstallPrompt();
+  const { platform, canInstall, isInstalled, isDismissed, showInstallPrompt, dismissPrompt } =
+    useInstallPrompt();
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
@@ -96,7 +90,12 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
         aria-label="Install app to home screen"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+          />
         </svg>
         <span>Install App</span>
       </button>
@@ -200,7 +199,11 @@ const InstallPromptContent: React.FC<InstallPromptContentProps> = ({
           aria-label="Dismiss install prompt"
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
           </svg>
         </button>
       </div>
@@ -218,20 +221,10 @@ const InstallPromptContent: React.FC<InstallPromptContentProps> = ({
         <IOSInstructions />
       ) : (
         <div className="flex gap-2">
-          <Button
-            variant="primary"
-            size="medium"
-            fullWidth
-            onClick={onInstall}
-            className="flex-1"
-          >
+          <Button variant="primary" size="medium" fullWidth onClick={onInstall} className="flex-1">
             {platform === 'ios' ? 'Show Instructions' : 'Install Now'}
           </Button>
-          <Button
-            variant="ghost"
-            size="medium"
-            onClick={onDismiss}
-          >
+          <Button variant="ghost" size="medium" onClick={onDismiss}>
             Not Now
           </Button>
         </div>
@@ -260,28 +253,32 @@ const IOSInstructions: React.FC = () => (
     exit={{ opacity: 0, height: 0 }}
     className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 space-y-3"
   >
-    <p className="text-sm font-semibold text-blue-900 dark:text-blue-200">
-      To install on iOS:
-    </p>
+    <p className="text-sm font-semibold text-blue-900 dark:text-blue-200">To install on iOS:</p>
     <ol className="space-y-2 text-sm text-blue-800 dark:text-blue-300">
       <li className="flex items-start gap-2">
-        <span className="flex-shrink-0 w-5 h-5 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+        <span className="flex-shrink-0 w-5 h-5 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+          1
+        </span>
         <span>
           Tap the <strong>Share</strong> button{' '}
           <svg className="inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-          </svg>
-          {' '}in the browser toolbar
+          </svg>{' '}
+          in the browser toolbar
         </span>
       </li>
       <li className="flex items-start gap-2">
-        <span className="flex-shrink-0 w-5 h-5 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+        <span className="flex-shrink-0 w-5 h-5 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+          2
+        </span>
         <span>
           Scroll and tap <strong>Add to Home Screen</strong>
         </span>
       </li>
       <li className="flex items-start gap-2">
-        <span className="flex-shrink-0 w-5 h-5 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+        <span className="flex-shrink-0 w-5 h-5 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+          3
+        </span>
         <span>
           Tap <strong>Add</strong> in the top right corner
         </span>

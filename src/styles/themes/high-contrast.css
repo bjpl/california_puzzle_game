@@ -6,43 +6,43 @@
 /* High Contrast Mode Variables */
 .high-contrast-mode {
   /* Background and Foreground (21:1 ratio) */
-  --ca-white: #FFFFFF;
-  --ca-cream: #FFFFFF;
-  --ca-fog: #FFFFFF;
+  --ca-white: #ffffff;
+  --ca-cream: #ffffff;
+  --ca-fog: #ffffff;
   --ca-charcoal: #000000;
   --ca-slate: #000000;
-  --ca-gray: #1A1A1A;
+  --ca-gray: #1a1a1a;
 
   /* Primary Colors (7:1+ ratio) */
-  --ca-ocean: #003D66;         /* 7.1:1 on white */
-  --ca-tech: #0052CC;          /* 7.5:1 on white */
-  --ca-gold: #8B6914;          /* 7.3:1 on white */
-  --ca-sunset: #CC4400;        /* 7.2:1 on white */
+  --ca-ocean: #003d66; /* 7.1:1 on white */
+  --ca-tech: #0052cc; /* 7.5:1 on white */
+  --ca-gold: #8b6914; /* 7.3:1 on white */
+  --ca-sunset: #cc4400; /* 7.2:1 on white */
 
   /* Regional Colors (7:1+ ratio) */
-  --ca-redwood: #2D0000;       /* 15:1 on white */
-  --ca-poppy: #CC0000;         /* 7.8:1 on white */
-  --ca-sky: #FFFFFF;
-  --ca-desert: #FFFFFF;
-  --ca-vineyard: #330033;      /* 14:1 on white */
+  --ca-redwood: #2d0000; /* 15:1 on white */
+  --ca-poppy: #cc0000; /* 7.8:1 on white */
+  --ca-sky: #ffffff;
+  --ca-desert: #ffffff;
+  --ca-vineyard: #330033; /* 14:1 on white */
 
   /* Semantic Colors (7:1+ ratio) */
-  --color-error: #D00000;      /* 7.1:1 on white */
-  --color-success: #005A00;    /* 7.1:1 on white */
-  --color-warning: #8B5A00;    /* 7:1 on white */
-  --color-info: #003D66;       /* 7.1:1 on white */
+  --color-error: #d00000; /* 7.1:1 on white */
+  --color-success: #005a00; /* 7.1:1 on white */
+  --color-warning: #8b5a00; /* 7:1 on white */
+  --color-info: #003d66; /* 7.1:1 on white */
 
   /* Border and Focus */
   --hc-border: #000000;
   --hc-border-width: 3px;
-  --hc-focus: #FF0000;         /* 5.3:1 on white */
+  --hc-focus: #ff0000; /* 5.3:1 on white */
   --hc-focus-width: 4px;
 
   /* Interactive States */
-  --hc-hover-bg: #F0F0F0;
-  --hc-active-bg: #E0E0E0;
-  --hc-disabled-fg: #767676;   /* 4.5:1 minimum for disabled */
-  --hc-disabled-bg: #F0F0F0;
+  --hc-hover-bg: #f0f0f0;
+  --hc-active-bg: #e0e0e0;
+  --hc-disabled-fg: #767676; /* 4.5:1 minimum for disabled */
+  --hc-disabled-bg: #f0f0f0;
 
   /* Shadows - High contrast borders instead */
   --shadow-sm: none;
@@ -254,7 +254,7 @@
 
 /* High Contrast Modals */
 .high-contrast-mode .modal,
-.high-contrast-mode [role="dialog"] {
+.high-contrast-mode [role='dialog'] {
   background-color: var(--ca-white);
   border: var(--hc-border-width) solid var(--hc-border);
   box-shadow: none;
@@ -271,18 +271,18 @@
 }
 
 /* High Contrast Interactive States */
-.high-contrast-mode [aria-pressed="true"] {
+.high-contrast-mode [aria-pressed='true'] {
   background-color: var(--hc-active-bg);
   border-width: 4px;
 }
 
-.high-contrast-mode [aria-selected="true"] {
+.high-contrast-mode [aria-selected='true'] {
   background-color: var(--hc-active-bg);
   border-color: var(--hc-focus);
   border-width: 4px;
 }
 
-.high-contrast-mode [aria-disabled="true"],
+.high-contrast-mode [aria-disabled='true'],
 .high-contrast-mode [disabled] {
   background-color: var(--hc-disabled-bg);
   color: var(--hc-disabled-fg);
@@ -292,7 +292,9 @@
 /* Remove all animations and transitions in high contrast mode */
 .high-contrast-mode * {
   animation: none !important;
-  transition: border-width 0.1s, border-color 0.1s !important;
+  transition:
+    border-width 0.1s,
+    border-color 0.1s !important;
 }
 
 /* High Contrast Touch Targets */

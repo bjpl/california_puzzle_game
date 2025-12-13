@@ -52,7 +52,9 @@ const DragDropPhysics: React.FC<DragDropPhysicsProps> = ({
   // Transform values for visual effects
   const scale = useTransform([x, y], ([latestX, latestY]: number[]) => {
     if (!isDragging) return 1;
-    const distance = Math.sqrt((latestX as number) * (latestX as number) + (latestY as number) * (latestY as number));
+    const distance = Math.sqrt(
+      (latestX as number) * (latestX as number) + (latestY as number) * (latestY as number)
+    );
     return Math.max(0.95, 1 - distance * 0.0001);
   });
 

@@ -39,8 +39,8 @@ export interface DifficultyConfig {
   basePointMultiplier: number;
   timeThresholds: {
     excellent: number; // Under this time = max bonus
-    good: number;      // Under this time = good bonus
-    average: number;   // Under this time = average bonus
+    good: number; // Under this time = good bonus
+    average: number; // Under this time = average bonus
   };
   maxTimeBonus: number;
 }
@@ -51,42 +51,42 @@ export const DIFFICULTY_CONFIGS: Record<string, DifficultyConfig> = {
     name: 'Easy',
     basePointMultiplier: 1.0,
     timeThresholds: {
-      excellent: 3000,  // 3 seconds
-      good: 5000,       // 5 seconds
-      average: 8000     // 8 seconds
+      excellent: 3000, // 3 seconds
+      good: 5000, // 5 seconds
+      average: 8000, // 8 seconds
     },
-    maxTimeBonus: 50
+    maxTimeBonus: 50,
   },
   medium: {
     name: 'Medium',
     basePointMultiplier: 1.5,
     timeThresholds: {
-      excellent: 2000,  // 2 seconds
-      good: 3500,       // 3.5 seconds
-      average: 6000     // 6 seconds
+      excellent: 2000, // 2 seconds
+      good: 3500, // 3.5 seconds
+      average: 6000, // 6 seconds
     },
-    maxTimeBonus: 75
+    maxTimeBonus: 75,
   },
   hard: {
     name: 'Hard',
     basePointMultiplier: 2.0,
     timeThresholds: {
-      excellent: 1500,  // 1.5 seconds
-      good: 2500,       // 2.5 seconds
-      average: 4000     // 4 seconds
+      excellent: 1500, // 1.5 seconds
+      good: 2500, // 2.5 seconds
+      average: 4000, // 4 seconds
     },
-    maxTimeBonus: 100
+    maxTimeBonus: 100,
   },
   expert: {
     name: 'Expert',
     basePointMultiplier: 3.0,
     timeThresholds: {
-      excellent: 1000,  // 1 second
-      good: 1800,       // 1.8 seconds
-      average: 3000     // 3 seconds
+      excellent: 1000, // 1 second
+      good: 1800, // 1.8 seconds
+      average: 3000, // 3 seconds
     },
-    maxTimeBonus: 150
-  }
+    maxTimeBonus: 150,
+  },
 };
 
 // Base scoring constants
@@ -105,10 +105,7 @@ export const SCORING_CONSTANTS = {
 /**
  * Calculate time bonus based on placement speed
  */
-export function calculateTimeBonus(
-  placementTime: number,
-  difficulty: DifficultyConfig
-): number {
+export function calculateTimeBonus(placementTime: number, difficulty: DifficultyConfig): number {
   const { timeThresholds, maxTimeBonus } = difficulty;
 
   if (placementTime <= timeThresholds.excellent) {
@@ -151,7 +148,10 @@ export function calculateStreakBonus(currentStreak: number): number {
 
   const baseBonus = SCORING_CONSTANTS.STREAK_BONUS_BASE;
   const streakMultiplier = Math.min(
-    Math.pow(SCORING_CONSTANTS.STREAK_MULTIPLIER, currentStreak - SCORING_CONSTANTS.COMBO_THRESHOLD),
+    Math.pow(
+      SCORING_CONSTANTS.STREAK_MULTIPLIER,
+      currentStreak - SCORING_CONSTANTS.COMBO_THRESHOLD
+    ),
     SCORING_CONSTANTS.MAX_STREAK_MULTIPLIER
   );
 
@@ -202,8 +202,8 @@ export function calculateScore(
   const regionalBonus = calculateRegionalBonus(regionName, completedRegions, totalRegions);
 
   // Perfect placement bonus
-  const perfectBonus = (isCorrectPlacement && placementAccuracy >= 0.95)
-    ? SCORING_CONSTANTS.PERFECT_PLACEMENT_BONUS : 0;
+  const perfectBonus =
+    isCorrectPlacement && placementAccuracy >= 0.95 ? SCORING_CONSTANTS.PERFECT_PLACEMENT_BONUS : 0;
 
   // Calculate final components
   const accuracyPoints = Math.round(basePoints * accuracyMultiplier);
@@ -214,7 +214,8 @@ export function calculateScore(
   // Calculate total
   let totalPoints = 0;
   if (isCorrectPlacement) {
-    totalPoints = accuracyPoints + timeBonus + streakPoints + difficultyPoints + regionalPoints + perfectBonus;
+    totalPoints =
+      accuracyPoints + timeBonus + streakPoints + difficultyPoints + regionalPoints + perfectBonus;
   } else {
     // Penalty for incorrect placement
     totalPoints = -SCORING_CONSTANTS.MISTAKE_PENALTY;
@@ -226,7 +227,7 @@ export function calculateScore(
     streakBonus: streakBonus,
     difficultyMultiplier: difficultyConfig.basePointMultiplier,
     regionalBonus: regionalBonus,
-    perfectPlacementBonus: perfectBonus
+    perfectPlacementBonus: perfectBonus,
   };
 
   return {
@@ -237,7 +238,7 @@ export function calculateScore(
     difficultyPoints,
     regionalPoints,
     totalPoints,
-    modifiers
+    modifiers,
   };
 }
 
@@ -252,7 +253,7 @@ export function calculateGameMetrics(
   }>,
   totalGameTime: number
 ): GameMetrics {
-  const correctPlacements = placements.filter(p => p.isCorrect);
+  const correctPlacements = placements.filter((p) => p.isCorrect);
   const totalPlacements = placements.length;
 
   let currentStreak = 0;
@@ -279,11 +280,12 @@ export function calculateGameMetrics(
   }
 
   const accuracy = totalPlacements > 0 ? correctPlacements.length / totalPlacements : 0;
-  const averageTimePerCounty = correctPlacements.length > 0
-    ? correctPlacements.reduce((sum, p) => sum + p.time, 0) / correctPlacements.length
-    : 0;
+  const averageTimePerCounty =
+    correctPlacements.length > 0
+      ? correctPlacements.reduce((sum, p) => sum + p.time, 0) / correctPlacements.length
+      : 0;
 
-  const regionsCompleted = new Set(correctPlacements.map(p => p.region));
+  const regionsCompleted = new Set(correctPlacements.map((p) => p.region));
   const perfectPlacements = correctPlacements.length; // Assuming all correct placements are perfect for now
 
   return {
@@ -294,7 +296,7 @@ export function calculateGameMetrics(
     maxStreak,
     perfectPlacements,
     totalPlacements,
-    regionsCompleted
+    regionsCompleted,
   };
 }
 
@@ -316,7 +318,7 @@ export function getScoreTier(score: number): { tier: string; color: string; thre
     { tier: 'Platinum', color: '#E5E4E2', threshold: 30000 },
     { tier: 'Diamond', color: '#B9F2FF', threshold: 50000 },
     { tier: 'Master', color: '#8A2BE2', threshold: 75000 },
-    { tier: 'Grandmaster', color: '#FF1493', threshold: 100000 }
+    { tier: 'Grandmaster', color: '#FF1493', threshold: 100000 },
   ];
 
   for (let i = tiers.length - 1; i >= 0; i--) {
@@ -344,14 +346,14 @@ export function calculateLeaderboardScore(
 
   // Normalize components (0-1000 each)
   const normalizedScore = Math.min(totalScore / 100, 1000); // Assuming max reasonable score of 10000
-  const normalizedTime = Math.max(0, 1000 - (totalTime / 1000)); // Better time = higher score
+  const normalizedTime = Math.max(0, 1000 - totalTime / 1000); // Better time = higher score
   const normalizedAccuracy = accuracy * 1000;
 
-  const leaderboardScore = (
-    normalizedScore * scoreWeight +
-    normalizedTime * timeWeight +
-    normalizedAccuracy * accuracyWeight
-  ) * difficultyConfig.basePointMultiplier;
+  const leaderboardScore =
+    (normalizedScore * scoreWeight +
+      normalizedTime * timeWeight +
+      normalizedAccuracy * accuracyWeight) *
+    difficultyConfig.basePointMultiplier;
 
   return Math.round(leaderboardScore);
 }

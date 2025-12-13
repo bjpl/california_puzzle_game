@@ -105,11 +105,7 @@ export function getOptimalChunkSize(): number {
 /**
  * Lazy load image with intersection observer
  */
-export function lazyLoadImage(
-  img: HTMLImageElement,
-  src: string,
-  placeholder?: string
-): void {
+export function lazyLoadImage(img: HTMLImageElement, src: string, placeholder?: string): void {
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {

@@ -132,10 +132,7 @@ export const useCountyPlacementStore = create<CountyPlacementStore>()(
 
           return {
             placedCounties: state.placedCounties.filter((c) => c.id !== countyId),
-            remainingCounties: [
-              ...state.remainingCounties,
-              { ...county, isPlaced: false },
-            ],
+            remainingCounties: [...state.remainingCounties, { ...county, isPlaced: false }],
           };
         });
       },

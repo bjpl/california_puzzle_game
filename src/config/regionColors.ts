@@ -8,15 +8,15 @@
  */
 
 export interface RegionColorConfig {
-  hex: string;           // For SVG/Canvas rendering
-  hexLight: string;      // Light version for legend boxes
-  tailwindGradient: string;  // For gradient backgrounds
-  tailwindBg: string;    // For solid backgrounds
+  hex: string; // For SVG/Canvas rendering
+  hexLight: string; // Light version for legend boxes
+  tailwindGradient: string; // For gradient backgrounds
+  tailwindBg: string; // For solid backgrounds
   tailwindBorder: string; // For borders
-  tailwindText: string;  // For text
+  tailwindText: string; // For text
   tailwindLight: string; // For light backgrounds
   tailwindLightBorder: string; // For light borders
-  name: string;          // Human-readable color name
+  name: string; // Human-readable color name
 }
 
 export const REGION_COLORS: Record<string, RegionColorConfig> = {
@@ -29,7 +29,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
     tailwindText: 'text-red-900',
     tailwindLight: 'bg-red-100',
     tailwindLightBorder: 'border-red-400',
-    name: 'Red'
+    name: 'Red',
   },
   'Bay Area': {
     hex: '#3b82f6',
@@ -40,7 +40,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
     tailwindText: 'text-blue-900',
     tailwindLight: 'bg-blue-100',
     tailwindLightBorder: 'border-blue-400',
-    name: 'Blue'
+    name: 'Blue',
   },
   'Central Valley': {
     hex: '#22c55e',
@@ -51,7 +51,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
     tailwindText: 'text-green-900',
     tailwindLight: 'bg-green-100',
     tailwindLightBorder: 'border-green-400',
-    name: 'Green'
+    name: 'Green',
   },
   'Central Coast': {
     hex: '#a855f7',
@@ -62,7 +62,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
     tailwindText: 'text-purple-900',
     tailwindLight: 'bg-purple-100',
     tailwindLightBorder: 'border-purple-400',
-    name: 'Purple'
+    name: 'Purple',
   },
   'Northern California': {
     hex: '#f97316',
@@ -73,7 +73,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
     tailwindText: 'text-orange-900',
     tailwindLight: 'bg-orange-100',
     tailwindLightBorder: 'border-orange-400',
-    name: 'Orange'
+    name: 'Orange',
   },
   'Sierra Nevada': {
     hex: '#eab308',
@@ -84,7 +84,7 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
     tailwindText: 'text-yellow-900',
     tailwindLight: 'bg-yellow-100',
     tailwindLightBorder: 'border-yellow-400',
-    name: 'Yellow'
+    name: 'Yellow',
   },
   'North Coast': {
     hex: '#14b8a6',
@@ -95,18 +95,18 @@ export const REGION_COLORS: Record<string, RegionColorConfig> = {
     tailwindText: 'text-teal-900',
     tailwindLight: 'bg-teal-100',
     tailwindLightBorder: 'border-teal-400',
-    name: 'Teal'
-  }
+    name: 'Teal',
+  },
 };
 
 // Sub-region mappings (for counties that use different region names)
 export const SUB_REGION_MAPPING: Record<string, string> = {
   'Sacramento Valley': 'Northern California',
   'San Joaquin Valley': 'Central Valley',
-  'Desert': 'Southern California',
+  Desert: 'Southern California',
   'Inland Empire': 'Southern California',
   'Greater Los Angeles': 'Southern California',
-  'San Francisco Bay Area': 'Bay Area'
+  'San Francisco Bay Area': 'Bay Area',
 };
 
 /**
@@ -119,17 +119,19 @@ export function getRegionColor(region: string): RegionColorConfig {
   const mappedRegion = SUB_REGION_MAPPING[region] || region;
 
   // Return the color config or a default
-  return REGION_COLORS[mappedRegion] || {
-    hex: '#6b7280',
-    hexLight: '#d1d5db',
-    tailwindGradient: 'from-gray-400 to-gray-500',
-    tailwindBg: 'bg-gray-500',
-    tailwindBorder: 'border-gray-400',
-    tailwindText: 'text-gray-900',
-    tailwindLight: 'bg-gray-100',
-    tailwindLightBorder: 'border-gray-400',
-    name: 'Gray'
-  };
+  return (
+    REGION_COLORS[mappedRegion] || {
+      hex: '#6b7280',
+      hexLight: '#d1d5db',
+      tailwindGradient: 'from-gray-400 to-gray-500',
+      tailwindBg: 'bg-gray-500',
+      tailwindBorder: 'border-gray-400',
+      tailwindText: 'text-gray-900',
+      tailwindLight: 'bg-gray-100',
+      tailwindLightBorder: 'border-gray-400',
+      name: 'Gray',
+    }
+  );
 }
 
 /**

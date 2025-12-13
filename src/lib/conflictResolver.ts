@@ -125,7 +125,10 @@ class ConflictResolver {
    * WHY: Know which fields conflict
    * PATTERN: Deep comparison
    */
-  private detectConflicts(local: Record<string, unknown>, server: Record<string, unknown>): string[] {
+  private detectConflicts(
+    local: Record<string, unknown>,
+    server: Record<string, unknown>
+  ): string[] {
     const conflicts: string[] = [];
     const allKeys = new Set([...Object.keys(local), ...Object.keys(server)]);
 

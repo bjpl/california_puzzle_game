@@ -25,12 +25,12 @@ export interface Metric {
  * Thresholds based on web.dev recommendations
  */
 const THRESHOLDS = {
-  FCP: { good: 1800, poor: 3000 },      // First Contentful Paint
-  LCP: { good: 2500, poor: 4000 },      // Largest Contentful Paint
-  FID: { good: 100, poor: 300 },        // First Input Delay
-  CLS: { good: 0.1, poor: 0.25 },       // Cumulative Layout Shift
-  INP: { good: 200, poor: 500 },        // Interaction to Next Paint
-  TTFB: { good: 800, poor: 1800 },      // Time to First Byte
+  FCP: { good: 1800, poor: 3000 }, // First Contentful Paint
+  LCP: { good: 2500, poor: 4000 }, // Largest Contentful Paint
+  FID: { good: 100, poor: 300 }, // First Input Delay
+  CLS: { good: 0.1, poor: 0.25 }, // Cumulative Layout Shift
+  INP: { good: 200, poor: 500 }, // Interaction to Next Paint
+  TTFB: { good: 800, poor: 1800 }, // Time to First Byte
 };
 
 /**
@@ -60,9 +60,7 @@ function trackMetric(metric: Metric): void {
 
   // Log in development
   if (import.meta.env.DEV) {
-    logger.info(
-      `[Web Vitals] ${metric.name}: ${metric.value.toFixed(0)}ms (${metric.rating})`
-    );
+    logger.info(`[Web Vitals] ${metric.name}: ${metric.value.toFixed(0)}ms (${metric.rating})`);
   }
 }
 

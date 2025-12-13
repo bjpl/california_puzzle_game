@@ -170,17 +170,17 @@ export function useInstallPrompt(): UseInstallPromptReturn {
   const deferredPromptRef = useRef<BeforeInstallPromptEvent | null>(null);
 
   // Check if prompt should be shown (not dismissed within last 7 days)
-  const isDismissed = metrics.lastDismissed !== null &&
-    Date.now() - metrics.lastDismissed < DISMISSAL_DURATION;
+  const isDismissed =
+    metrics.lastDismissed !== null && Date.now() - metrics.lastDismissed < DISMISSAL_DURATION;
 
-  const canInstall = !isInstalled && !isDismissed &&
-    (platform === 'ios' || deferredPromptRef.current !== null);
+  const canInstall =
+    !isInstalled && !isDismissed && (platform === 'ios' || deferredPromptRef.current !== null);
 
   /**
    * Update metrics
    */
   const updateMetrics = useCallback((updates: Partial<InstallMetrics>) => {
-    setMetrics(prev => {
+    setMetrics((prev) => {
       const updated = { ...prev, ...updates };
       saveMetrics(updated);
       return updated;

@@ -21,20 +21,26 @@ game/
 ## Key Components
 
 ### GameContainer
+
 Main orchestration component handling:
+
 - Drag-and-drop context (DnDKit)
 - Game state transitions
 - Sound effect management
 - Study mode integration
 
 ### GameHeader
+
 Top navigation bar displaying:
+
 - Score, mistakes, timer, progress
 - Controls: Study mode, hints, sound, pause/resume, reset
 - Progressive hint system (3 levels)
 
 ### GameComplete
+
 Victory screen showing:
+
 - Final statistics and performance
 - Achievement unlocks
 - Replay/new game options

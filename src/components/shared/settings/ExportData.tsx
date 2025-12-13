@@ -279,9 +279,7 @@ export const ExportData: React.FC = () => {
     return (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Export Your Data</h3>
-        <p className="text-gray-600 mb-4">
-          You must be logged in to export your data.
-        </p>
+        <p className="text-gray-600 mb-4">You must be logged in to export your data.</p>
         <div className="text-sm text-gray-500">
           Please sign in to download your game progress, settings, and achievements.
         </div>
@@ -293,20 +291,16 @@ export const ExportData: React.FC = () => {
     <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
       {/* Header */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          Export Your Data
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Export Your Data</h3>
         <p className="text-sm text-gray-600">
-          Download all your game data in JSON format. This includes your game sessions,
-          progress, achievements, and settings.
+          Download all your game data in JSON format. This includes your game sessions, progress,
+          achievements, and settings.
         </p>
       </div>
 
       {/* Data Type Selection */}
       <div className="mb-6 space-y-3">
-        <h4 className="text-sm font-medium text-gray-700 mb-2">
-          Select data to export:
-        </h4>
+        <h4 className="text-sm font-medium text-gray-700 mb-2">Select data to export:</h4>
 
         {/* Game Sessions */}
         <label className="flex items-start cursor-pointer group">
@@ -371,9 +365,7 @@ export const ExportData: React.FC = () => {
         <div className="mb-4 p-3 bg-blue-50 rounded-lg">
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-700">Estimated file size:</span>
-            <span className="text-sm font-medium text-blue-600">
-              {formatBytes(estimatedSize)}
-            </span>
+            <span className="text-sm font-medium text-blue-600">{formatBytes(estimatedSize)}</span>
           </div>
         </div>
       )}
@@ -461,12 +453,10 @@ export const ExportData: React.FC = () => {
               />
             </svg>
             <div>
-              <h4 className="text-sm font-medium text-green-800 mb-1">
-                Export Successful!
-              </h4>
+              <h4 className="text-sm font-medium text-green-800 mb-1">Export Successful!</h4>
               <p className="text-sm text-green-700">
-                Your data has been downloaded successfully. The file is in JSON format
-                and can be opened with any text editor.
+                Your data has been downloaded successfully. The file is in JSON format and can be
+                opened with any text editor.
               </p>
             </div>
           </div>
@@ -505,9 +495,7 @@ export const ExportData: React.FC = () => {
 
       {/* Information */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <h4 className="text-sm font-medium text-gray-900 mb-2">
-          About Data Export
-        </h4>
+        <h4 className="text-sm font-medium text-gray-900 mb-2">About Data Export</h4>
         <ul className="text-xs text-gray-600 space-y-1">
           <li className="flex items-start">
             <span className="text-blue-600 mr-2">•</span>

@@ -5,11 +5,7 @@ import { ToastContainer } from './components/ui/ToastContainer';
 import { useAuth } from './hooks/useAuth';
 // Migrated from monolithic gameStore to domain stores
 import { useSettingsStore } from './stores/gameSettingsStore';
-import {
-  setupAuthListeners,
-  setupVisibilityRefresh,
-  setupFocusRefresh,
-} from './stores/authStore';
+import { setupAuthListeners, setupVisibilityRefresh, setupFocusRefresh } from './stores/authStore';
 import './styles/globals.css';
 
 // Accessibility components
@@ -22,8 +18,12 @@ const UpdateToast = lazy(() => import('./components/shared/UpdateToast'));
 const CookieConsent = lazy(() => import('./components/shared/CookieConsent'));
 const FeedbackWidget = lazy(() => import('./components/feedback/FeedbackWidget'));
 const AnalyticsProvider = lazy(() => import('./components/analytics/AnalyticsProvider'));
-const SyncStatusIndicator = lazy(() => import('./components/sync/SyncStatusIndicator').then(m => ({ default: m.SyncStatusIndicator })));
-const SecurityBadge = lazy(() => import('./components/shared/SecurityBadge').then(m => ({ default: m.SecurityBadge })));
+const SyncStatusIndicator = lazy(() =>
+  import('./components/sync/SyncStatusIndicator').then((m) => ({ default: m.SyncStatusIndicator }))
+);
+const SecurityBadge = lazy(() =>
+  import('./components/shared/SecurityBadge').then((m) => ({ default: m.SecurityBadge }))
+);
 
 /**
  * Auth Integration Component

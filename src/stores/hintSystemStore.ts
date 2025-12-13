@@ -5,13 +5,7 @@
  */
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import {
-  HintSystemState,
-  HintType,
-  StruggleData,
-  Position,
-  HintConfiguration,
-} from '@/types';
+import { HintSystemState, HintType, StruggleData, Position, HintConfiguration } from '@/types';
 
 export interface HintState {
   hintSystem: HintSystemState;
@@ -64,10 +58,7 @@ export const useHintStore = create<HintStore>()(
           const state = get();
 
           // Check if hint can be used
-          if (
-            state.hintSystem.cooldownTimeRemaining > 0 ||
-            state.hintSystem.availableHints <= 0
-          ) {
+          if (state.hintSystem.cooldownTimeRemaining > 0 || state.hintSystem.availableHints <= 0) {
             return;
           }
 
@@ -77,8 +68,7 @@ export const useHintStore = create<HintStore>()(
               ? 0
               : state.hintSettings.scorePenaltyPerHint;
 
-          const freeHint =
-            state.hintSystem.usedHints < state.hintSettings.freeHintsAllowed;
+          const freeHint = state.hintSystem.usedHints < state.hintSettings.freeHintsAllowed;
           // Cost is 0 for free hints, otherwise use calculated cost
           const actualCost = freeHint ? 0 : cost;
           // Note: actualCost can be used for future score deduction feature

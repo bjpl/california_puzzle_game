@@ -42,8 +42,13 @@ function HintModal({ isOpen, onClose, county, hintLevel }: HintModalProps) {
     if (!hints) {
       return (
         <>
-          <div className="text-6xl mb-4 animate-bounce" aria-hidden="true" role="presentation">🗺️</div>
-          <h3 id="hint-modal-title" className="text-2xl font-bold mb-3 bg-gradient-to-r from-gray-500 to-gray-600 dark:from-gray-400 dark:to-gray-500 bg-clip-text text-transparent">
+          <div className="text-6xl mb-4 animate-bounce" aria-hidden="true" role="presentation">
+            🗺️
+          </div>
+          <h3
+            id="hint-modal-title"
+            className="text-2xl font-bold mb-3 bg-gradient-to-r from-gray-500 to-gray-600 dark:from-gray-400 dark:to-gray-500 bg-clip-text text-transparent"
+          >
             {county.name} County
           </h3>
           <div className="space-y-4">

@@ -5,9 +5,11 @@ County-specific UI components including the drag-and-drop tray, individual count
 ## Components
 
 ### CountyTray.tsx
+
 Main container for draggable county items. Source for drag-and-drop operations.
 
 **Features:**
+
 - Displays all unplaced counties
 - Scrollable list
 - Drag-and-drop source
@@ -15,6 +17,7 @@ Main container for draggable county items. Source for drag-and-drop operations.
 - County count display
 
 **Usage:**
+
 ```typescript
 import CountyTray from '@/components/county/CountyTray';
 
@@ -22,15 +25,18 @@ import CountyTray from '@/components/county/CountyTray';
 ```
 
 **Architecture:**
+
 - Uses GameContext for county state
 - Integrates with DndKit for drag operations
 - Automatically filters out placed counties
 - Responsive design with scroll
 
 ### CountyPill.tsx
+
 Individual draggable county item.
 
 **Features:**
+
 - Compact county representation
 - Drag handle
 - Hover effects
@@ -38,6 +44,7 @@ Individual draggable county item.
 - Visual state changes (selected, dragging)
 
 **Usage:**
+
 ```typescript
 import CountyPill from '@/components/county/CountyPill';
 
@@ -49,6 +56,7 @@ import CountyPill from '@/components/county/CountyPill';
 ```
 
 **Props:**
+
 ```typescript
 interface CountyPillProps {
   county: County;
@@ -59,15 +67,18 @@ interface CountyPillProps {
 ```
 
 **States:**
+
 - **Default**: Gray background, subtle border
 - **Hover**: Yellow tint, raised shadow
 - **Selected**: Yellow background, bold text
 - **Dragging**: Semi-transparent, cursor changes
 
 ### CountyInfoPanel.tsx
+
 Detailed information panel for selected county.
 
 **Features:**
+
 - County name and region
 - Population and area statistics
 - Founded date and county seat
@@ -76,6 +87,7 @@ Detailed information panel for selected county.
 - Related counties
 
 **Usage:**
+
 ```typescript
 import CountyInfoPanel from '@/components/county/CountyInfoPanel';
 
@@ -86,6 +98,7 @@ import CountyInfoPanel from '@/components/county/CountyInfoPanel';
 ```
 
 **Props:**
+
 ```typescript
 interface CountyInfoPanelProps {
   county: County;
@@ -97,6 +110,7 @@ interface CountyInfoPanelProps {
 ## Data Structure
 
 ### County Interface
+
 ```typescript
 interface County {
   id: string;
@@ -112,6 +126,7 @@ interface County {
 ```
 
 ### Example County
+
 ```typescript
 const alamedaCounty: County = {
   id: 'alameda',
@@ -123,15 +138,16 @@ const alamedaCounty: County = {
   seat: 'Oakland',
   facts: [
     'Home to the University of California, Berkeley',
-    'Contains the cities of Oakland, Berkeley, and Fremont'
+    'Contains the cities of Oakland, Berkeley, and Fremont',
   ],
-  neighbors: ['contra-costa', 'santa-clara', 'san-joaquin']
+  neighbors: ['contra-costa', 'santa-clara', 'san-joaquin'],
 };
 ```
 
 ## Drag-and-Drop Behavior
 
 ### DndKit Integration
+
 County components use DndKit for drag-and-drop:
 
 ```typescript
@@ -151,6 +167,7 @@ function DraggableCountyPill({ county }) {
 ```
 
 ### Drag Flow
+
 1. **Drag Start**: County selected, sound plays, overlay created
 2. **Dragging**: Visual feedback on map, cursor changes
 3. **Drag End**:
@@ -159,6 +176,7 @@ function DraggableCountyPill({ county }) {
    - Sound plays (correct/incorrect)
 
 ### Visual Feedback
+
 ```typescript
 const getDragStyle = (isDragging: boolean) => ({
   opacity: isDragging ? 0.5 : 1,
@@ -183,6 +201,7 @@ const handleCountySelect = (county: County) => {
 ```
 
 ### Sound Types
+
 - **Pickup**: County selected from tray
 - **Correct**: Successfully placed
 - **Incorrect**: Incorrectly placed
@@ -191,6 +210,7 @@ const handleCountySelect = (county: County) => {
 ## Styling
 
 ### CountyTray Styling
+
 ```css
 .county-tray {
   background: white;
@@ -203,6 +223,7 @@ const handleCountySelect = (county: County) => {
 ```
 
 ### CountyPill Styling
+
 ```css
 .county-pill {
   padding: 4px 8px;
@@ -230,6 +251,7 @@ const handleCountySelect = (county: County) => {
 ## Accessibility
 
 ### Keyboard Navigation
+
 ```typescript
 <div
   role="button"
@@ -246,11 +268,13 @@ const handleCountySelect = (county: County) => {
 ```
 
 ### Screen Reader Support
+
 - Announce county name on selection
 - Indicate draggable state
 - Provide placement feedback
 
 ### Focus Management
+
 - Visible focus indicators
 - Logical tab order
 - Focus trap in modals
@@ -258,20 +282,22 @@ const handleCountySelect = (county: County) => {
 ## Performance
 
 ### Optimization Techniques
+
 1. **Virtualization**: Large county lists use react-window
 2. **Memoization**: County pills memoized to prevent re-renders
 3. **Lazy Loading**: County details loaded on demand
 
 ```typescript
-const MemoizedCountyPill = memo(CountyPill, (prev, next) =>
-  prev.county.id === next.county.id &&
-  prev.isSelected === next.isSelected
+const MemoizedCountyPill = memo(
+  CountyPill,
+  (prev, next) => prev.county.id === next.county.id && prev.isSelected === next.isSelected
 );
 ```
 
 ## Testing
 
 ### Unit Tests
+
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/react';
 import CountyPill from './CountyPill';
@@ -294,6 +320,7 @@ test('calls onSelect when clicked', () => {
 ```
 
 ### Drag Tests
+
 ```typescript
 import { DndContext } from '@dnd-kit/core';
 
@@ -316,11 +343,13 @@ test('county can be dragged', () => {
 ## Integration Points
 
 ### With Game Components
+
 - **GameContainer**: Provides DndContext
 - **GameHeader**: Displays county count
 - **CaliforniaMapSimple**: Drop target for counties
 
 ### With State Management
+
 - **GameContext**: Current county, placed counties
 - **Sound Manager**: Audio feedback
 - **Achievement System**: Track discovery milestones
@@ -328,7 +357,9 @@ test('county can be dragged', () => {
 ## County Organization
 
 ### By Region
+
 Counties are organized by California regions:
+
 - **Bay Area**: 9 counties
 - **Central Valley**: 18 counties
 - **Southern California**: 10 counties
@@ -336,6 +367,7 @@ Counties are organized by California regions:
 - **Central Coast**: 6 counties
 
 ### Sorting Options
+
 ```typescript
 const sortCounties = (counties: County[], by: SortOption) => {
   switch (by) {

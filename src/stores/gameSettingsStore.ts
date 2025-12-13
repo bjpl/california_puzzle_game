@@ -5,12 +5,7 @@
  */
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import {
-  GameSettings,
-  SoundSettings,
-  DifficultyLevel,
-  CaliforniaRegion,
-} from '@/types';
+import { GameSettings, SoundSettings, DifficultyLevel, CaliforniaRegion } from '@/types';
 import { setVolume, soundManager } from '@/utils/soundManager';
 
 export interface SettingsState {

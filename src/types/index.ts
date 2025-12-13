@@ -87,10 +87,10 @@ export interface SoundSettings {
 }
 
 export enum DifficultyLevel {
-  EASY = 'easy',        // Large counties only, with outlines
-  MEDIUM = 'medium',    // All counties, with hints
-  HARD = 'hard',        // All counties, no hints
-  EXPERT = 'expert'     // All counties, rotated pieces, no hints
+  EASY = 'easy', // Large counties only, with outlines
+  MEDIUM = 'medium', // All counties, with hints
+  HARD = 'hard', // All counties, no hints
+  EXPERT = 'expert', // All counties, rotated pieces, no hints
 }
 
 export enum CaliforniaRegion {
@@ -101,7 +101,7 @@ export enum CaliforniaRegion {
   BAY_AREA = 'bay_area',
   CENTRAL_VALLEY = 'central_valley',
   COASTAL = 'coastal',
-  INLAND = 'inland'
+  INLAND = 'inland',
 }
 
 export enum GameMode {
@@ -118,7 +118,7 @@ export enum GameMode {
   // Special Modes
   PRACTICE = 'practice',
   MARATHON = 'marathon',
-  DAILY_CHALLENGE = 'daily_challenge'
+  DAILY_CHALLENGE = 'daily_challenge',
 }
 
 export interface GameModeConfiguration {
@@ -154,7 +154,7 @@ export enum GameModeCategory {
   LEARNING = 'learning',
   CHALLENGE = 'challenge',
   MASTERY = 'mastery',
-  SPECIAL = 'special'
+  SPECIAL = 'special',
 }
 
 export interface UnlockRequirement {
@@ -168,7 +168,7 @@ export enum UnlockRequirementType {
   ACHIEVE_SCORE = 'achieve_score',
   COMPLETE_REGION = 'complete_region',
   EARN_ACHIEVEMENT = 'earn_achievement',
-  TOTAL_GAMES = 'total_games'
+  TOTAL_GAMES = 'total_games',
 }
 
 export interface DifficultySettings {
@@ -199,7 +199,7 @@ export enum AchievementCategory {
   SPEED = 'speed',
   COMPLETION = 'completion',
   STREAK = 'streak',
-  EXPLORATION = 'exploration'
+  EXPLORATION = 'exploration',
 }
 
 export interface ScoreMultiplier {
@@ -338,7 +338,7 @@ export enum HintType {
   SHAPE = 'shape',
   NEIGHBOR = 'neighbor',
   FACT = 'fact',
-  EDUCATIONAL = 'educational'
+  EDUCATIONAL = 'educational',
 }
 
 export interface Hint {
@@ -424,5 +424,5 @@ export enum GameEventType {
   HINT_USED = 'hint_used',
   HINT_SUGGESTED = 'hint_suggested',
   HINT_EXHAUSTED = 'hint_exhausted',
-  SETTINGS_CHANGED = 'settings_changed'
+  SETTINGS_CHANGED = 'settings_changed',
 }

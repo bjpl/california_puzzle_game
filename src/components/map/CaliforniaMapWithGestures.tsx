@@ -1,7 +1,11 @@
 import { useState } from 'react';
 // Migrated from monolithic gameStore to domain stores
 import { useGestureStore } from '../../stores/gestureStore';
-import { useGestureRecognition, GestureType, type GestureConfig } from '../../hooks/useGestureRecognition';
+import {
+  useGestureRecognition,
+  GestureType,
+  type GestureConfig,
+} from '../../hooks/useGestureRecognition';
 import GestureSettings from '../game/GestureSettings';
 import CaliforniaMapSimple from './CaliforniaMapSimple';
 
@@ -40,7 +44,11 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
   const { gesturePreferences = {}, helpSeen, setHelpSeen } = useGestureStore();
 
   // Gesture callbacks
-  const { handlers, gestureState: currentGesture, updateConfig } = useGestureRecognition(
+  const {
+    handlers,
+    gestureState: currentGesture,
+    updateConfig,
+  } = useGestureRecognition(
     {
       onPinch: (scale, _center) => {
         // Smooth zoom scaling
@@ -105,7 +113,9 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
   );
 
   // Handle settings change
-  const handleConfigChange = (config: Partial<import('../../hooks/useGestureRecognition').GestureConfig>) => {
+  const handleConfigChange = (
+    config: Partial<import('../../hooks/useGestureRecognition').GestureConfig>
+  ) => {
     updateConfig(config);
     updateGestureState({ gestureEnabled: true });
   };
@@ -137,7 +147,12 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
             title="Reset Rotation"
             aria-label="Reset map rotation"
           >
-            <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-5 h-5 text-gray-700 dark:text-gray-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -157,7 +172,10 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
         )}
 
         {/* Reset All Button */}
-        {(gestureState.rotation !== 0 || gestureState.zoom !== 1 || gestureState.pan.x !== 0 || gestureState.pan.y !== 0) && (
+        {(gestureState.rotation !== 0 ||
+          gestureState.zoom !== 1 ||
+          gestureState.pan.x !== 0 ||
+          gestureState.pan.y !== 0) && (
           <button
             onClick={() => resetGestureState()}
             className="px-3 py-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors text-sm font-medium"
@@ -175,28 +193,40 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
           title="Gesture Settings"
           aria-label="Open gesture settings"
         >
-          <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-5 h-5 text-gray-700 dark:text-gray-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
               d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
             />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
           </svg>
         </button>
       </div>
 
       {/* Gesture Indicator (shows active gesture type) */}
-      {currentGesture.activeGesture !== GestureType.NONE && currentGesture.activeGesture !== GestureType.DRAG && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-black bg-opacity-75 text-white rounded-lg text-sm font-medium z-10">
-          {currentGesture.activeGesture === GestureType.PINCH && 'Pinch to Zoom'}
-          {currentGesture.activeGesture === GestureType.ROTATE && 'Rotating Map'}
-          {currentGesture.activeGesture === GestureType.THREE_FINGER_SWIPE && 'Three-Finger Swipe'}
-          {currentGesture.activeGesture === GestureType.DOUBLE_TAP && 'Double Tap'}
-          {currentGesture.activeGesture === GestureType.LONG_PRESS && 'Long Press'}
-        </div>
-      )}
+      {currentGesture.activeGesture !== GestureType.NONE &&
+        currentGesture.activeGesture !== GestureType.DRAG && (
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-black bg-opacity-75 text-white rounded-lg text-sm font-medium z-10">
+            {currentGesture.activeGesture === GestureType.PINCH && 'Pinch to Zoom'}
+            {currentGesture.activeGesture === GestureType.ROTATE && 'Rotating Map'}
+            {currentGesture.activeGesture === GestureType.THREE_FINGER_SWIPE &&
+              'Three-Finger Swipe'}
+            {currentGesture.activeGesture === GestureType.DOUBLE_TAP && 'Double Tap'}
+            {currentGesture.activeGesture === GestureType.LONG_PRESS && 'Long Press'}
+          </div>
+        )}
 
       {/* Reset Notification */}
       {showResetNotification && (
@@ -236,9 +266,7 @@ export default function CaliforniaMapWithGestures({ isDragging }: CaliforniaMapW
                 <span className="text-2xl">👆👆</span>
                 <div>
                   <div className="font-semibold">Double-Tap</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Quick zoom to 2x
-                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Quick zoom to 2x</div>
                 </div>
               </div>
               <div className="flex items-start space-x-3">

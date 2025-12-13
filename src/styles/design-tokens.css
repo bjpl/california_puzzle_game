@@ -16,13 +16,13 @@
 
 :root {
   /* Primary Brand Colors - Real California landscapes */
-  --ca-navy: #1e3a5f;           /* Deep ocean blue, trustworthy */
-  --ca-forest: #2d5016;         /* Redwood forest green */
-  --ca-sand: #e6d5b8;           /* Beach sand, warm neutral */
-  --ca-clay: #b85c38;           /* Terra cotta, earthy */
-  --ca-granite: #8c8c8c;        /* Sierra granite gray */
-  --ca-sky: #87ceeb;            /* Clear California sky */
-  --ca-gold: #daa520;           /* Actual gold, not neon yellow */
+  --ca-navy: #1e3a5f; /* Deep ocean blue, trustworthy */
+  --ca-forest: #2d5016; /* Redwood forest green */
+  --ca-sand: #e6d5b8; /* Beach sand, warm neutral */
+  --ca-clay: #b85c38; /* Terra cotta, earthy */
+  --ca-granite: #8c8c8c; /* Sierra granite gray */
+  --ca-sky: #87ceeb; /* Clear California sky */
+  --ca-gold: #daa520; /* Actual gold, not neon yellow */
 
   /* Educational Neutrals - Like textbooks and classrooms */
   --paper-white: #fefefe;
@@ -31,21 +31,21 @@
   --eraser-pink: #f5f5f5;
 
   /* Semantic Learning Colors - Clear educational feedback */
-  --correct-green: #28a745;     /* Clear success, not neon */
-  --warning-amber: #dc7633;     /* Amber warning, not aggressive */
-  --info-blue: #17a2b8;         /* Information blue */
-  --error-red: #dc3545;         /* Clear error state */
+  --correct-green: #28a745; /* Clear success, not neon */
+  --warning-amber: #dc7633; /* Amber warning, not aggressive */
+  --info-blue: #17a2b8; /* Information blue */
+  --error-red: #dc3545; /* Clear error state */
 
   /* Region Colors - From src/config/regionColors.ts */
   /* These match Tailwind color palette for consistency */
-  --region-southern-california: #ef4444;  /* Tailwind red-500 */
-  --region-bay-area: #3b82f6;             /* Tailwind blue-500 */
-  --region-central-valley: #22c55e;       /* Tailwind green-500 */
-  --region-central-coast: #a855f7;        /* Tailwind purple-500 */
-  --region-northern-california: #f97316;  /* Tailwind orange-500 */
-  --region-sierra-nevada: #eab308;        /* Tailwind yellow-500 */
-  --region-north-coast: #14b8a6;          /* Tailwind teal-500 */
-  --region-default: #6b7280;              /* Tailwind gray-500 - Fallback */
+  --region-southern-california: #ef4444; /* Tailwind red-500 */
+  --region-bay-area: #3b82f6; /* Tailwind blue-500 */
+  --region-central-valley: #22c55e; /* Tailwind green-500 */
+  --region-central-coast: #a855f7; /* Tailwind purple-500 */
+  --region-northern-california: #f97316; /* Tailwind orange-500 */
+  --region-sierra-nevada: #eab308; /* Tailwind yellow-500 */
+  --region-north-coast: #14b8a6; /* Tailwind teal-500 */
+  --region-default: #6b7280; /* Tailwind gray-500 - Fallback */
 
   /* ============================================
      TYPOGRAPHY SYSTEM
@@ -53,20 +53,20 @@
      ============================================ */
 
   /* Font Families */
-  --font-serif: 'Source Serif Pro', Georgia, serif;  /* Academic serif for headings */
-  --font-sans: 'Inter', system-ui, sans-serif;       /* Clean sans for body text */
+  --font-serif: 'Source Serif Pro', Georgia, serif; /* Academic serif for headings */
+  --font-sans: 'Inter', system-ui, sans-serif; /* Clean sans for body text */
   --font-mono: 'SF Mono', 'Monaco', 'Consolas', monospace; /* Code blocks */
 
   /* Font Sizes - Based on 16px base */
-  --font-size-xs: 0.75rem;      /* 12px */
-  --font-size-sm: 0.875rem;     /* 14px */
-  --font-size-base: 1rem;       /* 16px */
-  --font-size-lg: 1.125rem;     /* 18px */
-  --font-size-xl: 1.25rem;      /* 20px */
-  --font-size-2xl: 1.5rem;      /* 24px */
-  --font-size-3xl: 1.875rem;    /* 30px */
-  --font-size-4xl: 2.25rem;     /* 36px */
-  --font-size-5xl: 3rem;        /* 48px */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
 
   /* Font Weights */
   --font-normal: 400;
@@ -90,23 +90,23 @@
      Based on 4px base unit (academic book design)
      ============================================ */
 
-  --space-xs: 0.25rem;   /* 4px */
-  --space-sm: 0.5rem;    /* 8px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
-  --space-2xl: 3rem;     /* 48px */
+  --space-xs: 0.25rem; /* 4px */
+  --space-sm: 0.5rem; /* 8px */
+  --space-md: 1rem; /* 16px */
+  --space-lg: 1.5rem; /* 24px */
+  --space-xl: 2rem; /* 32px */
+  --space-2xl: 3rem; /* 48px */
 
   /* Shorthand spacing (common in the app) */
-  --space-1: 0.25rem;    /* 4px */
-  --space-2: 0.5rem;     /* 8px */
-  --space-3: 0.75rem;    /* 12px */
-  --space-4: 1rem;       /* 16px */
-  --space-5: 1.25rem;    /* 20px */
-  --space-6: 1.5rem;     /* 24px */
-  --space-8: 2rem;       /* 32px */
-  --space-10: 2.5rem;    /* 40px */
-  --space-12: 3rem;      /* 48px */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
 
   /* ============================================
      SHADOWS
@@ -129,13 +129,13 @@
      Subtle, like rounded paper corners
      ============================================ */
 
-  --radius: 0.375rem;      /* 6px - Default */
-  --radius-sm: 0.25rem;    /* 4px */
-  --radius-md: 0.375rem;   /* 6px */
-  --radius-lg: 0.5rem;     /* 8px */
-  --radius-xl: 0.5rem;     /* 8px - Max for educational aesthetic */
-  --radius-2xl: 0.5rem;    /* 8px - Kept consistent */
-  --radius-full: 9999px;   /* Fully rounded */
+  --radius: 0.375rem; /* 6px - Default */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.375rem; /* 6px */
+  --radius-lg: 0.5rem; /* 8px */
+  --radius-xl: 0.5rem; /* 8px - Max for educational aesthetic */
+  --radius-2xl: 0.5rem; /* 8px - Kept consistent */
+  --radius-full: 9999px; /* Fully rounded */
 
   /* ============================================
      TRANSITIONS

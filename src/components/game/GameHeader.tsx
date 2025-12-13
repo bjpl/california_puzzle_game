@@ -19,7 +19,8 @@ import { HintType } from '@/types';
 export default function GameHeader() {
   // Zustand stores
   const { score, mistakes } = useScoringStore();
-  const { isPaused, pauseGame, resumeGame, resetGame, timeElapsed, isGameActive } = useGameLifecycleStore();
+  const { isPaused, pauseGame, resumeGame, resetGame, timeElapsed, isGameActive } =
+    useGameLifecycleStore();
   const { hintSystem } = useHintStore();
   const { placedCounties, currentHint } = useCountyPlacementStore();
 
@@ -83,7 +84,8 @@ export default function GameHeader() {
       setHintLevel(level);
 
       // Use hint with appropriate type based on level
-      const hintType = level === 1 ? HintType.LOCATION : level === 2 ? HintType.NEIGHBOR : HintType.EDUCATIONAL;
+      const hintType =
+        level === 1 ? HintType.LOCATION : level === 2 ? HintType.NEIGHBOR : HintType.EDUCATIONAL;
       useHintStore.getState().useHint(hintType, currentCounty.id, false);
 
       try {

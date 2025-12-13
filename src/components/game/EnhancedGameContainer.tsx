@@ -55,12 +55,7 @@ export const EnhancedGameContainer: React.FC<GameContainerProps> = ({
     placeCounty,
   } = useCountyPlacementStore();
 
-  const {
-    score,
-    streak,
-    mistakes,
-    stats,
-  } = useScoringStore();
+  const { score, streak, mistakes, stats } = useScoringStore();
 
   const { achievements } = useAchievementStore();
   const { settings: _settings } = useSettingsStore();

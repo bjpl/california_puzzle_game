@@ -9,6 +9,7 @@ Comprehensive UI components for displaying data synchronization status to users.
 Full-featured sync status indicator with icon, tooltip, and detailed modal.
 
 **Features:**
+
 - Real-time status updates (synced, syncing, offline, error)
 - Interactive tooltip on hover/focus
 - Click to open detailed modal with error info
@@ -17,6 +18,7 @@ Full-featured sync status indicator with icon, tooltip, and detailed modal.
 - Fully accessible (ARIA labels, keyboard navigation)
 
 **Usage:**
+
 ```tsx
 import { SyncStatusIndicator } from '@/components/sync';
 
@@ -57,12 +59,14 @@ export const AppHeader = () => {
 Minimal badge-style indicator for constrained spaces.
 
 **Features:**
+
 - Compact design
 - Color-coded status
 - Optional auto-hide when idle
 - Click handler support
 
 **Usage:**
+
 ```tsx
 import { SyncStatusBadge } from '@/components/sync';
 
@@ -81,6 +85,7 @@ import { SyncStatusBadge } from '@/components/sync';
 React hook for custom sync status integrations.
 
 **Features:**
+
 - Real-time status updates
 - Queue size monitoring
 - Online/offline detection
@@ -88,19 +93,13 @@ React hook for custom sync status integrations.
 - Error management
 
 **Usage:**
+
 ```tsx
 import { useSyncStatus } from '@/components/sync';
 
 const MyComponent = () => {
-  const {
-    status,
-    queueSize,
-    isOnline,
-    isSyncing,
-    lastError,
-    syncAll,
-    clearError
-  } = useSyncStatus();
+  const { status, queueSize, isOnline, isSyncing, lastError, syncAll, clearError } =
+    useSyncStatus();
 
   return (
     <div>
@@ -124,18 +123,21 @@ const MyComponent = () => {
 ## UI States
 
 ### Synced (Idle)
+
 - **Icon:** Green checkmark
 - **Color:** Green
 - **Meaning:** All changes synchronized
 - **User Action:** None needed
 
 ### Syncing
+
 - **Icon:** Blue spinning arrows
 - **Color:** Blue
 - **Meaning:** Currently syncing data
 - **User Action:** Wait for completion
 
 ### Offline
+
 - **Icon:** Yellow warning triangle
 - **Color:** Yellow
 - **Meaning:** Device offline, changes queued
@@ -143,6 +145,7 @@ const MyComponent = () => {
 - **Note:** Changes saved locally
 
 ### Error
+
 - **Icon:** Red X
 - **Color:** Red
 - **Meaning:** Sync failed
@@ -191,9 +194,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
       </header>
 
       {/* Main content */}
-      <main className="flex-1 container mx-auto p-4">
-        {children}
-      </main>
+      <main className="flex-1 container mx-auto p-4">{children}</main>
 
       {/* Mobile-friendly status bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t p-2">
@@ -229,18 +230,13 @@ export const SettingsPanel = () => {
         </div>
 
         {queueSize > 0 && (
-          <div className="text-sm text-gray-600">
-            {queueSize} operations pending
-          </div>
+          <div className="text-sm text-gray-600">{queueSize} operations pending</div>
         )}
 
         {lastError && (
           <div className="bg-red-50 border border-red-200 rounded p-3">
             <p className="text-sm text-red-800">{lastError.message}</p>
-            <button
-              onClick={clearError}
-              className="text-xs text-red-600 underline mt-2"
-            >
+            <button onClick={clearError} className="text-xs text-red-600 underline mt-2">
               Dismiss
             </button>
           </div>
@@ -386,6 +382,7 @@ describe('SyncStatusIndicator', () => {
 ## Support
 
 For issues or questions, see:
+
 - Main README
 - SyncManager documentation
 - Component source code comments

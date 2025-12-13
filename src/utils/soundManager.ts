@@ -165,8 +165,10 @@ class SoundManager {
    */
   private async initializeAudioContext(): Promise<void> {
     try {
-      this.audioContext = new (window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      this.audioContext = new (
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+      )();
       this.isInitialized = true;
       soundLogger.debug('🔊 Audio context initialized successfully');
     } catch (error) {

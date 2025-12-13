@@ -72,15 +72,17 @@ export const Card: React.FC<CardProps> = ({
   metadata,
   onClick,
   className = '',
-  children
+  children,
 }) => {
   const cardClasses = [
     'ca-card',
     `ca-card--${variant}`,
     region && `ca-card--region-${region.toLowerCase().replace(/\s+/g, '-')}`,
     onClick && 'ca-card--clickable',
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const Component = onClick ? 'article' : 'div';
 
@@ -91,13 +93,9 @@ export const Card: React.FC<CardProps> = ({
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
-      {media && (
-        <div className="ca-card__media">
-          {media}
-        </div>
-      )}
+      {media && <div className="ca-card__media">{media}</div>}
 
-      {header || (title || subtitle) ? (
+      {header || title || subtitle ? (
         <div className="ca-card__header">
           {header || (
             <>
@@ -107,7 +105,7 @@ export const Card: React.FC<CardProps> = ({
               </div>
               {region && (
                 <Badge region={region} size="small">
-                  {region.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {region.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
                 </Badge>
               )}
             </>
@@ -133,11 +131,7 @@ export const Card: React.FC<CardProps> = ({
         </div>
       )}
 
-      {footer && (
-        <div className="ca-card__footer">
-          {footer}
-        </div>
-      )}
+      {footer && <div className="ca-card__footer">{footer}</div>}
     </Component>
   );
 };
@@ -170,35 +164,35 @@ export const CountyCard: React.FC<CountyCardProps> = ({
   seat,
   onClick,
   selected,
-  highlighted
+  highlighted,
 }) => {
   const metadata = [];
 
   if (population) {
     metadata.push({
       label: 'Population',
-      value: population.toLocaleString()
+      value: population.toLocaleString(),
     });
   }
 
   if (founded) {
     metadata.push({
       label: 'Founded',
-      value: founded
+      value: founded,
     });
   }
 
   if (area) {
     metadata.push({
       label: 'Area',
-      value: `${area.toLocaleString()} sq mi`
+      value: `${area.toLocaleString()} sq mi`,
     });
   }
 
   if (seat) {
     metadata.push({
       label: 'County Seat',
-      value: seat
+      value: seat,
     });
   }
 
@@ -212,8 +206,10 @@ export const CountyCard: React.FC<CountyCardProps> = ({
       className={[
         'ca-county-card',
         selected && 'ca-county-card--selected',
-        highlighted && 'ca-county-card--highlighted'
-      ].filter(Boolean).join(' ')}
+        highlighted && 'ca-county-card--highlighted',
+      ]
+        .filter(Boolean)
+        .join(' ')}
     />
   );
 };

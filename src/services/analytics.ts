@@ -220,11 +220,14 @@ class AnalyticsService {
     try {
       // Plausible window interface
       interface PlausibleWindow extends Window {
-        plausible?: (event: string, options?: { props?: Record<string, string | undefined> }) => void;
+        plausible?: (
+          event: string,
+          options?: { props?: Record<string, string | undefined> }
+        ) => void;
       }
       if (typeof window !== 'undefined' && (window as PlausibleWindow).plausible) {
         (window as PlausibleWindow).plausible!('pageview', {
-          props: page ? { page } : undefined
+          props: page ? { page } : undefined,
         });
       }
     } catch (error) {
@@ -300,11 +303,8 @@ export const trackEvent = (event: AnalyticsEvent | string, properties?: Analytic
 export const trackFunnel = (stage: FunnelStage, properties?: AnalyticsProperties) =>
   analytics.trackFunnel(stage, properties);
 
-export const trackPageView = (page?: string) =>
-  analytics.trackPageView(page);
+export const trackPageView = (page?: string) => analytics.trackPageView(page);
 
-export const setAnalyticsConsent = (enabled: boolean) =>
-  analytics.setConsent(enabled);
+export const setAnalyticsConsent = (enabled: boolean) => analytics.setConsent(enabled);
 
-export const isAnalyticsEnabled = () =>
-  analytics.isEnabled();
+export const isAnalyticsEnabled = () => analytics.isEnabled();

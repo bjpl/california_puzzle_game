@@ -249,7 +249,7 @@ class GameStatsSync {
           const mergedStats = this.mergeStats(localStats, serverStats);
 
           // Update stats via store action (setState not available directly)
-      useScoringStore.setState({ stats: mergedStats });
+          useScoringStore.setState({ stats: mergedStats });
 
           logger.info('[GameStatsSync] Local stats updated from server');
         }

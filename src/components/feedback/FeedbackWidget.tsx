@@ -102,7 +102,6 @@ export function FeedbackWidget() {
         setIsOpen(false);
         setSubmitStatus('idle');
       }, 2000);
-
     } catch (error) {
       console.error('[Feedback] Failed to submit:', error);
       setSubmitStatus('error');
@@ -160,7 +159,10 @@ export function FeedbackWidget() {
           <form ref={formRef} onSubmit={handleSubmit} className="p-4 space-y-4">
             {/* Category */}
             <div>
-              <label htmlFor="feedback-category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="feedback-category"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Category
               </label>
               <select
@@ -177,7 +179,10 @@ export function FeedbackWidget() {
 
             {/* Message */}
             <div>
-              <label htmlFor="feedback-message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="feedback-message"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Message
               </label>
               <textarea

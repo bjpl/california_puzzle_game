@@ -55,12 +55,12 @@
 /* Dark mode color adjustments */
 @media (prefers-color-scheme: dark) {
   :root {
-    --ca-fog: #2D3748;
-    --ca-white: #1A202C;
-    --ca-cream: #2D3748;
-    --ca-charcoal: #F7FAFC;
-    --ca-slate: #E2E8F0;
-    --ca-gray: #CBD5E0;
+    --ca-fog: #2d3748;
+    --ca-white: #1a202c;
+    --ca-cream: #2d3748;
+    --ca-charcoal: #f7fafc;
+    --ca-slate: #e2e8f0;
+    --ca-gray: #cbd5e0;
   }
 }
 
@@ -86,7 +86,12 @@
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
     font-weight: 600;
     line-height: 1.2;
@@ -220,7 +225,9 @@
   }
 
   .card-ca-elevated:hover {
-    box-shadow: var(--shadow-xl), 0 0 0 1px var(--ca-gold);
+    box-shadow:
+      var(--shadow-xl),
+      0 0 0 1px var(--ca-gold);
   }
 
   /* Map Interaction Styles */
@@ -259,7 +266,7 @@
 
   .achievement-badge.earned {
     border-color: var(--ca-gold);
-    background: linear-gradient(135deg, #FFFEF7 0%, #FFF8DC 100%);
+    background: linear-gradient(135deg, #fffef7 0%, #fff8dc 100%);
   }
 
   .achievement-badge.earned .badge-icon {
@@ -281,30 +288,30 @@
   /* Loading States */
   .loading-skeleton {
     @apply animate-pulse rounded;
-    background: linear-gradient(
-      90deg,
-      var(--ca-fog) 25%,
-      var(--ca-sky) 50%,
-      var(--ca-fog) 75%
-    );
+    background: linear-gradient(90deg, var(--ca-fog) 25%, var(--ca-sky) 50%, var(--ca-fog) 75%);
     background-size: 200% 100%;
     animation: ca-shimmer 1.5s infinite;
   }
 
   @keyframes ca-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 
   /* Removed glassmorphism - using clean educational cards instead */
-  .glass-ca, .glass-ca-dark {
+  .glass-ca,
+  .glass-ca-dark {
     @apply edu-card;
   }
 
   /* Game Layout Components */
   .game-container {
     @apply min-h-screen;
-    background: linear-gradient(135deg, #FFFEF7 0%, #F7FAFC 100%);
+    background: linear-gradient(135deg, #fffef7 0%, #f7fafc 100%);
   }
 
   .game-header {
@@ -390,17 +397,21 @@
 /* Utility layer - California-specific utilities */
 @layer utilities {
   /* Removed gradients and glow effects - using clean educational text styling */
-  .text-ca-gradient, .text-ca-ocean-gradient {
+  .text-ca-gradient,
+  .text-ca-ocean-gradient {
     @apply text-title;
   }
 
   /* Removed all glow effects */
-  .glow-ca-gold, .glow-ca-sunset, .glow-ca-ocean {
+  .glow-ca-gold,
+  .glow-ca-sunset,
+  .glow-ca-ocean {
     /* No glow effects in educational design */
   }
 
   /* Removed floating animations - using minimal educational animations */
-  .animate-ca-float, .animate-ca-pulse {
+  .animate-ca-float,
+  .animate-ca-pulse {
     /* No floating animations in educational design */
   }
 
@@ -482,7 +493,8 @@
   }
 
   /* Removed backdrop blur utilities - using clean educational backgrounds */
-  .backdrop-ca, .backdrop-ca-dark {
+  .backdrop-ca,
+  .backdrop-ca-dark {
     background: var(--paper-white);
     border: 1px solid #e5e5e5;
   }
@@ -514,16 +526,16 @@
     --ca-ocean: #000000;
     --ca-redwood: #000000;
     --ca-poppy: #000000;
-    --ca-sky: #FFFFFF;
-    --ca-desert: #FFFFFF;
+    --ca-sky: #ffffff;
+    --ca-desert: #ffffff;
     --ca-vineyard: #000000;
     --ca-tech: #000000;
-    --ca-fog: #FFFFFF;
+    --ca-fog: #ffffff;
     --ca-charcoal: #000000;
     --ca-slate: #000000;
     --ca-gray: #000000;
-    --ca-white: #FFFFFF;
-    --ca-cream: #FFFFFF;
+    --ca-white: #ffffff;
+    --ca-cream: #ffffff;
   }
 
   .map-county-region {

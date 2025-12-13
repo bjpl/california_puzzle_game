@@ -72,9 +72,11 @@ export const SecurityBadge: React.FC<SecurityBadgeProps> = ({
 
   const tooltipArrowClasses = {
     top: 'top-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent',
-    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent',
+    bottom:
+      'bottom-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent',
     left: 'left-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent',
-    right: 'right-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent',
+    right:
+      'right-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent',
   };
 
   return (
@@ -116,9 +118,7 @@ export const SecurityBadge: React.FC<SecurityBadgeProps> = ({
               aria-hidden="true"
             />
           </div>
-          <span className="font-medium whitespace-nowrap">
-            Secured with E2E Encryption
-          </span>
+          <span className="font-medium whitespace-nowrap">Secured with E2E Encryption</span>
         </button>
 
         {/* Tooltip */}
@@ -153,14 +153,34 @@ export const SecurityBadge: React.FC<SecurityBadgeProps> = ({
                 <span>Anonymous authentication for privacy</span>
               </div>
               <div className="flex items-start gap-2">
-                <svg className="w-3.5 h-3.5 text-purple-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-3.5 h-3.5 text-purple-400 mt-0.5 flex-shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <span>No personal data collected</span>
               </div>
               <div className="flex items-start gap-2">
-                <svg className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                <svg
+                  className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
+                  />
                 </svg>
                 <span>Local-first data storage</span>
               </div>
@@ -197,9 +217,15 @@ export const SecurityBadge: React.FC<SecurityBadgeProps> = ({
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <Shield size={32} className="text-green-600 dark:text-green-400" />
-                  <Lock size={20} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-green-700 dark:text-green-300" />
+                  <Lock
+                    size={20}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-green-700 dark:text-green-300"
+                  />
                 </div>
-                <h2 id="security-modal-title" className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h2
+                  id="security-modal-title"
+                  className="text-2xl font-bold text-gray-900 dark:text-white"
+                >
                   Security & Privacy
                 </h2>
               </div>
@@ -211,8 +237,8 @@ export const SecurityBadge: React.FC<SecurityBadgeProps> = ({
                     End-to-End Encryption (AES-256)
                   </h3>
                   <p className="text-sm">
-                    Your game data is encrypted using industry-standard AES-256 encryption before being stored.
-                    Only you can decrypt and access your data.
+                    Your game data is encrypted using industry-standard AES-256 encryption before
+                    being stored. Only you can decrypt and access your data.
                   </p>
                 </div>
 
@@ -222,8 +248,8 @@ export const SecurityBadge: React.FC<SecurityBadgeProps> = ({
                     Anonymous Authentication
                   </h3>
                   <p className="text-sm">
-                    We use Supabase anonymous authentication. No email, phone number, or personal information is required.
-                    Your identity is protected at all times.
+                    We use Supabase anonymous authentication. No email, phone number, or personal
+                    information is required. Your identity is protected at all times.
                   </p>
                 </div>
 
@@ -232,8 +258,8 @@ export const SecurityBadge: React.FC<SecurityBadgeProps> = ({
                     Zero Personal Data Collection
                   </h3>
                   <p className="text-sm">
-                    We do not collect, store, or share any personal information. Only your game progress and
-                    puzzle solutions are saved, all encrypted and anonymized.
+                    We do not collect, store, or share any personal information. Only your game
+                    progress and puzzle solutions are saved, all encrypted and anonymized.
                   </p>
                 </div>
 
@@ -242,16 +268,16 @@ export const SecurityBadge: React.FC<SecurityBadgeProps> = ({
                     Local-First Architecture
                   </h3>
                   <p className="text-sm">
-                    Data is stored locally on your device first, then optionally synced to the cloud.
-                    You remain in control of your data at all times.
+                    Data is stored locally on your device first, then optionally synced to the
+                    cloud. You remain in control of your data at all times.
                   </p>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                  Your privacy and security are our top priorities. We are committed to protecting your data
-                  and maintaining your trust.
+                  Your privacy and security are our top priorities. We are committed to protecting
+                  your data and maintaining your trust.
                 </p>
               </div>
             </div>

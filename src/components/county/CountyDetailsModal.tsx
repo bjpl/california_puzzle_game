@@ -109,7 +109,10 @@ export default function CountyDetailsModal({
               <CountyShapeDisplay countyId={county.id} size={90} className="flex-shrink-0" />
             </div>
             <div className="flex-1">
-              <h2 id="county-modal-title" className="text-4xl font-bold mb-2 text-white dark:text-gray-100">
+              <h2
+                id="county-modal-title"
+                className="text-4xl font-bold mb-2 text-white dark:text-gray-100"
+              >
                 {county.name}
               </h2>
               <p className="text-blue-100 dark:text-blue-200 text-xl">{county.region}</p>

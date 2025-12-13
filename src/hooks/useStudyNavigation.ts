@@ -21,14 +21,10 @@ interface UseStudyNavigationProps {
 export const useStudyNavigation = ({
   onNavigateToGame,
   onNavigateToMenu,
-  onModeChange
+  onModeChange,
 }: UseStudyNavigationProps = {}) => {
   // Domain stores
-  const {
-    isActive: isStudySessionActive,
-    currentSession,
-    endSession
-  } = useSessionStore();
+  const { isActive: isStudySessionActive, currentSession, endSession } = useSessionStore();
 
   const { totalStudied } = useProgressStore();
 
@@ -49,44 +45,50 @@ export const useStudyNavigation = ({
   }, [isStudySessionActive, endSession, onNavigateToMenu]);
 
   // Handle mode changes
-  const handleModeChange = useCallback((mode: StudyModeType) => {
-    const currentModeType = currentSession ? modeEnumToType[currentSession.mode] : null;
-    if (isStudySessionActive && currentModeType !== mode) {
-      endSession();
-    }
-    onModeChange?.(mode);
-  }, [isStudySessionActive, currentSession, endSession, onModeChange]);
+  const handleModeChange = useCallback(
+    (mode: StudyModeType) => {
+      const currentModeType = currentSession ? modeEnumToType[currentSession.mode] : null;
+      if (isStudySessionActive && currentModeType !== mode) {
+        endSession();
+      }
+      onModeChange?.(mode);
+    },
+    [isStudySessionActive, currentSession, endSession, onModeChange]
+  );
 
   // Keyboard navigation
-  const handleKeyPress = useCallback((event: KeyboardEvent) => {
-    // Only handle if not in an input field
-    const target = event.target as HTMLElement;
-    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
-      return;
-    }
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      // Only handle if not in an input field
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
 
-    switch (event.key) {
-      case 'Escape':
-        if (isStudySessionActive) {
-          endSession();
-        }
-        break;
-      case 'g':
-      case 'G':
-        if (event.ctrlKey || event.metaKey) {
-          event.preventDefault();
-          navigateToGame();
-        }
-        break;
-      case 'm':
-      case 'M':
-        if (event.ctrlKey || event.metaKey) {
-          event.preventDefault();
-          navigateToMenu();
-        }
-        break;
-    }
-  }, [isStudySessionActive, endSession, navigateToGame, navigateToMenu]);
+      switch (event.key) {
+        case 'Escape':
+          if (isStudySessionActive) {
+            endSession();
+          }
+          break;
+        case 'g':
+        case 'G':
+          if (event.ctrlKey || event.metaKey) {
+            event.preventDefault();
+            navigateToGame();
+          }
+          break;
+        case 'm':
+        case 'M':
+          if (event.ctrlKey || event.metaKey) {
+            event.preventDefault();
+            navigateToMenu();
+          }
+          break;
+      }
+    },
+    [isStudySessionActive, endSession, navigateToGame, navigateToMenu]
+  );
 
   // Set up keyboard listeners
   useEffect(() => {
@@ -119,25 +121,25 @@ export const useStudyNavigation = ({
       return {
         level: 'expert' as const,
         message: "You're well-prepared! Ready for the expert challenge.",
-        confidence: 95
+        confidence: 95,
       };
     } else if (studiedPercentage >= 50) {
       return {
         level: 'advanced' as const,
         message: "Good progress! You're ready for most challenges.",
-        confidence: 75
+        confidence: 75,
       };
     } else if (studiedPercentage >= 25) {
       return {
         level: 'intermediate' as const,
-        message: "Nice start! Keep studying to improve your game performance.",
-        confidence: 50
+        message: 'Nice start! Keep studying to improve your game performance.',
+        confidence: 50,
       };
     } else {
       return {
         level: 'beginner' as const,
-        message: "Just getting started! Study mode will help you learn the counties.",
-        confidence: 25
+        message: 'Just getting started! Study mode will help you learn the counties.',
+        confidence: 25,
       };
     }
   }, [totalStudied]);
@@ -152,28 +154,28 @@ export const useStudyNavigation = ({
           difficulty: 'expert' as const,
           region: 'all' as const,
           showHints: false,
-          timeLimit: true
+          timeLimit: true,
         };
       case 'advanced':
         return {
           difficulty: 'hard' as const,
           region: 'all' as const,
           showHints: true,
-          timeLimit: false
+          timeLimit: false,
         };
       case 'intermediate':
         return {
           difficulty: 'medium' as const,
           region: 'region' as const,
           showHints: true,
-          timeLimit: false
+          timeLimit: false,
         };
       default:
         return {
           difficulty: 'easy' as const,
           region: 'bay_area' as const,
           showHints: true,
-          timeLimit: false
+          timeLimit: false,
         };
     }
   }, [getStudyReadiness]);
@@ -194,6 +196,6 @@ export const useStudyNavigation = ({
     currentSession,
 
     // Utility functions
-    endCurrentSession: endSession
+    endCurrentSession: endSession,
   };
 };

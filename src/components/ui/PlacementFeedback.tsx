@@ -24,7 +24,7 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
   isPerfect = false,
   countyName,
   position = { x: 0, y: 0 },
-  onComplete
+  onComplete,
 }) => {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [showName, setShowName] = useState(false);
@@ -43,7 +43,7 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
           vx: (Math.random() - 0.5) * 400,
           vy: (Math.random() - 0.5) * 400,
           color: colors[Math.floor(Math.random() * colors.length)],
-          size: Math.random() * 8 + 4
+          size: Math.random() * 8 + 4,
         });
       }
 
@@ -80,15 +80,15 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
       opacity: [0, 1, 1, 0],
       transition: {
         duration: 1,
-        ease: "easeOut"
-      }
+        ease: 'easeOut',
+      },
     },
     incorrect: {
       x: [-10, 10, -10, 10, 0],
       transition: {
         duration: 0.5,
-        ease: "easeInOut"
-      }
+        ease: 'easeInOut',
+      },
     },
     perfect: {
       scale: [1, 1.3, 1.1],
@@ -96,36 +96,36 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
       opacity: [0, 1, 1],
       transition: {
         duration: 0.8,
-        ease: "easeOut"
-      }
-    }
+        ease: 'easeOut',
+      },
+    },
   };
 
   const nameRevealVariants = {
     hidden: {
       opacity: 0,
       scale: 0.8,
-      y: 20
+      y: 20,
     },
     visible: {
       opacity: 1,
       scale: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: 'spring',
         damping: 15,
         stiffness: 300,
-        delay: 0.2
-      }
+        delay: 0.2,
+      },
     },
     exit: {
       opacity: 0,
       scale: 0.8,
       y: -20,
       transition: {
-        duration: 0.3
-      }
-    }
+        duration: 0.3,
+      },
+    },
   };
 
   const particleVariants = {
@@ -133,7 +133,7 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
       opacity: 1,
       scale: 1,
       x: 0,
-      y: 0
+      y: 0,
     },
     animate: (particle: Particle) => ({
       opacity: [1, 1, 0],
@@ -142,9 +142,9 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
       y: particle.vy,
       transition: {
         duration: 2,
-        ease: "easeOut"
-      }
-    })
+        ease: 'easeOut',
+      },
+    }),
   };
 
   if (isCorrect === null) return null;
@@ -156,7 +156,7 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
         left: position.x - 50,
         top: position.y - 50,
         width: 100,
-        height: 100
+        height: 100,
       }}
     >
       {/* Correct Placement Feedback */}
@@ -171,7 +171,11 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
           >
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
               <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
           </motion.div>
@@ -190,7 +194,11 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
           >
             <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
               <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
           </motion.div>
@@ -229,7 +237,7 @@ const PlacementFeedback: React.FC<PlacementFeedbackProps> = ({
               left: '50%',
               top: '50%',
               marginLeft: -particle.size / 2,
-              marginTop: -particle.size / 2
+              marginTop: -particle.size / 2,
             }}
             variants={particleVariants}
             initial="initial"

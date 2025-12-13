@@ -204,7 +204,12 @@ class StoreIntegrationManager {
       wasGameActive = state.isGameActive;
     });
 
-    this.unsubscribers.push(unsubscribeSettings, unsubscribeScoring, unsubscribeAchievements, unsubscribeLifecycle);
+    this.unsubscribers.push(
+      unsubscribeSettings,
+      unsubscribeScoring,
+      unsubscribeAchievements,
+      unsubscribeLifecycle
+    );
 
     logger.info('[StoreIntegration] Domain store listeners ready');
   }

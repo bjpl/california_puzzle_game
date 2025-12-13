@@ -26,7 +26,12 @@ const CaliforniaGameWithHints: React.FC<CaliforniaGameWithHintsProps> = ({
 }) => {
   // Migrated from monolithic gameStore to domain stores
   const { settings } = useSettingsStore();
-  const { hintSystem, useHint: requestHint, updateHintSystem, analyzePlayerStruggle } = useHintStore();
+  const {
+    hintSystem,
+    useHint: requestHint,
+    updateHintSystem,
+    analyzePlayerStruggle,
+  } = useHintStore();
   const { remainingCounties, placedCounties, placeCounty } = useCountyPlacementStore();
   const { score, mistakes } = useScoringStore();
   const { startGame } = useGameLifecycleStore();

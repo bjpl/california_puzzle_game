@@ -28,9 +28,7 @@ interface UsePerformanceMonitoringOptions {
   reportInterval?: number;
 }
 
-export function usePerformanceMonitoring(
-  options: UsePerformanceMonitoringOptions = {}
-) {
+export function usePerformanceMonitoring(options: UsePerformanceMonitoringOptions = {}) {
   const {
     enableFpsMonitoring = true,
     fpsThreshold = 30,
@@ -79,7 +77,7 @@ export function usePerformanceMonitoring(
         );
 
         // Update metrics
-        setMetrics(prev => ({
+        setMetrics((prev) => ({
           ...prev,
           fps,
           avgFps,
@@ -130,7 +128,7 @@ export function usePerformanceMonitoring(
         const memory = (performance as Performance & { memory: PerformanceMemory }).memory;
         const usedMB = Math.round(memory.usedJSHeapSize / 1048576);
 
-        setMetrics(prev => ({
+        setMetrics((prev) => ({
           ...prev,
           memoryUsage: usedMB,
         }));
@@ -153,7 +151,7 @@ export function usePerformanceMonitoring(
       const perfData = window.performance.timing;
       const loadTime = perfData.loadEventEnd - perfData.navigationStart;
 
-      setMetrics(prev => ({
+      setMetrics((prev) => ({
         ...prev,
         loadTime,
       }));

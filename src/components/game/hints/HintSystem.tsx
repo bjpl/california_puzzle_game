@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  HintSystemProps,
-  HintType,
-  Hint
-} from '@/types';
+import { HintSystemProps, HintType, Hint } from '@/types';
 // Migrated from monolithic gameStore to domain stores
 import { useHintStore } from '@/stores/hintSystemStore';
 import { useSettingsStore } from '@/stores/gameSettingsStore';
@@ -29,14 +25,15 @@ const HintButton: React.FC<HintButtonProps> = ({
   available,
   cost,
   onClick,
-  disabled
+  disabled,
 }) => (
   <motion.button
     className={`
       hint-button relative p-4 rounded-lg border-2 transition-all duration-200
-      ${available && !disabled
-        ? 'border-blue-500 bg-blue-50 hover:bg-blue-100 text-blue-700'
-        : 'border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed'
+      ${
+        available && !disabled
+          ? 'border-blue-500 bg-blue-50 hover:bg-blue-100 text-blue-700'
+          : 'border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed'
       }
     `}
     onClick={onClick}
@@ -49,9 +46,7 @@ const HintButton: React.FC<HintButtonProps> = ({
       <span className="font-semibold text-sm">{label}</span>
       <span className="text-xs text-center leading-tight">{description}</span>
       {cost > 0 && (
-        <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
-          -{cost} pts
-        </span>
+        <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">-{cost} pts</span>
       )}
     </div>
 
@@ -76,7 +71,7 @@ const HintDisplay: React.FC<HintDisplayProps> = ({
   progress,
   onNext,
   onClose,
-  canProgress
+  canProgress,
 }) => {
   const getProgressiveContent = (content: string, progress: number): string => {
     if (hint.type === HintType.NAME) {
@@ -86,14 +81,14 @@ const HintDisplay: React.FC<HintDisplayProps> = ({
 
       if (progress < 0.3) {
         // Show first letter of each word
-        return words.map(word => word[0] + '_'.repeat(word.length - 1)).join(' ');
+        return words.map((word) => word[0] + '_'.repeat(word.length - 1)).join(' ');
       } else if (progress < 0.6) {
         // Show first and last letter of each word
-        return words.map(word =>
-          word.length > 2
-            ? word[0] + '_'.repeat(word.length - 2) + word[word.length - 1]
-            : word
-        ).join(' ');
+        return words
+          .map((word) =>
+            word.length > 2 ? word[0] + '_'.repeat(word.length - 2) + word[word.length - 1] : word
+          )
+          .join(' ');
       } else if (progress < 0.9) {
         // Show partial content
         return content.substring(0, revealChars) + '_'.repeat(totalChars - revealChars);
@@ -106,18 +101,27 @@ const HintDisplay: React.FC<HintDisplayProps> = ({
     // For other hint types, show progressive sentences or bullet points
     const sentences = content.split('. ');
     const revealCount = Math.ceil(sentences.length * progress);
-    return sentences.slice(0, revealCount).join('. ') + (revealCount < sentences.length ? '...' : '');
+    return (
+      sentences.slice(0, revealCount).join('. ') + (revealCount < sentences.length ? '...' : '')
+    );
   };
 
   const getHintIcon = (type: HintType): string => {
     switch (type) {
-      case HintType.LOCATION: return '📍';
-      case HintType.NAME: return '🔤';
-      case HintType.SHAPE: return '🗺️';
-      case HintType.NEIGHBOR: return '↔️';
-      case HintType.FACT: return '💡';
-      case HintType.EDUCATIONAL: return '📚';
-      default: return '❓';
+      case HintType.LOCATION:
+        return '📍';
+      case HintType.NAME:
+        return '🔤';
+      case HintType.SHAPE:
+        return '🗺️';
+      case HintType.NEIGHBOR:
+        return '↔️';
+      case HintType.FACT:
+        return '💡';
+      case HintType.EDUCATIONAL:
+        return '📚';
+      default:
+        return '❓';
     }
   };
 
@@ -132,14 +136,9 @@ const HintDisplay: React.FC<HintDisplayProps> = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="text-2xl">{getHintIcon(hint.type)}</span>
-          <h3 className="font-bold text-lg text-gray-800 capitalize">
-            {hint.type} Hint
-          </h3>
+          <h3 className="font-bold text-lg text-gray-800 capitalize">{hint.type} Hint</h3>
         </div>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 text-xl"
-        >
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">
           ×
         </button>
       </div>
@@ -162,9 +161,7 @@ const HintDisplay: React.FC<HintDisplayProps> = ({
               transition={{ duration: 0.5 }}
             />
           </div>
-          <span className="text-xs text-gray-600">
-            {Math.round(progress * 100)}%
-          </span>
+          <span className="text-xs text-gray-600">{Math.round(progress * 100)}%</span>
         </div>
 
         {canProgress && progress < 1 && (
@@ -207,7 +204,7 @@ const HintSystem: React.FC<HintSystemProps> = ({
   gameState,
   onHintRequested,
   onHintDismissed,
-  className = ''
+  className = '',
 }) => {
   const [currentHint, setCurrentHint] = useState<Hint | null>(null);
   const [hintProgress, setHintProgress] = useState(0);
@@ -215,7 +212,12 @@ const HintSystem: React.FC<HintSystemProps> = ({
   const [cooldownProgress, setCooldownProgress] = useState(0);
 
   // Migrated to domain stores
-  const { hintSystem, updateHintSystem, useHint: requestHint, analyzePlayerStruggle: _analyzePlayerStruggle } = useHintStore();
+  const {
+    hintSystem,
+    updateHintSystem,
+    useHint: requestHint,
+    analyzePlayerStruggle: _analyzePlayerStruggle,
+  } = useHintStore();
   const { settings } = useSettingsStore();
 
   // Cooldown timer effect
@@ -223,10 +225,10 @@ const HintSystem: React.FC<HintSystemProps> = ({
     if (hintSystem.cooldownTimeRemaining > 0) {
       const timer = setInterval(() => {
         updateHintSystem({
-          cooldownTimeRemaining: Math.max(0, hintSystem.cooldownTimeRemaining - 100)
+          cooldownTimeRemaining: Math.max(0, hintSystem.cooldownTimeRemaining - 100),
         });
         setCooldownProgress(
-          1 - (hintSystem.cooldownTimeRemaining / settings.hintSettings.hintCooldownMs)
+          1 - hintSystem.cooldownTimeRemaining / settings.hintSettings.hintCooldownMs
         );
       }, 100);
 
@@ -240,7 +242,7 @@ const HintSystem: React.FC<HintSystemProps> = ({
   useEffect(() => {
     if (hintSystem.autoSuggestEnabled && gameState.remainingCounties.length > 0) {
       const strugglingCounty = hintSystem.strugglingCounties.find(
-        struggle => struggle.attempts >= settings.hintSettings.autoSuggestThreshold
+        (struggle) => struggle.attempts >= settings.hintSettings.autoSuggestThreshold
       );
 
       if (strugglingCounty && !currentHint) {
@@ -254,20 +256,23 @@ const HintSystem: React.FC<HintSystemProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hintSystem.strugglingCounties, currentHint, settings.hintSettings.autoSuggestThreshold]);
 
-  const handleHintRequest = useCallback((type: HintType, isAutoSuggested = false) => {
-    if (gameState.remainingCounties.length === 0) return;
+  const handleHintRequest = useCallback(
+    (type: HintType, isAutoSuggested = false) => {
+      if (gameState.remainingCounties.length === 0) return;
 
-    const targetCounty = gameState.remainingCounties[0]; // Current target county
-    const hint = generateHint(targetCounty, type, 0.3); // Start at 30% progress
+      const targetCounty = gameState.remainingCounties[0]; // Current target county
+      const hint = generateHint(targetCounty, type, 0.3); // Start at 30% progress
 
-    setCurrentHint(hint);
-    setHintProgress(0.3);
-    setShowHintMenu(false);
+      setCurrentHint(hint);
+      setHintProgress(0.3);
+      setShowHintMenu(false);
 
-    // Update hint system state
-    requestHint(type, targetCounty.id, isAutoSuggested);
-    onHintRequested(type);
-  }, [gameState.remainingCounties, requestHint, onHintRequested]);
+      // Update hint system state
+      requestHint(type, targetCounty.id, isAutoSuggested);
+      onHintRequested(type);
+    },
+    [gameState.remainingCounties, requestHint, onHintRequested]
+  );
 
   const handleHintProgression = useCallback(() => {
     if (!currentHint) return;
@@ -298,38 +303,38 @@ const HintSystem: React.FC<HintSystemProps> = ({
         icon: '📍',
         label: 'Location',
         description: 'Show general area',
-        cost: settings.hintSettings.scorePenaltyPerHint
+        cost: settings.hintSettings.scorePenaltyPerHint,
       },
       [HintType.NAME]: {
         icon: '🔤',
         label: 'Name',
         description: 'Reveal letters',
-        cost: settings.hintSettings.scorePenaltyPerHint * 1.5
+        cost: settings.hintSettings.scorePenaltyPerHint * 1.5,
       },
       [HintType.SHAPE]: {
         icon: '🗺️',
         label: 'Shape',
         description: 'Show boundary',
-        cost: settings.hintSettings.scorePenaltyPerHint * 0.8
+        cost: settings.hintSettings.scorePenaltyPerHint * 0.8,
       },
       [HintType.NEIGHBOR]: {
         icon: '↔️',
         label: 'Neighbors',
         description: 'Highlight adjacent',
-        cost: settings.hintSettings.scorePenaltyPerHint * 0.6
+        cost: settings.hintSettings.scorePenaltyPerHint * 0.6,
       },
       [HintType.FACT]: {
         icon: '💡',
         label: 'Fact',
         description: 'Interesting clue',
-        cost: settings.hintSettings.scorePenaltyPerHint * 0.4
+        cost: settings.hintSettings.scorePenaltyPerHint * 0.4,
       },
       [HintType.EDUCATIONAL]: {
         icon: '📚',
         label: 'Learn',
         description: 'Educational content',
-        cost: 0 // Educational hints are free
-      }
+        cost: 0, // Educational hints are free
+      },
     };
 
     return baseConfig[type];
@@ -343,13 +348,14 @@ const HintSystem: React.FC<HintSystemProps> = ({
     const currentCounty = gameState.remainingCounties[0];
     if (!currentCounty) return false;
 
-    const struggle = hintSystem.strugglingCounties.find(s => s.countyId === currentCounty.id);
+    const struggle = hintSystem.strugglingCounties.find((s) => s.countyId === currentCounty.id);
     return !struggle?.suggestedHints.includes(type);
   };
 
-  const canUseHints = hintSystem.cooldownTimeRemaining === 0 &&
-                     hintSystem.availableHints > 0 &&
-                     gameState.remainingCounties.length > 0;
+  const canUseHints =
+    hintSystem.cooldownTimeRemaining === 0 &&
+    hintSystem.availableHints > 0 &&
+    gameState.remainingCounties.length > 0;
 
   return (
     <div className={`hint-system ${className}`}>
@@ -359,9 +365,10 @@ const HintSystem: React.FC<HintSystemProps> = ({
           onClick={() => setShowHintMenu(!showHintMenu)}
           className={`
             hint-toggle-button relative p-3 rounded-full shadow-lg transition-all duration-200
-            ${canUseHints
-              ? 'bg-blue-500 hover:bg-blue-600 text-white'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            ${
+              canUseHints
+                ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }
           `}
           disabled={!canUseHints}
@@ -380,7 +387,7 @@ const HintSystem: React.FC<HintSystemProps> = ({
             <motion.div
               className="absolute inset-0 border-4 border-orange-400 rounded-full"
               style={{
-                background: `conic-gradient(transparent ${360 * cooldownProgress}deg, rgba(251, 146, 60, 0.3) 0deg)`
+                background: `conic-gradient(transparent ${360 * cooldownProgress}deg, rgba(251, 146, 60, 0.3) 0deg)`,
               }}
             />
           )}
@@ -405,7 +412,7 @@ const HintSystem: React.FC<HintSystemProps> = ({
             transition={{ duration: 0.2 }}
           >
             <div className="grid grid-cols-2 gap-3 w-80">
-              {Object.values(HintType).map(type => {
+              {Object.values(HintType).map((type) => {
                 const config = getHintButtonConfig(type);
                 const available = isHintAvailable(type);
                 const disabled = !canUseHints;
@@ -428,7 +435,8 @@ const HintSystem: React.FC<HintSystemProps> = ({
 
             <div className="mt-4 pt-3 border-t border-gray-200 text-center">
               <p className="text-xs text-gray-600">
-                {hintSystem.usedHints}/{settings.hintSettings.maxHintsPerLevel} hints used this level
+                {hintSystem.usedHints}/{settings.hintSettings.maxHintsPerLevel} hints used this
+                level
               </p>
               {hintSystem.freeHintsRemaining > 0 && (
                 <p className="text-xs text-green-600 font-semibold">

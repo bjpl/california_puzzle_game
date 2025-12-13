@@ -48,7 +48,7 @@ export default function SkipNavigation() {
       // Scroll to main content smoothly
       mainContent.scrollIntoView({
         behavior: 'smooth',
-        block: 'start'
+        block: 'start',
       });
 
       // Announce to screen readers
@@ -90,7 +90,6 @@ export default function SkipNavigation() {
       }}
     >
       Skip to main content
-
       <style>{`
         /* Visually hide skip link until focused */
         .skip-navigation {

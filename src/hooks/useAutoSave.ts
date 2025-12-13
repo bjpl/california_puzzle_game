@@ -95,7 +95,16 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
       onSave?.(false);
       return false;
     }
-  }, [lifecycleState, countyState, scoringState, achievementState, hintState, settingsState, onSave, onError]);
+  }, [
+    lifecycleState,
+    countyState,
+    scoringState,
+    achievementState,
+    hintState,
+    settingsState,
+    onSave,
+    onError,
+  ]);
 
   // Start a new game session
   const startSession = useCallback(() => {
@@ -117,7 +126,11 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
     };
 
     currentSessionRef.current = session;
-  }, [lifecycleState.selectedRegion, lifecycleState.difficulty, countyState.remainingCounties.length]);
+  }, [
+    lifecycleState.selectedRegion,
+    lifecycleState.difficulty,
+    countyState.remainingCounties.length,
+  ]);
 
   // End current session
   const endSession = useCallback(() => {
@@ -135,7 +148,13 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
       storageManager.saveSession(session);
       currentSessionRef.current = null;
     }
-  }, [scoringState.score, lifecycleState.timeElapsed, countyState.placedCounties, countyState.remainingCounties, hintState.hintSystem.usedHints]);
+  }, [
+    scoringState.score,
+    lifecycleState.timeElapsed,
+    countyState.placedCounties,
+    countyState.remainingCounties,
+    hintState.hintSystem.usedHints,
+  ]);
 
   // Handle game state changes
   useEffect(() => {
@@ -149,7 +168,9 @@ export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
   // Handle achievement unlocks
   useEffect(() => {
     if (currentSessionRef.current) {
-      const unlockedIds = achievementState.achievements.filter((a) => a.isUnlocked).map((a) => a.id);
+      const unlockedIds = achievementState.achievements
+        .filter((a) => a.isUnlocked)
+        .map((a) => a.id);
 
       const newUnlocks = unlockedIds.filter(
         (id) => !currentSessionRef.current!.achievementsUnlocked.includes(id)

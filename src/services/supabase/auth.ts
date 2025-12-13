@@ -65,7 +65,10 @@ export async function initializeAuth(): Promise<AuthStatus> {
 
   try {
     // Check for existing session
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
 
     if (sessionError) {
       throw sessionError;
@@ -188,7 +191,10 @@ export async function getSession(): Promise<Session | null> {
   }
 
   try {
-    const { data: { session }, error } = await supabase.auth.getSession();
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
 
     if (error) {
       throw error;
@@ -322,7 +328,10 @@ export async function refreshSession(): Promise<Session | null> {
   }
 
   try {
-    const { data: { session }, error } = await supabase.auth.refreshSession();
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.refreshSession();
 
     if (error) {
       throw error;

@@ -42,6 +42,7 @@ import { Button } from '@/components/ui';
 ```
 
 **Props:**
+
 - `variant`: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'ghost' | 'outline'
 - `size`: 'small' | 'medium' | 'large'
 - `loading`: boolean
@@ -71,6 +72,7 @@ import { Badge, RegionBadge, StatusBadge } from '@/components/ui';
 ```
 
 **Props:**
+
 - `variant`: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'region'
 - `region`: string (for automatic California region coloring)
 - `size`: 'small' | 'medium' | 'large'
@@ -116,6 +118,7 @@ import { Card, CountyCard } from '@/components/ui';
 ```
 
 **Props:**
+
 - `variant`: 'default' | 'elevated' | 'outlined' | 'interactive'
 - `region`: string (adds colored accent)
 - `metadata`: Array of { label, value } pairs
@@ -152,6 +155,7 @@ import { Progress, GameProgress, LoadingProgress } from '@/components/ui';
 ```
 
 **Props:**
+
 - `value`: number
 - `max`: number (default: 100)
 - `variant`: 'default' | 'success' | 'warning' | 'danger' | 'gradient'
@@ -199,6 +203,7 @@ import { Heading, Text, Code, Label } from '@/components/ui';
 ```
 
 **Typography Props:**
+
 - `size`: Various size options per component
 - `color`: 'primary' | 'secondary' | 'tertiary' | 'inverse'
 - `align`: 'left' | 'center' | 'right' | 'justify'
@@ -263,17 +268,9 @@ function GameHeader({ progress, onReset }) {
         Discover all 58 counties
       </Text>
 
-      <GameProgress
-        completedCounties={progress.completed}
-        totalCounties={58}
-        showMilestones
-      />
+      <GameProgress completedCounties={progress.completed} totalCounties={58} showMilestones />
 
-      <Button
-        variant="ghost"
-        size="small"
-        onClick={onReset}
-      >
+      <Button variant="ghost" size="small" onClick={onReset}>
         Reset Game
       </Button>
     </header>
@@ -322,6 +319,7 @@ test('renders button with text', () => {
 If you're migrating from inline styles to the component library:
 
 **Before:**
+
 ```tsx
 <button className="btn btn-primary" onClick={handleClick}>
   Start Game
@@ -329,6 +327,7 @@ If you're migrating from inline styles to the component library:
 ```
 
 **After:**
+
 ```tsx
 <Button variant="primary" onClick={handleClick}>
   Start Game

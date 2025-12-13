@@ -35,12 +35,17 @@ import {
   GridStudySettings,
   StudySession as FacadeStudySession,
 } from '../types/study';
-import { StudyMode, StudySession as DomainStudySession, GoalType, GoalStatus } from '../types/study-domain.types';
+import {
+  StudyMode,
+  StudySession as DomainStudySession,
+  GoalType,
+  GoalStatus,
+} from '../types/study-domain.types';
 import { allCaliforniaCounties, californiaRegions } from '../data/californiaCountiesComplete';
 
 // Type conversion utilities between legacy and domain types
 const modeTypeToEnum: Record<StudyModeType, StudyMode> = {
-  'flashcard': StudyMode.FLASHCARDS,
+  flashcard: StudyMode.FLASHCARDS,
   'map-exploration': StudyMode.MAP_EXPLORATION,
   'grid-study': StudyMode.GRID_STUDY,
 };
@@ -52,7 +57,9 @@ const modeEnumToType: Record<StudyMode, StudyModeType> = {
   [StudyMode.TIMED_CHALLENGE]: 'flashcard', // fallback
 };
 
-const convertDomainSessionToFacade = (session: DomainStudySession | null): FacadeStudySession | null => {
+const convertDomainSessionToFacade = (
+  session: DomainStudySession | null
+): FacadeStudySession | null => {
   if (!session) return null;
   return {
     id: session.id,
@@ -61,9 +68,10 @@ const convertDomainSessionToFacade = (session: DomainStudySession | null): Facad
     mode: modeEnumToType[session.mode],
     countiesStudied: session.countiesStudied,
     totalTime: Date.now() - session.startTime.getTime() - session.totalPausedDuration,
-    accuracy: session.countiesStudied.length > 0
-      ? (session.correctAnswers / session.countiesStudied.length) * 100
-      : 0,
+    accuracy:
+      session.countiesStudied.length > 0
+        ? (session.correctAnswers / session.countiesStudied.length) * 100
+        : 0,
     completionRate: 0,
   };
 };
@@ -316,9 +324,9 @@ export const useStudyStore = create<StudyStore>()(
         setGoal: (goal: StudyGoal) => {
           // Convert facade StudyGoal to domain StudyGoal format
           const goalTypeMap: Record<string, GoalType> = {
-            'daily': GoalType.DAILY_COUNTIES,
-            'weekly': GoalType.WEEKLY_COUNTIES,
-            'monthly': GoalType.CUSTOM,
+            daily: GoalType.DAILY_COUNTIES,
+            weekly: GoalType.WEEKLY_COUNTIES,
+            monthly: GoalType.CUSTOM,
           };
           const domainGoal = {
             type: goalTypeMap[goal.type] || GoalType.CUSTOM,

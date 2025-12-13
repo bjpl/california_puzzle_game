@@ -61,16 +61,13 @@ export const Button: React.FC<ButtonProps> = ({
     fullWidth && 'ca-button--full-width',
     loading && 'ca-button--loading',
     disabled && 'ca-button--disabled',
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <button
-      className={buttonClasses}
-      disabled={disabled || loading}
-      aria-busy={loading}
-      {...props}
-    >
+    <button className={buttonClasses} disabled={disabled || loading} aria-busy={loading} {...props}>
       {loading ? (
         <span className="ca-button__loader" aria-label="Loading...">
           <svg className="ca-button__spinner" viewBox="0 0 24 24">
