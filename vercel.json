@@ -66,24 +66,11 @@
       ]
     },
     {
-      "source": "/(.*)\\.(?:js|css|woff2?|ttf|otf|eot|svg|png|jpg|jpeg|gif|webp|ico)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/data/(.*)\\.json",
+      "source": "/data/:path*.json",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=86400, stale-while-revalidate=43200"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/json"
         }
       ]
     }
