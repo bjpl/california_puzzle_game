@@ -7,6 +7,7 @@ import { SimpleThemeToggle } from '../ui/ThemeToggle';
 import HintModal from '../game/modals/HintModal';
 import EnhancedStudyMode from '../study/EnhancedStudyMode';
 import { UserSettings } from '../shared/settings/UserSettings';
+import { UserMenu, AuthStatus } from '../auth';
 import { UI_CONFIG, GAME_CONFIG } from '@/constants';
 import { useDeviceInfo } from '../../mobile/hooks/useDeviceInfo';
 import { useScoringStore } from '@/stores/scoringStore';
@@ -262,6 +263,12 @@ export default function GameHeader() {
               />
             </svg>
           </button>
+
+          {/* Auth Status and User Menu */}
+          <div className="flex items-center gap-1.5 ml-1 pl-1.5 border-l border-gray-200 dark:border-gray-700">
+            <AuthStatus />
+            <UserMenu />
+          </div>
         </div>
       </div>
 

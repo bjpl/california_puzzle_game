@@ -41,7 +41,7 @@ export default defineConfig({
       deleteOriginFile: false,
     }),
   ],
-  base: '/california_puzzle_game/',
+  base: process.env.VITE_BASE_URL || '/california_puzzle_game/',
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),

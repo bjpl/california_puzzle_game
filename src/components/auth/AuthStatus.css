@@ -1,0 +1,220 @@
+/* California Counties Design System - Auth Status Component */
+
+.ca-auth-status {
+  position: relative;
+  display: inline-flex;
+  outline: none;
+}
+
+/* Status Indicator */
+.ca-auth-status__indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--color-bg-secondary, #f9fafb);
+  border: 1px solid var(--color-border-medium, #e5e7eb);
+  border-radius: 0.375rem;
+  cursor: help;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.dark .ca-auth-status__indicator {
+  background-color: var(--color-bg-secondary, #1e1e1e);
+  border-color: var(--color-border-medium, #374151);
+  color: var(--color-text-secondary, #9ca3af);
+}
+
+.ca-auth-status:hover .ca-auth-status__indicator,
+.ca-auth-status:focus .ca-auth-status__indicator {
+  background-color: var(--color-bg-tertiary, #f3f4f6);
+  border-color: var(--color-border-dark, #d1d5db);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dark .ca-auth-status:hover .ca-auth-status__indicator,
+.dark .ca-auth-status:focus .ca-auth-status__indicator {
+  background-color: var(--color-bg-tertiary, #2a2a2a);
+  border-color: var(--color-border-dark, #4b5563);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.ca-auth-status:focus-visible .ca-auth-status__indicator {
+  outline: 2px solid var(--color-primary, #2563eb);
+  outline-offset: 2px;
+}
+
+.dark .ca-auth-status:focus-visible .ca-auth-status__indicator {
+  outline-color: var(--color-primary, #60a5fa);
+}
+
+/* Status Dot */
+.ca-auth-status__dot {
+  display: inline-block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.ca-auth-status__dot--connected {
+  background-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  animation: pulse-connected 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.dark .ca-auth-status__dot--connected {
+  background-color: #34d399;
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.3);
+}
+
+.ca-auth-status__dot--syncing {
+  background-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+  animation: pulse-syncing 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.dark .ca-auth-status__dot--syncing {
+  background-color: #fbbf24;
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.3);
+}
+
+.ca-auth-status__dot--offline {
+  background-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.dark .ca-auth-status__dot--offline {
+  background-color: #f87171;
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.3);
+}
+
+/* Spinning Icon */
+.ca-auth-status__icon--spinning {
+  animation: spin 1.5s linear infinite;
+}
+
+/* Tooltip */
+.ca-auth-status__tooltip {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 16rem;
+  padding: 0.875rem;
+  background-color: white;
+  border: 1px solid var(--color-border-medium, #e5e7eb);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  pointer-events: none;
+  animation: tooltip-fade-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .ca-auth-status__tooltip {
+  background-color: var(--color-bg-primary, #121212);
+  border-color: var(--color-border-medium, #374151);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.ca-auth-status__tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ca-auth-status__tooltip-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.ca-auth-status__tooltip-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #374151);
+}
+
+.dark .ca-auth-status__tooltip-label {
+  color: var(--color-text-primary, #f9fafb);
+}
+
+.ca-auth-status__tooltip-description {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, #6b7280);
+  line-height: 1.5;
+}
+
+.dark .ca-auth-status__tooltip-description {
+  color: var(--color-text-secondary, #9ca3af);
+}
+
+.ca-auth-status__tooltip-expiry {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary, #9ca3af);
+  line-height: 1.5;
+}
+
+.dark .ca-auth-status__tooltip-expiry {
+  color: var(--color-text-tertiary, #6b7280);
+}
+
+/* Animations */
+@keyframes pulse-connected {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  }
+}
+
+@keyframes pulse-syncing {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .ca-auth-status__tooltip {
+    right: 0;
+    left: auto;
+    min-width: 14rem;
+  }
+}
