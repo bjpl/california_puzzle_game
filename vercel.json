@@ -4,13 +4,6 @@
   "framework": "vite",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  "env": {
-    "VITE_SUPABASE_URL": "@supabase-url",
-    "VITE_SUPABASE_ANON_KEY": "@supabase-anon-key",
-    "VITE_BASE_URL": "/",
-    "VITE_SENTRY_DSN": "@sentry-dsn",
-    "NODE_ENV": "production"
-  },
   "rewrites": [
     {
       "source": "/(.*)",
