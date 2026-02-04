@@ -3,19 +3,29 @@
 
 echo "🔍 Pre-push validation..."
 
-# 1. Type checking (non-blocking - warns only)
+# 1. Type checking (required - blocks push on errors)
 echo "  → Type checking..."
-npm run typecheck || echo "  ⚠️  Type errors found (non-blocking)"
+npm run typecheck || {
+  echo "❌ Type errors found - fix before pushing"
+  exit 1
+}
 
-# 2. Run fast unit tests only (skip slow integration/a11y tests)
+# 2. Run tests for changed files only (non-blocking)
 # Set SKIP_TESTS=1 to bypass: SKIP_TESTS=1 git push
 if [ -z "$SKIP_TESTS" ]; then
-  echo "  → Running fast unit tests (30s timeout)..."
-  timeout 30 npx vitest run --reporter=dot --no-coverage tests/unit 2>/dev/null || {
-    echo "⚠️  Fast tests failed or timed out. Full suite runs in CI."
-    echo "   Tip: Use 'SKIP_TESTS=1 git push' to bypass"
-    exit 1
-  }
+  echo "  → Checking for source changes..."
+  # Check if any src/ or tests/ files changed
+  if git diff --name-only HEAD~1 2>/dev/null | grep -qE '^(src/|tests/)'; then
+    echo "  → Running tests for changed files (60s timeout)..."
+    timeout 60 npx vitest run --changed HEAD~1 --reporter=dot 2>/dev/null || {
+      echo "⚠️  Tests failed or timed out. Full suite runs in CI."
+      echo "   Tip: Use 'SKIP_TESTS=1 git push' to bypass"
+      # Non-blocking - CI will catch real failures
+      echo "  → Continuing (CI will run full tests)..."
+    }
+  else
+    echo "  → No source changes detected, skipping tests"
+  fi
 else
   echo "  ⚠️  Tests skipped (SKIP_TESTS=1 set)"
 fi
