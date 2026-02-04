@@ -506,20 +506,23 @@ export default function CountyFormationAnimation() {
                 ) : currentYear === GAME_CONFIG.FORMATION_START_YEAR &&
                   countiesAddedThisYear.length === GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES ? (
                   /* Special 1850 "Big Bang" Display - Compact version */
-                  <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-l-4 border-purple-500 rounded-r-lg px-3 py-2 h-full">
-                    <div className="flex items-start gap-2 mb-1">
+                  <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-l-4 border-purple-500 rounded-r-lg px-3 py-2 h-full flex flex-col">
+                    <div className="flex items-start gap-2 mb-2 flex-shrink-0">
                       <span className="text-xl">🌟</span>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-purple-900 text-sm leading-tight">
+                        <h3 className="font-bold text-purple-900 text-base leading-tight">
                           California Statehood: The Original{' '}
                           {GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES}
                         </h3>
-                        <p className="text-xs text-purple-700 italic leading-tight">
+                        <p className="text-xs text-purple-700 italic leading-tight mt-0.5">
                           September 9, 1850 — California joins as the 31st state
                         </p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-x-2 gap-y-0.5 text-xs text-purple-800 ml-7 max-h-[60px] overflow-hidden">
+                    <div
+                      className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-x-3 gap-y-1 text-xs text-purple-800 ml-7 flex-1 overflow-y-auto"
+                      style={{ scrollbarWidth: 'thin', scrollbarColor: '#c4b5fd transparent' }}
+                    >
                       {countiesAddedThisYear
                         .slice(0, GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES)
                         .map((id) => {
