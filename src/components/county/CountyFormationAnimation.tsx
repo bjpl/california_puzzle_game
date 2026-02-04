@@ -451,9 +451,9 @@ export default function CountyFormationAnimation() {
           </h1>
         </div>
 
-        {/* Enhanced Info Bar with Rich Content */}
-        <div className="bg-gradient-to-r from-white to-gray-50 border-b border-gray-200 px-4 py-3 relative">
-          <div className="flex items-start gap-4">
+        {/* Enhanced Info Bar with Rich Content - FIXED HEIGHT to prevent layout shift */}
+        <div className="bg-gradient-to-r from-white to-gray-50 border-b border-gray-200 px-4 py-3 relative h-[140px]">
+          <div className="flex items-start gap-4 h-full">
             {/* Year Display */}
             <div className="flex-shrink-0">
               <div className="text-4xl font-bold text-blue-600 leading-none">{currentYear}</div>
@@ -463,7 +463,11 @@ export default function CountyFormationAnimation() {
             </div>
 
             {/* Main Content Area - County Spotlight or Historical Event */}
-            <div className="flex-1 min-h-[60px]">
+            {/* Fixed height with overflow handling to prevent map resize */}
+            <div
+              className="flex-1 h-full overflow-y-auto overflow-x-hidden"
+              style={{ scrollbarWidth: 'thin', scrollbarColor: '#d1d5db transparent' }}
+            >
               {hasStarted && countiesAddedThisYear.length > 0 ? (
                 /* County Formation Spotlight */
                 countiesAddedThisYear.length === 1 ? (
@@ -474,20 +478,20 @@ export default function CountyFormationAnimation() {
                     const foundingStory = getFoundingStory(county.id);
                     const education = getCountyEducation(county.id);
                     return (
-                      <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 rounded-r-lg px-3 py-2">
-                        <div className="flex items-start gap-3">
+                      <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 rounded-r-lg px-3 py-2 h-full flex flex-col">
+                        <div className="flex items-start gap-3 flex-1 min-h-0">
                           <div className="text-2xl flex-shrink-0">✨</div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-baseline gap-2 mb-1">
+                          <div className="flex-1 min-w-0 flex flex-col">
+                            <div className="flex items-baseline gap-2 mb-1 flex-shrink-0">
                               <h3 className="font-bold text-emerald-900 text-sm">
                                 {county.name} County Founded
                               </h3>
                               <span className="text-xs text-emerald-600">{county.region}</span>
                             </div>
-                            <p className="text-xs text-emerald-800 leading-relaxed mb-1.5">
+                            <p className="text-xs text-emerald-800 leading-relaxed mb-1.5 flex-1 overflow-hidden line-clamp-3">
                               {foundingStory || county.funFact}
                             </p>
-                            <div className="flex gap-3 text-xs text-emerald-600">
+                            <div className="flex gap-3 text-xs text-emerald-600 flex-shrink-0">
                               <span>👥 {(county.population / 1000).toFixed(0)}k</span>
                               <span>📍 {county.capital}</span>
                               {education?.specificData.established && (
@@ -501,28 +505,27 @@ export default function CountyFormationAnimation() {
                   })()
                 ) : currentYear === GAME_CONFIG.FORMATION_START_YEAR &&
                   countiesAddedThisYear.length === GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES ? (
-                  /* Special 1850 "Big Bang" Display */
-                  <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-l-4 border-purple-500 rounded-r-lg px-3 py-2">
-                    <div className="flex items-start gap-2 mb-2">
-                      <span className="text-2xl">🌟</span>
-                      <div>
-                        <h3 className="font-bold text-purple-900 text-sm">
+                  /* Special 1850 "Big Bang" Display - Compact version */
+                  <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-l-4 border-purple-500 rounded-r-lg px-3 py-2 h-full">
+                    <div className="flex items-start gap-2 mb-1">
+                      <span className="text-xl">🌟</span>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-purple-900 text-sm leading-tight">
                           California Statehood: The Original{' '}
                           {GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES}
                         </h3>
-                        <p className="text-xs text-purple-700 italic mt-0.5">
-                          September 9, 1850 — California becomes the 31st state with{' '}
-                          {GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES} founding counties
+                        <p className="text-xs text-purple-700 italic leading-tight">
+                          September 9, 1850 — California joins as the 31st state
                         </p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-x-3 gap-y-0.5 text-xs text-purple-800 ml-9">
+                    <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-x-2 gap-y-0.5 text-xs text-purple-800 ml-7 max-h-[60px] overflow-hidden">
                       {countiesAddedThisYear
                         .slice(0, GAME_CONFIG.FORMATION_ORIGINAL_COUNTIES)
                         .map((id) => {
                           const county = getCountyInfo(id);
                           return county ? (
-                            <span key={id} className="font-medium">
+                            <span key={id} className="font-medium truncate" title={county.name}>
                               {county.name}
                             </span>
                           ) : null;
@@ -531,27 +534,26 @@ export default function CountyFormationAnimation() {
                   </div>
                 ) : (
                   /* Multiple Counties - Compact List with Founding Snippets */
-                  <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 rounded-r-lg px-3 py-2">
-                    <div className="flex items-start gap-2 mb-1.5">
+                  <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 rounded-r-lg px-3 py-2 h-full flex flex-col">
+                    <div className="flex items-start gap-2 mb-1 flex-shrink-0">
                       <span className="text-lg">✨</span>
                       <h3 className="font-bold text-emerald-900 text-sm">
                         {countiesAddedThisYear.length} Counties Founded This Year
                       </h3>
                     </div>
-                    <div className="space-y-1.5 ml-7">
+                    <div className="space-y-1 ml-7 flex-1 overflow-hidden">
                       {countiesAddedThisYear.map((id) => {
                         const county = getCountyInfo(id);
                         if (!county) return null;
                         const education = getCountyEducation(id);
-                        // Use first sentence of historical context for multiple counties
                         const snippet =
                           education?.historicalContext.split(/[.!?]+/)[0] + '.' || county.funFact;
                         return (
-                          <div key={id} className="text-xs">
+                          <div key={id} className="text-xs truncate">
                             <span className="font-semibold text-emerald-900">{county.name}</span>
                             <span className="text-emerald-700">
                               {' '}
-                              — {snippet.length > 100 ? snippet.substring(0, 100) + '...' : snippet}
+                              — {snippet.length > 80 ? snippet.substring(0, 80) + '...' : snippet}
                             </span>
                           </div>
                         );
@@ -561,21 +563,21 @@ export default function CountyFormationAnimation() {
                 )
               ) : /* No Counties This Year - Show Historical Event or Context */
               currentEvent ? (
-                <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-lg px-3 py-2">
-                  <div className="flex items-start gap-3">
+                <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 rounded-r-lg px-3 py-2 h-full flex flex-col">
+                  <div className="flex items-start gap-3 flex-1">
                     <span className="text-2xl flex-shrink-0">{currentEvent.icon}</span>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-amber-900 text-sm mb-1">
+                    <div className="flex-1 flex flex-col">
+                      <h3 className="font-bold text-amber-900 text-sm mb-1 flex-shrink-0">
                         {currentEvent.label}
                       </h3>
-                      <p className="text-xs text-amber-700 leading-relaxed">
+                      <p className="text-xs text-amber-700 leading-relaxed flex-1 overflow-hidden line-clamp-4">
                         {currentEvent.description}
                       </p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="bg-blue-50 border-l-4 border-blue-300 rounded-r-lg px-3 py-2">
+                <div className="bg-blue-50 border-l-4 border-blue-300 rounded-r-lg px-3 py-2 h-full flex items-center">
                   <p className="text-xs text-blue-700 italic">
                     No new counties established in {currentYear}
                   </p>
