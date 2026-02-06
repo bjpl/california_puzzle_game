@@ -324,6 +324,156 @@ export const useAuthStore = create<AuthStore>()(
         setLoading: (isLoading: boolean) => {
           set({ isLoading });
         },
+
+        signInWithGoogle: async () => {
+          logger.info('[Auth] Starting Google OAuth sign-in...');
+          set({ isLoading: true, error: null });
+
+          try {
+            const { error } = await supabase.auth.signInWithOAuth({
+              provider: 'google',
+              options: {
+                redirectTo: window.location.origin,
+                queryParams: {
+                  access_type: 'offline',
+                  prompt: 'consent',
+                },
+              },
+            });
+
+            if (error) {
+              logger.error('[Auth] Google sign-in failed:', error);
+              set({ error: error as AuthError, isLoading: false });
+              return;
+            }
+
+            // OAuth redirects away - loading state will be cleared on return
+            logger.info('[Auth] Redirecting to Google OAuth...');
+          } catch (error) {
+            logger.error('[Auth] Google sign-in exception:', error);
+            set({ error: error as AuthError, isLoading: false });
+          }
+        },
+
+        signInWithEmail: async (email: string, password: string) => {
+          logger.info('[Auth] Starting email sign-in...');
+          set({ isLoading: true, error: null });
+
+          try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email,
+              password,
+            });
+
+            if (error) {
+              logger.error('[Auth] Email sign-in failed:', error);
+              set({ error: error as AuthError, isLoading: false });
+              return;
+            }
+
+            logger.info('[Auth] Email sign-in successful:', {
+              userId: data.user?.id,
+            });
+
+            set({
+              user: data.user,
+              session: data.session,
+              error: null,
+              isLoading: false,
+              initialized: true,
+            });
+
+            if (data.user?.id) {
+              try {
+                await syncManager.initialize(data.user.id);
+                await storeIntegration.initialize(data.user.id);
+              } catch (syncError) {
+                logger.error('[Auth] Failed to initialize sync:', syncError);
+              }
+            }
+          } catch (error) {
+            logger.error('[Auth] Email sign-in exception:', error);
+            set({ error: error as AuthError, isLoading: false });
+          }
+        },
+
+        signUpWithEmail: async (email: string, password: string, displayName?: string) => {
+          logger.info('[Auth] Starting email sign-up...');
+          set({ isLoading: true, error: null });
+
+          try {
+            const { data, error } = await supabase.auth.signUp({
+              email,
+              password,
+              options: {
+                data: {
+                  app_name: 'California Puzzle Game',
+                  display_name: displayName,
+                },
+                emailRedirectTo: window.location.origin,
+              },
+            });
+
+            if (error) {
+              logger.error('[Auth] Email sign-up failed:', error);
+              set({ error: error as AuthError, isLoading: false });
+              return;
+            }
+
+            logger.info('[Auth] Email sign-up successful:', {
+              userId: data.user?.id,
+              confirmationRequired: !data.session,
+            });
+
+            if (data.session) {
+              set({
+                user: data.user,
+                session: data.session,
+                error: null,
+                isLoading: false,
+                initialized: true,
+              });
+
+              if (data.user?.id) {
+                try {
+                  await syncManager.initialize(data.user.id);
+                  await storeIntegration.initialize(data.user.id);
+                } catch (syncError) {
+                  logger.error('[Auth] Failed to initialize sync:', syncError);
+                }
+              }
+            } else {
+              // Email confirmation required
+              set({ isLoading: false, error: null });
+            }
+          } catch (error) {
+            logger.error('[Auth] Email sign-up exception:', error);
+            set({ error: error as AuthError, isLoading: false });
+          }
+        },
+
+        resetPassword: async (email: string) => {
+          logger.info('[Auth] Sending password reset...');
+          set({ isLoading: true, error: null });
+
+          try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+              redirectTo: window.location.origin,
+            });
+
+            if (error) {
+              logger.error('[Auth] Password reset failed:', error);
+              set({ error: error as AuthError, isLoading: false });
+              return;
+            }
+
+            logger.info('[Auth] Password reset email sent');
+            set({ isLoading: false, error: null });
+          } catch (error) {
+            logger.error('[Auth] Password reset exception:', error);
+            set({ error: error as AuthError, isLoading: false });
+          }
+        },
       }),
       {
         name: 'california-puzzle-auth', // localStorage key

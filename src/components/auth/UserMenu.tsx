@@ -12,10 +12,11 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, ChevronDown, UserCircle } from 'lucide-react';
+import { User, LogOut, ChevronDown, UserCircle, Mail } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { Badge } from '../ui/Badge';
 import './UserMenu.css';
+import { AuthModal } from './AuthModal';
 
 /**
  * UserMenu Component
@@ -30,8 +31,9 @@ import './UserMenu.css';
  * ```
  */
 export const UserMenu: React.FC = () => {
-  const { user, isAuthenticated, isAnonymous, signInAnonymously, signOut, isLoading } = useAuth();
+  const { user, isAuthenticated, isAnonymous, signOut, isLoading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -76,9 +78,9 @@ export const UserMenu: React.FC = () => {
   /**
    * Handle sign-in click
    */
-  const handleSignIn = async () => {
+  const handleSignIn = () => {
     setIsOpen(false);
-    await signInAnonymously();
+    setShowAuthModal(true);
   };
 
   /**
@@ -89,18 +91,35 @@ export const UserMenu: React.FC = () => {
     await signOut();
   };
 
+  /**
+   * Get display name for authenticated user
+   */
+  const getUserDisplayName = (): string => {
+    if (!user) return '';
+    if (isAnonymous) return truncateUserId(user.id);
+    const metadata = user.user_metadata;
+    if (metadata?.display_name) return metadata.display_name;
+    if (metadata?.full_name) return metadata.full_name;
+    if (metadata?.name) return metadata.name;
+    if (user.email) return user.email.split('@')[0];
+    return truncateUserId(user.id);
+  };
+
   // Show sign-in button if not authenticated
   if (!isAuthenticated) {
     return (
-      <button
-        className="ca-user-menu__sign-in"
-        onClick={handleSignIn}
-        disabled={isLoading}
-        aria-label="Sign in anonymously"
-      >
-        <UserCircle size={20} />
-        <span>Sign In</span>
-      </button>
+      <>
+        <button
+          className="ca-user-menu__sign-in"
+          onClick={handleSignIn}
+          disabled={isLoading}
+          aria-label="Sign in"
+        >
+          <UserCircle size={20} />
+          <span>Sign In</span>
+        </button>
+        <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      </>
     );
   }
 
@@ -119,7 +138,7 @@ export const UserMenu: React.FC = () => {
         </div>
 
         <div className="ca-user-menu__info">
-          <span className="ca-user-menu__id">{truncateUserId(user!.id)}</span>
+          <span className="ca-user-menu__id">{getUserDisplayName()}</span>
           {isAnonymous && (
             <Badge variant="warning" size="small" className="ca-user-menu__badge">
               Anonymous
@@ -151,7 +170,7 @@ export const UserMenu: React.FC = () => {
                 </div>
                 <div className="ca-user-menu__user-details">
                   <span className="ca-user-menu__user-id" title={user!.id}>
-                    {truncateUserId(user!.id)}
+                    {getUserDisplayName()}
                   </span>
                   {isAnonymous && (
                     <Badge variant="warning" size="small">
@@ -167,6 +186,16 @@ export const UserMenu: React.FC = () => {
 
             {/* Actions Section */}
             <div className="ca-user-menu__section">
+              {isAnonymous && (
+                <button
+                  className="ca-user-menu__item ca-user-menu__item--upgrade"
+                  onClick={handleSignIn}
+                  disabled={isLoading}
+                >
+                  <Mail size={16} />
+                  <span>Create Account</span>
+                </button>
+              )}
               <button className="ca-user-menu__item" onClick={handleSignOut} disabled={isLoading}>
                 <LogOut size={16} />
                 <span>Sign Out</span>
@@ -175,6 +204,7 @@ export const UserMenu: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>
   );
 };

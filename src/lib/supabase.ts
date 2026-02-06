@@ -136,7 +136,7 @@ export const supabase: SupabaseClient<Database> = createClient<Database>(
       // Enable anonymous sign-in
       autoRefreshToken: isSupabaseConfigured,
       persistSession: isSupabaseConfigured,
-      detectSessionInUrl: false, // We're not using OAuth flows
+      detectSessionInUrl: true, // Enable OAuth redirect handling
       storage: window.localStorage, // Persist session in localStorage
       storageKey: 'california-puzzle-auth-token',
     },

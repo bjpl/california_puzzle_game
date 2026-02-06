@@ -11,3 +11,4 @@
 
 export { UserMenu } from './UserMenu';
 export { AuthStatus } from './AuthStatus';
+export { AuthModal } from './AuthModal';

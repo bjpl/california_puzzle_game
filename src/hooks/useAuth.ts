@@ -48,11 +48,19 @@ export function useAuth(): UseAuthReturn {
   // Compute derived values
   const isAuthenticated = !!store.user && !!store.session;
   const isAnonymous = store.user?.is_anonymous ?? false;
+  const provider: 'anonymous' | 'google' | 'email' | null = store.user
+    ? store.user.is_anonymous
+      ? 'anonymous'
+      : store.user.app_metadata?.provider === 'google'
+        ? 'google'
+        : 'email'
+    : null;
 
   return {
     ...store,
     isAuthenticated,
     isAnonymous,
+    provider,
   };
 }
 
@@ -164,6 +172,10 @@ export function useAuthActions() {
     refreshSession: state.refreshSession,
     initialize: state.initialize,
     clearError: state.clearError,
+    signInWithGoogle: state.signInWithGoogle,
+    signInWithEmail: state.signInWithEmail,
+    signUpWithEmail: state.signUpWithEmail,
+    resetPassword: state.resetPassword,
   }));
 }
 

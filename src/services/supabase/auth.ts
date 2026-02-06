@@ -361,6 +361,237 @@ export async function isSessionValid(): Promise<boolean> {
 }
 
 /**
+ * Signs in with Google OAuth
+ *
+ * Initiates the Google OAuth flow. The user will be redirected to Google's
+ * consent screen and then back to the application.
+ *
+ * @param {string} [redirectTo] - URL to redirect to after authentication
+ * @returns {Promise<{success: boolean, error?: string}>} Result of the OAuth initiation
+ *
+ * @example
+ * ```typescript
+ * const result = await signInWithGoogle();
+ * if (!result.success) {
+ *   console.error('Google sign-in failed:', result.error);
+ * }
+ * // User will be redirected to Google...
+ * ```
+ */
+export async function signInWithGoogle(
+  redirectTo?: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return { success: false, error: 'Supabase not configured' };
+  }
+
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectTo || window.location.origin,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('[Auth] Google sign-in failed:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Google sign-in failed',
+    };
+  }
+}
+
+/**
+ * Signs in with email and password
+ *
+ * Authenticates an existing user with their email and password credentials.
+ *
+ * @param {string} email - User's email address
+ * @param {string} password - User's password
+ * @returns {Promise<AuthStatus>} Authentication status after sign-in
+ *
+ * @example
+ * ```typescript
+ * const result = await signInWithEmail('user@example.com', 'password123');
+ * if (result.isAuthenticated) {
+ *   console.log('Signed in as:', result.userId);
+ * }
+ * ```
+ */
+export async function signInWithEmail(email: string, password: string): Promise<AuthStatus> {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return {
+      isAuthenticated: false,
+      isAnonymous: false,
+      userId: null,
+      error: 'Supabase not configured',
+    };
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data.user) {
+      throw new Error('Sign-in succeeded but no user returned');
+    }
+
+    return {
+      isAuthenticated: true,
+      isAnonymous: false,
+      userId: data.user.id,
+    };
+  } catch (error) {
+    console.error('[Auth] Email sign-in failed:', error);
+    return {
+      isAuthenticated: false,
+      isAnonymous: false,
+      userId: null,
+      error: error instanceof Error ? error.message : 'Email sign-in failed',
+    };
+  }
+}
+
+/**
+ * Signs up with email and password
+ *
+ * Creates a new user account with email and password. May require email
+ * confirmation depending on Supabase project settings.
+ *
+ * @param {string} email - User's email address
+ * @param {string} password - User's chosen password
+ * @param {Record<string, unknown>} [metadata] - Additional user metadata
+ * @returns {Promise<AuthStatus & {confirmationRequired?: boolean}>} Sign-up result
+ *
+ * @example
+ * ```typescript
+ * const result = await signUpWithEmail('user@example.com', 'password123', { display_name: 'John' });
+ * if (result.confirmationRequired) {
+ *   console.log('Check your email to confirm your account');
+ * }
+ * ```
+ */
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  metadata?: Record<string, unknown>
+): Promise<AuthStatus & { confirmationRequired?: boolean }> {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return {
+      isAuthenticated: false,
+      isAnonymous: false,
+      userId: null,
+      error: 'Supabase not configured',
+    };
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          app_name: 'California Puzzle Game',
+          ...metadata,
+        },
+        emailRedirectTo: window.location.origin,
+      },
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data.user) {
+      throw new Error('Sign-up succeeded but no user returned');
+    }
+
+    // Check if email confirmation is required
+    const confirmationRequired = !data.session;
+
+    return {
+      isAuthenticated: !!data.session,
+      isAnonymous: false,
+      userId: data.user.id,
+      confirmationRequired,
+    };
+  } catch (error) {
+    console.error('[Auth] Email sign-up failed:', error);
+    return {
+      isAuthenticated: false,
+      isAnonymous: false,
+      userId: null,
+      error: error instanceof Error ? error.message : 'Email sign-up failed',
+    };
+  }
+}
+
+/**
+ * Sends a password reset email
+ *
+ * Initiates the password reset flow by sending an email with a reset link.
+ *
+ * @param {string} email - Email address to send reset link to
+ * @param {string} [redirectTo] - URL to redirect to after password reset
+ * @returns {Promise<{success: boolean, error?: string}>} Result of the reset request
+ *
+ * @example
+ * ```typescript
+ * const result = await resetPasswordForEmail('user@example.com');
+ * if (result.success) {
+ *   console.log('Password reset email sent');
+ * }
+ * ```
+ */
+export async function resetPasswordForEmail(
+  email: string,
+  redirectTo?: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return { success: false, error: 'Supabase not configured' };
+  }
+
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectTo || `${window.location.origin}`,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('[Auth] Password reset failed:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Password reset failed',
+    };
+  }
+}
+
+/**
  * Gets authentication error details
  *
  * Extracts useful error information from Supabase auth errors.

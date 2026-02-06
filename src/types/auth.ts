@@ -92,6 +92,42 @@ export interface AuthActions {
    * PATTERN: Loading state setter
    */
   setLoading: (isLoading: boolean) => void;
+
+  /**
+   * Sign in with Google OAuth
+   *
+   * CONCEPT: OAuth provider authentication
+   * WHY: Allow users to sign in with existing Google account
+   * PATTERN: Async action with redirect flow
+   */
+  signInWithGoogle: () => Promise<void>;
+
+  /**
+   * Sign in with email and password
+   *
+   * CONCEPT: Credential-based authentication
+   * WHY: Traditional sign-in for registered users
+   * PATTERN: Async action with error handling
+   */
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+
+  /**
+   * Sign up with email and password
+   *
+   * CONCEPT: New account registration
+   * WHY: Allow users to create persistent accounts
+   * PATTERN: Async action with optional metadata
+   */
+  signUpWithEmail: (email: string, password: string, displayName?: string) => Promise<void>;
+
+  /**
+   * Send password reset email
+   *
+   * CONCEPT: Self-service password recovery
+   * WHY: Allow users to regain access to their accounts
+   * PATTERN: Async action with email delivery
+   */
+  resetPassword: (email: string) => Promise<void>;
 }
 
 /**
@@ -114,6 +150,7 @@ export interface UseAuthReturn extends AuthStore {
   // Computed properties
   isAuthenticated: boolean;
   isAnonymous: boolean;
+  provider: 'anonymous' | 'google' | 'email' | null;
 }
 
 /**

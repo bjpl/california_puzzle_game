@@ -84,7 +84,7 @@ export function getSupabaseClient(): SupabaseClient<Database> | null {
       auth: {
         autoRefreshToken: true,
         persistSession: true,
-        detectSessionInUrl: false, // PWA doesn't need URL-based auth
+        detectSessionInUrl: true, // Enable OAuth redirect handling
         storage: window.localStorage, // Explicit localStorage for session persistence
       },
       global: {
